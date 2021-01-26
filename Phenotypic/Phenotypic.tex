@@ -1,0 +1,248 @@
+\documentclass{article}
+
+\usepackage{arxiv}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{lmodern}        % https://github.com/rstudio/rticles/issues/343
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{lipsum}
+\usepackage{graphicx}
+
+\title{The Phenotypic Signature of Host-Parasite Coevolution in Continuous
+Space}
+
+\author{
+    Bob Week
+   \\
+    Integrative Biology \\
+    Michigan State University \\
+  East Lansing, MI 48824 \\
+  \texttt{\href{mailto:weekrobe@msu.edu}{\nolinkurl{weekrobe@msu.edu}}} \\
+   \And
+    Gideon Bradburd
+   \\
+    Integrative Biology \\
+    Michigan State University \\
+  East Lansing, MI 48824 \\
+  \texttt{\href{mailto:bradburd@msu.edu}{\nolinkurl{bradburd@msu.edu}}} \\
+  }
+
+
+% Pandoc citation processing
+
+\usepackage{amsmath}
+
+
+\begin{document}
+\maketitle
+
+\def\tightlist{}
+
+
+\begin{abstract}
+Here we identify the phenotypic signature of host-parasite coevolution
+in continuous space
+\end{abstract}
+
+\keywords{
+    blah
+   \and
+    blee
+   \and
+    bloo
+   \and
+    these are optional and can be removed
+  }
+
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+The host is denoted \(H\) and the parasite \(P\). Spatial location is
+\(x\) (\(\in\mathbb R^1\) or \(\mathbb R^2\)) and individual trait value
+of a host/parasite is \(z_H/z_P\in\mathbb R^1\). Assuming a
+trait-matching model, where host fitness is minimized and parasite
+fitness is maximized when \(z_H=z_P\), we have the following two fitness
+functions:
+
+\begin{subequations}
+  \begin{equation}
+    W_H\propto \exp\left(\frac{B_H}{2}(z_H-z_P)^2\right),
+  \end{equation}
+  \begin{equation}
+    W_P\propto \exp\left(-\frac{B_P}{2}(z_H-z_P)^2\right),
+  \end{equation}
+\end{subequations}
+
+where \(B_H,B_P>0\) capture the strengths of biotic selection
+experienced by each species. Using a standard approach, we derive the
+following non-spatial coevolutionary model:
+
+\begin{subequations}
+  \begin{equation}
+    \frac{d\bar z_H}{dt}=-G_HB_H(\bar z_P-\bar z_H),
+  \end{equation}
+  \begin{equation}
+    \frac{d\bar z_P}{dt}=G_PB_P(\bar z_H-\bar z_P),
+  \end{equation}
+\end{subequations}
+
+where \(G_H,G_P>0\) denote the additive genetic variances of each
+species. If we assume interactions occur locally (individuals interact
+only when they `collide'), then we obtain the following continuous space
+model:
+
+\begin{subequations}
+  \begin{equation}
+    \frac{\partial\bar z_H}{\partial t}=-G_HB_H(\bar z_P-\bar z_H)+\frac{D_H}{2}\Delta\bar z_H,
+  \end{equation}
+  \begin{equation}
+    \frac{\partial\bar z_P}{\partial t}=G_PB_P(\bar z_H-\bar z_P)+\frac{D_P}{2}\Delta\bar z_P,
+  \end{equation}
+\end{subequations}
+
+where \(D_H,D_P>0\) are dispersal rates for each species and
+\(\Delta=\frac{\partial^2}{\partial x_1^2}\) in one-dimensional space
+and
+\(\Delta=\frac{\partial^2}{\partial x_1^2}+\frac{\partial^2}{\partial x_2^2}\)
+in two-dimensional space.
+
+\hypertarget{headings-first-level}{%
+\section{Headings: first level}\label{headings-first-level}}
+
+\label{sec:headings}
+
+\lipsum[4] See Section \ref{sec:headings}.
+
+\hypertarget{headings-second-level}{%
+\subsection{Headings: second level}\label{headings-second-level}}
+
+\lipsum[5]
+
+\begin{equation}
+\xi _{ij}(t)=P(x_{t}=i,x_{t+1}=j|y,v,w;\theta)= {\frac {\alpha _{i}(t)a^{w_t}_{ij}\beta _{j}(t+1)b^{v_{t+1}}_{j}(y_{t+1})}{\sum _{i=1}^{N} \sum _{j=1}^{N} \alpha _{i}(t)a^{w_t}_{ij}\beta _{j}(t+1)b^{v_{t+1}}_{j}(y_{t+1})}}
+\end{equation}
+
+\hypertarget{headings-third-level}{%
+\subsubsection{Headings: third level}\label{headings-third-level}}
+
+\lipsum[6]
+
+\paragraph{Paragraph}
+\lipsum[7]
+
+\hypertarget{examples-of-citations-figures-tables-references}{%
+\section{Examples of citations, figures, tables,
+references}\label{examples-of-citations-figures-tables-references}}
+
+\label{sec:others}
+
+\lipsum[8] some text (Kour and Saabne 2014b, 2014a) and see Hadash et
+al. (2018).
+
+The documentation for \verb+natbib+ may be found at
+
+\begin{center}
+  \url{http://mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf}
+\end{center}
+
+Of note is the command \verb+\citet+, which produces citations
+appropriate for use in inline text. For example,
+
+\begin{verbatim}
+   \citet{hasselmo} investigated\dots
+\end{verbatim}
+
+produces
+
+\begin{quote}
+  Hasselmo, et al.\ (1995) investigated\dots
+\end{quote}
+
+\begin{center}
+  \url{https://www.ctan.org/pkg/booktabs}
+\end{center}
+
+\hypertarget{figures}{%
+\subsection{Figures}\label{figures}}
+
+\lipsum[10]
+
+See Figure \ref{fig:fig1}. Here is how you add footnotes. {[}\^{}Sample
+of the first footnote.{]}
+
+\lipsum[11]
+
+\begin{figure}
+  \centering
+  \fbox{\rule[-.5cm]{4cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
+  \caption{Sample figure caption.}
+  \label{fig:fig1}
+\end{figure}
+
+\hypertarget{tables}{%
+\subsection{Tables}\label{tables}}
+
+\lipsum[12]
+
+See awesome Table\textasciitilde{}\ref{tab:table}.
+
+\begin{table}
+ \caption{Sample table title}
+  \centering
+  \begin{tabular}{lll}
+    \toprule
+    \multicolumn{2}{c}{Part}                   \\
+    \cmidrule(r){1-2}
+    Name     & Description     & Size ($\mu$m) \\
+    \midrule
+    Dendrite & Input terminal  & $\sim$100     \\
+    Axon     & Output terminal & $\sim$10      \\
+    Soma     & Cell body       & up to $10^6$  \\
+    \bottomrule
+  \end{tabular}
+  \label{tab:table}
+\end{table}
+
+\hypertarget{lists}{%
+\subsection{Lists}\label{lists}}
+
+\begin{itemize}
+\tightlist
+\item
+  Lorem ipsum dolor sit amet
+\item
+  consectetur adipiscing elit.
+\item
+  Aliquam dignissim blandit est, in dictum tortor gravida eget. In ac
+  rutrum magna.
+\end{itemize}
+
+\hypertarget{refs}{}
+\leavevmode\hypertarget{ref-hadash2018estimate}{}%
+Hadash, Guy, Einat Kermany, Boaz Carmeli, Ofer Lavi, George Kour, and
+Alon Jacovi. 2018. ``Estimate and Replace: A Novel Approach to
+Integrating Deep Neural Networks with Existing Applications.''
+\emph{arXiv Preprint arXiv:1804.09028}.
+
+\leavevmode\hypertarget{ref-kour2014fast}{}%
+Kour, George, and Raid Saabne. 2014a. ``Fast Classification of
+Handwritten on-Line Arabic Characters.'' In \emph{Soft Computing and
+Pattern Recognition (Socpar), 2014 6th International Conference of},
+312--18. IEEE.
+
+\leavevmode\hypertarget{ref-kour2014real}{}%
+---------. 2014b. ``Real-Time Segmentation of on-Line Handwritten Arabic
+Script.'' In \emph{Frontiers in Handwriting Recognition (Icfhr), 2014
+14th International Conference on}, 417--22. IEEE.
+
+\bibliographystyle{unsrt}
+\bibliography{references.bib}
+
+
+\end{document}
