@@ -72,10 +72,10 @@ functions:
 
 \begin{subequations}
   \begin{equation}
-    W_H\propto \exp\left(\frac{B_H}{2}(z_H-z_P)^2\right),
+    w_H\propto \exp\left(\frac{B_H}{2}(z_H-z_P)^2\right),
   \end{equation}
   \begin{equation}
-    W_P\propto \exp\left(-\frac{B_P}{2}(z_H-z_P)^2\right),
+    w_P\propto \exp\left(-\frac{B_P}{2}(z_H-z_P)^2\right),
   \end{equation}
 \end{subequations}
 
@@ -94,8 +94,8 @@ following non-spatial coevolutionary model:
 
 where \(G_H,G_P>0\) denote the additive genetic variances of each
 species. If we assume interactions occur locally (individuals interact
-only when they `collide'), then we obtain the following continuous space
-model:
+only when they `collide') and abundance densities are spatially
+homogeneous, then we can obtain the following continuous space model:
 
 \begin{subequations}
   \begin{equation}
@@ -110,7 +110,24 @@ where \(D_H,D_P>0\) are dispersal rates for each species and
 \(\Delta=\frac{\partial^2}{\partial x_1^2}\) in one-dimensional space
 and
 \(\Delta=\frac{\partial^2}{\partial x_1^2}+\frac{\partial^2}{\partial x_2^2}\)
-in two-dimensional space.
+in two-dimensional space. If we want to incorporate the effects of
+random genetic drift, we may be able to justify
+
+\begin{subequations}
+  \begin{equation}
+    \frac{\partial\bar z_H}{\partial t}=-G_HB_H(\bar z_P-\bar z_H)+\frac{D_H}{2}\Delta\bar z_H+\sqrt\frac{G_H}{N_H}\dot W_H,
+  \end{equation}
+  \begin{equation}
+    \frac{\partial\bar z_P}{\partial t}= G_PB_P(\bar z_H-\bar z_P)+\frac{D_P}{2}\Delta\bar z_P+\sqrt\frac{G_P}{N_P}\dot W_P,
+  \end{equation}
+\end{subequations}
+
+where \(N_P,N_H\) are the local abundance densities (here assumed to be
+constant in space and time) and \(\dot W_H,\dot W_P\) are space-time
+white noise processes. This SPDE model may possess some major benefits
+over more traditional continuous-space models of population genetics. In
+particular, it is a simple extension of the stochastic heat equation,
+which is known to admit solutions in dimensions one, two and three.
 
 \hypertarget{headings-first-level}{%
 \section{Headings: first level}\label{headings-first-level}}
