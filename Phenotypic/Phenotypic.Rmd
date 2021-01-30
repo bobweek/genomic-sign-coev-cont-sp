@@ -12,7 +12,7 @@ authors:
     location: East Lansing, MI 48824
     email: bradburd@msu.edu
 abstract: |
-  Here we identify the phenotypic signature of host-parasite coevolution in continuous space
+  Here we identify the phenotypic signature of host-parasite coevolution in continuous space.
 keywords:
   - blah
   - blee
@@ -28,137 +28,114 @@ output:
 
 # Introduction
 
-The host is denoted $H$ and the parasite $P$. Spatial location is $x$ ($\in\mathbb R^1$ or $\mathbb R^2$) and individual trait value of a host/parasite is $z_H/z_P\in\mathbb R^1$. Assuming a trait-matching model, where host fitness is minimized and parasite fitness is maximized when $z_H=z_P$, we have the following two fitness functions:
+Space is hypothesized to play a fundamental role in the coevolutionary process. In particular, the combined effects of local co-adaptation and spatial movement are thought to produce complex spatial patterns of matched and mismatched traits. However, theoretical studies investigating the spatial signal of coevolution have for the most part restricted themselves to understanding patterns of spatial correlation using spatially implicit models. Hence, the fine-grained details that can be produced in spatially explicit settings have yet to be understood. Here we close this gap in the context of host-parasite coevolution using continuous-space quantitative genetic models. In particular, we study the autocorrelations of mean traits within species and the cross-correlation of mean traits between species when trait dynamics are driven by (1) random genetic drift, gene-flow and spatially homogeneous abiotic stabilizing selection, (2) random genetic drift, gene-flow, spatially homogeneous stabilizing selection and unilateral adaptation of the host species, (3) random genetic drift, gene-flow and unilateral adaptation of the parasite species and (4) random genetic drift, gene-flow, stabilizing selection and host-parasite coevolution. By comparing patterns of spatial autocorrelation and cross-correlation in these four scenarios we are able to elucidate the signature of coevolution in comparison to underlying non-coevolutionary processes.
+
+# The Model
+
+## Fitness
+
+The host is denoted $H$ and the parasite $P$. Individual trait values of hosts and parasites are respectively denoted by $z_H,z_P\in\mathbb R$. Assuming a trait-matching model, where host fitness is minimized and parasite fitness is maximized when $z_H=z_P$, we have the following two fitness functions:
 
 \begin{subequations}
   \begin{equation}
-    w_H\propto \exp\left(\frac{B_H}{2}(z_H-z_P)^2\right),
+    w_H(z_H,z_P)\propto \exp\left(-\frac{A_H}{2}(\theta_H-z_H)^2+\frac{B_H}{2}(z_P-z_H)^2\right),
   \end{equation}
   \begin{equation}
-    w_P\propto \exp\left(-\frac{B_P}{2}(z_H-z_P)^2\right),
+    w_P(z_P,z_H)\propto \exp\left(-\frac{A_P}{2}(\theta_P-z_P)^2-\frac{B_P}{2}(z_H-z_P)^2\right),
   \end{equation}
 \end{subequations}
 
-where $B_H,B_P>0$ capture the strengths of biotic selection experienced by each species. Using a standard approach, we derive the following non-spatial coevolutionary model:
+where $A_H,A_P>0$ capture the strengths of abiotic stabilizing selection, $\theta_H,\theta_P\in\mathbb{R}$ are the abiotic optimal phenotypes and $B_H,B_P>0$ capture the strengths of biotic selection experienced by each species.
 
+## Non-spatial Dynamics
+
+Using a standard approach, we use the above fitness functions to derive the following non-spatial coevolutionary model:
 
 \begin{subequations}
   \begin{equation}
-    \frac{d\bar z_H}{dt}=-G_HB_H(\bar z_P-\bar z_H),
+    \frac{d\bar z_H}{dt}=G_HA_H(\theta_H-\bar z_H)-G_HB_H(\bar z_P-\bar z_H),
   \end{equation}
   \begin{equation}
-    \frac{d\bar z_P}{dt}=G_PB_P(\bar z_H-\bar z_P),
+    \frac{d\bar z_P}{dt}=G_PA_P(\theta_P-\bar z_P)+G_PB_P(\bar z_H-\bar z_P),
   \end{equation}
 \end{subequations}
 
-where $G_H,G_P>0$ denote the additive genetic variances of each species. If we assume interactions occur locally (individuals interact only when they 'collide') and abundance densities are spatially homogeneous, then we can obtain the following continuous space model:
+where $G_H,G_P>0$ denote the additive genetic variances of each species. In this linear set of equations, when abiotic stabilizing selection is absent ($A_H=A_P=0$), the parasite mean trait $\bar z_P$ evolves to match the host mean trait $\bar z_H$. Simultaneously $\bar z_H$ evolves away from $\bar z_P$. In particular, when $\bar z_H>\bar z_P$, the host mean trait will evolve upwards. Similarly, when $\bar z_H<\bar z_P$, the host mean trait will evolve downwards. This and related models have been thoroughly studied by Sergey Gavrilets and others. For the case when $A_H=A_P=0$ two possible outcomes have been demonstrated. First, when $G_PB_P>G_HB_H$ so that the parasite evolves faster than the host, the system asymptotically evolves to the equilibrium $\bar z_H=\bar z_P$. Second, when $G_PB_P<G_HB_H$ so that the host evolves faster than the parasite, there is no stable equilibrium. This implies the host evolves to escape the interaction.
+
+## Space
+
+In this case mean traits become functions of spatial variables (eg., $\bar z_H(x),\bar z_P(x)$ for $x\in\mathbb R$ and $\bar z_H(x_1,x_2),\bar z_P(x_1,x_2)$ for $(x_1,x_2)\in\mathbb R^2$). As a first step, we assume all model parameters are spatially homogeneous. If we assume interactions occur locally (individuals interact only when they 'collide') and abundance densities are spatially homogeneous, then we can obtain the following continuous space model:
 
 \begin{subequations}
   \begin{equation}
-    \frac{\partial\bar z_H}{\partial t}=-G_HB_H(\bar z_P-\bar z_H)+\frac{D_H}{2}\Delta\bar z_H,
+    \frac{\partial\bar z_H}{\partial t}=G_HA_H(\theta_H-\bar z_H)-G_HB_H(\bar z_P-\bar z_H)+\frac{D_H}{2}\Delta\bar z_H,
   \end{equation}
   \begin{equation}
-    \frac{\partial\bar z_P}{\partial t}=G_PB_P(\bar z_H-\bar z_P)+\frac{D_P}{2}\Delta\bar z_P,
+    \frac{\partial\bar z_P}{\partial t}=G_PA_P(\theta_P-\bar z_P)+G_PB_P(\bar z_H-\bar z_P)+\frac{D_P}{2}\Delta\bar z_P,
   \end{equation}
 \end{subequations}
 
-where $D_H,D_P>0$ are dispersal rates for each species and $\Delta=\frac{\partial^2}{\partial x_1^2}$ in one-dimensional space and $\Delta=\frac{\partial^2}{\partial x_1^2}+\frac{\partial^2}{\partial x_2^2}$ in two-dimensional space. If we want to incorporate the effects of random genetic drift, we may be able to justify 
+where $D_H,D_P>0$ are dispersal rates for each species and $\Delta$ is the diffusion operator representing spatial movement. In particular, $\Delta=\frac{\partial^2}{\partial x^2}$ in one-dimensional space and $\Delta=\frac{\partial^2}{\partial x_1^2}+\frac{\partial^2}{\partial x_2^2}$ in two-dimensional space.
+
+## Random Genetic Drift
+
+To incorporate the effects of random genetic drift, we should be able to justify the following SPDE model:
 
 \begin{subequations}
   \begin{equation}
-    \frac{\partial\bar z_H}{\partial t}=-G_HB_H(\bar z_P-\bar z_H)+\frac{D_H}{2}\Delta\bar z_H+\sqrt\frac{G_H}{N_H}\dot W_H,
+    \frac{\partial\bar z_H}{\partial t}=G_HA_H(\theta_H-\bar z_H)-G_HB_H(\bar z_P-\bar z_H)+\frac{D_H}{2}\Delta\bar z_H+\sqrt\frac{G_H}{N_H}\dot W_H,
   \end{equation}
   \begin{equation}
-    \frac{\partial\bar z_P}{\partial t}= G_PB_P(\bar z_H-\bar z_P)+\frac{D_P}{2}\Delta\bar z_P+\sqrt\frac{G_P}{N_P}\dot W_P,
+    \frac{\partial\bar z_P}{\partial t}=G_PA_P(\theta_P-\bar z_P)+G_PB_P(\bar z_H-\bar z_P)+\frac{D_P}{2}\Delta\bar z_P+\sqrt\frac{G_P}{N_P}\dot W_P,
   \end{equation}
 \end{subequations}
 
 where $N_P,N_H$ are the local abundance densities (here assumed to be constant in space and time) and $\dot W_H,\dot W_P$ are space-time white noise processes. This SPDE model may possess some major benefits over more traditional continuous-space models of population genetics. In particular, it is a simple extension of the stochastic heat equation, which is known to admit solutions in dimensions one, two and three.
 
-# Headings: first level
-\label{sec:headings}
+# Methods
 
-\lipsum[4] See Section \ref{sec:headings}.
+To study the continuous-space signature of coevolution, we can start with an analytical approach. However, if the corresponding calculations prove to be analytically intractable or time costly, we can employ simulation-based methods to describe the shape of the autocorrelations and cross-correlation in relevant regions of parameters space. The analytical approach would begin by identifying stable attractors of the deterministic system using classical PDE theory. Following this, we may possibly apply theory of SPDE to describe stationary distributions associated with each attractor. This may lend analytical solutions for the expectation and variance of intraspecific autocorrelations and the interspecific cross-correlation, which are defined below.
 
-## Headings: second level
-\lipsum[5]
+## Definitions of Spatial Autocorrelation and Cross-correlation
+
+### Autocorrelation
+
+In one-dimensional continuous space, the autocorrelation of a function $f$ is defined by
 
 \begin{equation}
-\xi _{ij}(t)=P(x_{t}=i,x_{t+1}=j|y,v,w;\theta)= {\frac {\alpha _{i}(t)a^{w_t}_{ij}\beta _{j}(t+1)b^{v_{t+1}}_{j}(y_{t+1})}{\sum _{i=1}^{N} \sum _{j=1}^{N} \alpha _{i}(t)a^{w_t}_{ij}\beta _{j}(t+1)b^{v_{t+1}}_{j}(y_{t+1})}}
+  \rho_f(x)=\int_{-\infty}^{+\infty}f(y)f(y-x)dy.
 \end{equation}
 
-### Headings: third level
-\lipsum[6]
+Sometimes the autocorrelation $\rho_f(x)$ is written as $(f\star f)(x)$. To extend this definition to two-dimensional space, we can calculate a bivariate autocorrelation function of $f$,
 
-\paragraph{Paragraph}
-\lipsum[7]
+\begin{equation}
+  \rho_f(x_1,x_2)=\int_{-\infty}^{+\infty}\int_{-\infty}^{+\infty}f(y_1,y_2)f(y_1-x_2,y_2-x_2)dy_1dy_2,
+\end{equation}
 
-# Examples of citations, figures, tables, references
-\label{sec:others}
+and then average this quantity across distances $r=\sqrt{x_1^2+x_2^2}$:
 
-\lipsum[8] some text [@kour2014real; @kour2014fast] and see @hadash2018estimate.
-
-The documentation for \verb+natbib+ may be found at
-\begin{center}
-  \url{http://mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf}
-\end{center}
-Of note is the command \verb+\citet+, which produces citations
-appropriate for use in inline text.  For example,
-
-\begin{verbatim}
-   \citet{hasselmo} investigated\dots
-\end{verbatim}
-
-produces
-
-\begin{quote}
-  Hasselmo, et al.\ (1995) investigated\dots
-\end{quote}
-
-\begin{center}
-  \url{https://www.ctan.org/pkg/booktabs}
-\end{center}
+\begin{equation}
+  \bar\rho_f(r)=\frac{1}{2\pi r}\int_0^{2\pi}\rho_f(r\cos\theta,r\sin\theta)d\theta.
+\end{equation}
 
 
-## Figures
+### Cross-correlation
 
-\lipsum[10] 
-See Figure \ref{fig:fig1}. Here is how you add footnotes. [^Sample of the first footnote.]
+The cross-correlation of two functions $f,g$ is defined by
 
-\lipsum[11] 
+\begin{equation}
+  \rho_{fg}(x)=\int_{-\infty}^{+\infty}f(y)g(y-x)dy.
+\end{equation}
 
-\begin{figure}
-  \centering
-  \fbox{\rule[-.5cm]{4cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-  \caption{Sample figure caption.}
-  \label{fig:fig1}
-\end{figure}
+Sometimes this is written as $f\star g$. Just as with the bivariate autocorrelation above, we can extend this definition to two-dimensional space. In particular, the bivariate cross-correlation of two functions $f,g$ can be written
 
-## Tables
+\begin{equation}
+  \rho_{fg}(x_1,x_2)=\int_{-\infty}^{+\infty}\int_{-\infty}^{+\infty}f(y_1,y_2)g(y_1-x_2,y_2-x_2)dy_1dy_2.
+\end{equation}
 
-\lipsum[12]
+We can also reduce this quantity to a function of distance using the average
 
-See awesome Table~\ref{tab:table}.
+\begin{equation}
+  \bar\rho_{fg}(r)=\frac{1}{2\pi r}\int_0^{2\pi}\rho_{fg}(r\cos\theta,r\sin\theta)d\theta.
+\end{equation}
 
-\begin{table}
- \caption{Sample table title}
-  \centering
-  \begin{tabular}{lll}
-    \toprule
-    \multicolumn{2}{c}{Part}                   \\
-    \cmidrule(r){1-2}
-    Name     & Description     & Size ($\mu$m) \\
-    \midrule
-    Dendrite & Input terminal  & $\sim$100     \\
-    Axon     & Output terminal & $\sim$10      \\
-    Soma     & Cell body       & up to $10^6$  \\
-    \bottomrule
-  \end{tabular}
-  \label{tab:table}
-\end{table}
-
-## Lists
-
-- Lorem ipsum dolor sit amet
-- consectetur adipiscing elit. 
-- Aliquam dignissim blandit est, in dictum tortor gravida eget. In ac rutrum magna.

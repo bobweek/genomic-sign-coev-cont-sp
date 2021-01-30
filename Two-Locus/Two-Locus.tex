@@ -109,7 +109,59 @@ respectively by \(p_{AB}^H,p^H_{Ab},p^H_{aB},p^H_{ab}\) and
 denoted by \(p^X_A\) and \(p^X_B\) for species \(X=H,P\). Linkage
 disequilibrium within species \(X\) can be written as
 \(D_X=p^X_{AB}-p^X_Ap^X_B\) or
-\(D_X=p^X_{AB}p^X_{ab}-p^X_{Ab}p^X_{aB}\).
+\(D_X=p^X_{AB}p^X_{ab}-p^X_{Ab}p^X_{aB}\). We assume that individuals
+encounter each at random and that when a host individual with haploid
+genotype \(i\) encounters a parasite individual with haploid genotype
+\(i\), infection occurs with probability \(\alpha_{ij}\). Given an
+infection occurs, we assume the host experiences a reduction in fitness
+by the amount \(s_H\). Hence, per-capita growth rates of host haplotypes
+are given by
+
+\begin{subequations}
+  \begin{equation}
+    m^H_{AB}=-s_H(\alpha_{AB,AB}p^P_{AB}+\alpha_{AB,Ab}p^P_{Ab}+\alpha_{AB,aB}p^P_{aB}+\alpha_{AB,ab}p^P_{ab}),
+  \end{equation}
+  \begin{equation}
+    m^H_{aB}=-s_H(\alpha_{aB,AB}p^P_{AB}+\alpha_{aB,Ab}p^P_{Ab}+\alpha_{aB,aB}p^P_{aB}+\alpha_{aB,ab}p^P_{ab}),
+  \end{equation}
+  \begin{equation}
+    m^H_{Ab}=-s_H(\alpha_{Ab,AB}p^P_{AB}+\alpha_{Ab,Ab}p^P_{Ab}+\alpha_{Ab,aB}p^P_{aB}+\alpha_{Ab,ab}p^P_{ab}),
+  \end{equation}
+  \begin{equation}
+    m^H_{ab}=-s_H(\alpha_{ab,AB}p^P_{AB}+\alpha_{ab,Ab}p^P_{Ab}+\alpha_{ab,aB}p^P_{aB}+\alpha_{ab,ab}p^P_{ab}).
+  \end{equation}
+\end{subequations}
+
+Similarly, by assuming infection increases per-capita growth rates of
+parasite haplotypes by the amount \(s_P\), we obtain
+
+\begin{subequations}
+  \begin{equation}
+    m^P_{AB}=-s_H(\alpha_{AB,AB}p^H_{AB}+\alpha_{Ab,AB}p^H_{Ab}+\alpha_{aB,AB}p^H_{aB}+\alpha_{ab,AB}p^H_{ab}),
+  \end{equation}
+  \begin{equation}
+    m^P_{AB}=-s_H(\alpha_{AB,aB}p^H_{AB}+\alpha_{Ab,aB}p^H_{Ab}+\alpha_{aB,aB}p^H_{aB}+\alpha_{ab,aB}p^H_{ab}),
+  \end{equation}
+  \begin{equation}
+    m^P_{Ab}=-s_H(\alpha_{AB,Ab}p^H_{AB}+\alpha_{Ab,Ab}p^H_{Ab}+\alpha_{aB,Ab}p^H_{aB}+\alpha_{ab,Ab}p^H_{ab}),
+  \end{equation}
+  \begin{equation}
+    m^P_{ab}=-s_H(\alpha_{AB,ab}p^H_{AB}+\alpha_{Ab,ab}p^H_{Ab}+\alpha_{aB,ab}p^H_{aB}+\alpha_{ab,ab}p^H_{ab}).
+  \end{equation}
+\end{subequations}
+
+The per-capita population growth rate of species \(X\) can then be
+written as
+\(\bar m_X=m^X_{AB}p^X_{AB}+m^X_{aB}p^X_{aB}+m^X_{Ab}p^X_{Ab}+m^X_{ab}p^X_{ab}\).
+Assuming clonal reproduction, we can write down the evolution of haploid
+genotype frequency \(p^X_i\) as
+
+\begin{equation}
+  \frac{dp^X_i}{dt}=(m^X_i-\bar m_X)p^X_i.
+\end{equation}
+
+However, since our interests are in sexually reproducing diploid
+organisms we need to extend this model.
 
 \hypertarget{headings-first-level}{%
 \section{Headings: first level}\label{headings-first-level}}
