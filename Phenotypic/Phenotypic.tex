@@ -97,7 +97,7 @@ values of hosts and parasites are respectively denoted by
 fitness is minimized and parasite fitness is maximized when \(z_H=z_P\),
 we have the following two fitness functions:
 
-\begin{subequations}
+\begin{subequations}\label{fit}
   \begin{equation}
     w_H(z_H,z_P)\propto \exp\left(-\frac{A_H}{2}(\theta_H-z_H)^2+\frac{B_H}{2}(z_P-z_H)^2\right),
   \end{equation}
@@ -117,7 +117,7 @@ experienced by each species.
 Using a standard approach, we use the above fitness functions to derive
 the following non-spatial coevolutionary model:
 
-\begin{subequations}
+\begin{subequations}\label{non-spatial}
   \begin{equation}
     \frac{d\bar z_H}{dt}=G_HA_H(\theta_H-\bar z_H)-G_HB_H(\bar z_P-\bar z_H),
   \end{equation}
@@ -140,7 +140,8 @@ so that the parasite evolves faster than the host, the system
 asymptotically evolves to the equilibrium \(\bar z_H=\bar z_P\). Second,
 when \(G_PB_P<G_HB_H\) so that the host evolves faster than the
 parasite, there is no stable equilibrium. This implies the host evolves
-to escape the interaction.
+to escape the interaction. In the case when \(A_H,A_P\neq0\) limit
+cycles can emerge.
 
 \hypertarget{space}{%
 \subsection{Space}\label{space}}
@@ -154,7 +155,7 @@ locally (individuals interact only when they `collide') and abundance
 densities are spatially homogeneous, then we can obtain the following
 continuous space model:
 
-\begin{subequations}
+\begin{subequations}\label{deterministic}
   \begin{equation}
     \frac{\partial\bar z_H}{\partial t}=G_HA_H(\theta_H-\bar z_H)-G_HB_H(\bar z_P-\bar z_H)+\frac{D_H}{2}\Delta\bar z_H,
   \end{equation}
@@ -175,7 +176,7 @@ in two-dimensional space.
 To incorporate the effects of random genetic drift, we should be able to
 justify the following SPDE model:
 
-\begin{subequations}
+\begin{subequations}\label{spde}
   \begin{equation}
     \frac{\partial\bar z_H}{\partial t}=G_HA_H(\theta_H-\bar z_H)-G_HB_H(\bar z_P-\bar z_H)+\frac{D_H}{2}\Delta\bar z_H+\sqrt\frac{G_H}{N_H}\dot W_H,
   \end{equation}
@@ -204,14 +205,20 @@ deterministic system using classical PDE theory. Following this, we may
 possibly apply theory of SPDE to describe stationary distributions
 associated with each attractor. This may lend analytical solutions for
 the expectation and variance of intraspecific autocorrelations and the
-interspecific cross-correlation, which are defined below.
+interspecific cross-correlation, which are defined in Appendix
+\ref{corr-defs} below.
+
+\newpage
+
+\appendix
 
 \hypertarget{definitions-of-spatial-autocorrelation-and-cross-correlation}{%
-\subsection{Definitions of Spatial Autocorrelation and
-Cross-correlation}\label{definitions-of-spatial-autocorrelation-and-cross-correlation}}
+\section{\texorpdfstring{Definitions of Spatial Autocorrelation and
+Cross-correlation
+\label{corr-defs}}{Definitions of Spatial Autocorrelation and Cross-correlation }}\label{definitions-of-spatial-autocorrelation-and-cross-correlation}}
 
 \hypertarget{autocorrelation}{%
-\subsubsection{Autocorrelation}\label{autocorrelation}}
+\subsection{Autocorrelation}\label{autocorrelation}}
 
 In one-dimensional continuous space, the autocorrelation of a function
 \(f\) is defined by
@@ -236,7 +243,7 @@ and then average this quantity across distances
 \end{equation}
 
 \hypertarget{cross-correlation}{%
-\subsubsection{Cross-correlation}\label{cross-correlation}}
+\subsection{Cross-correlation}\label{cross-correlation}}
 
 The cross-correlation of two functions \(f,g\) is defined by
 
@@ -259,6 +266,87 @@ average
 \begin{equation}
   \bar\rho_{fg}(r)=\frac{1}{2\pi r}\int_0^{2\pi}\rho_{fg}(r\cos\theta,r\sin\theta)d\theta.
 \end{equation}
+
+\hypertarget{a-stable-equilibrium-of-the-deterministic-system}{%
+\section{A Stable Equilibrium of the Deterministic
+System}\label{a-stable-equilibrium-of-the-deterministic-system}}
+
+To find an equilibrium of the deterministic PDE (\ref{deterministic}) we
+set the time derivatives of \(\bar z_H\) and \(\bar z_P\) equal to zero.
+This leads to following systems of ODE's
+
+\begin{subequations}
+  \begin{equation}
+    0=G_HA_H(\theta_H-\bar z_H)-G_HB_H(\bar z_P-\bar z_H)+\frac{D_H}{2}\Delta\bar z_H,
+  \end{equation}
+  \begin{equation}
+    0=G_PA_P(\theta_P-\bar z_P)+G_PB_P(\bar z_H-\bar z_P)+\frac{D_P}{2}\Delta\bar z_P.
+  \end{equation}
+\end{subequations}
+
+Solving this system for the spatial functions \(\bar z_H(x_1,x_2)\) and
+\(\bar z_P(x_1,x_2)\) then returns equilibrium solutions to PDE
+(\ref{deterministic}). However, we can start simple by considering
+spatially homogeneous solutions. In these cases the spatial derivatives
+will return zero (in particular, \(\Delta\bar z_H=\Delta\bar z_P=0\)).
+Finding these solutions amounts to solve the following system of
+algebraic equations
+
+\begin{subequations}
+  \begin{equation}
+    0=G_HA_H(\theta_H-\bar z_H)-G_HB_H(\bar z_P-\bar z_H),
+  \end{equation}
+  \begin{equation}
+    0=G_PA_P(\theta_P-\bar z_P)+G_PB_P(\bar z_H-\bar z_P).
+  \end{equation}
+\end{subequations}
+
+This linear system is uniquely solved by
+
+\begin{subequations}\label{non-spatial-eq}
+  \begin{equation}
+    \bar z_P(x_1,x_2)\equiv\frac{(A_H-B_H)A_P\theta_P+B_PA_H\theta_H}{(A_H-B_H)A_P+B_PA_H},
+  \end{equation}
+  \begin{equation}
+    \bar z_H(x_1,x_2)\equiv\frac{(A_P+B_P)A_H\theta_H-B_HA_P\theta_P}{(A_P+B_P)A_H-B_HA_P},
+  \end{equation}
+\end{subequations}
+
+where the symbol \(\equiv\) is used in place of \(=\) to emphasize these
+functions are constant across space.
+
+To understand whether this equilibrium is stable we perform stability
+analysis on the non-spatial model. Notice that system
+(\ref{non-spatial}) can be rewritten in matrix notation as
+\(\vec{\bar z}=M\vec{\bar z}+\vec b\) where
+
+\begin{subequations}
+  \begin{equation}
+    \vec{\bar z}=\left(\begin{matrix}
+      \bar z_H \\ \bar z_P
+    \end{matrix}\right), \ 
+    \vec b =\left(\begin{matrix}
+      G_HA_H\theta_H \\ G_PA_P\theta_P
+    \end{matrix}\right),
+  \end{equation}
+  \begin{equation}
+    M=\left(\begin{matrix}
+      G_H(B_H-A_H) & -G_HB_H \\
+      G_PB_P & -G_P(A_P+B_P)
+    \end{matrix}\right).
+  \end{equation}
+\end{subequations}
+
+It turns that if the real parts of the eigenvalues of \(M\) are negative
+then equilibrium (\ref{non-spatial-eq}) is stable. This condition holds
+in general when \(B_H<A_H+(A_P+B_P)G_P/G_H\) and \(B_H<A_H(1+B_P/A_P)\).
+A sufficient condition with clear biological intuition is \(B_H<A_H\),
+which just means the strength of biotic selection on the host is less
+than the strength of abiotic stabilizing selection.
+
+\hypertarget{stationary-solutions-of-spde}{%
+\section{\texorpdfstring{Stationary Solutions of SPDE
+(\ref{spde})}{Stationary Solutions of SPDE ()}}\label{stationary-solutions-of-spde}}
 
 \bibliographystyle{unsrt}
 \bibliography{references.bib}
