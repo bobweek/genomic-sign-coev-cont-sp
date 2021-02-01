@@ -28,7 +28,7 @@ output:
 
 # Introduction
 
-Space is hypothesized to play a fundamental role in the coevolutionary process. In particular, the combined effects of local co-adaptation and spatial movement are thought to produce complex spatial patterns of matched and mismatched traits. However, theoretical studies investigating the spatial signal of coevolution have for the most part restricted themselves to understanding patterns of spatial correlation using spatially implicit models. Hence, the fine-grained details that can be produced in spatially explicit settings have yet to be understood. Here we close this gap in the context of host-parasite coevolution using continuous-space quantitative genetic models. In particular, we study the autocorrelations of mean traits within species and the cross-correlation of mean traits between species when trait dynamics are driven by (1) random genetic drift, gene-flow and spatially homogeneous abiotic stabilizing selection, (2) random genetic drift, gene-flow, spatially homogeneous stabilizing selection and unilateral adaptation of the host species, (3) random genetic drift, gene-flow and unilateral adaptation of the parasite species and (4) random genetic drift, gene-flow, stabilizing selection and host-parasite coevolution. By comparing patterns of spatial autocorrelation and cross-correlation in these four scenarios we are able to elucidate the signature of coevolution in comparison to underlying non-coevolutionary processes.
+Space is hypothesized to play a fundamental role in the coevolutionary process. In particular, the combined effects of local co-adaptation and spatial movement are thought to produce complex spatial patterns of matched and mismatched traits. However, theoretical studies investigating the spatial signal of coevolution have for the most part restricted themselves to understanding patterns of spatial correlation using spatially implicit models. Hence, the fine-grained details that can be produced in spatially explicit settings have yet to be understood. Here we close this gap in the context of host-parasite coevolution using continuous-space models inspired by classical quantitative genetic theory. In particular, we study the autocorrelations of mean traits within species and the cross-correlation of mean traits between species when trait dynamics are driven by (1) random genetic drift, gene-flow and abiotic stabilizing selection, (2) drift, gene-flow, abiotic stabilizing selection and unilateral adaptation of the host species, (3) drift, gene-flow, stabilizing selection and unilateral adaptation of the parasite species and (4) drift, gene-flow, stabilizing selection and host-parasite coevolution. In each case we assuming abiotic stabilizing selection is spatially homogeneous. By comparing patterns of spatial autocorrelation and cross-correlation in these four scenarios we are able to elucidate the signature of coevolution.
 
 # The Model
 
@@ -90,11 +90,21 @@ To incorporate the effects of random genetic drift, we should be able to justify
   \end{equation}
 \end{subequations}
 
-where $N_P,N_H$ are the local abundance densities (here assumed to be constant in space and time) and $\dot W_H,\dot W_P$ are space-time white noise processes. This SPDE model may possess some major benefits over more traditional continuous-space models of population genetics. In particular, it is a simple extension of the stochastic heat equation, which is known to admit solutions in dimensions one, two and three.
+where $N_P,N_H$ are the local abundance densities (here assumed to be constant in space and time) and $\dot W_H,\dot W_P$ are space-time white noise processes. This SPDE model may possess some major benefits over more traditional continuous-space models of population genetics. In particular, it is known to have solutions for all spatial dimensions. The effect of abiotic stabilizing selection may also imply function-valued solutions.
 
 # Methods
 
 To study the continuous-space signature of coevolution, we can start with an analytical approach. However, if the corresponding calculations prove to be analytically intractable or time costly, we can employ simulation-based methods to describe the shape of the autocorrelations and cross-correlation in relevant regions of parameters space. The analytical approach would begin by identifying stable attractors of the deterministic system using classical PDE theory. Following this, we may possibly apply theory of SPDE to describe stationary distributions associated with each attractor. This may lend analytical solutions for the expectation and variance of intraspecific autocorrelations and the interspecific cross-correlation, which are defined in Appendix \ref{corr-defs} below.
+
+## A Note on Biological Diversity vs Statistical Uncertainty
+
+An important distinction to make when analyzing spatial patterns of coevolving species is the difference between statistical uncertainty and biological variation across space. In particular, we can ignore the stochastic effects of random genetic drift and focus on patterns produced by deterministic processes through studying the PDE (\ref{deterministic}). In this case, we might study quantities such as the global mean trait values (ie., mean trait values averaged across space) and the spatial variance of mean trait values. These quantities are purely functions of existing biological diversity and do not take into account uncertainties inherit in the process of evolution (eg., random genetic drift). Once drift is accounted for, the global mean and spatial variance of local mean trait values themselves become random variables.
+
+To understand why spatial expectations and variances become random variables in the presence of drift, we can think of each possible instance of the white-noise processes $\dot W_H,\dot W_P$. In probability theory these instances are called sample paths and are typically denoted by the variable $\omega$. The set of all $\omega$ is denoted $\Omega$ and is referred to as the probability space. Hence, we would refer to $\dot W_H(\omega),\dot W_P(\omega)$ as particular sample paths of the processes $\dot W_H,\dot W_P$. This implies that a solution to the stochastic system (\ref{spde}) is really a set of solutions indexed by $\omega\in\Omega$. For each $\omega$ we can compute spatial averages, variances and covariance of mean traits. Hence, the probabilistic expectation and variance of these spatial statistics are found by integrating across $\Omega$.
+
+This heavily theoretical discussion is important for understanding the difference between spatial autocorrelation and the covariance function of a spatial stochastic process. In particular, the spatial autocorrelation we are interested in (denoted $\rho_f(r)$ for a spatial function $f$) corresponds to deterministic patterns. Hence, when accounting for random genetic drift, $\rho_f$ will be a random function. To compute the expectation, variance and covariance of this function, we can use properties of the associated spatial stochastic process (the expectation and covariance function, denoted $m(x)$ or $m(x_1,x_2)$ and $C(r)$ respectively, in particular).
+
+Finally, for the sake of completion it is worthwhile to note that sampling error adds a second layer of stochasticity.
 
 \newpage
 
@@ -143,7 +153,7 @@ We can also reduce this quantity to a function of distance using the average
   \bar\rho_{fg}(r)=\frac{1}{2\pi r}\int_0^{2\pi}\rho_{fg}(r\cos\theta,r\sin\theta)d\theta.
 \end{equation}
 
-# A Stable Equilibrium of the Deterministic System
+# A Stable Equilibrium of PDE (\ref{deterministic})
 
 To find an equilibrium of the deterministic PDE (\ref{deterministic}) we set the time derivatives of $\bar z_H$ and $\bar z_P$ equal to zero. This leads to following systems of ODE's
 
@@ -198,7 +208,29 @@ To understand whether this equilibrium is stable we perform stability analysis o
   \end{equation}
 \end{subequations}
 
-It turns that if the real parts of the eigenvalues of $M$ are negative then equilibrium (\ref{non-spatial-eq}) is stable. This condition holds in general when $B_H<A_H+(A_P+B_P)G_P/G_H$ and $B_H<A_H(1+B_P/A_P)$. A sufficient condition with clear biological intuition is $B_H<A_H$, which just means the strength of biotic selection on the host is less than the strength of abiotic stabilizing selection.
+It turns that if the real parts of the eigenvalues of $M$ are negative then equilibrium (\ref{non-spatial-eq}) is stable. This condition holds in general when $B_H<A_H+(A_P+B_P)G_P/G_H$ and $B_H<A_H(1+B_P/A_P)$. A sufficient condition with clear biological intuition is $B_H<A_H$, which just means the strength of biotic selection on the host is less than the strength of abiotic stabilizing selection. In this case abiotic stabilizing selection prevents the host from escaping via evolution.
 
 # Stationary Solutions of SPDE (\ref{spde})
 
+To focus on stationary solutions of the stochastic system (\ref{spde}) we set the time derivatives to zero to obtain the following system
+
+\begin{subequations}\label{stationary-spde}
+  \begin{equation}
+    G_HA_H(\theta_H-\bar z_H)-G_HB_H(\bar z_P-\bar z_H)+\frac{D_H}{2}\Delta\bar z_H=\sqrt\frac{G_H}{N_H}\dot W_H,
+  \end{equation}
+  \begin{equation}
+    G_PA_P(\theta_P-\bar z_P)+G_PB_P(\bar z_H-\bar z_P)+\frac{D_P}{2}\Delta\bar z_P=\sqrt\frac{G_P}{N_P}\dot W_P.
+  \end{equation}
+\end{subequations}
+
+If we further restrict our focus to the single species case we recover a SPDE of the form
+
+\begin{equation}\label{simple-form}
+  b^2(a-u)+\Delta u=\sigma\dot W.
+\end{equation}
+
+In the case of two spatial dimensions, it is known that equation (\ref{simple-form}) is satisfied by a Gaussian field with a Whittle covariance function [@Sigrist2014]. Denoting $K_1$ the modified Bessel function of order 1, the Whittle covariance function is given by $C(r)=(b\sigma^2r)K_1(br)$. Hence, we can postulate that solutions of the stationary system (\ref{stationary-spde}) will have Whittle cross-covariance matrices.
+
+\newpage
+
+# References
