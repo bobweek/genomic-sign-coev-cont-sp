@@ -34,14 +34,14 @@ Space is hypothesized to play a fundamental role in the coevolutionary process. 
 
 ## Fitness
 
-The host is denoted $H$ and the parasite $P$. Individual trait values of hosts and parasites are respectively denoted by $z_H,z_P\in\mathbb R$. Assuming a trait-matching model, where host fitness is minimized and parasite fitness is maximized when $z_H=z_P$, we have the following two fitness functions:
+The host is denoted $H$ and the parasite $P$. Individual trait values of hosts and parasites are respectively denoted by $Z_H,Z_P\in\mathbb R$. Assuming a trait-matching model, where host fitness is minimized and parasite fitness is maximized when $Z_H=Z_P$, we have the following two fitness functions:
 
 \begin{subequations}\label{fit}
   \begin{equation}
-    w_H(z_H,z_P)\propto \exp\left(-\frac{A_H}{2}(\theta_H-z_H)^2+\frac{B_H}{2}(z_P-z_H)^2\right),
+    w_H(Z_H,Z_P)\propto \exp\left(-\frac{A_H}{2}(\theta_H-Z_H)^2+\frac{B_H}{2}(Z_P-Z_H)^2\right),
   \end{equation}
   \begin{equation}
-    w_P(z_P,z_H)\propto \exp\left(-\frac{A_P}{2}(\theta_P-z_P)^2-\frac{B_P}{2}(z_H-z_P)^2\right),
+    w_P(Z_P,Z_H)\propto \exp\left(-\frac{A_P}{2}(\theta_P-Z_P)^2-\frac{B_P}{2}(Z_H-Z_P)^2\right),
   \end{equation}
 \end{subequations}
 
@@ -53,25 +53,25 @@ Using a standard approach, we use the above fitness functions to derive the foll
 
 \begin{subequations}\label{non-spatial}
   \begin{equation}
-    \frac{d\bar z_H}{dt}=G_HA_H(\theta_H-\bar z_H)-G_HB_H(\bar z_P-\bar z_H),
+    \frac{d\bar Z_H}{dt}=G_HA_H(\theta_H-\bar Z_H)-G_HB_H(\bar Z_P-\bar Z_H),
   \end{equation}
   \begin{equation}
-    \frac{d\bar z_P}{dt}=G_PA_P(\theta_P-\bar z_P)+G_PB_P(\bar z_H-\bar z_P),
+    \frac{d\bar Z_P}{dt}=G_PA_P(\theta_P-\bar Z_P)+G_PB_P(\bar Z_H-\bar Z_P),
   \end{equation}
 \end{subequations}
 
-where $G_H,G_P>0$ denote the additive genetic variances of each species. In this linear set of equations, when abiotic stabilizing selection is absent ($A_H=A_P=0$), the parasite mean trait $\bar z_P$ evolves to match the host mean trait $\bar z_H$. Simultaneously $\bar z_H$ evolves away from $\bar z_P$. In particular, when $\bar z_H>\bar z_P$, the host mean trait will evolve upwards. Similarly, when $\bar z_H<\bar z_P$, the host mean trait will evolve downwards. This and related models have been thoroughly studied by Sergey Gavrilets and others. For the case when $A_H=A_P=0$ two possible outcomes have been demonstrated. First, when $G_PB_P>G_HB_H$ so that the parasite evolves faster than the host, the system asymptotically evolves to the equilibrium $\bar z_H=\bar z_P$. Second, when $G_PB_P<G_HB_H$ so that the host evolves faster than the parasite, there is no stable equilibrium. This implies the host evolves to escape the interaction. In the case when $A_H,A_P\neq0$ limit cycles can emerge.
+where $G_H,G_P>0$ denote the additive genetic variances of each species. In this linear set of equations, when abiotic stabilizing selection is absent ($A_H=A_P=0$), the parasite mean trait $\bar Z_P$ evolves to match the host mean trait $\bar Z_H$. Simultaneously $\bar Z_H$ evolves away from $\bar Z_P$. In particular, when $\bar Z_H>\bar Z_P$, the host mean trait will evolve upwards. Similarly, when $\bar Z_H<\bar Z_P$, the host mean trait will evolve downwards. This and related models have been thoroughly studied by Sergey Gavrilets and others. For the case when $A_H=A_P=0$ two possible outcomes have been demonstrated. First, when $G_PB_P>G_HB_H$ so that the parasite evolves faster than the host, the system asymptotically evolves to the equilibrium $\bar Z_H=\bar Z_P$. Second, when $G_PB_P<G_HB_H$ so that the host evolves faster than the parasite, there is no stable equilibrium. This implies the host evolves to escape the interaction. In the case when $A_H,A_P\neq0$ limit cycles can emerge.
 
 ## Space
 
-In this case mean traits become functions of spatial variables (eg., $\bar z_H(x),\bar z_P(x)$ for $x\in\mathbb R$ and $\bar z_H(x_1,x_2),\bar z_P(x_1,x_2)$ for $(x_1,x_2)\in\mathbb R^2$). As a first step, we assume all model parameters are spatially homogeneous. If we assume interactions occur locally (individuals interact only when they 'collide') and abundance densities are spatially homogeneous, then we can obtain the following continuous space model:
+In this case mean traits become functions of spatial variables (eg., $\bar Z_H(x),\bar Z_P(x)$ for $x\in\mathbb R$ and $\bar Z_H(x_1,x_2),\bar Z_P(x_1,x_2)$ for $(x_1,x_2)\in\mathbb R^2$). As a first step, we assume all model parameters are spatially homogeneous. If we assume interactions occur locally (individuals interact only when they 'collide') and abundance densities are spatially homogeneous, then we can obtain the following continuous space model:
 
 \begin{subequations}\label{deterministic}
   \begin{equation}
-    \frac{\partial\bar z_H}{\partial t}=G_HA_H(\theta_H-\bar z_H)-G_HB_H(\bar z_P-\bar z_H)+\frac{D_H}{2}\Delta\bar z_H,
+    \frac{\partial\bar Z_H}{\partial t}=G_HA_H(\theta_H-\bar Z_H)-G_HB_H(\bar Z_P-\bar Z_H)+\frac{D_H}{2}\Delta\bar Z_H,
   \end{equation}
   \begin{equation}
-    \frac{\partial\bar z_P}{\partial t}=G_PA_P(\theta_P-\bar z_P)+G_PB_P(\bar z_H-\bar z_P)+\frac{D_P}{2}\Delta\bar z_P,
+    \frac{\partial\bar Z_P}{\partial t}=G_PA_P(\theta_P-\bar Z_P)+G_PB_P(\bar Z_H-\bar Z_P)+\frac{D_P}{2}\Delta\bar Z_P,
   \end{equation}
 \end{subequations}
 
@@ -83,10 +83,10 @@ To incorporate the effects of random genetic drift, we should be able to justify
 
 \begin{subequations}\label{spde}
   \begin{equation}
-    \frac{\partial\bar z_H}{\partial t}=G_HA_H(\theta_H-\bar z_H)-G_HB_H(\bar z_P-\bar z_H)+\frac{D_H}{2}\Delta\bar z_H+\sqrt\frac{G_H}{N_H}\dot W_H,
+    \frac{\partial\bar Z_H}{\partial t}=G_HA_H(\theta_H-\bar Z_H)-G_HB_H(\bar Z_P-\bar Z_H)+\frac{D_H}{2}\Delta\bar Z_H+\sqrt\frac{G_H}{N_H}\dot W_H,
   \end{equation}
   \begin{equation}
-    \frac{\partial\bar z_P}{\partial t}=G_PA_P(\theta_P-\bar z_P)+G_PB_P(\bar z_H-\bar z_P)+\frac{D_P}{2}\Delta\bar z_P+\sqrt\frac{G_P}{N_P}\dot W_P,
+    \frac{\partial\bar Z_P}{\partial t}=G_PA_P(\theta_P-\bar Z_P)+G_PB_P(\bar Z_H-\bar Z_P)+\frac{D_P}{2}\Delta\bar Z_P+\sqrt\frac{G_P}{N_P}\dot W_P,
   \end{equation}
 \end{subequations}
 
@@ -110,6 +110,19 @@ Finally, for the sake of completion it is worthwhile to note that sampling error
 
 \appendix
 
+# Spatial Moments
+
+Suppose $f(x_1,x_2)$ is a function of two-dimensional space. For simplicity, let's consider a rectangular subset $\Gamma$ of $\mathbb R^2$ with periodic boundaries (ie., the surface of a torus). Then we can compute the spatial average of $f(x_1,x_2)$ via
+
+\begin{equation}
+  \bar f = \frac{1}{|\Gamma|}\int_\Gamma f(x_1,x_2)dx_1dx_2,
+\end{equation}
+where $|\Gamma|$ is the size of the subset $\Gamma$. The spatial variance of $f$ is then
+
+\begin{equation}
+  \mathrm{Var}(f) = \frac{1}{|\Gamma|}\int_\Gamma (f(x_1,x_2)-\bar f)^2dx_1dx_2,
+\end{equation}
+
 # Definitions of Spatial Autocorrelation and Cross-correlation \label{corr-defs}
 
 ## Autocorrelation
@@ -117,13 +130,13 @@ Finally, for the sake of completion it is worthwhile to note that sampling error
 In one-dimensional continuous space, the autocorrelation of a function $f$ is defined by
 
 \begin{equation}
-  \rho_f(x)=\int_{-\infty}^{+\infty}f(y)f(y-x)dy.
+  \rho_f(x)=\int_\Gamma f(y)f(y-x)dy.
 \end{equation}
 
 Sometimes the autocorrelation $\rho_f(x)$ is written as $(f\star f)(x)$. To extend this definition to two-dimensional space, we can calculate a bivariate autocorrelation function of $f$,
 
 \begin{equation}
-  \rho_f(x_1,x_2)=\int_{-\infty}^{+\infty}\int_{-\infty}^{+\infty}f(y_1,y_2)f(y_1-x_2,y_2-x_2)dy_1dy_2,
+  \rho_f(x_1,x_2)=\int_\Gamma\int_\Gamma f(y_1,y_2)f(y_1-x_2,y_2-x_2)dy_1dy_2,
 \end{equation}
 
 and then average this quantity across distances $r=\sqrt{x_1^2+x_2^2}$:
@@ -138,19 +151,33 @@ and then average this quantity across distances $r=\sqrt{x_1^2+x_2^2}$:
 The cross-correlation of two functions $f,g$ is defined by
 
 \begin{equation}
-  \rho_{fg}(x)=\int_{-\infty}^{+\infty}f(y)g(y-x)dy.
+  \rho_{fg}(x)=\int_\Gamma f(y)g(y-x)dy.
 \end{equation}
 
 Sometimes this is written as $f\star g$. Just as with the bivariate autocorrelation above, we can extend this definition to two-dimensional space. In particular, the bivariate cross-correlation of two functions $f,g$ can be written
 
 \begin{equation}
-  \rho_{fg}(x_1,x_2)=\int_{-\infty}^{+\infty}\int_{-\infty}^{+\infty}f(y_1,y_2)g(y_1-x_2,y_2-x_2)dy_1dy_2.
+  \rho_{fg}(x_1,x_2)=\int_\Gamma\int_\Gamma f(y_1,y_2)g(y_1-x_2,y_2-x_2)dy_1dy_2.
 \end{equation}
 
 We can also reduce this quantity to a function of distance using the average
 
 \begin{equation}
   \bar\rho_{fg}(r)=\frac{1}{2\pi r}\int_0^{2\pi}\rho_{fg}(r\cos\theta,r\sin\theta)d\theta.
+\end{equation}
+
+## Cross-covariance
+
+Following the above definitions of spatial moments and cross-correlation, we compute the cross-covariance of two spatial functions $f$ and $g$ (in 2D space) via
+
+\begin{equation}
+  K_{fg}(x_1,x_2)=\sqrt{\mathrm{Var}(f)\mathrm{Var}(g)}\rho_{f,g}(x_1,x_2).
+\end{equation}
+
+Hence, inspired by the definition of $\bar\rho_{fg}$, we can define the cross covariance between spatial functions $f$ and $g$ at two locations separated by distance $r$ via
+
+\begin{equation}
+  \bar K_{fg}(r)=\frac{1}{2\pi r}\sqrt{\mathrm{Var}(f)\mathrm{Var}(g)}\int_0^{2\pi}K_{fg}(r\cos\theta,r\sin\theta)d\theta.
 \end{equation}
 
 # A Stable Equilibrium of PDE (\ref{deterministic})
@@ -166,7 +193,7 @@ To find an equilibrium of the deterministic PDE (\ref{deterministic}) we set the
   \end{equation}
 \end{subequations}
 
-Solving this system for the spatial functions $\bar z_H(x_1,x_2)$ and $\bar z_P(x_1,x_2)$ then returns equilibrium solutions to PDE (\ref{deterministic}). However, we can start simple by considering spatially homogeneous solutions. In these cases the spatial derivatives will return zero (in particular, $\Delta\bar z_H=\Delta\bar z_P=0$). Finding these solutions amounts to solve the following system of algebraic equations
+Solving this system for the mean traits $\bar z_H(x_1,x_2)$ and $\bar z_P(x_1,x_2)$ as spatial functions then returns equilibrium solutions to PDE (\ref{deterministic}). However, we can start simple by considering spatially homogeneous solutions. In these cases the spatial derivatives will return zero (in particular, $\Delta\bar z_H=\Delta\bar z_P=0$). Finding these solutions amounts to solve the following system of algebraic equations
 
 \begin{subequations}
   \begin{equation}
@@ -216,10 +243,10 @@ To focus on stationary solutions of the stochastic system (\ref{spde}) we set th
 
 \begin{subequations}\label{stationary-spde}
   \begin{equation}
-    G_HA_H(\theta_H-\bar z_H)-G_HB_H(\bar z_P-\bar z_H)+\frac{D_H}{2}\Delta\bar z_H=\sqrt\frac{G_H}{N_H}\dot W_H,
+    G_HA_H(\theta_H-\bar Z_H)-G_HB_H(\bar Z_P-\bar Z_H)+\frac{D_H}{2}\Delta\bar Z_H=\sqrt\frac{G_H}{N_H}\dot W_H,
   \end{equation}
   \begin{equation}
-    G_PA_P(\theta_P-\bar z_P)+G_PB_P(\bar z_H-\bar z_P)+\frac{D_P}{2}\Delta\bar z_P=\sqrt\frac{G_P}{N_P}\dot W_P.
+    G_PA_P(\theta_P-\bar Z_P)+G_PB_P(\bar Z_H-\bar Z_P)+\frac{D_P}{2}\Delta\bar Z_P=\sqrt\frac{G_P}{N_P}\dot W_P.
   \end{equation}
 \end{subequations}
 
@@ -229,7 +256,18 @@ If we further restrict our focus to the single species case we recover a SPDE of
   b^2(a-u)+\Delta u=\sigma\dot W.
 \end{equation}
 
-In the case of two spatial dimensions, it is known that equation (\ref{simple-form}) is satisfied by a Gaussian field with a Whittle covariance function [@Sigrist2014]. Denoting $K_1$ the modified Bessel function of order 1, the Whittle covariance function is given by $C(r)=(b\sigma^2r)K_1(br)$. Hence, we can postulate that solutions of the stationary system (\ref{stationary-spde}) will have Whittle cross-covariance matrices.
+In the case of two spatial dimensions, it is known that equation (\ref{simple-form}) is satisfied by a Gaussian field with a Whittle covariance function [@whittle1963stochastic; @Sigrist2014]. Denoting $K_1$ the modified Bessel function of the second kind, order 1, the Whittle covariance function is given by $C(r)=\frac{\sigma^2r}{2b}K_1(br)$. Hence, we can postulate that solutions of the stationary system (\ref{stationary-spde}) will have Whittle cross-covariance matrices.
+
+# Putting it all together: The cross-covariance of $\bar Z_H$ and $\bar Z_P$
+
+Set $\bar z_H(x_1,x_2)=\mathbb E[\bar Z_H(x_1,x_2)]$ and $\bar z_P(x_1,x_2)=\mathbb E[\bar Z_P(x_1,x_2)]$. Since the system (\ref{stationary-spde}) is linear, we can expect $(\bar z_H,\bar z_P)$ to solve the associated deterministic system. Then, it seems reasonable to expect the cross-covariance of $\bar Z_H$ and $\bar Z_P$ across space to satisfy
+
+\begin{equation}
+  K_{\bar Z_H\bar Z_P}(x_1,x_2)=K_{\bar z_H\bar z_P}(x_1,x_2)+C\left(\sqrt{x_1^2+x_2^2}\right)+\mathcal I,
+\end{equation}
+where $\mathcal I$ captures the potential for deterministic processes to interact with the stochastic effects.
+
+Note that in the case of the stable equilibrium considered above, $\bar z_H$ and $\bar z_P$ are spatially homogeneous which implies $K_{\bar z_H\bar z_P}(x_1,x_2)\equiv0$.
 
 \newpage
 
