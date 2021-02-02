@@ -148,13 +148,11 @@ cycles can emerge.
 \subsection{Space}\label{space}}
 
 In this case mean traits become functions of spatial variables (eg.,
-\(\bar Z_H(x),\bar Z_P(x)\) for \(x\in\mathbb R\) and
-\(\bar Z_H(x_1,x_2),\bar Z_P(x_1,x_2)\) for
-\((x_1,x_2)\in\mathbb R^2\)). As a first step, we assume all model
-parameters are spatially homogeneous. If we assume interactions occur
-locally (individuals interact only when they `collide') and abundance
-densities are spatially homogeneous, then we can obtain the following
-continuous space model:
+\(\bar Z_H(x),\bar Z_P(x)\) where \(x=(x_1,x_2)\in\mathbb R^2\)). As a
+first step, we assume all model parameters are spatially homogeneous. If
+we assume interactions occur locally (individuals interact only when
+they `collide') and abundance densities are spatially homogeneous, then
+we can obtain the following continuous space model:
 
 \begin{subequations}\label{deterministic}
   \begin{equation}
@@ -165,11 +163,9 @@ continuous space model:
   \end{equation}
 \end{subequations}
 
-where \(D_H,D_P>0\) are dispersal rates for each species and \(\Delta\)
-is the diffusion operator representing spatial movement. In particular,
-\(\Delta=\frac{\partial^2}{\partial x^2}\) in one-dimensional space and
+where \(D_H,D_P>0\) are dispersal rates for each species and
 \(\Delta=\frac{\partial^2}{\partial x_1^2}+\frac{\partial^2}{\partial x_2^2}\)
-in two-dimensional space.
+is the diffusion operator representing spatial movement.
 
 \hypertarget{random-genetic-drift}{%
 \subsection{Random Genetic Drift}\label{random-genetic-drift}}
@@ -263,52 +259,24 @@ sampling error adds a second layer of stochasticity.
 \hypertarget{spatial-moments}{%
 \section{Spatial Moments}\label{spatial-moments}}
 
-Suppose \(f(x_1,x_2)\) is a function of two-dimensional space. For
-simplicity, let's consider a rectangular subset \(\Gamma\) of
-\(\mathbb R^2\) with periodic boundaries (ie., the surface of a torus).
-Then we can compute the spatial average of \(f(x_1,x_2)\) via
+Suppose \(f(x)\) is a function of a two-dimensional spatial parameter
+\(x=(x_1,x_2)\). For simplicity, let's consider a rectangular subset
+\(\Gamma\) of \(\mathbb R^2\) with periodic boundaries (ie., the surface
+of a torus). Then we can compute the spatial average of \(f(x)\) via
 
 \begin{equation}
-  \bar f = \frac{1}{|\Gamma|}\int_\Gamma f(x_1,x_2)dx_1dx_2,
+  \bar f = \frac{1}{|\Gamma|}\int_\Gamma f(x)dx,
 \end{equation} where \(|\Gamma|\) is the size of the subset \(\Gamma\).
 The spatial variance of \(f\) is then
 
 \begin{equation}
-  \mathrm{Var}(f) = \frac{1}{|\Gamma|}\int_\Gamma (f(x_1,x_2)-\bar f)^2dx_1dx_2,
+  \mathrm{Var}(f) = \frac{1}{|\Gamma|}\int_\Gamma (f(x)-\bar f)^2dx,
 \end{equation}
 
-\hypertarget{definitions-of-spatial-autocorrelation-and-cross-correlation}{%
-\section{\texorpdfstring{Definitions of Spatial Autocorrelation and
+\hypertarget{spatial-autocorrelation-and-cross-correlation}{%
+\subsection{\texorpdfstring{Spatial Autocorrelation and
 Cross-correlation
-\label{corr-defs}}{Definitions of Spatial Autocorrelation and Cross-correlation }}\label{definitions-of-spatial-autocorrelation-and-cross-correlation}}
-
-\hypertarget{autocorrelation}{%
-\subsection{Autocorrelation}\label{autocorrelation}}
-
-In one-dimensional continuous space, the autocorrelation of a function
-\(f\) is defined by
-
-\begin{equation}
-  \rho_f(x)=\int_\Gamma f(y)f(y-x)dy.
-\end{equation}
-
-Sometimes the autocorrelation \(\rho_f(x)\) is written as
-\((f\star f)(x)\). To extend this definition to two-dimensional space,
-we can calculate a bivariate autocorrelation function of \(f\),
-
-\begin{equation}
-  \rho_f(x_1,x_2)=\int_\Gamma\int_\Gamma f(y_1,y_2)f(y_1-x_2,y_2-x_2)dy_1dy_2,
-\end{equation}
-
-and then average this quantity across distances
-\(r=\sqrt{x_1^2+x_2^2}\):
-
-\begin{equation}
-  \bar\rho_f(r)=\frac{1}{2\pi r}\int_0^{2\pi}\rho_f(r\cos\theta,r\sin\theta)d\theta.
-\end{equation}
-
-\hypertarget{cross-correlation}{%
-\subsection{Cross-correlation}\label{cross-correlation}}
+\label{corr-defs}}{Spatial Autocorrelation and Cross-correlation }}\label{spatial-autocorrelation-and-cross-correlation}}
 
 The cross-correlation of two functions \(f,g\) is defined by
 
@@ -316,21 +284,14 @@ The cross-correlation of two functions \(f,g\) is defined by
   \rho_{fg}(x)=\int_\Gamma f(y)g(y-x)dy.
 \end{equation}
 
-Sometimes this is written as \(f\star g\). Just as with the bivariate
-autocorrelation above, we can extend this definition to two-dimensional
-space. In particular, the bivariate cross-correlation of two functions
-\(f,g\) can be written
+We can reduce this quantity to a function of distance
+\(r=\sqrt{x_1^2+x_2^2}\) using the average
 
 \begin{equation}
-  \rho_{fg}(x_1,x_2)=\int_\Gamma\int_\Gamma f(y_1,y_2)g(y_1-x_2,y_2-x_2)dy_1dy_2.
+  \bar\rho_{fg}(r)=\frac{1}{2\pi r}\int_0^{2\pi}\rho_{fg}((r\cos\theta,r\sin\theta))d\theta.
 \end{equation}
 
-We can also reduce this quantity to a function of distance using the
-average
-
-\begin{equation}
-  \bar\rho_{fg}(r)=\frac{1}{2\pi r}\int_0^{2\pi}\rho_{fg}(r\cos\theta,r\sin\theta)d\theta.
-\end{equation}
+The autocorrelation of \(f\) is then \(\rho_{ff}\).
 
 \hypertarget{cross-covariance}{%
 \subsection{Cross-covariance}\label{cross-covariance}}
@@ -340,7 +301,7 @@ cross-correlation, we compute the cross-covariance of two spatial
 functions \(f\) and \(g\) (in 2D space) via
 
 \begin{equation}
-  K_{fg}(x_1,x_2)=\sqrt{\mathrm{Var}(f)\mathrm{Var}(g)}\rho_{f,g}(x_1,x_2).
+  K_{fg}(x)=\sqrt{\mathrm{Var}(f)\mathrm{Var}(g)}\rho_{f,g}(x).
 \end{equation}
 
 Hence, inspired by the definition of \(\bar\rho_{fg}\), we can define
@@ -348,7 +309,7 @@ the cross covariance between spatial functions \(f\) and \(g\) at two
 locations separated by distance \(r\) via
 
 \begin{equation}
-  \bar K_{fg}(r)=\frac{1}{2\pi r}\sqrt{\mathrm{Var}(f)\mathrm{Var}(g)}\int_0^{2\pi}K_{fg}(r\cos\theta,r\sin\theta)d\theta.
+  \bar K_{fg}(r)=\frac{1}{2\pi r}\sqrt{\mathrm{Var}(f)\mathrm{Var}(g)}\int_0^{2\pi}K_{fg}((r\cos\theta,r\sin\theta))d\theta.
 \end{equation}
 
 \hypertarget{a-stable-equilibrium-of-pde}{%
@@ -466,21 +427,21 @@ Whittle cross-covariance matrices.
 of \(\bar Z_H\) and
 \(\bar Z_P\)}{Putting it all together: The cross-covariance of \textbackslash bar Z\_H and \textbackslash bar Z\_P}}\label{putting-it-all-together-the-cross-covariance-of-bar-z_h-and-bar-z_p}}
 
-Set \(\bar z_H(x_1,x_2)=\mathbb E[\bar Z_H(x_1,x_2)]\) and
-\(\bar z_P(x_1,x_2)=\mathbb E[\bar Z_P(x_1,x_2)]\). Since the system
+Set \(\bar z_H(x)=\mathbb E[\bar Z_H(x)]\) and
+\(\bar z_P(x)=\mathbb E[\bar Z_P(x)]\). Since the system
 (\ref{stationary-spde}) is linear, we can expect \((\bar z_H,\bar z_P)\)
 to solve the associated deterministic system. Then, it seems reasonable
 to expect the cross-covariance of \(\bar Z_H\) and \(\bar Z_P\) across
 space to satisfy
 
 \begin{equation}
-  K_{\bar Z_H\bar Z_P}(x_1,x_2)=K_{\bar z_H\bar z_P}(x_1,x_2)+C\left(\sqrt{x_1^2+x_2^2}\right)+\mathcal I,
-\end{equation} where \(\mathcal I\) captures the potential for
+  K_{\bar Z_H\bar Z_P}(x)=K_{\bar z_H\bar z_P}(x)+C\left(\sqrt{x_1^2+x_2^2}\right)+\mathcal I(x),
+\end{equation} where \(\mathcal I(x)\) captures the potential for
 deterministic processes to interact with the stochastic effects.
 
 Note that in the case of the stable equilibrium considered above,
 \(\bar z_H\) and \(\bar z_P\) are spatially homogeneous which implies
-\(K_{\bar z_H\bar z_P}(x_1,x_2)\equiv0\).
+\(K_{\bar z_H\bar z_P}(x)\equiv0\).
 
 \newpage
 
