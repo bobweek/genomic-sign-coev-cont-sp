@@ -94,16 +94,16 @@ signature of coevolution.
 
 The host is denoted \(H\) and the parasite \(P\). Individual trait
 values of hosts and parasites are respectively denoted by
-\(Z_H,Z_P\in\mathbb R\). Assuming a trait-matching model, where host
-fitness is minimized and parasite fitness is maximized when \(Z_H=Z_P\),
+\(z_H,z_P\in\mathbb R\). Assuming a trait-matching model, where host
+fitness is minimized and parasite fitness is maximized when \(z_H=z_P\),
 we have the following two fitness functions:
 
 \begin{subequations}\label{fit}
   \begin{equation}
-    w_H(Z_H,Z_P)\propto \exp\left(-\frac{A_H}{2}(\theta_H-Z_H)^2+\frac{B_H}{2}(Z_P-Z_H)^2\right),
+    w_H(z_H,z_P)\propto \exp\left(-\frac{A_H}{2}(\theta_H-z_H)^2+\frac{B_H}{2}(z_P-z_H)^2\right),
   \end{equation}
   \begin{equation}
-    w_P(Z_P,Z_H)\propto \exp\left(-\frac{A_P}{2}(\theta_P-Z_P)^2-\frac{B_P}{2}(Z_H-Z_P)^2\right),
+    w_P(z_P,z_H)\propto \exp\left(-\frac{A_P}{2}(\theta_P-z_P)^2-\frac{B_P}{2}(z_H-z_P)^2\right),
   \end{equation}
 \end{subequations}
 
@@ -120,25 +120,25 @@ the following non-spatial coevolutionary model:
 
 \begin{subequations}\label{non-spatial}
   \begin{equation}
-    \frac{d\bar Z_H}{dt}=G_HA_H(\theta_H-\bar Z_H)-G_HB_H(\bar Z_P-\bar Z_H),
+    \frac{d\bar z_H}{dt}=G_HA_H(\theta_H-\bar z_H)-G_HB_H(\bar z_P-\bar z_H),
   \end{equation}
   \begin{equation}
-    \frac{d\bar Z_P}{dt}=G_PA_P(\theta_P-\bar Z_P)+G_PB_P(\bar Z_H-\bar Z_P),
+    \frac{d\bar z_P}{dt}=G_PA_P(\theta_P-\bar z_P)+G_PB_P(\bar z_H-\bar z_P),
   \end{equation}
 \end{subequations}
 
 where \(G_H,G_P>0\) denote the additive genetic variances of each
 species. In this linear set of equations, when abiotic stabilizing
 selection is absent (\(A_H=A_P=0\)), the parasite mean trait
-\(\bar Z_P\) evolves to match the host mean trait \(\bar Z_H\).
-Simultaneously \(\bar Z_H\) evolves away from \(\bar Z_P\). In
-particular, when \(\bar Z_H>\bar Z_P\), the host mean trait will evolve
-upwards. Similarly, when \(\bar Z_H<\bar Z_P\), the host mean trait will
+\(\bar z_P\) evolves to match the host mean trait \(\bar z_H\).
+Simultaneously \(\bar z_H\) evolves away from \(\bar z_P\). In
+particular, when \(\bar z_H>\bar z_P\), the host mean trait will evolve
+upwards. Similarly, when \(\bar z_H<\bar z_P\), the host mean trait will
 evolve downwards. This and related models have been thoroughly studied
 by Sergey Gavrilets and others. For the case when \(A_H=A_P=0\) two
 possible outcomes have been demonstrated. First, when \(G_PB_P>G_HB_H\)
 so that the parasite evolves faster than the host, the system
-asymptotically evolves to the equilibrium \(\bar Z_H=\bar Z_P\). Second,
+asymptotically evolves to the equilibrium \(\bar z_H=\bar z_P\). Second,
 when \(G_PB_P<G_HB_H\) so that the host evolves faster than the
 parasite, there is no stable equilibrium. This implies the host evolves
 to escape the interaction. In the case when \(A_H,A_P\neq0\) limit
@@ -148,7 +148,7 @@ cycles can emerge.
 \subsection{Space}\label{space}}
 
 In this case mean traits become functions of spatial variables (eg.,
-\(\bar Z_H(x),\bar Z_P(x)\) where \(x=(x_1,x_2)\in\mathbb R^2\)). As a
+\(\bar z_H(x),\bar z_P(x)\) where \(x=(x_1,x_2)\in\mathbb R^2\)). As a
 first step, we assume all model parameters are spatially homogeneous. If
 we assume interactions occur locally (individuals interact only when
 they `collide') and abundance densities are spatially homogeneous, then
@@ -156,10 +156,10 @@ we can obtain the following continuous space model:
 
 \begin{subequations}\label{deterministic}
   \begin{equation}
-    \frac{\partial\bar Z_H}{\partial t}=G_HA_H(\theta_H-\bar Z_H)-G_HB_H(\bar Z_P-\bar Z_H)+\frac{D_H}{2}\Delta\bar Z_H,
+    \frac{\partial\bar z_H}{\partial t}=G_HA_H(\theta_H-\bar z_H)-G_HB_H(\bar z_P-\bar z_H)+\frac{D_H}{2}\Delta\bar z_H,
   \end{equation}
   \begin{equation}
-    \frac{\partial\bar Z_P}{\partial t}=G_PA_P(\theta_P-\bar Z_P)+G_PB_P(\bar Z_H-\bar Z_P)+\frac{D_P}{2}\Delta\bar Z_P,
+    \frac{\partial\bar z_P}{\partial t}=G_PA_P(\theta_P-\bar z_P)+G_PB_P(\bar z_H-\bar z_P)+\frac{D_P}{2}\Delta\bar z_P,
   \end{equation}
 \end{subequations}
 
@@ -183,12 +183,13 @@ justify the following SPDE model:
 \end{subequations}
 
 where \(N_P,N_H\) are the local abundance densities (here assumed to be
-constant in space and time) and \(\dot W_H,\dot W_P\) are space-time
-white noise processes. This SPDE model may possess some major benefits
-over more traditional continuous-space models of population genetics. In
-particular, it is known to have solutions for all spatial dimensions.
-The effect of abiotic stabilizing selection may also imply
-function-valued solutions.
+constant in space and time), \(\dot W_H,\dot W_P\) are space-time white
+noise processes and we use capitol \(\bar Z_H,\bar Z_P\) to emphasize
+that these are now random quantities. This SPDE model may possess some
+major benefits over more traditional continuous-space models of
+population genetics. In particular, it is known to have solutions for
+all spatial dimensions. The effect of abiotic stabilizing selection may
+also imply function-valued solutions.
 
 \hypertarget{methods}{%
 \section{Methods}\label{methods}}
