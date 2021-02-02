@@ -231,16 +231,18 @@ If we further restrict our focus to the single species case we recover a SPDE of
 
 In the case of two spatial dimensions, it is known that equation (\ref{simple-form}) is satisfied by a Gaussian field with a Whittle covariance function [@whittle1963stochastic; @Sigrist2014]. Denoting $K_1$ the modified Bessel function of the second kind, order 1, the Whittle covariance function is given by $C(r)=\frac{\sigma^2r}{2b}K_1(br)$. Hence, we can postulate that solutions of the stationary system (\ref{stationary-spde}) will have Whittle cross-covariance matrices.
 
-# Putting it all together: The cross-covariance of $\bar Z_H$ and $\bar Z_P$
+# The autocovariances and cross-covariance of $\bar Z_H$ and $\bar Z_P$
 
 Set $\bar z_H(x)=\mathbb E[\bar Z_H(x)]$ and $\bar z_P(x)=\mathbb E[\bar Z_P(x)]$. Since the system (\ref{stationary-spde}) is linear, we can expect $(\bar z_H,\bar z_P)$ to solve the associated deterministic system. Then, it seems reasonable to expect the cross-covariance of $\bar Z_H$ and $\bar Z_P$ across space to satisfy
 
 \begin{equation}
-  K_{\bar Z_H\bar Z_P}(x)=K_{\bar z_H\bar z_P}(x)+C\left(\sqrt{x_1^2+x_2^2}\right)+\mathcal I(x),
+  K_{\bar Z_H\bar Z_P}(x)=K_{\bar z_H\bar z_P}(x)+K_A(x)+\mathcal B(x),
 \end{equation}
-where $\mathcal I(x)$ captures the potential for deterministic processes to interact with the stochastic effects.
+where $K_A(x)$ is the cross-covariance of $\bar Z_H$ and $\bar Z_P$ in the absence of biotic selection (ie., when $B_H=B_P=0$) and $\mathcal B(x)$ captures the potential for deterministic processes to interact with the stochastic effects.
 
 Note that in the case of the stable equilibrium considered above, $\bar z_H$ and $\bar z_P$ are spatially homogeneous which implies $K_{\bar z_H\bar z_P}(x)\equiv0$.
+
+In general, the signature of coevolution is likely to be found in $K_{\bar z_H\bar z_P}(x)$ and $\mathcal B(x)$.
 
 \newpage
 

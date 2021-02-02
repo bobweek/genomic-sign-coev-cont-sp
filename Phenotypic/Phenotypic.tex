@@ -422,10 +422,10 @@ Denoting \(K_1\) the modified Bessel function of the second kind, order
 solutions of the stationary system (\ref{stationary-spde}) will have
 Whittle cross-covariance matrices.
 
-\hypertarget{putting-it-all-together-the-cross-covariance-of-bar-z_h-and-bar-z_p}{%
-\section{\texorpdfstring{Putting it all together: The cross-covariance
-of \(\bar Z_H\) and
-\(\bar Z_P\)}{Putting it all together: The cross-covariance of \textbackslash bar Z\_H and \textbackslash bar Z\_P}}\label{putting-it-all-together-the-cross-covariance-of-bar-z_h-and-bar-z_p}}
+\hypertarget{the-autocovariances-and-cross-covariance-of-bar-z_h-and-bar-z_p}{%
+\section{\texorpdfstring{The autocovariances and cross-covariance of
+\(\bar Z_H\) and
+\(\bar Z_P\)}{The autocovariances and cross-covariance of \textbackslash bar Z\_H and \textbackslash bar Z\_P}}\label{the-autocovariances-and-cross-covariance-of-bar-z_h-and-bar-z_p}}
 
 Set \(\bar z_H(x)=\mathbb E[\bar Z_H(x)]\) and
 \(\bar z_P(x)=\mathbb E[\bar Z_P(x)]\). Since the system
@@ -435,13 +435,18 @@ to expect the cross-covariance of \(\bar Z_H\) and \(\bar Z_P\) across
 space to satisfy
 
 \begin{equation}
-  K_{\bar Z_H\bar Z_P}(x)=K_{\bar z_H\bar z_P}(x)+C\left(\sqrt{x_1^2+x_2^2}\right)+\mathcal I(x),
-\end{equation} where \(\mathcal I(x)\) captures the potential for
+  K_{\bar Z_H\bar Z_P}(x)=K_{\bar z_H\bar z_P}(x)+K_A(x)+\mathcal B(x),
+\end{equation} where \(K_A(x)\) is the cross-covariance of \(\bar Z_H\)
+and \(\bar Z_P\) in the absence of biotic selection (ie., when
+\(B_H=B_P=0\)) and \(\mathcal B(x)\) captures the potential for
 deterministic processes to interact with the stochastic effects.
 
 Note that in the case of the stable equilibrium considered above,
 \(\bar z_H\) and \(\bar z_P\) are spatially homogeneous which implies
 \(K_{\bar z_H\bar z_P}(x)\equiv0\).
+
+In general, the signature of coevolution is likely to be found in
+\(K_{\bar z_H\bar z_P}(x)\) and \(\mathcal B(x)\).
 
 \newpage
 
