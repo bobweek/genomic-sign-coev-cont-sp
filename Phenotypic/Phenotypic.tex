@@ -247,8 +247,7 @@ spatial function \(f\)) corresponds to deterministic patterns. Hence,
 when accounting for random genetic drift, \(\rho_f\) will be a random
 function. To compute the expectation, variance and covariance of this
 function, we can use properties of the associated spatial stochastic
-process (the expectation and covariance function, denoted \(m(x)\) or
-\(m(x_1,x_2)\) and \(C(r)\) respectively, in particular).
+process (the expectation and covariance function, in particular).
 
 Finally, for the sake of completion it is worthwhile to note that
 sampling error adds a second layer of stochasticity.
@@ -421,7 +420,7 @@ Denoting \(K_1\) the modified Bessel function of the second kind, order
 1, the Whittle covariance function is given by
 \(C(r)=\frac{\sigma^2r}{2b}K_1(br)\). Hence, we can postulate that
 solutions of the stationary system (\ref{stationary-spde}) will have
-Whittle cross-covariance matrices.
+Whittle cross-covariance matrix-valued functions.
 
 \hypertarget{the-autocovariances-and-cross-covariance-of-bar-z_h-and-bar-z_p}{%
 \section{\texorpdfstring{The autocovariances and cross-covariance of
@@ -444,7 +443,7 @@ deterministic processes to interact with the stochastic effects.
 
 Note that in the case of the stable equilibrium considered above,
 \(\bar z_H\) and \(\bar z_P\) are spatially homogeneous which implies
-\(K_{\bar z_H\bar z_P}(x)\equiv0\).
+\(K_{\bar z_H\bar z_P}(x)\equiv\sqrt{\mathrm{Var}(\bar z_H)\mathrm{Var}(\bar z_P)}\).
 
 In general, the signature of coevolution is likely to be found in
 \(K_{\bar z_H\bar z_P}(x)\) and \(\mathcal B(x)\).

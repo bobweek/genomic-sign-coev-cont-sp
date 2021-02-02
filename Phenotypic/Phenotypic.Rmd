@@ -102,7 +102,7 @@ An important distinction to make when analyzing spatial patterns of coevolving s
 
 To understand why spatial expectations and variances become random variables in the presence of drift, we can think of each possible instance of the white-noise processes $\dot W_H,\dot W_P$. In probability theory these instances are called sample paths and are typically denoted by the variable $\omega$. The set of all $\omega$ is denoted $\Omega$ and is referred to as the probability space. Hence, we would refer to $\dot W_H(\omega),\dot W_P(\omega)$ as particular sample paths of the processes $\dot W_H,\dot W_P$. This implies that a solution to the stochastic system (\ref{spde}) is really a set of solutions indexed by $\omega\in\Omega$. For each $\omega$ we can compute spatial averages, variances and covariance of mean traits. Hence, the probabilistic expectation and variance of these spatial statistics are found by integrating across $\Omega$.
 
-This heavily theoretical discussion is important for understanding the difference between spatial autocorrelation and the covariance function of a spatial stochastic process. In particular, the spatial autocorrelation we are interested in (denoted $\rho_f(r)$ for a spatial function $f$) corresponds to deterministic patterns. Hence, when accounting for random genetic drift, $\rho_f$ will be a random function. To compute the expectation, variance and covariance of this function, we can use properties of the associated spatial stochastic process (the expectation and covariance function, denoted $m(x)$ or $m(x_1,x_2)$ and $C(r)$ respectively, in particular).
+This heavily theoretical discussion is important for understanding the difference between spatial autocorrelation and the covariance function of a spatial stochastic process. In particular, the spatial autocorrelation we are interested in (denoted $\rho_f(r)$ for a spatial function $f$) corresponds to deterministic patterns. Hence, when accounting for random genetic drift, $\rho_f$ will be a random function. To compute the expectation, variance and covariance of this function, we can use properties of the associated spatial stochastic process (the expectation and covariance function, in particular).
 
 Finally, for the sake of completion it is worthwhile to note that sampling error adds a second layer of stochasticity.
 
@@ -229,7 +229,7 @@ If we further restrict our focus to the single species case we recover a SPDE of
   b^2(a-u)+\Delta u=\sigma\dot W.
 \end{equation}
 
-In the case of two spatial dimensions, it is known that equation (\ref{simple-form}) is satisfied by a Gaussian field with a Whittle covariance function [@whittle1963stochastic; @Sigrist2014]. Denoting $K_1$ the modified Bessel function of the second kind, order 1, the Whittle covariance function is given by $C(r)=\frac{\sigma^2r}{2b}K_1(br)$. Hence, we can postulate that solutions of the stationary system (\ref{stationary-spde}) will have Whittle cross-covariance matrices.
+In the case of two spatial dimensions, it is known that equation (\ref{simple-form}) is satisfied by a Gaussian field with a Whittle covariance function [@whittle1963stochastic; @Sigrist2014]. Denoting $K_1$ the modified Bessel function of the second kind, order 1, the Whittle covariance function is given by $C(r)=\frac{\sigma^2r}{2b}K_1(br)$. Hence, we can postulate that solutions of the stationary system (\ref{stationary-spde}) will have Whittle cross-covariance matrix-valued functions.
 
 # The autocovariances and cross-covariance of $\bar Z_H$ and $\bar Z_P$
 
@@ -240,7 +240,7 @@ Set $\bar z_H(x)=\mathbb E[\bar Z_H(x)]$ and $\bar z_P(x)=\mathbb E[\bar Z_P(x)]
 \end{equation}
 where $K_A(x)$ is the cross-covariance of $\bar Z_H$ and $\bar Z_P$ in the absence of biotic selection (ie., when $B_H=B_P=0$) and $\mathcal B(x)$ captures the potential for deterministic processes to interact with the stochastic effects.
 
-Note that in the case of the stable equilibrium considered above, $\bar z_H$ and $\bar z_P$ are spatially homogeneous which implies $K_{\bar z_H\bar z_P}(x)\equiv0$.
+Note that in the case of the stable equilibrium considered above, $\bar z_H$ and $\bar z_P$ are spatially homogeneous which implies $K_{\bar z_H\bar z_P}(x)\equiv\sqrt{\mathrm{Var}(\bar z_H)\mathrm{Var}(\bar z_P)}$.
 
 In general, the signature of coevolution is likely to be found in $K_{\bar z_H\bar z_P}(x)$ and $\mathcal B(x)$.
 
