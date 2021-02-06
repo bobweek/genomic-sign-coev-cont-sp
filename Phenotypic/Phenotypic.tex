@@ -37,6 +37,7 @@ Space}
 % Pandoc citation processing
 
 \usepackage{amsmath}
+\usepackage{mathrsfs}
 
 
 \begin{document}
@@ -354,10 +355,10 @@ This linear system is uniquely solved by
 
 \begin{subequations}\label{non-spatial-eq}
   \begin{equation}
-    \bar z_P(x_1,x_2)\equiv\frac{(A_H-B_H)A_P\theta_P+B_PA_H\theta_H}{(A_H-B_H)A_P+B_PA_H},
+    \bar z_H(x_1,x_2)\equiv\frac{(A_P+B_P)A_H\theta_H-B_HA_P\theta_P}{(A_P+B_P)A_H-B_HA_P},
   \end{equation}
   \begin{equation}
-    \bar z_H(x_1,x_2)\equiv\frac{(A_P+B_P)A_H\theta_H-B_HA_P\theta_P}{(A_P+B_P)A_H-B_HA_P},
+    \bar z_P(x_1,x_2)\equiv\frac{(A_H-B_H)A_P\theta_P+B_PA_H\theta_H}{(A_H-B_H)A_P+B_PA_H},
   \end{equation}
 \end{subequations}
 
@@ -452,7 +453,8 @@ coevolutionary selection.
 \item
   \textbf{Note:} In the case of the stable equilibrium considered above,
   \(\bar z_H\) and \(\bar z_P\) are spatially homogeneous which implies
-  \(K_{\bar z_H\bar z_P}(x)\equiv\sqrt{\mathrm{Var}(\bar z_H)\mathrm{Var}(\bar z_P)}\).
+  \(K_{\bar z_H\bar z_P}(x)\equiv\sqrt{\mathrm{Var}(\bar z_H)\mathrm{Var}(\bar z_P)}=0\)
+  since \(\mathrm{Var}(\bar z_H)=\mathrm{Var}(\bar z_P)=0\).
 \end{itemize}
 
 Similarly, we might expect the autocovariances of \(\bar Z_H\) and
@@ -472,6 +474,201 @@ the six covariance functions:
 \(K_{\bar z_H\bar z_P}(x),K_{\bar z_H\bar z_H}(x),K_{\bar z_P\bar z_P}(x),\mathcal B_{HP}(x),\mathcal B_H(x)\)
 and \(\mathcal B_P(x)\).
 
+\hypertarget{more}{%
+\section{More?}\label{more}}
+
+\begin{itemize}
+\tightlist
+\item
+  Explore other patterns of spatial covariance using different models of
+  spatial movement.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    This leads to other random surfaces such as fractional Brownian
+    surfaces which are characterized by different families of covariance
+    functions.
+  \item
+    Hence, it may be possible to learn models of spatial movement based
+    on patterns of spatial covariance.
+  \end{itemize}
+\item
+  What happens when interacting species have different movement models?
+\end{itemize}
+
+\hypertarget{application}{%
+\section{Application}\label{application}}
+
+\begin{itemize}
+\tightlist
+\item
+  How tough would it be to revisit toju and pauw data-sets to infer
+  coevolution again?
+\end{itemize}
+
+\newpage
+
+\hypertarget{applying-hu2013multivariate-to-compute-covariance-functions}{%
+\section{Applying (Hu et al. 2013) to Compute Covariance
+Functions}\label{applying-hu2013multivariate-to-compute-covariance-functions}}
+
+In the technical note of (Hu et al. 2013), a method to compute
+covariance functions of multivariate Gaussian random fields from systems
+of SPDE was outlined. The approach begins with a stationary system such
+as (\ref{stationary-spde}) and applies a Fourier transform
+\(\mathcal F\) to convert derivatives into algebraic expressions. The
+Fourier transform acts to switch perspective from the two-dimensional
+spatial variable \(x=(x_1,x_2)\) to a two-dimensional frequency variable
+\(s=(s_1,s_2)\), where \(s_1,s_2\) are complex numbers. We can provide a
+spectral characterization of the system by considering the behavior of a
+system across a spectrum of frequencies. Once solving for the quantity
+of interest in the spectral representation we can use the inverse
+Fourier transform \(\mathcal F^{-1}\) to obtain the associated quantity
+as a function of space.
+
+To apply this method to our model, we start by using a change of
+variables to obtain an equivalent system where each spatial variable has
+zero mean. In particular, we set \(\bar\zeta_H=\bar Z_H-\bar z_H\) and
+\(\bar\zeta_P=\bar Z_P-\bar z_p\) where \((\bar z_H,\bar z_P)\) is the
+spatially homogeneous equilibrium of the deterministic system reported
+in equation (\ref{non-spatial-eq}). Under this change of variables, the
+stationary system (\ref{stationary-spde}) becomes
+
+\begin{subequations}
+  \begin{equation}
+    \left(\frac{D_H}{2}\Delta-G_H(A_H-B_H)\right)\bar\zeta_H-G_HB_H\bar\zeta_P=\sqrt\frac{G_H}{N_H}\dot W_H,
+  \end{equation}
+  \begin{equation}
+    G_PB_P\bar \zeta_H+\left(\frac{D_P}{2}\Delta-G_P(A_P+B_P)\right)\bar\zeta_P=\sqrt\frac{G_P}{N_P}\dot W_P.
+  \end{equation}
+\end{subequations}
+
+To consolidate notation, we set
+
+\begin{subequations}
+  \begin{equation}
+    \pmb{\mathscr{L}} = \left(\begin{matrix}
+      G_H(A_H-B_H)-\frac{D_H}{2}\Delta & G_HB_H \\ & \\
+      -G_PB_P & G_P(A_P+B_P)-\frac{D_P}{2}\Delta
+    \end{matrix}\right),
+  \end{equation}
+  \begin{equation}
+    \bar{\pmb{\zeta}} = \left(\begin{matrix}
+      \bar\zeta_H \\ \\ \bar\zeta_P
+    \end{matrix}\right), \ 
+    \pmb{V} = \left(\begin{matrix}
+      -\sqrt\frac{G_H}{N_H}\dot W_H \\ \\ 
+      -\sqrt\frac{G_P}{N_P}\dot W_P
+    \end{matrix}\right).
+  \end{equation}
+\end{subequations}
+
+Then, the stationary system can equally be written as
+
+\begin{equation}
+  \pmb{\mathscr{L}}\bar{\pmb\zeta}=\pmb V.
+\end{equation}
+
+Setting
+\(\hat\zeta_H=\mathcal{F}[\bar\zeta_H], \ \hat\zeta_P=\mathcal{F}[\bar\zeta_P], \hat V_H=\mathcal{F}[-\sqrt{\frac{G_H}{N_H}}\dot W_H], \ \hat V_P=\mathcal{F}[-\sqrt{\frac{G_P}{N_P}}\dot W_P]\),
+we can Fourier transform the whole dang thing to get
+
+\begin{equation}
+  \pmb{\mathcal{H}}\hat{\pmb\zeta}=\hat{\pmb V},
+\end{equation}
+
+where
+
+\begin{subequations}
+  \begin{equation}
+    \pmb{\mathscr H}=\left(\begin{matrix}
+      G_H(A_H-B_H)+\frac{D_H}{2}\|s\|^2 & G_HB_H \\ & \\
+      -G_PB_P & G_P(A_P+B_P)+\frac{D_P}{2}\|s\|^2
+    \end{matrix}\right),
+  \end{equation}
+  \begin{equation}
+    \hat{\pmb\zeta}=\left(\begin{matrix}
+      \hat\zeta_H \\ \\ \hat\zeta_P
+    \end{matrix}\right), \\
+    \hat{\pmb V}=\left(\begin{matrix}
+      \hat V_H \\ \\ \hat V_P
+    \end{matrix}\right), \\
+  \end{equation}
+\end{subequations}
+
+The power spectrum corresponding to \(\bar{\pmb\zeta}\) is defined as
+\(\pmb S_{\bar{\pmb\zeta}}=\mathbb E\left[\hat{\pmb\zeta}\hat{\pmb\zeta}^\top\right]\),
+where \(\top\) denotes matrix transposition. In particular, this
+provides
+
+\begin{equation}
+  \pmb S_{\bar{\pmb\zeta}}=\left(\begin{matrix}
+    S_{\bar\zeta_{HH}} & S_{\bar\zeta_{HP}} \\ & \\
+    S_{\bar\zeta_{PH}} & S_{\bar\zeta_{PP}}
+  \end{matrix}\right)=\left(\begin{matrix}
+    \mathbb E[\hat\zeta_H\hat\zeta_H] & \mathbb E[\hat\zeta_H\hat\zeta_P] \\ & \\
+    \mathbb E[\hat\zeta_H\hat\zeta_P] & \mathbb E[\hat\zeta_P\hat\zeta_P]
+  \end{matrix}\right)=\pmb{\mathscr H}^{-1}\pmb S_{\pmb V}\pmb{\mathscr H}^{-H},
+\end{equation}
+
+with \(-H\) denoting the inverse of the Hermitian of a matrix and
+\(\pmb S_{\pmb V}=\mathbb E\left[\hat{\pmb V}\hat{\pmb V}^H\right]\)
+denoting the power spectrum of the noise process \(\pmb V\). Using
+properties of Fourier transforms, we compute
+
+\begin{equation}
+  \hat{\pmb V}=\left(\begin{matrix}
+    (2\pi)^{-1}\sqrt{G_H/N_H} \\ \\
+    (2\pi)^{-1}\sqrt{G_P/N_P}
+  \end{matrix}\right).
+\end{equation}
+
+Since we assume the white noise processes \(\dot W_H\) and \(\dot W_P\)
+are independent we have
+
+\begin{equation}
+  \pmb S_{\pmb V}=\left(\begin{matrix}
+    S_{V_H} & 0 \\ & \\
+    0 & S_{V_P}
+  \end{matrix}\right)=\left(\begin{matrix}
+    (2\pi)^{-2}G_H/N_H & 0 \\ & \\
+    0 & (2\pi)^{-2}G_P/N_P
+  \end{matrix}\right).
+\end{equation}
+
+Putting it all together, we compute \(\pmb S_{\pmb{\bar\zeta}}\) from
+
+\begin{subequations}
+  \begin{equation}
+    S_{\bar\zeta_{HH}}=\frac{S_{V_H}|\mathscr H_{22}^2|+S_{V_P}|\mathscr H_{12}^2|}{|(\mathscr H_{11}\mathscr H_{22}-\mathscr H_{12}\mathscr H_{21})^2|},
+  \end{equation}
+  \begin{equation}
+    S_{\bar\zeta_{HP}}=-\frac{\mathscr H_{22}S_{V_H}|\mathscr H_{21}^2|\mathscr H_{11}+\mathscr H_{12}S_{V_P}|\mathscr H_{11}^2|\mathscr H_{21}}{|(\mathscr H_{11}\mathscr H_{22}-\mathscr H_{12}\mathscr H_{21})^2|\mathscr H_{21}\mathscr H_{11}},
+  \end{equation}
+  \begin{equation}
+    S_{\bar\zeta_{PH}}=-\frac{\mathscr H_{21}S_{V_H}|\mathscr H_{22}^2|\mathscr H_{12}+\mathscr H_{11}S_{V_P}|\mathscr H_{12}^2|\mathscr H_{22}}{|(\mathscr H_{11}\mathscr H_{22}-\mathscr H_{12}\mathscr H_{21})^2|\mathscr H_{22}\mathscr H_{12}},
+  \end{equation}
+  \begin{equation}
+    S_{\bar\zeta_{PP}}=\frac{S_{V_H}|\mathscr H_{21}^2|+S_{V_P}|\mathscr H_{11}^2|}{|(\mathscr H_{11}\mathscr H_{22}-\mathscr H_{12}\mathscr H_{21})^2|}.
+  \end{equation}
+\end{subequations}
+
+\hypertarget{multivariate-matern-covariance-function}{%
+\subsection{Multivariate Matern covariance
+function}\label{multivariate-matern-covariance-function}}
+
+The Matern covariance matrix function
+
+\[C(\pmb x)=\left(\begin{matrix}
+  a_H\sigma_H^2\|\pmb x\|K_1(a_H\|\pmb x\|) & a_{HP}\rho_{HP}\sigma_H\sigma_P\|\pmb x\|K_1(a_{HP}\|\pmb x\|) \\ & \\
+  a_{PH}\rho_{PH}\sigma_H\sigma_P\|\pmb x\|K_1(a_{PH}\|\pmb x\|) & a_P\sigma_P^2\|\pmb x\|K_1(a_P\|\pmb x\|)
+\end{matrix}\right)\]
+
+has power spectrum matrix
+
+\[\frac{\frac{4 \, \mathit{BH}^{2} \mathit{GH}^{2} \mathit{GP}}{\pi^{2} \mathit{NP}} + \frac{{\left(\mathit{DP} s^{2} + 2 \, {\left(\mathit{AP} + \mathit{BP}\right)} \mathit{GP}\right)}^{2} \mathit{GH}}{\pi^{2} \mathit{NH}}}{{\left(4 \, \mathit{BH} \mathit{BP} \mathit{GH} \mathit{GP} + {\left(\mathit{DH} s^{2} + 2 \, {\left(\mathit{AH} - \mathit{BH}\right)} \mathit{GH}\right)} {\left(\mathit{DP} s^{2} + 2 \, {\left(\mathit{AP} + \mathit{BP}\right)} \mathit{GP}\right)}\right)}^{2}}\]
+
 \newpage
 
 \hypertarget{references}{%
@@ -479,6 +676,11 @@ and \(\mathcal B_P(x)\).
 \addcontentsline{toc}{section}{References}
 
 \hypertarget{refs}{}
+\leavevmode\hypertarget{ref-hu2013multivariate}{}%
+Hu, Xiangping, Daniel Simpson, Finn Lindgren, and Håvard Rue. 2013.
+``Multivariate Gaussian Random Fields Using Systems of Stochastic
+Partial Differential Equations.'' \emph{arXiv Preprint arXiv:1307.1379}.
+
 \leavevmode\hypertarget{ref-Sigrist2014}{}%
 Sigrist, Fabio, Hans R. Künsch, and Werner A. Stahel. 2014. ``Stochastic
 Partial Differential Equation Based Modelling of Large Space-Time Data
