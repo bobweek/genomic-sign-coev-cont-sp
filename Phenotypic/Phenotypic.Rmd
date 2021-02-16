@@ -97,6 +97,10 @@ where $N_P,N_H$ are the local abundance densities (here assumed to be constant i
 
 To study the continuous-space signature of coevolution, we can start with an analytical approach. However, if the corresponding calculations prove to be analytically intractable or time costly, we can employ simulation-based methods to describe the shape of the autocorrelations and cross-correlation in relevant regions of parameters space. The analytical approach would begin by identifying stable attractors of the deterministic system using classical PDE theory. Following this, we may possibly apply theory of SPDE to describe stationary distributions associated with each attractor. This may lend analytical solutions for the expectation and variance of intraspecific autocorrelations and the interspecific cross-correlation, which are defined in Appendix \ref{corr-defs} below.
 
+## Dimensional Analysis
+
+# Discussion
+
 ## A Note on Biological Diversity vs Statistical Uncertainty
 
 An important distinction to make when analyzing spatial patterns of coevolving species is the difference between statistical uncertainty and biological variation across space. In particular, we can ignore the stochastic effects of random genetic drift and focus on patterns produced by deterministic processes through studying the PDE (\ref{deterministic}). In this case, we might study quantities such as the global mean trait values (ie., mean trait values averaged across space) and the spatial variance of mean trait values. These quantities are purely functions of existing biological diversity and do not take into account uncertainties inherit in the process of evolution (eg., random genetic drift). Once drift is accounted for, the global mean and spatial variance of local mean trait values themselves become random variables.
@@ -106,6 +110,8 @@ To understand why spatial expectations and variances become random variables in 
 This heavily theoretical discussion is important for understanding the difference between spatial autocorrelation and the covariance function of a spatial stochastic process. In particular, the spatial autocorrelation we are interested in (denoted $\rho_{ff}(r)$ for a spatial function $f$) corresponds to deterministic patterns. Hence, when accounting for random genetic drift, $\rho_{ff}$ will be a random function. To compute the expectation, variance and covariance of this function, we can use properties of the associated spatial stochastic process (the expectation and covariance function, in particular).
 
 Finally, for the sake of completion it is worthwhile to note that sampling error adds a second layer of stochasticity.
+
+
 
 \newpage
 
