@@ -38,6 +38,8 @@ Space}
 
 \usepackage{amsmath}
 \usepackage{mathrsfs}
+\usepackage{csquotes}
+\usepackage{textcomp}
 
 
 \begin{document}
@@ -86,6 +88,41 @@ In each case we assuming abiotic stabilizing selection is spatially
 homogeneous. By comparing patterns of spatial autocorrelation and
 cross-correlation in these four scenarios we are able to elucidate the
 signature of coevolution.
+
+\hypertarget{questions}{%
+\section{Questions}\label{questions}}
+
+\begin{itemize}
+\tightlist
+\item
+  What are the characteristic spatial scales of local adaptation in each
+  species?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    How do these depend on rates/distances of dispersal and strengths of
+    selection?
+  \end{itemize}
+\item
+  What is the characteristic spatial scale at which coevolution becomes
+  visible?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    How does this depend on stuff?
+  \end{itemize}
+\item
+  What are the characteristic scales of spatial autocorrelation and
+  cross correlation?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Does this answer both questions above?
+  \end{itemize}
+\end{itemize}
 
 \hypertarget{the-model}{%
 \section{The Model}\label{the-model}}
@@ -152,8 +189,8 @@ In this case mean traits become functions of spatial variables (eg.,
 \(\bar z_H(x),\bar z_P(x)\) where \(x=(x_1,x_2)\in\mathbb R^2\)). As a
 first step, we assume all model parameters are spatially homogeneous. If
 we assume interactions occur locally (individuals interact only when
-they `collide') and abundance densities are spatially homogeneous, then
-we can obtain the following continuous space model:
+they \enquote{collide}) and abundance densities are spatially
+homogeneous, then we can obtain the following continuous space model:
 
 \begin{subequations}\label{deterministic}
   \begin{equation}
@@ -192,6 +229,48 @@ population genetics. In particular, it is known to have solutions for
 all spatial dimensions. The effect of abiotic stabilizing selection may
 also imply function-valued solutions.
 
+\begin{table}[htbp]
+\caption{Summary of notation.}
+\label{Table:Parameters}
+\centering
+\begin{tabular}{lll}\hline
+Variable/Parameter          & Description                                  & Range                                                     \\ \hline \\
+$x=(x_1,x_2)$               & Spatial coordinates                          & $x\in\mathbb R^2$                                         \\ \\
+$z_H,z_P$                   & Individual trait values                      & $z_H,z_P\in\mathbb R$                                     \\ \\
+$w_H(z_H,z_P),w_P(z_P,z_H)$ & Individual fitness                           & $w_H,w_P>0$                                               \\ \\
+$A_H,A_P$                   & Strengths of abiotic stabilizing selection   & $A_H,A_P\geq0$                                            \\ \\
+$\theta_H(x),\theta_P(x)$   & Abiotic trait optima at location $x$         & $\theta_H(x),\theta_P(x)\in\mathbb R$                     \\ \\
+$B_H,B_P$                   & Strengths of biotic selection                & $B_H,B_P\geq0$                                            \\ \\
+$G_H,G_P$                   & Additive genetic variances                   & $G_H,G_P\geq0$                                            \\ \\
+$D_H,D_P$                   & Dispersal coefficients                       & $D_H,D_P\geq0$                                            \\ \\
+$N_H,N_P$                   & Local effective population sizes             & $N_H,N_P\geq0$                                            \\ \\
+$\dot W_H,\dot W_P$         & Independent space-time white noise processes & $\dot W_H(x),\dot W_P(x)$ random variables in $\mathbb R$ \\ \\
+$\bar Z_H(x),\bar Z_P(x)$   & Local mean traits at $x$                     & $\bar Z_H(x),\bar Z_P(x)$ random variables in $\mathbb R$ \\ \\
+$\bar z_H(x),\bar z_P(x)$   & Expected local mean traits at $x$            & $\bar z_H(x),\bar z_P(x)\in\mathbb R$                     \\ \\ \hline
+\end{tabular}
+\bigskip{}
+\end{table}
+
+\hypertarget{extensions}{%
+\subsection{Extensions}\label{extensions}}
+
+\hypertarget{heterogeneous-aboitic-optima}{%
+\subsubsection{Heterogeneous aboitic
+optima}\label{heterogeneous-aboitic-optima}}
+
+\begin{itemize}
+\tightlist
+\item
+  linear clines, eg:
+  \(\theta_H(x)=\alpha_H+\beta_{H,1}x_1+\beta_{H,2}x_2\)
+\item
+  quadratic clines, eg:
+  \(\theta_H(x)=\alpha_H+\beta_{H,1}x_1+\beta_{H,2}x_2+\gamma_{H,11}x_1^2+\gamma_{H,22}x_2^2+\gamma_{H,12}x_1x_2\)
+\item
+  stochastic fields, eg: \(\theta_H(x)\) follows a fractional Brownian
+  surface, but is fixed in time
+\end{itemize}
+
 \hypertarget{methods}{%
 \section{Methods}\label{methods}}
 
@@ -207,6 +286,35 @@ associated with each attractor. This may lend analytical solutions for
 the expectation and variance of intraspecific autocorrelations and the
 interspecific cross-correlation, which are defined in Appendix
 \ref{corr-defs} below.
+
+\hypertarget{nondimensional-analysis}{%
+\subsection{Nondimensional Analysis}\label{nondimensional-analysis}}
+
+Nondimensional analysis is an approach to simplify mathematical models
+by transforming them into equations without units. In particular, traits
+\(\bar Z_H,\bar Z_P\) are in phenotypic units, additive genetic
+variances \(G_H,G_P\) are in squared phenotypic units, spatial
+coordinates \(x=(x_1,x_2)\) are in units of distance and dispersal
+coefficients \(D_H,D_P\) are in units of distance squared. By removing
+these units, we can pinpoint characteristic scales emerging from the
+interactions of different processes. From Murray 2003:
+
+\begin{displayquote}
+  One of the most useful aspects of a nondimensional analysis, with resulting nondimensional groupings of the parameters, is that it is possible to assess how different physical effects, quantified by the parameters in the nondimensionalisation, trade off against one another.
+\end{displayquote}
+
+Hence, we can use nondimensional analysis to assess how selection,
+dispersal and drift interact to determine characteristic spatial scales.
+The difficulty here is that there's two species with different dispersal
+coefficients. This leads to two distinct characteristic spatial scales
+at which patterns emerge. Perhaps we can focus on patterns of
+matching/mis-matching by tracking \(Y(x):=\bar Z_H(x)-\bar Z_P(x)\)? The
+trouble with this is that the species are evolving to different
+strengths of abiotic selection. Hence, it's not clear what rescaling
+would nondimensionalize \(Y\).
+
+\hypertarget{discussion}{%
+\section{Discussion}\label{discussion}}
 
 \hypertarget{a-note-on-biological-diversity-vs-statistical-uncertainty}{%
 \subsection{A Note on Biological Diversity vs Statistical
@@ -474,6 +582,18 @@ the six covariance functions:
 \(K_{\bar z_H\bar z_P}(x),K_{\bar z_H\bar z_H}(x),K_{\bar z_P\bar z_P}(x),\mathcal B_{HP}(x),\mathcal B_H(x)\)
 and \(\mathcal B_P(x)\).
 
+\hypertarget{nondimensionalization}{%
+\section{Nondimensionalization}\label{nondimensionalization}}
+
+Our approach to nondimensionalize system (\ref{spde}) is borrowed from
+Polechova \& Barton (2015). In particular, these authors
+nondimensionalize the SPDE
+
+\[\frac{\partial\bar Z}{\partial t}=G\frac{\partial\bar r}{\partial\bar Z}+\frac{D}{2}\Delta\bar z+\sqrt{\frac{G}{N}}\dot W,\]
+
+where \(\bar r\) is the population growth rate and its derivative with
+respect to \(\bar Z\) represents selection.
+
 \hypertarget{more}{%
 \section{More?}\label{more}}
 
@@ -532,7 +652,8 @@ variables to obtain an equivalent system where each spatial variable has
 zero mean. In particular, we set \(\bar\zeta_H=\bar Z_H-\bar z_H\) and
 \(\bar\zeta_P=\bar Z_P-\bar z_p\) where \((\bar z_H,\bar z_P)\) is the
 spatially homogeneous equilibrium of the deterministic system reported
-in equation (\ref{non-spatial-eq}). Under this change of variables, the
+in equation (\ref{non-spatial-eq}). Under this change of variables, an
+It\(\^{o}\) formula can be applied (need to fact-check) to show the
 stationary system (\ref{stationary-spde}) becomes
 
 \begin{subequations}

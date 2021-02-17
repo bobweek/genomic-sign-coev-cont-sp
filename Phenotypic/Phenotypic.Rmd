@@ -22,6 +22,8 @@ bibliography: references.bib
 header-includes:
   - \usepackage{amsmath}
   - \usepackage{mathrsfs}
+  - \usepackage{csquotes}
+  - \usepackage{textcomp}
 output: 
   rticles::arxiv_article:
     keep_tex: true
@@ -30,6 +32,15 @@ output:
 # Introduction
 
 Space is hypothesized to play a fundamental role in the coevolutionary process. In particular, the combined effects of local co-adaptation and spatial movement are thought to produce complex spatial patterns of matched and mismatched traits. However, theoretical studies investigating the spatial signal of coevolution have for the most part restricted themselves to understanding patterns of spatial correlation using spatially implicit models. Hence, the fine-grained details that can be produced in spatially explicit settings have yet to be understood. Here we close this gap in the context of host-parasite coevolution using continuous-space models inspired by classical quantitative genetic theory. In particular, we study the autocorrelations of mean traits within species and the cross-correlation of mean traits between species when trait dynamics are driven by (1) random genetic drift, gene-flow and abiotic stabilizing selection, (2) drift, gene-flow, abiotic stabilizing selection and unilateral adaptation of the host species, (3) drift, gene-flow, stabilizing selection and unilateral adaptation of the parasite species and (4) drift, gene-flow, stabilizing selection and host-parasite coevolution. In each case we assuming abiotic stabilizing selection is spatially homogeneous. By comparing patterns of spatial autocorrelation and cross-correlation in these four scenarios we are able to elucidate the signature of coevolution.
+
+# Questions
+
+  - What are the characteristic spatial scales of local adaptation in each species?
+    - How do these depend on rates/distances of dispersal and strengths of selection?
+  - What is the characteristic spatial scale at which coevolution becomes visible?
+    - How does this depend on stuff?
+  - What are the characteristic scales of spatial autocorrelation and cross correlation?
+    - Does this answer both questions above?
 
 # The Model
 
@@ -93,11 +104,49 @@ To incorporate the effects of random genetic drift, we should be able to justify
 
 where $N_P,N_H$ are the local abundance densities (here assumed to be constant in space and time), $\dot W_H,\dot W_P$ are space-time white noise processes and we use capitol $\bar Z_H,\bar Z_P$ to emphasize that these are now random quantities. This SPDE model may possess some major benefits over more traditional continuous-space models of population genetics. In particular, it is known to have solutions for all spatial dimensions. The effect of abiotic stabilizing selection may also imply function-valued solutions.
 
+\begin{table}[htbp]
+\caption{Summary of notation.}
+\label{Table:Parameters}
+\centering
+\begin{tabular}{lll}\hline
+Variable/Parameter          & Description                                  & Range                                                     \\ \hline \\
+$x=(x_1,x_2)$               & Spatial coordinates                          & $x\in\mathbb R^2$                                         \\ \\
+$z_H,z_P$                   & Individual trait values                      & $z_H,z_P\in\mathbb R$                                     \\ \\
+$w_H(z_H,z_P),w_P(z_P,z_H)$ & Individual fitness                           & $w_H,w_P>0$                                               \\ \\
+$A_H,A_P$                   & Strengths of abiotic stabilizing selection   & $A_H,A_P\geq0$                                            \\ \\
+$\theta_H(x),\theta_P(x)$   & Abiotic trait optima at location $x$         & $\theta_H(x),\theta_P(x)\in\mathbb R$                     \\ \\
+$B_H,B_P$                   & Strengths of biotic selection                & $B_H,B_P\geq0$                                            \\ \\
+$G_H,G_P$                   & Additive genetic variances                   & $G_H,G_P\geq0$                                            \\ \\
+$D_H,D_P$                   & Dispersal coefficients                       & $D_H,D_P\geq0$                                            \\ \\
+$N_H,N_P$                   & Local effective population sizes             & $N_H,N_P\geq0$                                            \\ \\
+$\dot W_H,\dot W_P$         & Independent space-time white noise processes & $\dot W_H(x),\dot W_P(x)$ random variables in $\mathbb R$ \\ \\
+$\bar Z_H(x),\bar Z_P(x)$   & Local mean traits at $x$                     & $\bar Z_H(x),\bar Z_P(x)$ random variables in $\mathbb R$ \\ \\
+$\bar z_H(x),\bar z_P(x)$   & Expected local mean traits at $x$            & $\bar z_H(x),\bar z_P(x)\in\mathbb R$                     \\ \\ \hline
+\end{tabular}
+\bigskip{}
+\end{table}
+
+## Extensions
+
+### Heterogeneous aboitic optima
+
+  - linear clines, eg: $\theta_H(x)=\alpha_H+\beta_{H,1}x_1+\beta_{H,2}x_2$
+  - quadratic clines, eg: $\theta_H(x)=\alpha_H+\beta_{H,1}x_1+\beta_{H,2}x_2+\gamma_{H,11}x_1^2+\gamma_{H,22}x_2^2+\gamma_{H,12}x_1x_2$
+  - stochastic fields, eg: $\theta_H(x)$ follows a fractional Brownian surface, but is fixed in time
+
 # Methods
 
 To study the continuous-space signature of coevolution, we can start with an analytical approach. However, if the corresponding calculations prove to be analytically intractable or time costly, we can employ simulation-based methods to describe the shape of the autocorrelations and cross-correlation in relevant regions of parameters space. The analytical approach would begin by identifying stable attractors of the deterministic system using classical PDE theory. Following this, we may possibly apply theory of SPDE to describe stationary distributions associated with each attractor. This may lend analytical solutions for the expectation and variance of intraspecific autocorrelations and the interspecific cross-correlation, which are defined in Appendix \ref{corr-defs} below.
 
-## Dimensional Analysis
+## Nondimensional Analysis
+
+Nondimensional analysis is an approach to simplify mathematical models by transforming them into equations without units. In particular, traits $\bar Z_H,\bar Z_P$ are in phenotypic units, additive genetic variances $G_H,G_P$ are in squared phenotypic units, spatial coordinates $x=(x_1,x_2)$ are in units of distance and dispersal coefficients $D_H,D_P$ are in units of distance squared. By removing these units, we can pinpoint characteristic scales emerging from the interactions of different processes. From Murray 2003:
+
+\begin{displayquote}
+  One of the most useful aspects of a nondimensional analysis, with resulting nondimensional groupings of the parameters, is that it is possible to assess how different physical effects, quantified by the parameters in the nondimensionalisation, trade off against one another.
+\end{displayquote}
+
+Hence, we can use nondimensional analysis to assess how selection, dispersal and drift interact to determine characteristic spatial scales. The difficulty here is that there's two species with different dispersal coefficients. This leads to two distinct characteristic spatial scales at which patterns emerge. Perhaps we can focus on patterns of matching/mis-matching by tracking $Y(x):=\bar Z_H(x)-\bar Z_P(x)$? The trouble with this is that the species are evolving to different strengths of abiotic selection. Hence, it's not clear what rescaling would nondimensionalize $Y$.
 
 # Discussion
 
@@ -110,8 +159,6 @@ To understand why spatial expectations and variances become random variables in 
 This heavily theoretical discussion is important for understanding the difference between spatial autocorrelation and the covariance function of a spatial stochastic process. In particular, the spatial autocorrelation we are interested in (denoted $\rho_{ff}(r)$ for a spatial function $f$) corresponds to deterministic patterns. Hence, when accounting for random genetic drift, $\rho_{ff}$ will be a random function. To compute the expectation, variance and covariance of this function, we can use properties of the associated spatial stochastic process (the expectation and covariance function, in particular).
 
 Finally, for the sake of completion it is worthwhile to note that sampling error adds a second layer of stochasticity.
-
-
 
 \newpage
 
@@ -265,6 +312,14 @@ Similarly, we might expect the autocovariances of $\bar Z_H$ and $\bar Z_P$ to s
 
 where $\mathcal{A}_X(x)$ is the autocovariance of species $X$ generated by abiotic stabilizing selection and $\mathcal{B}_X(x)$ is the autocovariance generated by unilateral biotic selection on species $X$. In general, the signature of coevolution is likely to be found in the six covariance functions: $K_{\bar z_H\bar z_P}(x),K_{\bar z_H\bar z_H}(x),K_{\bar z_P\bar z_P}(x),\mathcal B_{HP}(x),\mathcal B_H(x)$ and $\mathcal B_P(x)$.
 
+# Nondimensionalization
+
+Our approach to nondimensionalize system (\ref{spde}) is borrowed from Polechova & Barton (2015). In particular, these authors nondimensionalize the SPDE
+
+$$\frac{\partial\bar Z}{\partial t}=G\frac{\partial\bar r}{\partial\bar Z}+\frac{D}{2}\Delta\bar z+\sqrt{\frac{G}{N}}\dot W,$$
+
+where $\bar r$ is the population growth rate and its derivative with respect to $\bar Z$ represents selection.
+
 # More?
 
   - Explore other patterns of spatial covariance using different models of spatial movement. 
@@ -282,7 +337,7 @@ where $\mathcal{A}_X(x)$ is the autocovariance of species $X$ generated by abiot
 
 In the technical note of [@hu2013multivariate], a method to compute covariance functions of multivariate Gaussian random fields from systems of SPDE was outlined. The approach begins with a stationary system such as (\ref{stationary-spde}) and applies a Fourier transform $\mathcal F$ to convert derivatives into algebraic expressions. The Fourier transform acts to switch perspective from the two-dimensional spatial variable $x=(x_1,x_2)$ to a two-dimensional frequency variable $s=(s_1,s_2)$, where $s_1,s_2$ are complex numbers. We can provide a spectral characterization of the system by considering the behavior of a system across a spectrum of frequencies. Once solving for the quantity of interest in the spectral representation we can use the inverse Fourier transform $\mathcal F^{-1}$ to obtain the associated quantity as a function of space. 
 
-To apply this method to our model, we start by using a change of variables to obtain an equivalent system where each spatial variable has zero mean. In particular, we set $\bar\zeta_H=\bar Z_H-\bar z_H$ and $\bar\zeta_P=\bar Z_P-\bar z_p$ where $(\bar z_H,\bar z_P)$ is the spatially homogeneous equilibrium of the deterministic system reported in equation (\ref{non-spatial-eq}). Under this change of variables, the stationary system (\ref{stationary-spde}) becomes
+To apply this method to our model, we start by using a change of variables to obtain an equivalent system where each spatial variable has zero mean. In particular, we set $\bar\zeta_H=\bar Z_H-\bar z_H$ and $\bar\zeta_P=\bar Z_P-\bar z_p$ where $(\bar z_H,\bar z_P)$ is the spatially homogeneous equilibrium of the deterministic system reported in equation (\ref{non-spatial-eq}). Under this change of variables, an It$\^{o}$ formula can be applied (need to fact-check) to show the stationary system (\ref{stationary-spde}) becomes
 
 \begin{subequations}
   \begin{equation}
