@@ -38,9 +38,19 @@ Space is hypothesized to play a fundamental role in the coevolutionary process. 
   - What are the characteristic spatial scales of local adaptation in each species?
     - How do these depend on rates/distances of dispersal and strengths of selection?
   - What is the characteristic spatial scale at which coevolution becomes visible?
-    - How does this depend on stuff?
-  - What are the characteristic scales of spatial autocorrelation and cross correlation?
+    - How does this depend on dispersal distances, strengths of selection, local effective sizes and local additive genetic variation?
+  - What are the characteristic scales of spatial autocorrelation and cross-correlation?
     - Does this answer both questions above?
+  - How do these answers change when selection, local effective sizes or local additive genetic variances are spatially heterogeneous?
+    - What if these parameters follow deterministic clines? Linear or quadratic?
+    - What if they follow stochastic patterns such as Gaussian fields?
+      - In particular, consider the characteristic scale of environmental heterogeneity.
+    - In these scenarios, how does autocorrelation and cross-correlation change across space? What is the characteristic scale at which their characteristic scales change?
+  - Considering answers to all of the above, what is the best sampling scheme for detecting coevolution?
+    - More intensive sampling at a few locations?
+    - Less intensive sampling at many locations?
+  - Future directions:
+    - Does the interplay between coevolution and abundance dynamics lead to patchy distributions?
 
 # The Model
 
@@ -337,7 +347,7 @@ where $\bar r$ is the population growth rate and its derivative with respect to 
 
 In the technical note of [@hu2013multivariate], a method to compute covariance functions of multivariate Gaussian random fields from systems of SPDE was outlined. The approach begins with a stationary system such as (\ref{stationary-spde}) and applies a Fourier transform $\mathcal F$ to convert derivatives into algebraic expressions. The Fourier transform acts to switch perspective from the two-dimensional spatial variable $x=(x_1,x_2)$ to a two-dimensional frequency variable $s=(s_1,s_2)$, where $s_1,s_2$ are complex numbers. We can provide a spectral characterization of the system by considering the behavior of a system across a spectrum of frequencies. Once solving for the quantity of interest in the spectral representation we can use the inverse Fourier transform $\mathcal F^{-1}$ to obtain the associated quantity as a function of space. 
 
-To apply this method to our model, we start by using a change of variables to obtain an equivalent system where each spatial variable has zero mean. In particular, we set $\bar\zeta_H=\bar Z_H-\bar z_H$ and $\bar\zeta_P=\bar Z_P-\bar z_p$ where $(\bar z_H,\bar z_P)$ is the spatially homogeneous equilibrium of the deterministic system reported in equation (\ref{non-spatial-eq}). Under this change of variables, an It$\^{o}$ formula can be applied (need to fact-check) to show the stationary system (\ref{stationary-spde}) becomes
+To apply this method to our model, we start by using a change of variables to obtain an equivalent system where each spatial variable has zero mean. In particular, we set $\bar\zeta_H=\bar Z_H-\bar z_H$ and $\bar\zeta_P=\bar Z_P-\bar z_p$ where $(\bar z_H,\bar z_P)$ is the spatially homogeneous equilibrium of the deterministic system reported in equation (\ref{non-spatial-eq}). Under this change of variables, an It&ocirc; formula can be applied (need to fact-check) to show the stationary system (\ref{stationary-spde}) becomes
 
 \begin{subequations}
   \begin{equation}
@@ -451,7 +461,13 @@ Putting it all together, we compute $\pmb S_{\pmb{\bar\zeta}}$ from
 
 ## Multivariate Matern covariance function
 
-The Matern covariance matrix function
+The Matern covariance matrix function (from Gneiting et al 2010)
+
+$$C(\pmb x)=\left(\begin{matrix}
+  \sigma_1^2M(x|\nu_1,a_2) & \rho_{12}\sigma_1\sigma_2M(x|\nu_{12},a_{12}) \\ & \\
+  \rho_{12}\sigma_1\sigma_2M(x|\nu_{12},a_{12}) & \sigma_2^2M(x|\nu_2,a_2)
+\end{matrix}\right)$$
+
 
 $$C(\pmb x)=\left(\begin{matrix}
   a_H\sigma_H^2\|\pmb x\|K_1(a_H\|\pmb x\|) & a_{HP}\rho_{HP}\sigma_H\sigma_P\|\pmb x\|K_1(a_{HP}\|\pmb x\|) \\ & \\
@@ -460,9 +476,7 @@ $$C(\pmb x)=\left(\begin{matrix}
 
 has power spectrum matrix
 
-$$\frac{D_P G_H}{\pi^{2} {\left(D_H D_P s^{4} + 4 \, {\left(A_H A_P - A_P B_H + A_H B_P\right)} G_H G_P + 2 \, {\left({\left(A_H - B_H\right)} D_P G_H + {\left(A_P + B_P\right)} D_H G_P\right)} s^{2}\right)} D_H N_H}$$
 
-$$+ \frac{2 \, {\left(2 \, B_H^{2} D_H G_H^{2} G_P N_H - {\left({\left(A_H - B_H\right)} D_P^{2} G_H^{2} - {\left(A_P + B_P\right)} D_H D_P G_H G_P\right)} N_P s^{2} - 2 \, {\left({\left(A_H A_P - A_P B_H + A_H B_P\right)} D_P G_H^{2} G_P - {\left(A_P^{2} + 2 \, A_P B_P + B_P^{2}\right)} D_H G_H G_P^{2}\right)} N_P\right)}}{\pi^{2} {\left(D_H D_P s^{4} + 4 \, {\left(A_H A_P - A_P B_H + A_H B_P\right)} G_H G_P + 2 \, {\left({\left(A_H - B_H\right)} D_P G_H + {\left(A_P + B_P\right)} D_H G_P\right)} s^{2}\right)}^{2} D_H N_H N_P}$$
 
 \newpage
 

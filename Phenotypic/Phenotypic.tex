@@ -111,16 +111,60 @@ signature of coevolution.
   \begin{itemize}
   \tightlist
   \item
-    How does this depend on stuff?
+    How does this depend on dispersal distances, strengths of selection,
+    local effective sizes and local additive genetic variation?
   \end{itemize}
 \item
   What are the characteristic scales of spatial autocorrelation and
-  cross correlation?
+  cross-correlation?
 
   \begin{itemize}
   \tightlist
   \item
     Does this answer both questions above?
+  \end{itemize}
+\item
+  How do these answers change when selection, local effective sizes or
+  local additive genetic variances are spatially heterogeneous?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    What if these parameters follow deterministic clines? Linear or
+    quadratic?
+  \item
+    What if they follow stochastic patterns such as Gaussian fields?
+
+    \begin{itemize}
+    \tightlist
+    \item
+      In particular, consider the characteristic scale of environmental
+      heterogeneity.
+    \end{itemize}
+  \item
+    In these scenarios, how does autocorrelation and cross-correlation
+    change across space? What is the characteristic scale at which their
+    characteristic scales change?
+  \end{itemize}
+\item
+  Considering answers to all of the above, what is the best sampling
+  scheme for detecting coevolution?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    More intensive sampling at a few locations?
+  \item
+    Less intensive sampling at many locations?
+  \end{itemize}
+\item
+  Future directions:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Does the interplay between coevolution and abundance dynamics lead
+    to patchy distributions?
   \end{itemize}
 \end{itemize}
 
@@ -653,8 +697,8 @@ zero mean. In particular, we set \(\bar\zeta_H=\bar Z_H-\bar z_H\) and
 \(\bar\zeta_P=\bar Z_P-\bar z_p\) where \((\bar z_H,\bar z_P)\) is the
 spatially homogeneous equilibrium of the deterministic system reported
 in equation (\ref{non-spatial-eq}). Under this change of variables, an
-It\(\^{o}\) formula can be applied (need to fact-check) to show the
-stationary system (\ref{stationary-spde}) becomes
+Itô formula can be applied (need to fact-check) to show the stationary
+system (\ref{stationary-spde}) becomes
 
 \begin{subequations}
   \begin{equation}
@@ -779,7 +823,12 @@ Putting it all together, we compute \(\pmb S_{\pmb{\bar\zeta}}\) from
 \subsection{Multivariate Matern covariance
 function}\label{multivariate-matern-covariance-function}}
 
-The Matern covariance matrix function
+The Matern covariance matrix function (from Gneiting et al 2010)
+
+\[C(\pmb x)=\left(\begin{matrix}
+  \sigma_1^2M(x|\nu_1,a_2) & \rho_{12}\sigma_1\sigma_2M(x|\nu_{12},a_{12}) \\ & \\
+  \rho_{12}\sigma_1\sigma_2M(x|\nu_{12},a_{12}) & \sigma_2^2M(x|\nu_2,a_2)
+\end{matrix}\right)\]
 
 \[C(\pmb x)=\left(\begin{matrix}
   a_H\sigma_H^2\|\pmb x\|K_1(a_H\|\pmb x\|) & a_{HP}\rho_{HP}\sigma_H\sigma_P\|\pmb x\|K_1(a_{HP}\|\pmb x\|) \\ & \\
@@ -787,10 +836,6 @@ The Matern covariance matrix function
 \end{matrix}\right)\]
 
 has power spectrum matrix
-
-\[\frac{D_P G_H}{\pi^{2} {\left(D_H D_P s^{4} + 4 \, {\left(A_H A_P - A_P B_H + A_H B_P\right)} G_H G_P + 2 \, {\left({\left(A_H - B_H\right)} D_P G_H + {\left(A_P + B_P\right)} D_H G_P\right)} s^{2}\right)} D_H N_H}\]
-
-\[+ \frac{2 \, {\left(2 \, B_H^{2} D_H G_H^{2} G_P N_H - {\left({\left(A_H - B_H\right)} D_P^{2} G_H^{2} - {\left(A_P + B_P\right)} D_H D_P G_H G_P\right)} N_P s^{2} - 2 \, {\left({\left(A_H A_P - A_P B_H + A_H B_P\right)} D_P G_H^{2} G_P - {\left(A_P^{2} + 2 \, A_P B_P + B_P^{2}\right)} D_H G_H G_P^{2}\right)} N_P\right)}}{\pi^{2} {\left(D_H D_P s^{4} + 4 \, {\left(A_H A_P - A_P B_H + A_H B_P\right)} G_H G_P + 2 \, {\left({\left(A_H - B_H\right)} D_P G_H + {\left(A_P + B_P\right)} D_H G_P\right)} s^{2}\right)}^{2} D_H N_H N_P}\]
 
 \newpage
 
