@@ -41,7 +41,7 @@ Space is hypothesized to play a fundamental role in the coevolutionary process. 
     - How does this depend on dispersal distances, strengths of selection, local effective sizes and local additive genetic variation?
   - What are the characteristic scales of spatial autocorrelation and cross-correlation?
     - Does this answer both questions above?
-  - How do these answers change when selection, local effective sizes or local additive genetic variances are spatially heterogeneous?
+  - How do these answers change when selection, local effective sizes or local additive genetic variances are spatially heterogeneous (but temporally fixed)?
     - What if these parameters follow deterministic clines? Linear or quadratic?
     - What if they follow stochastic patterns such as Gaussian fields?
       - In particular, consider the characteristic scale of environmental heterogeneity.
