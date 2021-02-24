@@ -35,6 +35,9 @@ Space is hypothesized to play a fundamental role in the coevolutionary process. 
 
 # Questions
 
+  - Are we aiming to describe the spatial signature of coevolution? Or are we aiming to explain spatial patterns of traits and local adaptation when species may be coevolving?
+    - The first question takes a more reductionist view by focusing on coevolution.
+    - The second question takes a more holistic view by embracing the complexity of natural systems.
   - What are the characteristic spatial scales of local adaptation in each species?
     - How do these depend on rates/distances of dispersal and strengths of selection?
   - What is the characteristic spatial scale at which coevolution becomes visible?
@@ -461,12 +464,23 @@ Putting it all together, we compute $\pmb S_{\pmb{\bar\zeta}}$ from
 
 ## Multivariate Matern covariance function
 
+The Matern function $M(x|\nu,a)$ is given by
+
+$$M(x|\nu,a)=\frac{2^{1-\nu}}{\Gamma(\nu)}(a\|x\|)^\nu K_\nu(a\|x\|)$$
+
 The Matern covariance matrix function (from Gneiting et al 2010)
 
 $$C(\pmb x)=\left(\begin{matrix}
-  \sigma_1^2M(x|\nu_1,a_2) & \rho_{12}\sigma_1\sigma_2M(x|\nu_{12},a_{12}) \\ & \\
+  \sigma_1^2M(x|\nu_1,a_1) & \rho_{12}\sigma_1\sigma_2M(x|\nu_{12},a_{12}) \\ & \\
   \rho_{12}\sigma_1\sigma_2M(x|\nu_{12},a_{12}) & \sigma_2^2M(x|\nu_2,a_2)
 \end{matrix}\right)$$
+
+
+$$=\left(\begin{matrix}
+  \sigma_1^2\frac{2^{1-\nu_1}}{\Gamma(\nu_1)}(a_1\|x\|)^\nu_1 K_{\nu_1}(a_2\|x\|) & \rho_{12}\sigma_1\sigma_2\frac{2^{1-\nu_{12}}}{\Gamma(\nu_{12})}(a\|x\|)^{\nu_{12}} K_{\nu_{12}}(a_{12}\|x\|) \\ & \\
+  \rho_{12}\sigma_1\sigma_2\frac{2^{1-\nu_{12}}}{\Gamma(\nu_{12})}(a\|x\|)^{\nu_{12}} & \sigma_2^2\frac{2^{1-\nu_1}}{\Gamma(\nu_1)}(a_1\|x\|)^\nu_1 K_{\nu_1}(a_2\|x\|)
+\end{matrix}\right)$$
+
 
 
 $$C(\pmb x)=\left(\begin{matrix}
@@ -476,7 +490,7 @@ $$C(\pmb x)=\left(\begin{matrix}
 
 has power spectrum matrix
 
-
+From Hu 2012, we have $\alpha_{ii}=\nu_{ii}+1$ and 
 
 \newpage
 
