@@ -180,6 +180,24 @@ signature of coevolution.
   \item
     Does the interplay between coevolution and abundance dynamics lead
     to patchy distributions?
+  \item
+    When does local adaptation occur in host and/or parasite?
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Are there winners/losers? (ref scott perspective piece)
+    \item
+      When do host or parasite remain generalized?
+    \item
+      Does this agree with past theory?
+
+      \begin{itemize}
+      \tightlist
+      \item
+        I imagine the stochastic dynamics change the picture
+      \end{itemize}
+    \end{itemize}
   \end{itemize}
 \end{itemize}
 
@@ -688,9 +706,10 @@ respect to \(\bar Z\) represents selection.
 
 \newpage
 
-\hypertarget{applying-hu2013multivariate-to-compute-covariance-functions}{%
-\section{Applying (Hu et al. 2013) to Compute Covariance
-Functions}\label{applying-hu2013multivariate-to-compute-covariance-functions}}
+\hypertarget{applying-hu2013multivariate-to-compute-covariance-matrix-from-spectral-representation}{%
+\section{Applying (Hu et al. 2013) to Compute Covariance Matrix from
+Spectral
+Representation}\label{applying-hu2013multivariate-to-compute-covariance-matrix-from-spectral-representation}}
 
 In the technical note of (Hu et al. 2013), a method to compute
 covariance functions of multivariate Gaussian random fields from systems
@@ -763,8 +782,8 @@ where
 \begin{subequations}
   \begin{equation}
     \pmb{\mathscr H}=\left(\begin{matrix}
-      G_H(A_H-B_H)+\frac{D_H}{2}\|s\|^2 & G_HB_H \\ & \\
-      -G_PB_P & G_P(A_P+B_P)+\frac{D_P}{2}\|s\|^2
+      G_H(A_H-B_H)+\frac{D_H}{2}\|\pmb k\|^2 & G_HB_H \\ & \\
+      -G_PB_P & G_P(A_P+B_P)+\frac{D_P}{2}\|\pmb k\|^2
     \end{matrix}\right),
   \end{equation}
   \begin{equation}
@@ -799,69 +818,97 @@ properties of Fourier transforms, we compute
 
 \begin{equation}
   \hat{\pmb V}=\left(\begin{matrix}
-    (2\pi)^{-1}\sqrt{G_H/N_H} \\ \\
-    (2\pi)^{-1}\sqrt{G_P/N_P}
+    \sqrt{G_H/N_H} \\ \\
+    \sqrt{G_P/N_P}
   \end{matrix}\right).
 \end{equation}
 
-Since we assume the white noise processes \(\dot W_H\) and \(\dot W_P\)
-are independent we have
+Formally, I'm missing some \(2\pi\)'s. However, since our goal is to
+transform back into geographic space (all this Fourier stuff puts us in
+frequency space) the missing \(2\pi\)'s should be accounted for. Since
+we assume the white noise processes \(\dot W_H\) and \(\dot W_P\) are
+independent we have
 
 \begin{equation}
   \pmb S_{\pmb V}=\left(\begin{matrix}
     S_{V_H} & 0 \\ & \\
     0 & S_{V_P}
   \end{matrix}\right)=\left(\begin{matrix}
-    (2\pi)^{-2}G_H/N_H & 0 \\ & \\
-    0 & (2\pi)^{-2}G_P/N_P
+    G_H/N_H & 0 \\ & \\
+    0 & G_P/N_P
   \end{matrix}\right).
 \end{equation}
 
-Putting it all together, we compute \(\pmb S_{\pmb{\bar\zeta}}\) from
+Plugging into \emph{Mathematica} yields
 
 \begin{subequations}
   \begin{equation}
-    S_{\bar\zeta_{HH}}=\frac{S_{V_H}|\mathscr H_{22}^2|+S_{V_P}|\mathscr H_{12}^2|}{|(\mathscr H_{11}\mathscr H_{22}-\mathscr H_{12}\mathscr H_{21})^2|},
+    S_{\bar\zeta_{HH}} = \frac{\frac{G_H}{4N_H}\left(2G_P(A_P+B_P)+D_P\|\pmb k\|^2\right)^2+\frac{G_P}{N_P}B_H^2G_H^2}
+    {\left\{-B_HB_PG_HG_P-\frac{1}{4}\left[2G_H(A_H-B_H)+D_H\|\pmb k\|^2\right]\left[2G_P(A_P+B_P)+D_P\|\pmb k\|^2\right]\right\}^2}
   \end{equation}
   \begin{equation}
-    S_{\bar\zeta_{HP}}=-\frac{\mathscr H_{22}S_{V_H}|\mathscr H_{21}^2|\mathscr H_{11}+\mathscr H_{12}S_{V_P}|\mathscr H_{11}^2|\mathscr H_{21}}{|(\mathscr H_{11}\mathscr H_{22}-\mathscr H_{12}\mathscr H_{21})^2|\mathscr H_{21}\mathscr H_{11}},
+    S_{\bar\zeta_{PP}} = \frac{\frac{G_P}{4N_P}\left(2G_H(A_H-B_H)+D_H\|\pmb k\|^2\right)^2+\frac{G_H}{N_H}B_P^2G_P^2}
+    {\left\{-B_HB_PG_HG_P-\frac{1}{4}\left[2G_H(A_H-B_H)+D_H\|\pmb k\|^2\right]\left[2G_P(A_P+B_P)+D_P\|\pmb k\|^2\right]\right\}^2}
   \end{equation}
-  \begin{equation}
-    S_{\bar\zeta_{PH}}=-\frac{\mathscr H_{21}S_{V_H}|\mathscr H_{22}^2|\mathscr H_{12}+\mathscr H_{11}S_{V_P}|\mathscr H_{12}^2|\mathscr H_{22}}{|(\mathscr H_{11}\mathscr H_{22}-\mathscr H_{12}\mathscr H_{21})^2|\mathscr H_{22}\mathscr H_{12}},
-  \end{equation}
-  \begin{equation}
-    S_{\bar\zeta_{PP}}=\frac{S_{V_H}|\mathscr H_{21}^2|+S_{V_P}|\mathscr H_{11}^2|}{|(\mathscr H_{11}\mathscr H_{22}-\mathscr H_{12}\mathscr H_{21})^2|}.
+  \begin{equation}  
+    S_{\bar\zeta_{HP}} = \frac{\frac{G_HG_P}{2}\left[\frac{B_P}{N_H}\left(2G_P(A_P+B_P)+D_P\|\pmb k\|^2\right)+\frac{B_H}{N_P}\left(2G_H(A_H-B_H)+D_H\|\pmb k\|^2\right)\right]}
+    {\left\{-B_HB_PG_HG_P-\frac{1}{4}\left[2G_H(A_H-B_H)+D_H\|\pmb k\|^2\right]\left[2G_P(A_P+B_P)+D_P\|\pmb k\|^2\right]\right\}^2}.
   \end{equation}
 \end{subequations}
 
-\hypertarget{multivariate-matern-covariance-function}{%
-\subsection{Multivariate Matern covariance
-function}\label{multivariate-matern-covariance-function}}
+Then, by assuming weak biotic selection so that
+\(B_H^2,B_P^2,B_HB_P\approx0\), we get
 
-The Matern function \(M(x|\nu,a)\) is given by
+\begin{subequations}
+  \begin{equation}
+    S_{\bar\zeta_{HH}}(\pmb k) \approx \frac{4G_H/N_H}{\left[2G_H(A_H-B_H)+D_H\|\pmb k\|^2\right]^2},
+  \end{equation}
+  \begin{equation}
+    S_{\bar\zeta_{PP}}(\pmb k) \approx \frac{4G_P/N_P}{\left[2G_P(A_P+B_P)+D_P\|\pmb k\|^2\right]^2},
+  \end{equation}
+  \begin{multline}  
+    S_{\bar\zeta_{HP}}(\pmb k) \approx 8G_HG_P\left(\frac{B_H/N_P}{\left[2G_H(A_H-B_H)+D_H\|\pmb k\|^2\right]\left[2G_P(A_P+B_P)+D_P\|\pmb k\|^2\right]^2}\right. \\
+      \left. + \frac{B_P/N_H}{\left[2G_H(A_H-B_H)+D_H\|\pmb k\|^2\right]^2\left[2G_P(A_P+B_P)+D_P\|\pmb k\|^2\right]}\right).
+  \end{multline}
+\end{subequations}
 
-\[M(x|\nu,a)=\frac{2^{1-\nu}}{\Gamma(\nu)}(a\|x\|)^\nu K_\nu(a\|x\|)\]
+It may be better to assume weak coupling in the general SPDE model
+(\(b_{12},b_{21}\ll1\)) to get this result since there is an impulse to
+distribute the \(B\)'s are continue canceling terms, which makes life
+harder since the marginal cov's are no longer Whittle.
 
-The Matern covariance matrix function (from Gneiting et al 2010)
+Taking the inverse Fourier transform of the power spectra
+\(S_{\bar\zeta_{HH}}(\pmb k)\) and \(S_{\bar\zeta_{PP}}(\pmb k)\) yields
+the (intraspecific) spatial covariance functions
+\(C_{HH}(\pmb x),C_{PP}(\pmb x)\) and the inverse Fourier transform of
+\(S_{\bar \zeta_{HP}}\) provides the (interspecific) spatial
+cross-covariance function \(C_{HP}(\pmb x)\). The intraspecific
+covariance functions are straightforward to calculate, leading to the
+Whittle covariance functions:
 
-\[C(\pmb x)=\left(\begin{matrix}
-  \sigma_1^2M(x|\nu_1,a_1) & \rho_{12}\sigma_1\sigma_2M(x|\nu_{12},a_{12}) \\ & \\
-  \rho_{12}\sigma_1\sigma_2M(x|\nu_{12},a_{12}) & \sigma_2^2M(x|\nu_2,a_2)
-\end{matrix}\right)\]
+\begin{subequations}
+  \begin{equation}
+    C_{HH}(\pmb x) \approx \frac{M(\pmb x|1,\sqrt{2G_H(A_H-B_H)/D_H})}{N_HD_H(A_H-B_H)},
+  \end{equation}
+  \begin{equation}
+    C_{PP}(\pmb x) \approx \frac{M(\pmb x|1,\sqrt{2G_P(A_P+B_P)/D_P})}{N_PD_P(A_P+B_P)},
+  \end{equation}
+\end{subequations}
 
-\[=\left(\begin{matrix}
-  \sigma_1^2\frac{2^{1-\nu_1}}{\Gamma(\nu_1)}(a_1\|x\|)^\nu_1 K_{\nu_1}(a_2\|x\|) & \rho_{12}\sigma_1\sigma_2\frac{2^{1-\nu_{12}}}{\Gamma(\nu_{12})}(a\|x\|)^{\nu_{12}} K_{\nu_{12}}(a_{12}\|x\|) \\ & \\
-  \rho_{12}\sigma_1\sigma_2\frac{2^{1-\nu_{12}}}{\Gamma(\nu_{12})}(a\|x\|)^{\nu_{12}} & \sigma_2^2\frac{2^{1-\nu_1}}{\Gamma(\nu_1)}(a_1\|x\|)^\nu_1 K_{\nu_1}(a_2\|x\|)
-\end{matrix}\right)\]
+where
+\(M(\pmb x|\nu,\kappa)=\frac{2^{1-\nu}}{\Gamma(\nu)}(\kappa\|\pmb x\|)^\nu K_\nu(\kappa\|\pmb x\|)\)
+is the Matern spatial correlation function.
 
-\[C(\pmb x)=\left(\begin{matrix}
-  a_H\sigma_H^2\|\pmb x\|K_1(a_H\|\pmb x\|) & a_{HP}\rho_{HP}\sigma_H\sigma_P\|\pmb x\|K_1(a_{HP}\|\pmb x\|) \\ & \\
-  a_{PH}\rho_{PH}\sigma_H\sigma_P\|\pmb x\|K_1(a_{PH}\|\pmb x\|) & a_P\sigma_P^2\|\pmb x\|K_1(a_P\|\pmb x\|)
-\end{matrix}\right)\]
+The interspecific cross covariance function does not lend to a simple
+closed form expression. Instead, we can see the corresponding component
+of the power spectrum matrix is the sum of convolutions of Matern
+correlation functions with Bessel functions. In particular, denoting
+\(f*g\) the convolution of two functions \(f(\pmb x),g(\pmb x)\), we
+have
 
-has power spectrum matrix
-
-From Hu 2012, we have \(\alpha_{ii}=\nu_{ii}+1\) and
+\begin{multline}
+  C_{HP}(\pmb x) \approx \frac{2G_HB_H}{N_PD_HD_P(A_P+B_P)}K_0\left(\sqrt{\frac{2G_H}{D_H}(A_H-B_H)}\|\pmb x\|\right)*M\left(\pmb x\Big|1,\sqrt{\frac{2G_P}{D_P}(A_P+B_P)}\right) \\ + \frac{2G_PB_P}{N_HD_HD_P(A_H-B_H)}K_0\left(\sqrt{\frac{2G_P}{D_P}(A_P+B_P)}\|\pmb x\|\right) * M\left(\pmb x\Big|1,\sqrt{\frac{2G_H}{D_H}(A_H-B_H)}\right).
+\end{multline}
 
 \newpage
 
