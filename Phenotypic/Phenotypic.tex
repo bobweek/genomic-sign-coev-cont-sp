@@ -890,6 +890,59 @@ to
 \end{subequations}
 \newpage
 
+\hypertarget{environmental-heterogeneity}{%
+\section{Environmental
+Heterogeneity}\label{environmental-heterogeneity}}
+
+We can extend our model to allow the abiotic optimum, representing
+environmental condition, to vary across space. We now denote
+\(\Theta_H(\pmb x),\Theta_P(\pmb x)\) the random fields corresponding to
+the abiotic optimum at location \(\pmb x\) for the host and parasite
+respectively. Then, assuming the abiotic optima follow Whittle
+covariance functions, we have
+
+\begin{subequations}
+  \begin{equation}
+    G_HA_H(\Theta_H-\bar Z_H)-G_HB_H(\bar Z_P-\bar Z_H)+\frac{D_H}{2}\Delta\bar Z_H=\sqrt\frac{G_H}{N_H}\dot W_H,
+  \end{equation}
+  \begin{equation}
+    G_PA_P(\Theta_P-\bar Z_P)+G_PB_P(\bar Z_H-\bar Z_P)+\frac{D_P}{2}\Delta\bar Z_P=\sqrt\frac{G_P}{N_P}\dot W_P,
+  \end{equation}
+  \begin{equation}
+    \gamma_H(\theta_H-\Theta_H)+\frac{R_H}{2}\Delta\Theta_H=\dot Q_H,
+  \end{equation}
+  \begin{equation}
+    \gamma_P(\theta_P-\Theta_P)+\frac{R_P}{2}\Delta\Theta_P=\dot Q_P,
+  \end{equation}
+\end{subequations}
+
+where \(\dot Q_H,\dot Q_P\) are spatial white-noise processes driving
+the abiotic optima, \(\gamma_H,\gamma_P\) determine the variance around
+the deterministic and spatially homogeneous \(\theta_H,\theta_P\) and
+\(R_H,R_P\) determine the spatial covariance (but not cross-covariance)
+of the abiotic optima. This model can be further generalized so that
+\(\Theta_H(\pmb x),\Theta_P(\pmb x)\) follow general Matern covariance
+functions to get
+
+\begin{subequations}
+  \begin{equation}
+    G_HA_H(\Theta_H-\bar Z_H)-G_HB_H(\bar Z_P-\bar Z_H)+\frac{D_H}{2}\Delta\bar Z_H=\sqrt\frac{G_H}{N_H}\dot W_H,
+  \end{equation}
+  \begin{equation}
+    G_PA_P(\Theta_P-\bar Z_P)+G_PB_P(\bar Z_H-\bar Z_P)+\frac{D_P}{2}\Delta\bar Z_P=\sqrt\frac{G_P}{N_P}\dot W_P,
+  \end{equation}
+  \begin{equation}
+    \gamma_H\theta_H+\left(-\gamma_H+\frac{R_H}{2}\Delta\right)^{\beta_H/2}\Theta_H=\dot Q_H,
+  \end{equation}
+  \begin{equation}
+    \gamma_P\theta_P\left(-\gamma_P+\frac{R_P}{2}\Delta\right)^{\beta_P/2}\Theta_P=\dot Q_P.
+  \end{equation}
+\end{subequations}
+
+Now \(\beta_H,\beta_P\) determine long-range spatial correlations of the
+abiotic optima (with themselves, not each other) along with the
+roughness of the fields \(\Theta_H,\Theta_P\).
+
 \hypertarget{references}{%
 \section*{References}\label{references}}
 \addcontentsline{toc}{section}{References}
