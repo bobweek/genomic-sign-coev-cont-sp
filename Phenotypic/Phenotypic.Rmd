@@ -538,7 +538,53 @@ Since $\bar z_P,\bar z_H$ are spatially homogeneous, this simplifies to
     \mathbb E[\Delta_P(\pmb x)] = B_P\left[C_{HP}(\pmb 0) - C_{HP}(\pmb x) \right].
   \end{equation}
 \end{subequations}
-\newpage
+
+## Comparing Interspecific Fitnesses
+
+\begin{multline}
+  \Delta(\pmb x) = \bar m_H(\pmb 0,\pmb x) - \bar m_P(\pmb x,\pmb 0) \\ 
+    = (r_H-r_P)-\frac{1}{2}\left[A_H(\theta_H-\bar Z_H(\pmb 0))^2-A_P(\theta_P-\bar Z_P(\pmb x))^2+(B_H+B_P)(\bar Z_H(\pmb 0)-\bar Z_P(\pmb x))^2\right. \\
+      -\left.(A_H-B_H+B_P)\sigma_H^2+(A_P+B_P+B_H)\sigma_P^2\right]
+\end{multline}
+
+\begin{multline}
+  \mathbb E[\Delta(\pmb x)] = (r_H-r_P)-\frac{1}{2}\left[A_H(\theta_H-\bar z_H)^2+A_HC_{HH}(\pmb 0)-A_P(\theta_P-\bar Z_P(\pmb x))^2-A_PC_{PP}(\pmb 0)\right. \\
+      \left. +(B_H+B_P)(\bar z_H-\bar z_P)^2+(B_H+B_P)[C_{PP}(\pmb 0) + C_{HH}(\pmb 0) - 2C_{HP}(\pmb x)]\right. \\
+        \left. -(A_H-B_H+B_P)\sigma_H^2+(A_P+B_P+B_H)\sigma_P^2\right].
+\end{multline}
+
+Using equilibrium expressions for $\bar z_H,\bar z_P$ and assuming $\theta_H=\theta_P$, _Mathematica_ yields
+
+\begin{multline}
+  \mathbb E[\Delta(\pmb x)] = (r_H-r_P) + \frac{1}{2}\left[(B_H-A_H-B_P)\sigma_H^2+(A_P+B_P+B_H)\sigma_P^2 \right. \\
+      \left. + (B_P-A_H-B_H)C_{HH}(\pmb 0)+(A_P+B_P-B_H)C_{PP}(\pmb 0)\right] + (B_P-B_H)C_{HP}(\pmb x)
+\end{multline}
+
+## Using Expected Lifetime Reproductive Output
+
+Individual fitness determined by interactions between individuals drawn from different locations and averaged across the diversity found in those locations are given by
+
+\begin{subequations}
+  \begin{equation}
+    \bar w_H (\pmb x,\pmb y) = \exp\left(r_H - \frac{1}{2}\frac{(\theta_H-\bar Z_H(\pmb x))^2}{\sigma_H^2+1/A_H} + \frac{1}{2}\frac{(\bar Z_P(\pmb y)-\bar Z_H(\pmb x))^2}{\sigma_H^2+\sigma_P^2+1/B_H}\right),
+  \end{equation}
+  \begin{equation}
+    \bar w_P (\pmb y,\pmb x) = \exp\left(r_P - \frac{1}{2}\frac{(\theta_P-\bar Z_P(\pmb y))^2}{\sigma_P^2+1/A_P} - \frac{1}{2}\frac{(\bar Z_H(\pmb x)-\bar Z_P(\pmb y))^2}{\sigma_H^2+\sigma_P^2+1/B_P}\right).
+  \end{equation}
+\end{subequations}
+
+Then, an analogous metric for adaptation at spatial lag $\pmb x$ is given by
+
+\begin{subequations}
+  \begin{equation}
+    \rho_H (\pmb x) = \bar w_H (\pmb 0,\pmb 0)/\bar w_H (\pmb 0,\pmb x)=\sqrt{\exp\left(\frac{(\bar Z_P(\pmb 0)-\bar Z_H(\pmb 0))^2}{\sigma_H^2+\sigma_P^2+1/B_H}-\frac{(\bar Z_P(\pmb x)-\bar Z_H(\pmb 0))^2}{\sigma_H^2+\sigma_P^2+1/B_H}\right)},
+  \end{equation}
+  \begin{equation}
+    \rho_P (\pmb x) = \bar w_P (\pmb 0,\pmb 0)/\bar w_P (\pmb 0,\pmb x)=\sqrt{\exp\left(\frac{(\bar Z_H(\pmb x)-\bar Z_P(\pmb 0))^2}{\sigma_H^2+\sigma_P^2+1/B_P}-\frac{(\bar Z_H(\pmb 0)-\bar Z_P(\pmb 0))^2}{\sigma_H^2+\sigma_P^2+1/B_P}\right)}.
+  \end{equation}
+\end{subequations}
+
+Not sure this is helping...
 
 # Environmental Heterogeneity
 
@@ -561,7 +607,6 @@ We can extend our model to allow the abiotic optimum, representing environmental
 
 where $\dot Q_H,\dot Q_P$ are spatial white-noise processes driving the abiotic optima, $\gamma_H,\gamma_P$ determine the variance around the deterministic and spatially homogeneous $\theta_H,\theta_P$ and $R_H,R_P$ determine the spatial covariance (but not cross-covariance) of the abiotic optima. This model can be further generalized so that $\Theta_H(\pmb x),\Theta_P(\pmb x)$ follow general Matern covariance functions to get
 
-
 \begin{subequations}
   \begin{equation}
     G_HA_H(\Theta_H-\bar Z_H)-G_HB_H(\bar Z_P-\bar Z_H)+\frac{D_H}{2}\Delta\bar Z_H=\sqrt\frac{G_H}{N_H}\dot W_H,
@@ -578,6 +623,8 @@ where $\dot Q_H,\dot Q_P$ are spatial white-noise processes driving the abiotic 
 \end{subequations}
 
 Now $\beta_H,\beta_P$ determine long-range spatial correlations of the abiotic optima (with themselves, not each other) along with the roughness of the fields $\Theta_H,\Theta_P$.
+
+\newpage
 
 # References
 
