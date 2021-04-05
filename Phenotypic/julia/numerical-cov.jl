@@ -139,7 +139,7 @@ Cₕₚ = function (l₁, u₁, s₁, l₂, u₂, s₂, p)
     K₀ₚM₁ₕ = conv(K₀ₚ, M₁ₕ)
     K₀ₕM₁ₚ = conv(K₀ₕ, M₁ₚ)
 
-    Cₕₚ = 2 * Gₚ * Bₚ * local_varₕ * (K₀ₚM₁ₕ) / Dₚ - 2 * Gₕ * Bₕ * local_varₚ * (K₀ₕM₁ₚ) / Dₕ
+    Cₕₚ = 2 .* Gₚ .* Bₚ .* local_varₕ .* (K₀ₚM₁ₕ) ./ Dₚ .- 2 .* Gₕ .* Bₕ .* local_varₚ .* (K₀ₕM₁ₚ) ./ Dₕ
 
     return(Cₕₚ)
 
@@ -179,9 +179,9 @@ plotSpCorr = function (m,s,p)
     # make array with correlations on columns
     L = length(U)-1
     ρs = hcat(CHH / local_varₕ, CPP / local_varₚ, CHP[(L-1):(2 * L - 1),L] / abs(CHP[L,L]))
-    plot(U, ρs,label=["ρₕ" "ρₚ" "ρₕₚ"],title=ttle)
+    plot(U, ρs,label=["ρₕ" "ρₚ" "ρₕₚ"],title=ttle, legendfontsize=10)
     ylabel!("Trait Correlation")
-    # xlabel!("Spatial Lag")
+    xlabel!("Spatial Lag")
 
 end
 
@@ -196,8 +196,8 @@ plotLocAdapt = function (m,s,p)
     @unpack Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,Dₕ,Dₚ,rₕ,rₚ,σₕ²,σₚ² = p
     
     # these are same as Cₕₕ(0,p) and Cₚₚ(0,p) resp.
-    local_varₕ = 1 / (Nₕ * Dₕ * (Aₕ - Bₕ))
-    local_varₚ = 1 / (Nₚ * Dₚ * (Aₚ + Bₚ))
+    # local_varₕ = 1 / (Nₕ * Dₕ * (Aₕ - Bₕ))
+    # local_varₚ = 1 / (Nₚ * Dₚ * (Aₚ + Bₚ))
 
     # compute cross-covariance function
     CHP = Cₕₚ(-m,m,s,-m,m,s,p)
@@ -209,58 +209,61 @@ plotLocAdapt = function (m,s,p)
     CHP0 = CHP[L,L]
     CHPX = CHP[(L-1):(2 * L - 1),L]
 
-    Δₕ = Bₕ .* (CHPX .- CHP0)
-    Δₚ = Bₚ .* (CHP0 .- CHPX)
+    Δₕ = Bₕ .* (CHP0 .- CHPX)
+    Δₚ = Bₚ .* (CHPX .- CHP0)
     # Δₕₚ = (rₕ-rₚ) .+ (Bₚ-Bₕ).*CHPX .+ ( (Bₕ-Aₕ-Bₚ)*σₕ² + (Aₚ+Bₚ+Bₕ)*σₚ² + (Bₚ-Aₕ-Bₕ)*local_varₕ + (Aₚ+Bₚ-Bₕ)*local_varₚ )/2    
 
     # make array with LA measures on columns    
     las = hcat(Δₕ, Δₚ)
-    plot(U, las,label=["Δₕ" "Δₚ"])
+    plot(U, las,label=["Δₕ" "Δₚ"], legendfontsize=10)
     ylabel!("Fitness Difference")
     xlabel!("Spatial Lag")
 
 end
 
 # same dispersal distances
-p = CoevPars(Gₚ = 10, Gₕ = 10, σₕ²=10, σₚ²=10, Nₕ = 1000, Nₚ = 1000, Aₕ = 0.1, Aₚ = 0.1, Bₕ = 0.01, Bₚ = 0.01, Dₕ = 10, Dₚ = 10, rₕ = 0, rₚ = 0)
-eqCorr = plotSpCorr(10,0.1,p)
-eqLA = plotLocAdapt(10,0.1,p)
-plot(eqCorr, eqLA, layout = (2,1), size = (400,600))
+p = CoevPars(Gₚ = 10, Gₕ = 10, σₕ²=10, σₚ²=10, Nₕ = 10, Nₚ = 10, Aₕ = 0.1, Aₚ = 0.1, Bₕ = 0.05, Bₚ = 0.05, Dₕ = 10, Dₚ = 10, rₕ = 0, rₚ = 0)
+eqCorr = plotSpCorr(40,0.1,p)
+eqLA = plotLocAdapt(40,0.1,p)
+plot(eqCorr, eqLA, xlims=(0,20), layout = (2,1), size = (400,600))
 savefig("/home/bb/Projects/The Genomic Signature of Coevolution in Continuous Space/Phenotypic/julia/eq-pars.png")
 
-# host disperses further than parasite
-p = CoevPars(Gₚ = 10, Gₕ = 10, σₕ²=10, σₚ²=10, Nₕ = 1000, Nₚ = 1000, Aₕ = 0.1, Aₚ = 0.1, Bₕ = 0.01, Bₚ = 0.01, Dₕ = 20, Dₚ = 10, rₕ = 0, rₚ = 0)
-Corr = plotSpCorr(10,0.1,p)
-LA = plotLocAdapt(10,0.1,p)
-plot(Corr, LA, layout = (2,1), size = (400,600))
-savefig("/home/bb/Projects/The Genomic Signature of Coevolution in Continuous Space/Phenotypic/julia/h-further.png")
-
 # parasite disperses further than host
-p = CoevPars(Gₚ = 10, Gₕ = 10, σₕ²=10, σₚ²=10, Nₕ = 1000, Nₚ = 1000, Aₕ = 0.1, Aₚ = 0.1, Bₕ = 0.01, Bₚ = 0.01, Dₕ = 10, Dₚ = 20, rₕ = 0, rₚ = 0)
-Corr = plotSpCorr(10,0.1,p)
-LA = plotLocAdapt(10,0.1,p)
-plot(Corr, LA, layout = (2,1), size = (400,600))
+p = CoevPars(Gₚ = 10, Gₕ = 10, σₕ²=10, σₚ²=10, Nₕ = 10, Nₚ = 10, Aₕ = 0.1, Aₚ = 0.1, Bₕ = 0.05, Bₚ = 0.05, Dₕ = 10, Dₚ = 100, rₕ = 0, rₚ = 0)
+Corrp = plotSpCorr(40,0.1,p)
+LAp = plotLocAdapt(40,0.1,p)
+plot(Corrp, LAp, xlims=(0,20), layout = (2,1), size = (400,600))
 savefig("/home/bb/Projects/The Genomic Signature of Coevolution in Continuous Space/Phenotypic/julia/p-further.png")
 
+
+# host disperses a little bit further than parasite
+p = CoevPars(Gₚ = 10, Gₕ = 10, σₕ²=10, σₚ²=10, Nₕ = 10, Nₚ = 10, Aₕ = 0.1, Aₚ = 0.1, Bₕ = 0.05, Bₚ = 0.05, Dₕ = 20, Dₚ = 10, rₕ = 0, rₚ = 0)
+Corrhl = plotSpCorr(40,0.1,p)
+LAhl = plotLocAdapt(40,0.1,p)
+plot(Corrhl, LAhl, xlims=(0,20), layout = (2,1), size = (400,600))
+savefig("/home/bb/Projects/The Genomic Signature of Coevolution in Continuous Space/Phenotypic/julia/h-l-further.png")
+
+# host disperses an intermediate bit further than parasite
+p = CoevPars(Gₚ = 10, Gₕ = 10, σₕ²=10, σₚ²=10, Nₕ = 10, Nₚ = 10, Aₕ = 0.1, Aₚ = 0.1, Bₕ = 0.05, Bₚ = 0.05, Dₕ = 50, Dₚ = 10, rₕ = 0, rₚ = 0)
+Corrhi = plotSpCorr(40,0.1,p)
+LAhi = plotLocAdapt(40,0.1,p)
+plot(Corrhi, LAhi, xlims=(0,20), layout = (2,1), size = (400,600))
+savefig("/home/bb/Projects/The Genomic Signature of Coevolution in Continuous Space/Phenotypic/julia/h-i-further.png")
+
 # host disperses much further than parasite
-p = CoevPars(Gₚ = 10, Gₕ = 10, σₕ²=10, σₚ²=10, Nₕ = 1000, Nₚ = 1000, Aₕ = 0.1, Aₚ = 0.1, Bₕ = 0.01, Bₚ = 0.01, Dₕ = 100, Dₚ = 10, rₕ = 0, rₚ = 0)
-plotSpCorr(10,0.1,p)
-plotLocAdapt(10,0.1,p)
+p = CoevPars(Gₚ = 10, Gₕ = 10, σₕ²=10, σₚ²=10, Nₕ = 10, Nₚ = 10, Aₕ = 0.1, Aₚ = 0.1, Bₕ = 0.05, Bₚ = 0.05, Dₕ = 100, Dₚ = 10, rₕ = 0, rₚ = 0)
+Corrh = plotSpCorr(40,0.1,p)
+LAh = plotLocAdapt(40,0.1,p)
+plot(Corrh, LAh, xlims=(0,20), layout = (2,1), size = (400,600))
+savefig("/home/bb/Projects/The Genomic Signature of Coevolution in Continuous Space/Phenotypic/julia/h-further.png")
 
-# parasite disperses much further than host
-p = CoevPars(Gₚ = 10, Gₕ = 10, σₕ²=10, σₚ²=10, Nₕ = 1000, Nₚ = 1000, Aₕ = 0.1, Aₚ = 0.1, Bₕ = 0.01, Bₚ = 0.01, Dₕ = 10, Dₚ = 100, rₕ = 0, rₚ = 0)
-plotSpCorr(10,0.1,p)
-plotLocAdapt(10,0.1,p)
+plot(Corrp, eqCorr, Corrhl, Corrhi, Corrh, eqLA, LAp, LAhl, LAhi, LAh, xlims=(0,40), layout=(2,5), size=(1600,600))
+savefig("/home/bb/Projects/The Genomic Signature of Coevolution in Continuous Space/Phenotypic/julia/corrs-las.png")
 
-# host experiences stronger biotic selection than parasite
-p = CoevPars(Gₚ = 10, Gₕ = 10, σₕ²=10, σₚ²=10, Nₕ = 1000, Nₚ = 1000, Aₕ = 0.1, Aₚ = 0.1, Bₕ = 0.05, Bₚ = 0.01, Dₕ = 10, Dₚ = 10, rₕ = 0, rₚ = 0)
-plotSpCorr(10,0.1,p)
-plotLocAdapt(10,0.1,p)
-
-# parasite experiences stronger biotic selection than host
-p = CoevPars(Gₚ = 10, Gₕ = 10, σₕ²=10, σₚ²=10, Nₕ = 1000, Nₚ = 1000, Aₕ = 0.1, Aₚ = 0.1, Bₕ = 0.01, Bₚ = 0.05, Dₕ = 10, Dₚ = 10, rₕ = 0, rₚ = 0)
-plotSpCorr(10,0.1,p)
-plotLocAdapt(10,0.1,p)
+#
+# should change strengths of biotic selection to see how
+# that changes spatial correlations
+#
 
 #
 # can we fit a matern corr function to ρₕₚ??
