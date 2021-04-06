@@ -44,11 +44,3 @@ print(f"Species 1 tree sequence now has {p1_ts.num_trees} trees,"
       f" and {p1_ts.num_mutations} mutations.")
 print(f"Species 2 tree sequence now has {p2_ts.num_trees} trees,"
       f" and {p2_ts.num_mutations} mutations.")
-
-p1_tss = tskit.TreeSequence(p1_ts)
-
-# analysis
-p1_ts.pairwise_diversity(p1_ts.individuals_alive_at(0))
-p2_ts.pairwise_diversity(p2_ts.individuals_alive_at(0))
-
-p1_ts.divergence(p1_ts.individuals_alive_at(0))
