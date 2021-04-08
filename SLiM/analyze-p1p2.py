@@ -4,6 +4,7 @@ import tskit
 import msprime
 import numpy as np
 import pandas
+import pprint
 
 # load in slim tree seqs
 p1_ts = pyslim.load(
@@ -30,11 +31,6 @@ p_ts.num_nodes == p1_ts.num_nodes + p2_ts.num_nodes
 #p1_ids = np.arange(p1_ts.num_nodes)
 #p2_ids = p1_ts.num_nodes + np.arange(p2_ts.num_nodes)
 
-# analysis
-p1_ts.pairwise_diversity(p1_ts.individuals_alive_at(0))
-p2_ts.pairwise_diversity(p2_ts.individuals_alive_at(0))
-p_ts.pairwise_diversity(p_ts.individuals_alive_at(0))
-
 # p1 & p2 alive at t=0 referenced in unioned tree seq
 pp1_t0 = np.intersect1d(p_ts.individuals_alive_at(0), p1_ts.individuals_alive_at(0))
 pp2_t0 = np.intersect1d(p_ts.individuals_alive_at(0), len(
@@ -46,7 +42,41 @@ p_ts.pairwise_diversity(pp1_t0) == p1_ts.pairwise_diversity(
 p_ts.pairwise_diversity(pp2_t0) == p2_ts.pairwise_diversity(
     p2_ts.individuals_alive_at(0)) # why not working?
 
-p1_ts.Fst(p1_ts.individuals_alive_at(0))
+
+#
+# trying to relabel populations by species id...
+#
+
+pprint.pprint(p1_ts.metadata_schema)
+
+tflag = p1_ts.tables.nodes.flags
+ttime = p1_ts.tables.nodes.time
+tind  = p1_ts.tables.nodes.individual
+p1_ts.tables.metadata_schema
+
+p1_ts.tables.nodes[0]
+
+encoded_metadata_column = [
+    p1_tbls.metadata_schema.validate_and_encode_row(r) for r in metadata_column
+]
+metadata, metadata_offset = tskit.pack_bytes(encoded_metadata_column)
+
+tmeta = p1_ts.tables.nodes.metadata
+
+P1 = np.repeat(1, p1_ts.num_nodes)
+p1_tbls.nodes.set_columns(
+    flags=tflag, time=ttime, population=P1.astype(np.int32), individual=tind, metadata=tmeta)
+
+tflag = p2_ts.tables.nodes.flags
+ttime = p2_ts.tables.nodes.time
+tind  = p2_ts.tables.nodes.individual
+tmeta = p2_ts.tables.nodes.metadata
+p2_tbls.nodes.set_columns(
+    flags=tflag, time=ttime, population=np.repeat(1, p2_ts.num_nodes), individual=tind, metadata=tmeta)
+
+#
+# plotting locations and coloring by trait values
+#
 
 # subset of species one alive at end of simulation
 p1_t0 = p1_ts.individuals_alive_at(0)
@@ -67,9 +97,5 @@ ax = fig.add_subplot(122)
 ax.set_title("Species Two")
 ax.scatter(p2_locs[:, 0], p2_locs[:, 1], s=10, c=p2_locs[:, 2])
 fig.savefig("/home/bb/Projects/The Genomic Signature of Coevolution in Continuous Space/SLiM/coev_sim_locations.png")
-
-p1_ts.tables.nodes[1]
-
-p2_ts.tables.nodes[1].population = 2
 
 # todo: compute spatial autocorrelation and cross-correlation functions
