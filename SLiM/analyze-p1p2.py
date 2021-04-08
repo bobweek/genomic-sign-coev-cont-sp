@@ -8,9 +8,9 @@ import pprint
 
 # load in slim tree seqs
 p1_ts = pyslim.load(
-      "/home/bb/Projects/The Genomic Signature of Coevolution in Continuous Space/SLiM/p1.recap.trees")
+      "/home/bb/gits/genomic-sign-coev-cont-sp/SLiM/p1.recap.trees")
 p2_ts = pyslim.load(
-      "/home/bb/Projects/The Genomic Signature of Coevolution in Continuous Space/SLiM/p2.recap.trees")
+      "/home/bb/gits/genomic-sign-coev-cont-sp/SLiM/p2.recap.trees")
 
 # get tables for each spp
 p1_tbls = p1_ts.dump_tables()
@@ -96,6 +96,6 @@ ax.scatter(p1_locs[:, 0], p1_locs[:, 1], s=10, c=p1_locs[:, 2])
 ax = fig.add_subplot(122)
 ax.set_title("Species Two")
 ax.scatter(p2_locs[:, 0], p2_locs[:, 1], s=10, c=p2_locs[:, 2])
-fig.savefig("/home/bb/Projects/The Genomic Signature of Coevolution in Continuous Space/SLiM/coev_sim_locations.png")
+fig.savefig("/home/bb/gits/genomic-sign-coev-cont-sp/SLiM/coev_sim_locations.png")
 
 # todo: compute spatial autocorrelation and cross-correlation functions
