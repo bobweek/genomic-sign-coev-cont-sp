@@ -5,7 +5,7 @@ import numpy as np
 import pandas
 
 slim_ts = pyslim.load(
-      "/home/bb/Projects/The Genomic Signature of Coevolution in Continuous Space/SLiM/coev_sim.trees")
+      "/home/bb/gits/genomic-sign-coev-cont-sp/SLiM/coev_sim.trees")
 print(f"The tree sequence has {slim_ts.num_trees} trees on a genome of length {slim_ts.sequence_length},"
       f" {slim_ts.num_individuals} individuals, {slim_ts.num_samples} 'sample' genomes,"
       f" and {slim_ts.num_mutations} mutations.")
@@ -36,8 +36,8 @@ sum([t.num_roots == 1 for t in p1_ts.trees()]) == len(p1_ts.trees())
 sum([t.num_roots == 1 for t in p2_ts.trees()]) == len(p2_ts.trees())
 
 # save recapped trees
-p1_ts.dump("/home/bb/Projects/The Genomic Signature of Coevolution in Continuous Space/SLiM/p1.recap.trees")
-p2_ts.dump("/home/bb/Projects/The Genomic Signature of Coevolution in Continuous Space/SLiM/p2.recap.trees")
+p1_ts.dump("/home/bb/gits/genomic-sign-coev-cont-sp/SLiM/p1.recap.trees")
+p2_ts.dump("/home/bb/gits/genomic-sign-coev-cont-sp/SLiM/p2.recap.trees")
 
 # print some output
 print(f"Species 1 tree sequence now has {p1_ts.num_trees} trees,"

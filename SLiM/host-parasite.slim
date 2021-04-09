@@ -22,11 +22,12 @@ initialize() {
 	defineConstant("c", 2*w); 				// is the mean change 2w or 3w
 	
 	defineConstant("gamma", 0.01);	// sensitivity of interaction outcome to trait difference
-	defineConstant("L1", 5e7); 		// length of qtl chromosome
-	defineConstant("L2", 5e7); 		// length of neutral chromosome	
+	defineConstant("L1", 1e4); 		// length of qtl chromosome
+	defineConstant("L2", 1e8); 		// length of neutral chromosome	
 	defineConstant("hc", 0.95); 		// multiplicative cost on host fitness for each infection
 	defineConstant("pc", 0.8); 		// multiplicative cost on parasite fitness for failing to infect
 	defineConstant("pb", 1.1); 		// multiplicative benefit on parasite fitness for successful infection
+	defineConstant("Age", c(0.0, 1.0)); // for forcing non-overlapping generations
 	
 	initializeMutationType("m1", 0.5, "n", 0.0, 0.1);
 	initializeMutationType("m2", 0.5, "n", 0.0, 0.1);
@@ -44,7 +45,7 @@ initialize() {
 	initializeGenomicElementType("g2", c(m3, m4), c(1, 1)); // mutation proportions
 	initializeGenomicElement(g2, L1, L1+L2-1);
 	
-	initializeMutationRate(1e-8);
+	initializeMutationRate(c(1e-4,0.0),c(L1-1,L1+L2-1));  // mutation rate of 1e-8 at qtls, but zero at neutral loci
 	initializeRecombinationRate(c(1e-8,0.5,1e-8),c(L1-1,L1,L1+L2-1)); // set break point between positions L1-1 and L1
 	
 	// host spatial competition
