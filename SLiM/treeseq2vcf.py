@@ -62,7 +62,7 @@ fig.savefig("/home/bb/gits/genomic-sign-coev-cont-sp/SLiM/coev_sim_locations.png
 # positions and vcf files for the host (p1)
 indivlist = []
 indivnames = []
-with open("host", "w") as indfile:
+with open("host.txt", "w") as indfile:
     indfile.writelines("\t".join(["vcf_label"]
                                + ["time", "x", "y", "z"]) + "\n") #this is whatever metadata you're interested in
     for i in range(p1_ts.num_individuals):
@@ -79,7 +79,7 @@ with open("host.vcf", "w") as vcffile:
 # positions and vcf files for the parasite (p2)
 indivlist = []
 indivnames = []
-with open("parasite", "w") as indfile:
+with open("parasite.txt", "w") as indfile:
     indfile.writelines("\t".join(["vcf_label"]
                                + ["time", "x", "y", "z"]) + "\n") #this is whatever metadata you're interested in
     for i in range(p2_ts.num_individuals):
