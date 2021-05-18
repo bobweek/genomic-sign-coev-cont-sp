@@ -1,0 +1,268 @@
+initialize() {
+	
+	initializeSLiMModelType("nonWF");
+	initializeSLiMOptions(dimensionality="xy",periodicity="xy");
+	initializeTreeSeq();
+	
+	sigma_i 	= 1; // area for individulas to mate
+	sigma_in = 0.5; // i want more of a decrease in fitness when there are too many neighbors!
+	
+	defineConstant("sigma_M", 0.33); 	// the meeting interaction term
+	defineConstant("SD", 1.0);  			// sigma_D, the dispersal distance
+	defineConstant("SI", 1.0);  			// sigma_I, the spatial interaction distance
+	defineConstant("SM", SD);  			// sigma_M, the mate choice distance
+	defineConstant("W", 100.0);  			// width and height of the simulated area
+	defineConstant("FECUN", 1); 			// mean fecundity (since parents not replaced by offspring, this is like w=2)
+	defineConstant("c", 0.005); 			// strength of competition
+	defineConstant("U", 2.0);				// total (spatial) niche use (~=activity level)
+	defineConstant("lambda", 1.0);		// (spatial) niche breadth (~=dispersal distance)
+	
+	defineConstant("gamma", 0.01);	// sensitivity of interaction outcome to trait difference
+	defineConstant("eta", 0.01);		// variance of environmental deviation (for traits that are not perfectly heritable)
+	defineConstant("L1", 10); 			// length of qtl chromosome (try 10, 100, 1000)
+	defineConstant("L2", 1e4); 		// length of neutral chromosome	
+	defineConstant("Q1", 0:(L1-1));  // remember positions of QTLs for spp1
+	defineConstant("Q2", L1:(2*L1-1));   // remember positions of QTLs for spp2
+	defineConstant("hc", 0.9); 		// multiplicative cost on host fitness for each infection
+	defineConstant("pc", 0.7); 		// multiplicative cost on parasite fitness for failing to infect
+	defineConstant("pb", 1.1); 		// multiplicative benefit on parasite fitness for successful infection
+	defineConstant("Age", c(0.0, 1.0)); // for forcing non-overlapping generations
+	
+	// each QTL has two possible alleles:	
+	// 	those that contribute positively to the trait and those that contribute negatively
+	// the magnitude of effects are scaled by sqrt(L1) to prevent additive genetic var incr w/ L1
+	
+	// we make two sets of QTLs, one for each species
+	// the first set of QTLs will be ignored by spp 2
+	// the second set of QTLs will be ignored by spp 1
+	
+	scriptForQTLs = "if (runif(1) < 0.5) -1/sqrt(L1); else 1/sqrt(L1);";
+	initializeMutationType("m1", 0.5, "s", scriptForQTLs);
+	initializeMutationType("m2", 0.5, "s", scriptForQTLs);
+	// initializeMutationType("m1", 0.5, "n", 0.0, 0.1); // these options lead to too many alleles per locus
+	// initializeMutationType("m2", 0.5, "n", 0.0, 0.1);
+	initializeMutationType("m3", 0.5, "f", 0.0);
+	initializeMutationType("m4", 0.5, "f", 0.0);
+	
+	m1.convertToSubstitution = F;  // these define QTL's and thus need to be kept
+	m1.mutationStackPolicy = "l";  // instead of stacking, use last mutation
+	m1.color = "yellow";	
+	m2.convertToSubstitution = F;  // these define QTL's and thus need to be kept
+	m2.mutationStackPolicy = "l";	 // instead of stacking, use last mutation
+	m2.color = "red";
+	m3.color = "green";
+	m4.color = "magenta";
+	
+	initializeGenomicElementType("g1", m1, 1.0); // QTL region for spp1
+	initializeGenomicElement(g1, 0, L1-1);
+	initializeGenomicElementType("g2", m2, 1.0); // QTL region for spp2
+	initializeGenomicElement(g2, L1, 2*L1-1);
+	initializeGenomicElementType("g3", c(m3, m4), c(1, 1)); // neutral region
+	initializeGenomicElement(g3, 2*L1, 2*L1+L2-1);
+	
+	// for some reason, if the mutation rate is too high, it seems we get multiple alleles at a locus
+	// this could be an issue that we resolve at the output using code
+	// that quotients out alleles by their effect (+/-)
+	
+	// mutation rate of 1e-5 at qtls, but zero at neutral loci
+	initializeMutationRate(c(1e-5,0),c(2*L1-1,2*L1+L2)); 
+	
+	// make QTLs unlinked and set break point between positions L1-1 and L1
+	// so that QTLs are on diff chrom than neutral loci
+	initializeRecombinationRate(c(0.5,1e-8),c(2*L1-1,2*L1+L2));
+	
+	// host spatial competition
+	initializeInteractionType(1, "xy", reciprocal=T, maxDistance=3*2*lambda);
+	i1.setInteractionFunction("n", U*U, 2*lambda);
+
+	// parasite spatial competition
+	initializeInteractionType(2, "xy", reciprocal=T, maxDistance=3*2*lambda);
+	// do i need this second interaction type?
+	i2.setInteractionFunction("n", U*U, 2*lambda);
+
+	// host mate choice
+	initializeInteractionType(3, "xy", reciprocal=T, maxDistance=3*2*lambda);
+	i3.setInteractionFunction("n", U*U, 2*lambda);
+	
+	// parasite mate choice
+	initializeInteractionType(4, "xy", reciprocal=T, maxDistance=3*2*lambda);
+	// again, do i need this second interaction type?
+	i4.setInteractionFunction("n", U*U, 2*lambda);
+	
+	// predation/parasitism
+	initializeInteractionType(5, "xy", maxDistance=3*2*lambda);
+	i5.setInteractionFunction("n", U*U, 2*lambda);
+
+}
+
+// to make the mutions truly neutral?
+fitness(m1) { return 1.0; }
+fitness(m2) { return 1.0; }
+
+// host mating
+reproduction(p1) {
+	mate = i3.drawByStrength(individual, 1);
+	if (mate.size()) {
+		nOff = rpois(1, FECUN);
+		for (i in seqLen(nOff)) {
+			pos = 0.5*(individual.spatialPosition+mate.spatialPosition) + rnorm(2, 0, lambda); // add dispersal
+			offspring = subpop.addCrossed(individual, mate);			
+			if (p1.pointInBounds(pos)) {				
+				offspring.setSpatialPosition(pos);
+			}else offspring.setSpatialPosition(p1.pointPeriodic(pos)); // enforce periodic boundaries
+		}
+	}
+	return;
+}
+
+// parasite mating
+reproduction(p2) {
+	mate = i4.drawByStrength(individual, 1);
+	if (mate.size()) {
+		nOff = rpois(1, FECUN);
+		for (i in seqLen(nOff)) {
+			pos = 0.5*(individual.spatialPosition+mate.spatialPosition) + rnorm(2, 0, lambda); // add dispersal
+			offspring = subpop.addCrossed(individual, mate);			
+			if (p2.pointInBounds(pos)) {				
+				offspring.setSpatialPosition(pos);
+			}else offspring.setSpatialPosition(p2.pointPeriodic(pos)); // enforce periodic boundaries
+		}
+	}
+	return;
+}
+
+1 early() {
+	sim.addSubpop("p1", asInteger(1 * W * W));
+	sim.addSubpop("p2", asInteger(1 * W * W));
+	p1.setSpatialBounds(c(0, 0, W, W));
+	p2.setSpatialBounds(c(0, 0, W, W));
+	
+	// random initial positions
+	for (ind in p1.individuals) {
+		ind.setSpatialPosition(p1.pointUniform());
+	}
+	for (ind in p2.individuals) {
+		ind.setSpatialPosition(p2.pointUniform());
+	}
+
+	// initiates standing variation
+	g = sim.subpopulations.genomes;
+	for (q in Q1){
+		isPlus = asLogical(rbinom(size(g), 1, 0.5));
+		g[isPlus].addNewMutation(m1, 1.0, q);
+		g[!isPlus].addNewMutation(m1, -1.0, q);
+	}
+	for (q in Q2){
+		isPlus = asLogical(rbinom(size(g), 1, 0.5));
+		g[isPlus].addNewMutation(m2, 1.0, q);
+		g[!isPlus].addNewMutation(m2, -1.0, q);
+	}	
+	
+	i1.evaluate(); // why is this here??
+	i2.evaluate(); // why is this here??
+}
+
+early() {
+
+	// removing mutations that apear in the wrong population
+	muts1 = sim.mutationsOfType(m1);  // host mutations
+	muts2 = sim.mutationsOfType(m2);  // parasite mutations
+	muts3 = sim.mutationsOfType(m3);  // host mutations
+	muts4 = sim.mutationsOfType(m4);  // parasite mutations	
+	p1.individuals.genomes.removeMutations(muts2);
+	p2.individuals.genomes.removeMutations(muts1);
+	p1.individuals.genomes.removeMutations(muts4);
+	p2.individuals.genomes.removeMutations(muts3);	
+
+	i1.evaluate(p1); // prepares host pop for competition
+	i2.evaluate(p2); // prepares para pop for competition
+	i5.evaluate(p1); // prepares both pops for intxn
+	
+	inds_h = p1.individuals;
+	inds_p = p2.individuals;
+	
+	// find number of host neighbors for each host
+	host_competition = i1.totalOfNeighborStrengths(p1.individuals);
+	parasite_competition = i2.totalOfNeighborStrengths(p2.individuals);
+	
+	// fitness fx of intraspp competition
+	p1.individuals.fitnessScaling = exp(-c*host_competition);
+	p2.individuals.fitnessScaling = exp(-c*parasite_competition);		
+	
+	// caculating the phenotype as sum of loci with mutation
+	// normal deviates for imperfect heritability
+	phenotypes_h = inds_h.sumOfMutationsOfType(m1); //+ rnorm(p1.individualCount,0,eta); 
+	phenotypes_p = inds_p.sumOfMutationsOfType(m2); //+ rnorm(p2.individualCount,0,eta);
+	
+	// construct phenotypes and fitness effects from QTLs 
+	p1.individuals.z = phenotypes_h;
+	p2.individuals.z = phenotypes_p;
+	
+	for (ind in p1.individuals){
+		// periodic coloring so that hue wraps with every 4 phenotypic units
+		hue = (0.02*ind.z + 0.5)%1.0; 
+		ind.color = rgb2color(hsv2rgb(c(hue, 1.0, 1.0)));
+	}
+	for (ind in p2.individuals){
+		hue = (0.02*ind.z + 0.5)%1.0;
+		ind.color = rgb2color(hsv2rgb(c(hue, 1.0, 1.0)));
+	}
+	
+	// avoid edge effects // for when we weren't doing periodic boundaries
+	//p1.individuals.fitnessScaling = p1.individuals.fitnessScaling * pmin(sqrt(p1.individuals.x/SI), 1.0) * pmin(sqrt(p1.individuals.y/SI), 1.0) * pmin(sqrt((W - p1.individuals.x)/SI), 1.0) * pmin(sqrt((W - p1.individuals.y)/SI), 1.0);
+	//p2.individuals.fitnessScaling = p2.individuals.fitnessScaling * pmin(sqrt(p2.individuals.x/SI), 1.0) * pmin(sqrt(p2.individuals.y/SI), 1.0) * pmin(sqrt((W - p2.individuals.x)/SI), 1.0) * pmin(sqrt((W - p2.individuals.y)/SI), 1.0);
+	
+	//	bounds = p2.spatialBounds; // what this?
+	
+	
+	// find number of hosts near each parasite and choose a random host from nearby for a potental interaction
+	// uniform dist based on the distance (how close they are) if they are going to interact, stepping through each of the hostneighbor and picking which one to eat. p could be 0.1 like 10% chance of parasite running into host 
+	//want to put a higher change on sankes encountering a host if there are a lot of hosts near by
+	
+	// do we need to permute the order of parasites to eliminate bias?
+	for (ind_parasite in p2.individuals){ // for each parasite
+	
+		// pull out spatial coords of parasite
+		mPoint = c(ind_parasite.x,ind_parasite.y);
+		
+		// if there's any hosts out there
+		if ( p1.individualCount > 0 ){
+			// draw nearest neighbors from all of host pop
+			hostNeighbors = i5.nearestNeighborsOfPoint(p1, mPoint, count=p1.individualCount);
+		} else hostNeighbors  = c();	
+		
+		// if there's hosts nearby
+		if (length(hostNeighbors) > 0){
+			
+			// choose one living host at random for parasite to interact with (starting simple, can relax later)
+			host_meet_parasite = hostNeighbors[rdunif(1, 0, length(hostNeighbors)-1)];
+			
+			// calculate trait difference
+			trait_diff = phenotypes_p[ind_parasite.index] - phenotypes_h[host_meet_parasite.index];
+			
+			prob_of_infect = 0.6*exp( -gamma*abs(trait_diff) ); // a trait-match/mismatch model
+			
+			if( runif(1) < prob_of_infect ){					
+				ind_parasite.fitnessScaling = pb*ind_parasite.fitnessScaling; 					// benefit of infection for parasite
+				host_meet_parasite.fitnessScaling = hc*host_meet_parasite.fitnessScaling; 	// cost of infection for host
+			}else ind_parasite.fitnessScaling = pc*ind_parasite.fitnessScaling; 				// cost of failing to infect
+		}else ind_parasite.fitnessScaling = pc*ind_parasite.fitnessScaling; 					// cost of not having anyone to infect
+		// note: each parasite infects at most one host, but each host can be infected by multiple parasites
+		//			hence, if a host is infected by three parasites it will incur the fitness cost of 0.9^3
+	}
+}
+
+1: late() {
+	i3.evaluate(p1);
+	i4.evaluate(p2);
+}
+
+2000 late() {
+	muts = sim.mutationsOfType(m2);
+	plus = muts[muts.selectionCoeff == 1.0];
+	minus = muts[muts.selectionCoeff == -1.0];
+
+	sim.treeSeqOutput("/home/bb/gits/genomic-sign-coev-cont-sp/slim/coev_sim.trees");
+	catn("Done.");
+   sim.simulationFinished();
+}

@@ -1,0 +1,630 @@
+---
+title: The Phenotypic Signature of Host-Parasite Coevolution in Continuous Space
+authors:
+  - name: Bob Week
+    department: Integrative Biology
+    affiliation: Michigan State University
+    location: East Lansing, MI 48824
+    email: weekrobe@msu.edu
+  - name: Gideon Bradburd
+    department: Integrative Biology
+    affiliation: Michigan State University
+    location: East Lansing, MI 48824
+    email: bradburd@msu.edu
+abstract: |
+  Here we identify the phenotypic signature of host-parasite coevolution in continuous space.
+keywords:
+  - blah
+  - blee
+  - bloo
+  - these are optional and can be removed
+bibliography: references.bib
+header-includes:
+  - \usepackage{amsmath}
+  - \usepackage{mathrsfs}
+  - \usepackage{csquotes}
+  - \usepackage{textcomp}
+output: 
+  rticles::arxiv_article:
+    keep_tex: true
+---
+
+# Introduction
+
+Space is hypothesized to play a fundamental role in the coevolutionary process. In particular, the combined effects of local co-adaptation and spatial movement are thought to produce complex spatial patterns of matched and mismatched traits. However, theoretical studies investigating the spatial signal of coevolution have for the most part restricted themselves to understanding patterns of spatial correlation using spatially implicit models. Hence, the fine-grained details that can be produced in spatially explicit settings have yet to be understood. Here we close this gap in the context of host-parasite coevolution using continuous-space models inspired by classical quantitative genetic theory. In particular, we study the autocorrelations of mean traits within species and the cross-correlation of mean traits between species when trait dynamics are driven by (1) random genetic drift, gene-flow and abiotic stabilizing selection, (2) drift, gene-flow, abiotic stabilizing selection and unilateral adaptation of the host species, (3) drift, gene-flow, stabilizing selection and unilateral adaptation of the parasite species and (4) drift, gene-flow, stabilizing selection and host-parasite coevolution. In each case we assuming abiotic stabilizing selection is spatially homogeneous. By comparing patterns of spatial autocorrelation and cross-correlation in these four scenarios we are able to elucidate the signature of coevolution.
+
+# Questions
+
+  - Are we aiming to describe the spatial signature of coevolution? Or are we aiming to explain spatial patterns of traits and local adaptation when species may be coevolving?
+    - The first question takes a more reductionist view by focusing on coevolution.
+    - The second question takes a more holistic view by embracing the complexity of natural systems.
+  - What are the characteristic spatial scales of local adaptation in each species?
+    - How do these depend on rates/distances of dispersal and strengths of selection?
+  - What is the characteristic spatial scale at which coevolution becomes visible?
+    - How does this depend on dispersal distances, strengths of selection, effective densities and local additive genetic variation?
+  - What are the characteristic scales of spatial autocorrelation and cross-correlation?
+    - Does this answer both questions above?
+  - How do these answers change when selection, effective densities or local additive genetic variances are spatially heterogeneous (but temporally fixed)?
+    - What if these parameters follow deterministic clines? Linear or quadratic?
+    - What if they follow stochastic patterns such as Gaussian fields?
+      - In particular, consider the characteristic scale of environmental heterogeneity.
+    - In these scenarios, how does autocorrelation and cross-correlation change across space? What is the characteristic scale at which their characteristic scales change?
+  - Considering answers to all of the above, what is the best sampling scheme for detecting coevolution?
+    - More intensive sampling at a few locations?
+    - Less intensive sampling at many locations?
+  - Future directions:
+    - Does the interplay between coevolution and abundance dynamics lead to patchy distributions?
+    - When does local adaptation occur in host and/or parasite?
+      - Are there winners/losers? (ref scott perspective piece)
+      - When do host or parasite remain generalized?
+      - Does this agree with past theory?
+        - I imagine the stochastic dynamics change the picture
+
+# The Model
+
+## Fitness
+
+The host is denoted $H$ and the parasite $P$. Individual trait values of hosts and parasites are respectively denoted by $z_H,z_P\in\mathbb R$. Assuming a trait-matching model, where host fitness is minimized and parasite fitness is maximized when $z_H=z_P$, we have the following two fitness functions:
+
+\begin{subequations}\label{fit}
+  \begin{equation}
+    w_H(z_H,z_P)\propto \exp\left(-\frac{A_H}{2}(\theta_H-z_H)^2+\frac{B_H}{2}(z_P-z_H)^2\right),
+  \end{equation}
+  \begin{equation}
+    w_P(z_P,z_H)\propto \exp\left(-\frac{A_P}{2}(\theta_P-z_P)^2-\frac{B_P}{2}(z_H-z_P)^2\right),
+  \end{equation}
+\end{subequations}
+
+where $A_H,A_P>0$ capture the strengths of abiotic stabilizing selection, $\theta_H,\theta_P\in\mathbb{R}$ are the abiotic optimal phenotypes and $B_H,B_P>0$ capture the strengths of biotic selection experienced by each species.
+
+## Non-spatial Dynamics
+
+Using a standard approach, we use the above fitness functions to derive the following non-spatial coevolutionary model:
+
+\begin{subequations}\label{non-spatial}
+  \begin{equation}
+    \frac{d\bar z_H}{dt}=G_HA_H(\theta_H-\bar z_H)-G_HB_H(\bar z_P-\bar z_H),
+  \end{equation}
+  \begin{equation}
+    \frac{d\bar z_P}{dt}=G_PA_P(\theta_P-\bar z_P)+G_PB_P(\bar z_H-\bar z_P),
+  \end{equation}
+\end{subequations}
+
+where $G_H,G_P>0$ denote the additive genetic variances of each species. In this linear set of equations, when abiotic stabilizing selection is absent ($A_H=A_P=0$), the parasite mean trait $\bar z_P$ evolves to match the host mean trait $\bar z_H$. Simultaneously $\bar z_H$ evolves away from $\bar z_P$. In particular, when $\bar z_H>\bar z_P$, the host mean trait will evolve upwards. Similarly, when $\bar z_H<\bar z_P$, the host mean trait will evolve downwards. This and related models have been thoroughly studied by Sergey Gavrilets and others. For the case when $A_H=A_P=0$ two possible outcomes have been demonstrated. First, when $G_PB_P>G_HB_H$ so that the parasite evolves faster than the host, the system asymptotically evolves to the equilibrium $\bar z_H=\bar z_P$. Second, when $G_PB_P<G_HB_H$ so that the host evolves faster than the parasite, there is no stable equilibrium. This implies the host evolves to escape the interaction. In the case when $A_H,A_P\neq0$ limit cycles can emerge.
+
+## Space
+
+In this case mean traits become functions of spatial variables (eg., $\bar z_H(\pmb x),\bar z_P(\pmb x)$ where $\pmb x=(x_1,x_2)\in\mathbb R^2$). As a first step, we assume all model parameters are spatially homogeneous. If we assume interactions occur locally (individuals interact only when they 'collide') and abundance densities are spatially homogeneous, then we can obtain the following continuous space model:
+
+\begin{subequations}\label{deterministic}
+  \begin{equation}
+    \frac{\partial\bar z_H}{\partial t}=G_HA_H(\theta_H-\bar z_H)-G_HB_H(\bar z_P-\bar z_H)+\frac{D_H}{2}\Delta\bar z_H,
+  \end{equation}
+  \begin{equation}
+    \frac{\partial\bar z_P}{\partial t}=G_PA_P(\theta_P-\bar z_P)+G_PB_P(\bar z_H-\bar z_P)+\frac{D_P}{2}\Delta\bar z_P,
+  \end{equation}
+\end{subequations}
+
+where $D_H,D_P>0$ are dispersal rates for each species and $\Delta=\frac{\partial^2}{\partial x_1^2}+\frac{\partial^2}{\partial x_2^2}$ is the diffusion operator representing spatial movement.
+
+## Random Genetic Drift
+
+To incorporate the effects of random genetic drift, we should be able to justify the following SPDE model:
+
+\begin{subequations}\label{spde}
+  \begin{equation}
+    \frac{\partial\bar Z_H}{\partial t}=G_HA_H(\theta_H-\bar Z_H)-G_HB_H(\bar Z_P-\bar Z_H)+\frac{D_H}{2}\Delta\bar Z_H+\sqrt\frac{G_H}{\rho_H}\dot W_H,
+  \end{equation}
+  \begin{equation}
+    \frac{\partial\bar Z_P}{\partial t}=G_PA_P(\theta_P-\bar Z_P)+G_PB_P(\bar Z_H-\bar Z_P)+\frac{D_P}{2}\Delta\bar Z_P+\sqrt\frac{G_P}{\rho_P}\dot W_P,
+  \end{equation}
+\end{subequations}
+
+where $\rho_P,\rho_H$ are the effective population densities (here assumed to be constant in space and time), $\dot W_H,\dot W_P$ are space-time white noise processes and we use capitol $\bar Z_H,\bar Z_P$ to emphasize that these are now random quantities. This SPDE model may possess some major benefits over more traditional continuous-space models of population genetics. In particular, it is known to have solutions for all spatial dimensions. The effect of abiotic stabilizing selection may also imply function-valued solutions.
+
+\begin{table}[htbp]
+\caption{Summary of notation.}
+\label{Table:Parameters}
+\centering
+\begin{tabular}{lll}\hline
+Variable/Parameter                  & Description                                  & Range                                                     \\ \hline \\
+$\pmb x=(x_1,x_2)$                  & Spatial coordinates                          & $\pmb x\in\mathbb R^2$                                    \\ \\
+$z_H,z_P$                           & Individual trait values                      & $z_H,z_P\in\mathbb R$                                     \\ \\
+$w_H(z_H,z_P),w_P(z_P,z_H)$         & Individual fitness                           & $w_H,w_P>0$                                               \\ \\
+$A_H,A_P$                           & Strengths of abiotic stabilizing selection   & $A_H,A_P\geq0$                                            \\ \\
+$\theta_H(\pmb x),\theta_P(\pmb x)$ & Abiotic trait optima at location $\pmb x$    & $\theta_H(\pmb x),\theta_P(\pmb x)\in\mathbb R$           \\ \\
+$B_H,B_P$                           & Strengths of biotic selection                & $B_H,B_P\geq0$                                            \\ \\
+$G_H,G_P$                           & Additive genetic variances                   & $G_H,G_P\geq0$                                            \\ \\
+$D_H,D_P$                           & Dispersal coefficients                       & $D_H,D_P\geq0$                                            \\ \\
+$\rho_H,\rho_P$                           & Effective population densities             & $\rho_H,\rho_P\geq0$                                            \\ \\
+$\dot W_H,\dot W_P$                 & Independent space-time white noise processes & $\dot W_H(\pmb x),\dot W_P(\pmb x)$ random variables in $\mathbb R$ \\ \\
+$\bar Z_H(\pmb x),\bar Z_P(\pmb x)$ & Local mean traits at $\pmb x$                & $\bar Z_H(\pmb x),\bar Z_P(\pmb x)$ random variables in $\mathbb R$ \\ \\
+$\bar z_H(\pmb x),\bar z_P(\pmb x)$ & Expected local mean traits at $\pmb x$       & $\bar z_H(\pmb x),\bar z_P(\pmb x)\in\mathbb R$                     \\ \\ \hline
+\end{tabular}
+\bigskip{}
+\end{table}
+
+## Extensions
+
+### Heterogeneous aboitic optima
+
+  - linear clines, eg: $\theta_H(\pmb x)=\alpha_H+\beta_{H,1}x_1+\beta_{H,2}x_2$
+  - quadratic clines, eg: $\theta_H(\pmb x)=\alpha_H+\beta_{H,1}x_1+\beta_{H,2}x_2+\gamma_{H,11}x_1^2+\gamma_{H,22}x_2^2+\gamma_{H,12}x_1x_2$
+  - stochastic fields, eg: $\theta_H(\pmb x)$ follows a fractional Brownian surface, but is fixed in time
+
+# Methods
+
+We use results connecting theory of SPDE, random fields and geostats to calculate characteristic spatial scales at which various phenomena become visible.
+
+# Discussion
+
+\newpage
+
+\begin{center}
+  \Large Appendices
+\end{center}
+
+\appendix
+
+# A Stable Equilibrium of PDE (\ref{deterministic})
+
+To find an equilibrium of the deterministic PDE (\ref{deterministic}) we set the time derivatives of $\bar z_H$ and $\bar z_P$ equal to zero. This leads to following systems of ODE's
+
+\begin{subequations}
+  \begin{equation}
+    0=G_HA_H(\theta_H-\bar z_H)-G_HB_H(\bar z_P-\bar z_H)+\frac{D_H}{2}\Delta\bar z_H,
+  \end{equation}
+  \begin{equation}
+    0=G_PA_P(\theta_P-\bar z_P)+G_PB_P(\bar z_H-\bar z_P)+\frac{D_P}{2}\Delta\bar z_P.
+  \end{equation}
+\end{subequations}
+
+Solving this system for the mean traits $\bar z_H(\pmb x)$ and $\bar z_P(\pmb x)$ as spatial functions then returns equilibrium solutions to PDE (\ref{deterministic}). However, we can start simple by considering spatially homogeneous solutions. In these cases the spatial derivatives will return zero (in particular, $\Delta\bar z_H=\Delta\bar z_P=0$). Finding these solutions amounts to solve the following system of algebraic equations
+
+\begin{subequations}
+  \begin{equation}
+    0=G_HA_H(\theta_H-\bar z_H)-G_HB_H(\bar z_P-\bar z_H),
+  \end{equation}
+  \begin{equation}
+    0=G_PA_P(\theta_P-\bar z_P)+G_PB_P(\bar z_H-\bar z_P).
+  \end{equation}
+\end{subequations}
+
+This linear system is uniquely solved by
+
+\begin{subequations}\label{non-spatial-eq}
+  \begin{equation}
+    \bar z_H(\pmb x)\equiv\frac{(A_P+B_P)A_H\theta_H-B_HA_P\theta_P}{(A_P+B_P)A_H-B_HA_P},
+  \end{equation}
+  \begin{equation}
+    \bar z_P(\pmb x)\equiv\frac{(A_H-B_H)A_P\theta_P+B_PA_H\theta_H}{(A_H-B_H)A_P+B_PA_H},
+  \end{equation}
+\end{subequations}
+where the symbol $\equiv$ is used in place of $=$ to emphasize these functions are constant across space.
+
+To understand whether this equilibrium is stable we perform stability analysis on the non-spatial model. Notice that system (\ref{non-spatial}) can be rewritten in matrix notation as $\vec{\bar z}=M\vec{\bar z}+\vec b$ where
+
+\begin{subequations}
+  \begin{equation}
+    \vec{\bar z}=\left(\begin{matrix}
+      \bar z_H \\ \bar z_P
+    \end{matrix}\right), \ 
+    \vec b =\left(\begin{matrix}
+      G_HA_H\theta_H \\ G_PA_P\theta_P
+    \end{matrix}\right),
+  \end{equation}
+  \begin{equation}
+    M=\left(\begin{matrix}
+      G_H(B_H-A_H) & -G_HB_H \\
+      G_PB_P & -G_P(A_P+B_P)
+    \end{matrix}\right).
+  \end{equation}
+\end{subequations}
+
+It turns that if the real parts of the eigenvalues of $M$ are negative then equilibrium (\ref{non-spatial-eq}) is stable. This condition holds in general when $B_H<A_H+(A_P+B_P)G_P/G_H$ and $B_H<A_H(1+B_P/A_P)$. A sufficient condition with clear biological intuition is $B_H<A_H$, which just means the strength of biotic selection on the host is less than the strength of abiotic stabilizing selection. In this case abiotic stabilizing selection prevents the host from escaping via evolution.
+
+# Stationary Solutions of SPDE (\ref{spde})
+
+To focus on stationary solutions of the stochastic system (\ref{spde}) we set the time derivatives to zero to obtain the following system
+
+\begin{subequations}\label{stationary-spde}
+  \begin{equation}
+    G_HA_H(\theta_H-\bar Z_H)-G_HB_H(\bar Z_P-\bar Z_H)+\frac{D_H}{2}\Delta\bar Z_H=\sqrt\frac{G_H}{\rho_H}\dot W_H,
+  \end{equation}
+  \begin{equation}
+    G_PA_P(\theta_P-\bar Z_P)+G_PB_P(\bar Z_H-\bar Z_P)+\frac{D_P}{2}\Delta\bar Z_P=\sqrt\frac{G_P}{\rho_P}\dot W_P.
+  \end{equation}
+\end{subequations}
+
+If we further restrict our focus to the single species case we recover a SPDE of the form
+
+\begin{equation}\label{simple-form}
+  b^2(a-u)+\Delta u=\sigma\dot W.
+\end{equation}
+
+In the case of two spatial dimensions, it is known that equation (\ref{simple-form}) is satisfied by a Gaussian field with a Whittle covariance function [@whittle1963stochastic; @Sigrist2014]. Denoting $K_1$ the modified Bessel function of the second kind, order 1, the Whittle covariance function is given by $C(r)=\frac{\sigma^2r}{2b}K_1(br)$. Hence, we can postulate that solutions of the stationary system (\ref{stationary-spde}) will have Whittle cross-covariance matrix-valued functions.
+
+# Computing Covariance Matrix from Spectral Representation
+
+In the technical note of [@hu2013multivariate], a method to compute covariance functions of multivariate Gaussian random fields from systems of SPDE was outlined. The approach begins with a stationary system such as (\ref{stationary-spde}) and applies a Fourier transform $\mathcal F$ to convert derivatives into algebraic expressions. The Fourier transform acts to switch perspective from the two-dimensional spatial variable $\pmb x=(x_1,x_2)$ to a two-dimensional frequency variable (also referred to as wavenumber) $\pmb k=(k_1,k_2)$, with $k_1,k_2$ being complex numbers. We can provide a spectral characterization of the system by considering the behavior of a system across a spectrum of frequencies. Once solving for the quantity of interest in the spectral representation we can use the inverse Fourier transform $\mathcal F^{-1}$ to obtain the associated quantity as a function of space. 
+
+To apply this method to our model, we start by using a change of variables to obtain an equivalent system where each spatial variable has zero mean. In particular, we set $\bar\zeta_H=\bar Z_H-\bar z_H$ and $\bar\zeta_P=\bar Z_P-\bar z_p$ where $(\bar z_H,\bar z_P)$ is the spatially homogeneous equilibrium of the deterministic system reported in equation (\ref{non-spatial-eq}). Under this change of variables, an It&ocirc; formula can be applied (need to fact-check) to show the stationary system (\ref{stationary-spde}) becomes
+
+\begin{subequations}
+  \begin{equation}
+    \left(\frac{D_H}{2}\Delta-G_H(A_H-B_H)\right)\bar\zeta_H-G_HB_H\bar\zeta_P=\sqrt\frac{G_H}{\rho_H}\dot W_H,
+  \end{equation}
+  \begin{equation}
+    G_PB_P\bar \zeta_H+\left(\frac{D_P}{2}\Delta-G_P(A_P+B_P)\right)\bar\zeta_P=\sqrt\frac{G_P}{\rho_P}\dot W_P.
+  \end{equation}
+\end{subequations}
+
+To consolidate notation, we set
+
+\begin{subequations}
+  \begin{equation}
+    \pmb{\mathscr{L}} = \left(\begin{matrix}
+      G_H(A_H-B_H)-\frac{D_H}{2}\Delta & G_HB_H \\ & \\
+      -G_PB_P & G_P(A_P+B_P)-\frac{D_P}{2}\Delta
+    \end{matrix}\right),
+  \end{equation}
+  \begin{equation}
+    \bar{\pmb{\zeta}} = \left(\begin{matrix}
+      \bar\zeta_H \\ \\ \bar\zeta_P
+    \end{matrix}\right), \ 
+    \pmb{V} = \left(\begin{matrix}
+      -\sqrt\frac{G_H}{\rho_H}\dot W_H \\ \\ 
+      -\sqrt\frac{G_P}{\rho_P}\dot W_P
+    \end{matrix}\right).
+  \end{equation}
+\end{subequations}
+
+Then, the stationary system can equally be written as
+
+\begin{equation}
+  \pmb{\mathscr{L}}\bar{\pmb\zeta}=\pmb V.
+\end{equation}
+
+Setting $\hat\zeta_H=\mathcal{F}[\bar\zeta_H], \ \hat\zeta_P=\mathcal{F}[\bar\zeta_P], \hat V_H=\mathcal{F}[-\sqrt{\frac{G_H}{\rho_H}}\dot W_H], \ \hat V_P=\mathcal{F}[-\sqrt{\frac{G_P}{\rho_P}}\dot W_P]$, we can Fourier transform the whole dang thing to get
+
+\begin{equation}
+  \pmb{\mathcal{H}}\hat{\pmb\zeta}=\hat{\pmb V},
+\end{equation}
+
+where
+
+\begin{subequations}
+  \begin{equation}
+    \pmb{\mathscr H}=\left(\begin{matrix}
+      G_H(A_H-B_H)+\frac{D_H}{2}\|\pmb k\|^2 & G_HB_H \\ & \\
+      -G_PB_P & G_P(A_P+B_P)+\frac{D_P}{2}\|\pmb k\|^2
+    \end{matrix}\right),
+  \end{equation}
+  \begin{equation}
+    \hat{\pmb\zeta}=\left(\begin{matrix}
+      \hat\zeta_H \\ \\ \hat\zeta_P
+    \end{matrix}\right), \\
+    \hat{\pmb V}=\left(\begin{matrix}
+      \hat V_H \\ \\ \hat V_P
+    \end{matrix}\right), \\
+  \end{equation}
+\end{subequations}
+
+The power spectrum corresponding to $\bar{\pmb\zeta}$ is defined as $\pmb S_{\bar{\pmb\zeta}}=\mathbb E\left[\hat{\pmb\zeta}\hat{\pmb\zeta}^\top\right]$, where $\top$ denotes matrix transposition. In particular, this provides
+
+\begin{equation}
+  \pmb S_{\bar{\pmb\zeta}}=\left(\begin{matrix}
+    S_{\bar\zeta_{HH}} & S_{\bar\zeta_{HP}} \\ & \\
+    S_{\bar\zeta_{PH}} & S_{\bar\zeta_{PP}}
+  \end{matrix}\right)=\left(\begin{matrix}
+    \mathbb E[\hat\zeta_H\hat\zeta_H] & \mathbb E[\hat\zeta_H\hat\zeta_P] \\ & \\
+    \mathbb E[\hat\zeta_H\hat\zeta_P] & \mathbb E[\hat\zeta_P\hat\zeta_P]
+  \end{matrix}\right)=\pmb{\mathscr H}^{-1}\pmb S_{\pmb V}\pmb{\mathscr H}^{-H},
+\end{equation}
+
+with $-H$ denoting the inverse of the Hermitian of a matrix and $\pmb S_{\pmb V}=\mathbb E\left[\hat{\pmb V}\hat{\pmb V}^H\right]$ denoting the power spectrum of the noise process $\pmb V$. Using properties of Fourier transforms, we compute
+
+\begin{equation}
+  \hat{\pmb V}=\left(\begin{matrix}
+    \sqrt{G_H/\rho_H} \\ \\
+    \sqrt{G_P/\rho_P}
+  \end{matrix}\right).
+\end{equation}
+
+Formally, I'm missing some $2\pi$'s. However, since our goal is to transform back into geographic space (all this Fourier stuff puts us in frequency space) the missing $2\pi$'s should be accounted for.
+Since we assume the white noise processes $\dot W_H$ and $\dot W_P$ are independent we have
+
+\begin{equation}
+  \pmb S_{\pmb V}=\left(\begin{matrix}
+    S_{V_H} & 0 \\ & \\
+    0 & S_{V_P}
+  \end{matrix}\right)=\left(\begin{matrix}
+    G_H/\rho_H & 0 \\ & \\
+    0 & G_P/\rho_P
+  \end{matrix}\right).
+\end{equation}
+
+Plugging into _Mathematica_ yields
+
+\begin{subequations}
+  \begin{equation}
+    S_{\bar\zeta_{HH}} = \frac{\frac{G_H}{4\rho_H}\left(2G_P(A_P+B_P)+D_P\|\pmb k\|^2\right)^2+\frac{G_P}{\rho_P}B_H^2G_H^2}
+    {\left\{-B_HB_PG_HG_P-\frac{1}{4}\left[2G_H(A_H-B_H)+D_H\|\pmb k\|^2\right]\left[2G_P(A_P+B_P)+D_P\|\pmb k\|^2\right]\right\}^2}
+  \end{equation}
+  \begin{equation}
+    S_{\bar\zeta_{PP}} = \frac{\frac{G_P}{4\rho_P}\left(2G_H(A_H-B_H)+D_H\|\pmb k\|^2\right)^2+\frac{G_H}{\rho_H}B_P^2G_P^2}
+    {\left\{-B_HB_PG_HG_P-\frac{1}{4}\left[2G_H(A_H-B_H)+D_H\|\pmb k\|^2\right]\left[2G_P(A_P+B_P)+D_P\|\pmb k\|^2\right]\right\}^2}
+  \end{equation}
+  \begin{equation}  
+    S_{\bar\zeta_{HP}} = \frac{\frac{G_HG_P}{2}\left[\frac{B_P}{\rho_H}\left(2G_P(A_P+B_P)+D_P\|\pmb k\|^2\right)+\frac{B_H}{\rho_P}\left(2G_H(A_H-B_H)+D_H\|\pmb k\|^2\right)\right]}
+    {\left\{-B_HB_PG_HG_P-\frac{1}{4}\left[2G_H(A_H-B_H)+D_H\|\pmb k\|^2\right]\left[2G_P(A_P+B_P)+D_P\|\pmb k\|^2\right]\right\}^2}.
+  \end{equation}
+\end{subequations}
+
+Then, by assuming weak biotic selection so that $B_H^2,B_P^2,B_HB_P\approx0$, we get
+
+\begin{subequations}
+  \begin{equation}
+    S_{\bar\zeta_{HH}}(\pmb k) \approx \frac{4G_H/\rho_H}{\left[2G_H(A_H-B_H)+D_H\|\pmb k\|^2\right]^2},
+  \end{equation}
+  \begin{equation}
+    S_{\bar\zeta_{PP}}(\pmb k) \approx \frac{4G_P/\rho_P}{\left[2G_P(A_P+B_P)+D_P\|\pmb k\|^2\right]^2},
+  \end{equation}
+  \begin{multline}  
+    S_{\bar\zeta_{HP}}(\pmb k) \approx 8G_HG_P\left(\frac{B_H/\rho_P}{\left[2G_H(A_H-B_H)+D_H\|\pmb k\|^2\right]\left[2G_P(A_P+B_P)+D_P\|\pmb k\|^2\right]^2}\right. \\
+      \left. + \frac{B_P/\rho_H}{\left[2G_H(A_H-B_H)+D_H\|\pmb k\|^2\right]^2\left[2G_P(A_P+B_P)+D_P\|\pmb k\|^2\right]}\right).
+  \end{multline}
+\end{subequations}
+
+It may be better to assume weak coupling in the general SPDE model ($b_{12},b_{21}\ll1$) to get this result since there is an impulse to distribute the $B$'s are continue canceling terms, which makes life harder since the marginal cov's are no longer Whittle.
+
+Taking the inverse Fourier transform of the power spectra $S_{\bar\zeta_{HH}}(\pmb k)$ and $S_{\bar\zeta_{PP}}(\pmb k)$ yields the (intraspecific) spatial covariance functions $C_{HH}(\pmb x),C_{PP}(\pmb x)$ and the inverse Fourier transform of $S_{\bar \zeta_{HP}}$ provides the (interspecific) spatial cross-covariance function $C_{HP}(\pmb x)$. The intraspecific covariance functions are straightforward to calculate, leading to the Whittle covariance functions:
+
+\begin{subequations}
+  \begin{equation}
+    C_{HH}(\pmb x) \approx \frac{M(\pmb x|1,\sqrt{2G_H(A_H-B_H)/D_H})}{\rho_HD_H(A_H-B_H)},
+  \end{equation}
+  \begin{equation}
+    C_{PP}(\pmb x) \approx \frac{M(\pmb x|1,\sqrt{2G_P(A_P+B_P)/D_P})}{\rho_PD_P(A_P+B_P)},
+  \end{equation}
+\end{subequations}
+
+where $M(\pmb x|\nu,\kappa)=\frac{2^{1-\nu}}{\Gamma(\nu)}(\kappa\|\pmb x\|)^\nu K_\nu(\kappa\|\pmb x\|)$ is the Matern spatial correlation function.
+
+The interspecific cross covariance function does not lend to a simple closed form expression. Instead, we can see the corresponding component of the power spectrum matrix is the sum of convolutions of Matern correlation functions with Bessel functions. In particular, denoting $f*g$ the convolution of two functions $f(\pmb x),g(\pmb x)$, we have
+
+\begin{multline}
+  C_{HP}(\pmb x) \approx \frac{2G_PB_P}{\rho_HD_HD_P(A_H-B_H)}\left[K_0\left(\sqrt{\frac{2G_P}{D_P}(A_P+B_P)}\|\pmb x\|\right) * M\left(\pmb x\Big|1,\sqrt{\frac{2G_H}{D_H}(A_H-B_H)}\right)\right] \\ - \frac{2G_HB_H}{\rho_PD_HD_P(A_P+B_P)}\left[K_0\left(\sqrt{\frac{2G_H}{D_H}(A_H-B_H)}\|\pmb x\|\right)*M\left(\pmb x\Big|1,\sqrt{\frac{2G_P}{D_P}(A_P+B_P)}\right)\right].
+\end{multline}
+
+Although characteristic length scales are obvious for $C_{HH}$ and $C_{PP}$ (by normalizing distance, they are $\xi_H=\sqrt{D_H/[2G_H(A_H-B_H)]}$ and $\xi_P=\sqrt{D_P/[2G_P(A_P+B_P)]}$ respectively), finding a corresponding characteristic length for $C_{HP}$ is not so obvious. Fortunately there exist alternative measures of spatial scale that we can employ. In particular, we can use a measure called _integral range_ to study spatial patterns at a more global scale and a measure called _smoothness microscale_ to study the more fine-grained details of spatial patterns.
+
+The _integral range_ a stationary isotropic process on $\mathbb R^2$ characterized by a correlation function $\rho(\pmb x)$ is given by
+
+$$l=\sqrt{\int_{\mathbb R^2}\rho(\pmb x)d\pmb x}.$$
+
+However, since the correlation function we are interested may become negative, we use the modified integral range $l'=\sqrt{\left|\int_{\mathbb R^2}\rho(\pmb x)d\pmb x\right|}$.
+
+The _smoothness microscale_ has a more complex definition, involving the Laplacian of the covariance function evaluated at zero lag in the denominator. This is a potential issue since the Laplacian of $K_0(\pmb x)$ and $M(\pmb x|\kappa,1)$ evaluated at zero lag both take infinite values.
+
+The _correlation length_ may be a feasible alternative, but what does it tell us that integral range doesn't already cover?
+
+## Computing Integral Lengths for General Dispersal Kernels
+
+For more general dispersal kernels, including heavy-tailed kernels, we focus on the more general form of the SPDE:
+
+\begin{subequations}
+  \begin{equation}
+    b_H(\kappa_H^2-\Delta)^{\alpha_H/2}\bar Z_H + b_{HP}\bar Z_P = \sqrt{V_H}\dot W_H
+  \end{equation}
+  \begin{equation}
+    b_{PH}\bar Z_H + b_P(\kappa_P^2-\Delta)^{\alpha_P/2}\bar Z_P = \sqrt{V_P}\dot W_P
+  \end{equation}
+\end{subequations}
+
+The parameters $\alpha_H$ and $\alpha_P$ are determined by the dispersal kernel. In particular, under diffusive dispersal (ie., Gaussian kernels) we have $\alpha_H=\alpha_P=2$. In general we can have $1<\alpha_H,\alpha_P\leq2$ where $\alpha_H,\alpha_P<2$ implies heavy-tailed dispersal kernels (stable distributions in particular).
+
+Under our model of coevolution with diffusive dispersal we have the parameterization
+
+- $b_H=(D_H/2)^{\alpha_H/2}$,
+- $b_P=(D_P/2)^{\alpha_P/2}$,
+- $b_{HP}=G_HB_H$,
+- $b_{PH}=-G_PB_P$,
+- $\kappa_H^2=2G_H(A_H-B_H)/D_H$,
+- $\kappa_P^2=2G_P(A_P+B_P)/D_P$,
+- $V_H=G_H/\rho_H$
+- $V_P=G_P/\rho_P$
+
+with $\alpha_H=\alpha_P=2$. An important question is to understand whether the parameterization of $\kappa_H$ and $\kappa_P$ will change when dispersal follows heavy-tailed distributions so that $\alpha_H,\alpha_P<2$. For now we side-step this question by proceeding with the parameterization using $b$'s, $\kappa$'s, $\alpha$'s and $V$'s.
+
+Keeping our assumption of weakly coupled stochastic fields so that $b_{HP}^2,b_{PH}^2,b_{HP}b_{PH}\approx0$, we obtain
+
+\begin{subequations}
+  \begin{equation}
+    S_{\bar\zeta_{HH}}(\pmb k) \approx \frac{V_H/b_H^2}{(\kappa_H^2+\|\pmb k\|)^{\alpha_H}},
+  \end{equation}
+  \begin{equation}
+    S_{\bar\zeta_{PP}}(\pmb k) \approx \frac{V_P/b_P^2}{(\kappa_P^2+\|\pmb k\|)^{\alpha_P}},
+  \end{equation}
+  \begin{equation}  
+    S_{\bar\zeta_{HP}}(\pmb k) \approx -\frac{b_{PH}V_H}{b_Pb_H^2}(\kappa_P^2+\|\pmb k\|)^{-\alpha_P/2}(\kappa_H^2+\|\pmb k\|)^{-\alpha_H}
+      -\frac{b_{HP}V_P}{b_Hb_P^2}(\kappa_H^2+\|\pmb k\|)^{-\alpha_H/2}(\kappa_P^2+\|\pmb k\|)^{-\alpha_P}.
+  \end{equation}
+\end{subequations}
+
+Using properties of Fourier transforms, we know the local variance of trait values for each species is given by
+
+\begin{subequations}
+  \begin{equation}
+    C_{HH}(\pmb 0) = \int_{\mathbb R^2}S_{\bar\zeta_{HH}}(\pmb k)d\pmb k \approx \frac{V_H/b_H^2}{(\alpha_H-1)\kappa_H^{2(\alpha_H-1)}},
+  \end{equation}
+  \begin{equation}
+    C_{PP}(\pmb 0) = \int_{\mathbb R^2}S_{\bar\zeta_{PP}}(\pmb k)d\pmb k \approx \frac{V_P/b_P^2}{(\alpha_P-1)\kappa_P^{2(\alpha_P-1)}}.
+  \end{equation}
+\end{subequations}
+
+Then, the integral ranges for spatial patterns of intraspecific traits are
+
+\begin{subequations}
+  \begin{equation}
+    l_H=\sqrt{\frac{S_{\bar\zeta_{HH}}(\pmb 0)}{C_{HH}(\pmb 0)}}\approx\frac{\alpha_H-1}{\kappa_H}=(\alpha_H-1)\sqrt\frac{D_H}{2G_H(A_H-B_H)},
+  \end{equation}
+  \begin{equation}
+    l_P=\sqrt{\frac{S_{\bar\zeta_{PP}}(\pmb 0)}{C_{PP}(\pmb 0)}}\approx\frac{\alpha_P-1}{\kappa_P}=(\alpha_P-1)\sqrt\frac{D_P}{2G_P(A_P+B_P)}.
+  \end{equation}
+\end{subequations}
+
+Unfortunately, although the integral $\int_{\mathbb R^2}S_{\bar\zeta_{HP}}(\pmb k)d\pmb k$ does have a closed-form expression, it is quite long and filled with many bizarre transcendental functions. Hence, the expression for integral range of interspecific trait patterns may not provide much intuition for the general case. However, in the case of Gaussian dispersal, we have
+
+\begin{multline}
+  C_{HP}(\pmb 0)=\int_{\mathbb R^2}S_{\bar\zeta_{HP}}(\pmb k)d\pmb k \\
+    =\frac{b_{PH}V_H}{b_Pb_H^2}\frac{\kappa_H^2(1-\ln\kappa_H^2)-\kappa_P^2(1-\ln\kappa_P^2)}{\kappa_H^2(\kappa_H-\kappa_P)^2(\kappa_H+\kappa_P)^2}
+      +\frac{b_{HP}V_P}{b_Hb_P^2}\frac{\kappa_P^2(1-\ln\kappa_P^2)-\kappa_H^2(1-\ln\kappa_H^2)}{\kappa_H^2(\kappa_H-\kappa_P)^2(\kappa_H+\kappa_P)^2}
+\end{multline}
+
+Hence, the integral range is slightly easier to read in this case:
+
+\begin{multline}
+  l_{HP} = \sqrt{\frac{S_{\bar\zeta_{HP}}(\pmb 0)}{C_{HP}(\pmb 0)}} \\
+    =\frac{(\kappa_H^2-\kappa_P^2)^2(b_Pb_{PH}\kappa_P^2V_H+b_Hb_{HP}\kappa_H^2V_P)}{b_Pb_{PH}V_H\kappa_H^2\kappa_P^4(\kappa_P^2-\kappa_H^2(1+\ln(\kappa_P^2/\kappa_H^2)))+b_Hb_{HP}V_P\kappa_P^2\kappa_H^4(\kappa_H^2-\kappa_P^2(1+\ln(\kappa_H^2/\kappa_P^2)))}.
+\end{multline}
+
+Although it is possible this expression will greatly simplify when model parameters are substituted in, it is also possible it will get even worse. Hence, we might want to search for other ways to quantify characteristic lengths.
+
+__Regardless of the metric chosen, we can at least visualize how the characteristic lengths change as functions of biological parameters, even for heavy-tailed dispersal kernels.__
+
+# Measures of Local Adaptation
+
+To measure local adaptation as a function of spatial lag $\pmb x$, we consider the fitness difference for individuals interacting with local partners versus partners located at the spatial lag $\pmb x$. In particular, denoting $\bar m_H(\pmb x,\pmb y)$ the growth rate of the host from location $\pmb x$ when confronted with a parasite from location $\pmb y$ and $\bar m_P(\pmb y,\pmb x)$ the growth rate of the parasite from location $\pmb y$ when confronted with a host from location $\pmb x$, we have
+
+\begin{subequations}
+  \begin{equation}
+    \bar m_H (\pmb x,\pmb y) = r_H - \frac{A_H}{2}(\theta_H-\bar Z_H(\pmb x))^2 + \frac{B_H}{2}(\bar Z_P(\pmb y)-\bar Z_H(\pmb x))^2 - \frac{A_H-B_H}{2}\sigma_H^2 + \frac{B_H}{2}\sigma_P^2,
+  \end{equation}
+  \begin{equation}
+    \bar m_P (\pmb y,\pmb x) = r_P - \frac{A_P}{2}(\theta_P-\bar Z_P(\pmb y))^2 - \frac{B_P}{2}(\bar Z_H(\pmb x)-\bar Z_P(\pmb y))^2 - \frac{A_P+B_P}{2}\sigma_P^2 - \frac{B_P}{2}\sigma_H^2,
+  \end{equation}
+\end{subequations}
+
+Then, since we consider stationary processes, the fitness difference for confronting individuals at the lag $\pmb x$ is given by
+
+\begin{subequations}
+  \begin{equation}
+    \Delta_H(\pmb x) = \bar m_H (\pmb 0,\pmb 0) - \bar m_H (\pmb 0,\pmb x) = \frac{B_H}{2}\left[(\bar Z_P(\pmb 0)-\bar Z_H(\pmb 0))^2 - (\bar Z_P(\pmb x)-\bar Z_H(\pmb 0))^2\right],
+  \end{equation}
+  \begin{equation}
+    \Delta_P(\pmb x) = \bar m_P (\pmb 0,\pmb 0) - \bar m_P (\pmb 0,\pmb x) = \frac{B_P}{2}\left[(\bar Z_H(\pmb x)-\bar Z_P(\pmb 0))^2 - (\bar Z_H(\pmb 0)-\bar Z_P(\pmb 0))^2\right].
+  \end{equation}
+\end{subequations}
+
+Taking expectations provides
+
+\begin{subequations}
+  \begin{multline}
+    \mathbb E[\Delta_H(\pmb x)] = \\ \frac{B_H}{2}\left[(\bar z_P-\bar z_H)^2 + C_{PP}(\pmb 0) + C_{HH}(\pmb 0) - 2C_{HP}(\pmb 0) - (\bar z_P-\bar z_H)^2 - C_{PP}(\pmb 0) - C_{HH}(\pmb 0) + 2C_{HP}(\pmb x) \right],
+  \end{multline}
+  \begin{multline}
+    \mathbb E[\Delta_P(\pmb x)] = \\ \frac{B_P}{2}\left[(\bar z_H-\bar z_P)^2 + C_{PP}(\pmb 0) + C_{HH}(\pmb 0) - 2C_{HP}(\pmb x) - (\bar z_H-\bar z_P)^2 - C_{PP}(\pmb 0) - C_{HH}(\pmb 0) + 2C_{HP}(\pmb 0) \right].
+  \end{multline}
+\end{subequations}
+
+Since $\bar z_P,\bar z_H$ are spatially homogeneous, this simplifies to
+
+\begin{subequations}
+  \begin{equation}
+    \mathbb E[\Delta_H(\pmb x)] = B_H\left[C_{HP}(\pmb x) - C_{HP}(\pmb 0) \right],
+  \end{equation}
+  \begin{equation}
+    \mathbb E[\Delta_P(\pmb x)] = B_P\left[C_{HP}(\pmb 0) - C_{HP}(\pmb x) \right].
+  \end{equation}
+\end{subequations}
+
+## Comparing Interspecific Fitnesses
+
+\begin{multline}
+  \Delta(\pmb x) = \bar m_H(\pmb 0,\pmb x) - \bar m_P(\pmb x,\pmb 0) \\ 
+    = (r_H-r_P)-\frac{1}{2}\left[A_H(\theta_H-\bar Z_H(\pmb 0))^2-A_P(\theta_P-\bar Z_P(\pmb x))^2+(B_H+B_P)(\bar Z_H(\pmb 0)-\bar Z_P(\pmb x))^2\right. \\
+      -\left.(A_H-B_H+B_P)\sigma_H^2+(A_P+B_P+B_H)\sigma_P^2\right]
+\end{multline}
+
+\begin{multline}
+  \mathbb E[\Delta(\pmb x)] = (r_H-r_P)-\frac{1}{2}\left[A_H(\theta_H-\bar z_H)^2+A_HC_{HH}(\pmb 0)-A_P(\theta_P-\bar Z_P(\pmb x))^2-A_PC_{PP}(\pmb 0)\right. \\
+      \left. +(B_H+B_P)(\bar z_H-\bar z_P)^2+(B_H+B_P)[C_{PP}(\pmb 0) + C_{HH}(\pmb 0) - 2C_{HP}(\pmb x)]\right. \\
+        \left. -(A_H-B_H+B_P)\sigma_H^2+(A_P+B_P+B_H)\sigma_P^2\right].
+\end{multline}
+
+Using equilibrium expressions for $\bar z_H,\bar z_P$ and assuming $\theta_H=\theta_P$, _Mathematica_ yields
+
+\begin{multline}
+  \mathbb E[\Delta(\pmb x)] = (r_H-r_P) + \frac{1}{2}\left[(B_H-A_H-B_P)\sigma_H^2+(A_P+B_P+B_H)\sigma_P^2 \right. \\
+      \left. + (B_P-A_H-B_H)C_{HH}(\pmb 0)+(A_P+B_P-B_H)C_{PP}(\pmb 0)\right] + (B_P-B_H)C_{HP}(\pmb x)
+\end{multline}
+
+## Using Expected Lifetime Reproductive Output
+
+Individual fitness determined by interactions between individuals drawn from different locations and averaged across the diversity found in those locations are given by
+
+\begin{subequations}
+  \begin{equation}
+    \bar w_H (\pmb x,\pmb y) = \exp\left(r_H - \frac{1}{2}\frac{(\theta_H-\bar Z_H(\pmb x))^2}{\sigma_H^2+1/A_H} + \frac{1}{2}\frac{(\bar Z_P(\pmb y)-\bar Z_H(\pmb x))^2}{\sigma_H^2+\sigma_P^2+1/B_H}\right),
+  \end{equation}
+  \begin{equation}
+    \bar w_P (\pmb y,\pmb x) = \exp\left(r_P - \frac{1}{2}\frac{(\theta_P-\bar Z_P(\pmb y))^2}{\sigma_P^2+1/A_P} - \frac{1}{2}\frac{(\bar Z_H(\pmb x)-\bar Z_P(\pmb y))^2}{\sigma_H^2+\sigma_P^2+1/B_P}\right).
+  \end{equation}
+\end{subequations}
+
+Then, an analogous metric for adaptation at spatial lag $\pmb x$ is given by
+
+\begin{subequations}
+  \begin{equation}
+    \rho_H (\pmb x) = \bar w_H (\pmb 0,\pmb 0)/\bar w_H (\pmb 0,\pmb x)=\sqrt{\exp\left(\frac{(\bar Z_P(\pmb 0)-\bar Z_H(\pmb 0))^2}{\sigma_H^2+\sigma_P^2+1/B_H}-\frac{(\bar Z_P(\pmb x)-\bar Z_H(\pmb 0))^2}{\sigma_H^2+\sigma_P^2+1/B_H}\right)},
+  \end{equation}
+  \begin{equation}
+    \rho_P (\pmb x) = \bar w_P (\pmb 0,\pmb 0)/\bar w_P (\pmb 0,\pmb x)=\sqrt{\exp\left(\frac{(\bar Z_H(\pmb x)-\bar Z_P(\pmb 0))^2}{\sigma_H^2+\sigma_P^2+1/B_P}-\frac{(\bar Z_H(\pmb 0)-\bar Z_P(\pmb 0))^2}{\sigma_H^2+\sigma_P^2+1/B_P}\right)}.
+  \end{equation}
+\end{subequations}
+
+Not sure this is helping...
+
+# Environmental Heterogeneity
+
+We can extend our model to allow the abiotic optimum, representing environmental condition, to vary across space. We now denote $\Theta_H(\pmb x),\Theta_P(\pmb x)$ the random fields corresponding to the abiotic optimum at location $\pmb x$ for the host and parasite respectively. Then, assuming the abiotic optima follow Whittle covariance functions, we have
+
+\begin{subequations}
+  \begin{equation}
+    G_HA_H(\Theta_H-\bar Z_H)-G_HB_H(\bar Z_P-\bar Z_H)+\frac{D_H}{2}\Delta\bar Z_H=\sqrt\frac{G_H}{\rho_H}\dot W_H,
+  \end{equation}
+  \begin{equation}
+    G_PA_P(\Theta_P-\bar Z_P)+G_PB_P(\bar Z_H-\bar Z_P)+\frac{D_P}{2}\Delta\bar Z_P=\sqrt\frac{G_P}{\rho_P}\dot W_P,
+  \end{equation}
+  \begin{equation}
+    \gamma_H(\theta_H-\Theta_H)+\frac{R_H}{2}\Delta\Theta_H=\dot Q_H,
+  \end{equation}
+  \begin{equation}
+    \gamma_P(\theta_P-\Theta_P)+\frac{R_P}{2}\Delta\Theta_P=\dot Q_P,
+  \end{equation}
+\end{subequations}
+
+where $\dot Q_H,\dot Q_P$ are spatial white-noise processes driving the abiotic optima, $\gamma_H,\gamma_P$ determine the variance around the deterministic and spatially homogeneous $\theta_H,\theta_P$ and $R_H,R_P$ determine the spatial covariance (but not cross-covariance) of the abiotic optima. This model can be further generalized so that $\Theta_H(\pmb x),\Theta_P(\pmb x)$ follow general Matern covariance functions to get
+
+\begin{subequations}
+  \begin{equation}
+    G_HA_H(\Theta_H-\bar Z_H)-G_HB_H(\bar Z_P-\bar Z_H)+\frac{D_H}{2}\Delta\bar Z_H=\sqrt\frac{G_H}{\rho_H}\dot W_H,
+  \end{equation}
+  \begin{equation}
+    G_PA_P(\Theta_P-\bar Z_P)+G_PB_P(\bar Z_H-\bar Z_P)+\frac{D_P}{2}\Delta\bar Z_P=\sqrt\frac{G_P}{\rho_P}\dot W_P,
+  \end{equation}
+  \begin{equation}
+    \gamma_H\theta_H+\left(-\gamma_H+\frac{R_H}{2}\Delta\right)^{\beta_H/2}\Theta_H=\dot Q_H,
+  \end{equation}
+  \begin{equation}
+    \gamma_P\theta_P\left(-\gamma_P+\frac{R_P}{2}\Delta\right)^{\beta_P/2}\Theta_P=\dot Q_P.
+  \end{equation}
+\end{subequations}
+
+Now $\beta_H,\beta_P$ determine long-range spatial correlations of the abiotic optima (with themselves, not each other) along with the roughness of the fields $\Theta_H,\Theta_P$.
+
+\newpage
+
+# References
+

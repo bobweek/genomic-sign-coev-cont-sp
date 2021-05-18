@@ -1,0 +1,51 @@
+---
+title: Spatial Scales of Local Adaptation and Host-Parasite Coevolution
+authors:
+  - name: Bob Week
+    department: Integrative Biology
+    affiliation: Michigan State University
+    location: East Lansing, MI 48824
+    email: weekrobe@msu.edu
+  - name: Gideon Bradburd
+    department: Integrative Biology
+    affiliation: Michigan State University
+    location: East Lansing, MI 48824
+    email: bradburd@msu.edu
+abstract: |
+  Studies of local adaptation between coevolving hosts and parasites have profited from theory that assumes a discrete set of populations. However, when dispersal is limited clinal patterns of phenotypic variation may emerge. Thus, patterns of local adaptation may occur on characteristic spatial scales determined by dispersal distances and strengths of coevolutionary selection. Here we study a two-dimensional continuous space model of host-parasite coevolution to understand the relative spatial scales of phenotypic turnover and local adaptation. We find that the species with more limited dispersal tends to be locally adapted, but XYZ about it being ahead in the coevolutionary race. To verify our results when model assumptions are broken, we use individual based simulations. We find XYZ about our results when coevolution is strong and XYZ when population densities significantly vary across space.
+keywords:
+  - coevolution
+  - local adaptation
+  - continuous space
+  - characteristic scales
+  - spde
+bibliography: references.bib
+header-includes:
+  - \usepackage{amsmath}
+  - \usepackage{mathrsfs}
+  - \usepackage{csquotes}
+  - \usepackage{textcomp}
+output: 
+  rticles::arxiv_article:
+    keep_tex: true
+---
+
+# Introduction
+
+- It seems an old motivation for studying local adaptation in host-parasite coevolution comes from trying to make sense of the GMTC. So I think it would be good to include this.
+
+- Need to do lit review of local adaptation in coevolving host-parasite systems.
+
+- We should also tie in previous work on understand spatial scales of phenotypic variation (ie, Slatkin's 1978 ppr). Need to do lit review in this area too.
+
+# Methods
+
+## SPDE Model
+
+## Individual-Based Simulations
+
+# Results
+
+# Discussion
+
+# Conclusion
