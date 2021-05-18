@@ -1,5 +1,5 @@
 ---
-title: The Phenotypic Signature of Host-Parasite Coevolution in Continuous Space
+title: A continuous space model of phenotypic coevolution between hosts and parasites
 authors:
   - name: Bob Week
     department: Integrative Biology
@@ -11,13 +11,6 @@ authors:
     affiliation: Michigan State University
     location: East Lansing, MI 48824
     email: bradburd@msu.edu
-abstract: |
-  Here we identify the phenotypic signature of host-parasite coevolution in continuous space.
-keywords:
-  - blah
-  - blee
-  - bloo
-  - these are optional and can be removed
 bibliography: references.bib
 header-includes:
   - \usepackage{amsmath}
@@ -98,14 +91,14 @@ In this case mean traits become functions of spatial variables (eg., $\bar z_H(\
 
 \begin{subequations}\label{deterministic}
   \begin{equation}
-    \frac{\partial\bar z_H}{\partial t}=G_HA_H(\theta_H-\bar z_H)-G_HB_H(\bar z_P-\bar z_H)+\frac{D_H}{2}\Delta\bar z_H,
+    \frac{\partial\bar z_H}{\partial t}=G_HA_H(\theta_H-\bar z_H)-G_HB_H(\bar z_P-\bar z_H)+\frac{\sigma^2_H}{2}\Delta\bar z_H,
   \end{equation}
   \begin{equation}
-    \frac{\partial\bar z_P}{\partial t}=G_PA_P(\theta_P-\bar z_P)+G_PB_P(\bar z_H-\bar z_P)+\frac{D_P}{2}\Delta\bar z_P,
+    \frac{\partial\bar z_P}{\partial t}=G_PA_P(\theta_P-\bar z_P)+G_PB_P(\bar z_H-\bar z_P)+\frac{\sigma^2_P}{2}\Delta\bar z_P,
   \end{equation}
 \end{subequations}
 
-where $D_H,D_P>0$ are dispersal rates for each species and $\Delta=\frac{\partial^2}{\partial x_1^2}+\frac{\partial^2}{\partial x_2^2}$ is the diffusion operator representing spatial movement.
+where $\sigma^2_H,\sigma^2_P>0$ are dispersal rates for each species and $\Delta=\frac{\partial^2}{\partial x_1^2}+\frac{\partial^2}{\partial x_2^2}$ is the Laplacian operator representing spatial movement.
 
 ## Random Genetic Drift
 
@@ -113,14 +106,14 @@ To incorporate the effects of random genetic drift, we should be able to justify
 
 \begin{subequations}\label{spde}
   \begin{equation}
-    \frac{\partial\bar Z_H}{\partial t}=G_HA_H(\theta_H-\bar Z_H)-G_HB_H(\bar Z_P-\bar Z_H)+\frac{D_H}{2}\Delta\bar Z_H+\sqrt\frac{G_H}{\rho_H}\dot W_H,
+    \frac{\partial\bar Z_H}{\partial t}=G_HA_H(\theta_H-\bar Z_H)-G_HB_H(\bar Z_P-\bar Z_H)+\frac{\sigma^2_H}{2}\Delta\bar Z_H+\sqrt\frac{G_H}{N_H}\dot W_H,
   \end{equation}
   \begin{equation}
-    \frac{\partial\bar Z_P}{\partial t}=G_PA_P(\theta_P-\bar Z_P)+G_PB_P(\bar Z_H-\bar Z_P)+\frac{D_P}{2}\Delta\bar Z_P+\sqrt\frac{G_P}{\rho_P}\dot W_P,
+    \frac{\partial\bar Z_P}{\partial t}=G_PA_P(\theta_P-\bar Z_P)+G_PB_P(\bar Z_H-\bar Z_P)+\frac{\sigma^2_P}{2}\Delta\bar Z_P+\sqrt\frac{G_P}{N_P}\dot W_P,
   \end{equation}
 \end{subequations}
 
-where $\rho_P,\rho_H$ are the effective population densities (here assumed to be constant in space and time), $\dot W_H,\dot W_P$ are space-time white noise processes and we use capitol $\bar Z_H,\bar Z_P$ to emphasize that these are now random quantities. This SPDE model may possess some major benefits over more traditional continuous-space models of population genetics. In particular, it is known to have solutions for all spatial dimensions. The effect of abiotic stabilizing selection may also imply function-valued solutions.
+where $N_P,N_H$ are the effective population densities (here assumed to be constant in space and time), $\dot W_H,\dot W_P$ are space-time white noise processes and we use capital $\bar Z_H,\bar Z_P$ to emphasize that these are now random quantities. This SPDE model may possess some major benefits over more traditional continuous-space models of population genetics. In particular, it is known to have solutions for all spatial dimensions. The effect of abiotic stabilizing selection may also imply function-valued solutions.
 
 \begin{table}[htbp]
 \caption{Summary of notation.}
@@ -135,8 +128,8 @@ $A_H,A_P$                           & Strengths of abiotic stabilizing selection
 $\theta_H(\pmb x),\theta_P(\pmb x)$ & Abiotic trait optima at location $\pmb x$    & $\theta_H(\pmb x),\theta_P(\pmb x)\in\mathbb R$           \\ \\
 $B_H,B_P$                           & Strengths of biotic selection                & $B_H,B_P\geq0$                                            \\ \\
 $G_H,G_P$                           & Additive genetic variances                   & $G_H,G_P\geq0$                                            \\ \\
-$D_H,D_P$                           & Dispersal coefficients                       & $D_H,D_P\geq0$                                            \\ \\
-$\rho_H,\rho_P$                           & Effective population densities             & $\rho_H,\rho_P\geq0$                                            \\ \\
+$\sigma^2_H,\sigma^2_P$                           & Dispersal coefficients                       & $\sigma^2_H,\sigma^2_P\geq0$                                            \\ \\
+$N_H,N_P$                           & Effective population densities             & $N_H,N_P\geq0$                                            \\ \\
 $\dot W_H,\dot W_P$                 & Independent space-time white noise processes & $\dot W_H(\pmb x),\dot W_P(\pmb x)$ random variables in $\mathbb R$ \\ \\
 $\bar Z_H(\pmb x),\bar Z_P(\pmb x)$ & Local mean traits at $\pmb x$                & $\bar Z_H(\pmb x),\bar Z_P(\pmb x)$ random variables in $\mathbb R$ \\ \\
 $\bar z_H(\pmb x),\bar z_P(\pmb x)$ & Expected local mean traits at $\pmb x$       & $\bar z_H(\pmb x),\bar z_P(\pmb x)\in\mathbb R$                     \\ \\ \hline
@@ -144,9 +137,7 @@ $\bar z_H(\pmb x),\bar z_P(\pmb x)$ & Expected local mean traits at $\pmb x$    
 \bigskip{}
 \end{table}
 
-## Extensions
-
-### Heterogeneous aboitic optima
+## Possible extensions to spatially heterogeneous aboitic optima
 
   - linear clines, eg: $\theta_H(\pmb x)=\alpha_H+\beta_{H,1}x_1+\beta_{H,2}x_2$
   - quadratic clines, eg: $\theta_H(\pmb x)=\alpha_H+\beta_{H,1}x_1+\beta_{H,2}x_2+\gamma_{H,11}x_1^2+\gamma_{H,22}x_2^2+\gamma_{H,12}x_1x_2$
@@ -154,28 +145,24 @@ $\bar z_H(\pmb x),\bar z_P(\pmb x)$ & Expected local mean traits at $\pmb x$    
 
 # Methods
 
-We use results connecting theory of SPDE, random fields and geostats to calculate characteristic spatial scales at which various phenomena become visible.
+We use results connecting theory of SPDE, random fields and geostatistics to calculate characteristic spatial scales at which various phenomena become visible. In particular, we take advantage of the approach outlined by [@hu2013multivariate] to obtain spatial (intraspecific) covariance and (interspecific) cross-covariance functions of mean traits separated by a distance $h$.
 
-# Discussion
+Below, we show under the deterministic model (eqn \ref{deterministic}) that when the abiotic optima $\theta_H,\theta_P$ are spatially homogeneous and when biotic selection on the host is sufficiently weak, mean trait values for both species converge to spatially homogeneous values.
 
-\newpage
+Building off [@hu2013multivariate] and others, we know that the solution to SPDE (\ref{spde}) converges to a stationary isotropic Gaussian random field on $\mathbb{R}^2$.
 
-\begin{center}
-  \Large Appendices
-\end{center}
 
-\appendix
 
-# A Stable Equilibrium of PDE (\ref{deterministic})
+## A Stable Equilibrium of PDE (\ref{deterministic})
 
 To find an equilibrium of the deterministic PDE (\ref{deterministic}) we set the time derivatives of $\bar z_H$ and $\bar z_P$ equal to zero. This leads to following systems of ODE's
 
 \begin{subequations}
   \begin{equation}
-    0=G_HA_H(\theta_H-\bar z_H)-G_HB_H(\bar z_P-\bar z_H)+\frac{D_H}{2}\Delta\bar z_H,
+    0=G_HA_H(\theta_H-\bar z_H)-G_HB_H(\bar z_P-\bar z_H)+\frac{\sigma^2_H}{2}\Delta\bar z_H,
   \end{equation}
   \begin{equation}
-    0=G_PA_P(\theta_P-\bar z_P)+G_PB_P(\bar z_H-\bar z_P)+\frac{D_P}{2}\Delta\bar z_P.
+    0=G_PA_P(\theta_P-\bar z_P)+G_PB_P(\bar z_H-\bar z_P)+\frac{\sigma^2_P}{2}\Delta\bar z_P.
   \end{equation}
 \end{subequations}
 
@@ -229,10 +216,10 @@ To focus on stationary solutions of the stochastic system (\ref{spde}) we set th
 
 \begin{subequations}\label{stationary-spde}
   \begin{equation}
-    G_HA_H(\theta_H-\bar Z_H)-G_HB_H(\bar Z_P-\bar Z_H)+\frac{D_H}{2}\Delta\bar Z_H=\sqrt\frac{G_H}{\rho_H}\dot W_H,
+    G_HA_H(\theta_H-\bar Z_H)-G_HB_H(\bar Z_P-\bar Z_H)+\frac{\sigma^2_H}{2}\Delta\bar Z_H=\sqrt\frac{G_H}{N_H}\dot W_H,
   \end{equation}
   \begin{equation}
-    G_PA_P(\theta_P-\bar Z_P)+G_PB_P(\bar Z_H-\bar Z_P)+\frac{D_P}{2}\Delta\bar Z_P=\sqrt\frac{G_P}{\rho_P}\dot W_P.
+    G_PA_P(\theta_P-\bar Z_P)+G_PB_P(\bar Z_H-\bar Z_P)+\frac{\sigma^2_P}{2}\Delta\bar Z_P=\sqrt\frac{G_P}{N_P}\dot W_P.
   \end{equation}
 \end{subequations}
 
@@ -252,10 +239,10 @@ To apply this method to our model, we start by using a change of variables to ob
 
 \begin{subequations}
   \begin{equation}
-    \left(\frac{D_H}{2}\Delta-G_H(A_H-B_H)\right)\bar\zeta_H-G_HB_H\bar\zeta_P=\sqrt\frac{G_H}{\rho_H}\dot W_H,
+    \left(\frac{\sigma^2_H}{2}\Delta-G_H(A_H-B_H)\right)\bar\zeta_H-G_HB_H\bar\zeta_P=\sqrt\frac{G_H}{N_H}\dot W_H,
   \end{equation}
   \begin{equation}
-    G_PB_P\bar \zeta_H+\left(\frac{D_P}{2}\Delta-G_P(A_P+B_P)\right)\bar\zeta_P=\sqrt\frac{G_P}{\rho_P}\dot W_P.
+    G_PB_P\bar \zeta_H+\left(\frac{\sigma^2_P}{2}\Delta-G_P(A_P+B_P)\right)\bar\zeta_P=\sqrt\frac{G_P}{N_P}\dot W_P.
   \end{equation}
 \end{subequations}
 
@@ -264,8 +251,8 @@ To consolidate notation, we set
 \begin{subequations}
   \begin{equation}
     \pmb{\mathscr{L}} = \left(\begin{matrix}
-      G_H(A_H-B_H)-\frac{D_H}{2}\Delta & G_HB_H \\ & \\
-      -G_PB_P & G_P(A_P+B_P)-\frac{D_P}{2}\Delta
+      G_H(A_H-B_H)-\frac{\sigma^2_H}{2}\Delta & G_HB_H \\ & \\
+      -G_PB_P & G_P(A_P+B_P)-\frac{\sigma^2_P}{2}\Delta
     \end{matrix}\right),
   \end{equation}
   \begin{equation}
@@ -273,8 +260,8 @@ To consolidate notation, we set
       \bar\zeta_H \\ \\ \bar\zeta_P
     \end{matrix}\right), \ 
     \pmb{V} = \left(\begin{matrix}
-      -\sqrt\frac{G_H}{\rho_H}\dot W_H \\ \\ 
-      -\sqrt\frac{G_P}{\rho_P}\dot W_P
+      -\sqrt\frac{G_H}{N_H}\dot W_H \\ \\ 
+      -\sqrt\frac{G_P}{N_P}\dot W_P
     \end{matrix}\right).
   \end{equation}
 \end{subequations}
@@ -285,7 +272,7 @@ Then, the stationary system can equally be written as
   \pmb{\mathscr{L}}\bar{\pmb\zeta}=\pmb V.
 \end{equation}
 
-Setting $\hat\zeta_H=\mathcal{F}[\bar\zeta_H], \ \hat\zeta_P=\mathcal{F}[\bar\zeta_P], \hat V_H=\mathcal{F}[-\sqrt{\frac{G_H}{\rho_H}}\dot W_H], \ \hat V_P=\mathcal{F}[-\sqrt{\frac{G_P}{\rho_P}}\dot W_P]$, we can Fourier transform the whole dang thing to get
+Setting $\hat\zeta_H=\mathcal{F}[\bar\zeta_H], \ \hat\zeta_P=\mathcal{F}[\bar\zeta_P], \hat V_H=\mathcal{F}[-\sqrt{\frac{G_H}{N_H}}\dot W_H], \ \hat V_P=\mathcal{F}[-\sqrt{\frac{G_P}{N_P}}\dot W_P]$, we can Fourier transform the whole dang thing to get
 
 \begin{equation}
   \pmb{\mathcal{H}}\hat{\pmb\zeta}=\hat{\pmb V},
@@ -296,8 +283,8 @@ where
 \begin{subequations}
   \begin{equation}
     \pmb{\mathscr H}=\left(\begin{matrix}
-      G_H(A_H-B_H)+\frac{D_H}{2}\|\pmb k\|^2 & G_HB_H \\ & \\
-      -G_PB_P & G_P(A_P+B_P)+\frac{D_P}{2}\|\pmb k\|^2
+      G_H(A_H-B_H)+\frac{\sigma^2_H}{2}\|\pmb k\|^2 & G_HB_H \\ & \\
+      -G_PB_P & G_P(A_P+B_P)+\frac{\sigma^2_P}{2}\|\pmb k\|^2
     \end{matrix}\right),
   \end{equation}
   \begin{equation}
@@ -326,8 +313,8 @@ with $-H$ denoting the inverse of the Hermitian of a matrix and $\pmb S_{\pmb V}
 
 \begin{equation}
   \hat{\pmb V}=\left(\begin{matrix}
-    \sqrt{G_H/\rho_H} \\ \\
-    \sqrt{G_P/\rho_P}
+    \sqrt{G_H/N_H} \\ \\
+    \sqrt{G_P/N_P}
   \end{matrix}\right).
 \end{equation}
 
@@ -339,8 +326,8 @@ Since we assume the white noise processes $\dot W_H$ and $\dot W_P$ are independ
     S_{V_H} & 0 \\ & \\
     0 & S_{V_P}
   \end{matrix}\right)=\left(\begin{matrix}
-    G_H/\rho_H & 0 \\ & \\
-    0 & G_P/\rho_P
+    G_H/N_H & 0 \\ & \\
+    0 & G_P/N_P
   \end{matrix}\right).
 \end{equation}
 
@@ -348,16 +335,16 @@ Plugging into _Mathematica_ yields
 
 \begin{subequations}
   \begin{equation}
-    S_{\bar\zeta_{HH}} = \frac{\frac{G_H}{4\rho_H}\left(2G_P(A_P+B_P)+D_P\|\pmb k\|^2\right)^2+\frac{G_P}{\rho_P}B_H^2G_H^2}
-    {\left\{-B_HB_PG_HG_P-\frac{1}{4}\left[2G_H(A_H-B_H)+D_H\|\pmb k\|^2\right]\left[2G_P(A_P+B_P)+D_P\|\pmb k\|^2\right]\right\}^2}
+    S_{\bar\zeta_{HH}} = \frac{\frac{G_H}{4N_H}\left(2G_P(A_P+B_P)+\sigma^2_P\|\pmb k\|^2\right)^2+\frac{G_P}{N_P}B_H^2G_H^2}
+    {\left\{-B_HB_PG_HG_P-\frac{1}{4}\left[2G_H(A_H-B_H)+\sigma^2_H\|\pmb k\|^2\right]\left[2G_P(A_P+B_P)+\sigma^2_P\|\pmb k\|^2\right]\right\}^2}
   \end{equation}
   \begin{equation}
-    S_{\bar\zeta_{PP}} = \frac{\frac{G_P}{4\rho_P}\left(2G_H(A_H-B_H)+D_H\|\pmb k\|^2\right)^2+\frac{G_H}{\rho_H}B_P^2G_P^2}
-    {\left\{-B_HB_PG_HG_P-\frac{1}{4}\left[2G_H(A_H-B_H)+D_H\|\pmb k\|^2\right]\left[2G_P(A_P+B_P)+D_P\|\pmb k\|^2\right]\right\}^2}
+    S_{\bar\zeta_{PP}} = \frac{\frac{G_P}{4N_P}\left(2G_H(A_H-B_H)+\sigma^2_H\|\pmb k\|^2\right)^2+\frac{G_H}{N_H}B_P^2G_P^2}
+    {\left\{-B_HB_PG_HG_P-\frac{1}{4}\left[2G_H(A_H-B_H)+\sigma^2_H\|\pmb k\|^2\right]\left[2G_P(A_P+B_P)+\sigma^2_P\|\pmb k\|^2\right]\right\}^2}
   \end{equation}
   \begin{equation}  
-    S_{\bar\zeta_{HP}} = \frac{\frac{G_HG_P}{2}\left[\frac{B_P}{\rho_H}\left(2G_P(A_P+B_P)+D_P\|\pmb k\|^2\right)+\frac{B_H}{\rho_P}\left(2G_H(A_H-B_H)+D_H\|\pmb k\|^2\right)\right]}
-    {\left\{-B_HB_PG_HG_P-\frac{1}{4}\left[2G_H(A_H-B_H)+D_H\|\pmb k\|^2\right]\left[2G_P(A_P+B_P)+D_P\|\pmb k\|^2\right]\right\}^2}.
+    S_{\bar\zeta_{HP}} = \frac{\frac{G_HG_P}{2}\left[\frac{B_P}{N_H}\left(2G_P(A_P+B_P)+\sigma^2_P\|\pmb k\|^2\right)+\frac{B_H}{N_P}\left(2G_H(A_H-B_H)+\sigma^2_H\|\pmb k\|^2\right)\right]}
+    {\left\{-B_HB_PG_HG_P-\frac{1}{4}\left[2G_H(A_H-B_H)+\sigma^2_H\|\pmb k\|^2\right]\left[2G_P(A_P+B_P)+\sigma^2_P\|\pmb k\|^2\right]\right\}^2}.
   \end{equation}
 \end{subequations}
 
@@ -365,14 +352,14 @@ Then, by assuming weak biotic selection so that $B_H^2,B_P^2,B_HB_P\approx0$, we
 
 \begin{subequations}
   \begin{equation}
-    S_{\bar\zeta_{HH}}(\pmb k) \approx \frac{4G_H/\rho_H}{\left[2G_H(A_H-B_H)+D_H\|\pmb k\|^2\right]^2},
+    S_{\bar\zeta_{HH}}(\pmb k) \approx \frac{4G_H/N_H}{\left[2G_H(A_H-B_H)+\sigma^2_H\|\pmb k\|^2\right]^2},
   \end{equation}
   \begin{equation}
-    S_{\bar\zeta_{PP}}(\pmb k) \approx \frac{4G_P/\rho_P}{\left[2G_P(A_P+B_P)+D_P\|\pmb k\|^2\right]^2},
+    S_{\bar\zeta_{PP}}(\pmb k) \approx \frac{4G_P/N_P}{\left[2G_P(A_P+B_P)+\sigma^2_P\|\pmb k\|^2\right]^2},
   \end{equation}
   \begin{multline}  
-    S_{\bar\zeta_{HP}}(\pmb k) \approx 8G_HG_P\left(\frac{B_H/\rho_P}{\left[2G_H(A_H-B_H)+D_H\|\pmb k\|^2\right]\left[2G_P(A_P+B_P)+D_P\|\pmb k\|^2\right]^2}\right. \\
-      \left. + \frac{B_P/\rho_H}{\left[2G_H(A_H-B_H)+D_H\|\pmb k\|^2\right]^2\left[2G_P(A_P+B_P)+D_P\|\pmb k\|^2\right]}\right).
+    S_{\bar\zeta_{HP}}(\pmb k) \approx 8G_HG_P\left(\frac{B_H/N_P}{\left[2G_H(A_H-B_H)+\sigma^2_H\|\pmb k\|^2\right]\left[2G_P(A_P+B_P)+\sigma^2_P\|\pmb k\|^2\right]^2}\right. \\
+      \left. + \frac{B_P/N_H}{\left[2G_H(A_H-B_H)+\sigma^2_H\|\pmb k\|^2\right]^2\left[2G_P(A_P+B_P)+\sigma^2_P\|\pmb k\|^2\right]}\right).
   \end{multline}
 \end{subequations}
 
@@ -382,10 +369,10 @@ Taking the inverse Fourier transform of the power spectra $S_{\bar\zeta_{HH}}(\p
 
 \begin{subequations}
   \begin{equation}
-    C_{HH}(\pmb x) \approx \frac{M(\pmb x|1,\sqrt{2G_H(A_H-B_H)/D_H})}{\rho_HD_H(A_H-B_H)},
+    C_{HH}(\pmb x) \approx \frac{M(\pmb x|1,\sqrt{2G_H(A_H-B_H)/\sigma^2_H})}{N_H\sigma^2_H(A_H-B_H)},
   \end{equation}
   \begin{equation}
-    C_{PP}(\pmb x) \approx \frac{M(\pmb x|1,\sqrt{2G_P(A_P+B_P)/D_P})}{\rho_PD_P(A_P+B_P)},
+    C_{PP}(\pmb x) \approx \frac{M(\pmb x|1,\sqrt{2G_P(A_P+B_P)/\sigma^2_P})}{N_P\sigma^2_P(A_P+B_P)},
   \end{equation}
 \end{subequations}
 
@@ -394,16 +381,16 @@ where $M(\pmb x|\nu,\kappa)=\frac{2^{1-\nu}}{\Gamma(\nu)}(\kappa\|\pmb x\|)^\nu 
 The interspecific cross covariance function does not lend to a simple closed form expression. Instead, we can see the corresponding component of the power spectrum matrix is the sum of convolutions of Matern correlation functions with Bessel functions. In particular, denoting $f*g$ the convolution of two functions $f(\pmb x),g(\pmb x)$, we have
 
 \begin{multline}
-  C_{HP}(\pmb x) \approx \frac{2G_PB_P}{\rho_HD_HD_P(A_H-B_H)}\left[K_0\left(\sqrt{\frac{2G_P}{D_P}(A_P+B_P)}\|\pmb x\|\right) * M\left(\pmb x\Big|1,\sqrt{\frac{2G_H}{D_H}(A_H-B_H)}\right)\right] \\ - \frac{2G_HB_H}{\rho_PD_HD_P(A_P+B_P)}\left[K_0\left(\sqrt{\frac{2G_H}{D_H}(A_H-B_H)}\|\pmb x\|\right)*M\left(\pmb x\Big|1,\sqrt{\frac{2G_P}{D_P}(A_P+B_P)}\right)\right].
+  C_{HP}(\pmb x) \approx \frac{2G_PB_P}{N_H\sigma^2_H\sigma^2_P(A_H-B_H)}\left[K_0\left(\sqrt{\frac{2G_P}{\sigma^2_P}(A_P+B_P)}\|\pmb x\|\right) * M\left(\pmb x\Big|1,\sqrt{\frac{2G_H}{\sigma^2_H}(A_H-B_H)}\right)\right] \\ - \frac{2G_HB_H}{N_P\sigma^2_H\sigma^2_P(A_P+B_P)}\left[K_0\left(\sqrt{\frac{2G_H}{\sigma^2_H}(A_H-B_H)}\|\pmb x\|\right)*M\left(\pmb x\Big|1,\sqrt{\frac{2G_P}{\sigma^2_P}(A_P+B_P)}\right)\right].
 \end{multline}
 
-Although characteristic length scales are obvious for $C_{HH}$ and $C_{PP}$ (by normalizing distance, they are $\xi_H=\sqrt{D_H/[2G_H(A_H-B_H)]}$ and $\xi_P=\sqrt{D_P/[2G_P(A_P+B_P)]}$ respectively), finding a corresponding characteristic length for $C_{HP}$ is not so obvious. Fortunately there exist alternative measures of spatial scale that we can employ. In particular, we can use a measure called _integral range_ to study spatial patterns at a more global scale and a measure called _smoothness microscale_ to study the more fine-grained details of spatial patterns.
+Although characteristic length scales are obvious for $C_{HH}$ and $C_{PP}$ (by normalizing distance, they are $\xi_H=\sqrt{\sigma^2_H/[2G_H(A_H-B_H)]}$ and $\xi_P=\sqrt{\sigma^2_P/[2G_P(A_P+B_P)]}$ respectively), finding a corresponding characteristic length for $C_{HP}$ is not so obvious. Fortunately there exist alternative measures of spatial scale that we can employ. In particular, we can use a measure called _integral range_ to study spatial patterns at a more global scale and a measure called _smoothness microscale_ to study the more fine-grained details of spatial patterns.
 
-The _integral range_ a stationary isotropic process on $\mathbb R^2$ characterized by a correlation function $\rho(\pmb x)$ is given by
+The _integral range_ a stationary isotropic process on $\mathbb R^2$ characterized by a correlation function $N(\pmb x)$ is given by
 
-$$l=\sqrt{\int_{\mathbb R^2}\rho(\pmb x)d\pmb x}.$$
+$$l=\sqrt{\int_{\mathbb R^2}N(\pmb x)d\pmb x}.$$
 
-However, since the correlation function we are interested may become negative, we use the modified integral range $l'=\sqrt{\left|\int_{\mathbb R^2}\rho(\pmb x)d\pmb x\right|}$.
+However, since the correlation function we are interested may become negative, we use the modified integral range $l'=\sqrt{\left|\int_{\mathbb R^2}N(\pmb x)d\pmb x\right|}$.
 
 The _smoothness microscale_ has a more complex definition, involving the Laplacian of the covariance function evaluated at zero lag in the denominator. This is a potential issue since the Laplacian of $K_0(\pmb x)$ and $M(\pmb x|\kappa,1)$ evaluated at zero lag both take infinite values.
 
@@ -426,14 +413,14 @@ The parameters $\alpha_H$ and $\alpha_P$ are determined by the dispersal kernel.
 
 Under our model of coevolution with diffusive dispersal we have the parameterization
 
-- $b_H=(D_H/2)^{\alpha_H/2}$,
-- $b_P=(D_P/2)^{\alpha_P/2}$,
+- $b_H=(\sigma^2_H/2)^{\alpha_H/2}$,
+- $b_P=(\sigma^2_P/2)^{\alpha_P/2}$,
 - $b_{HP}=G_HB_H$,
 - $b_{PH}=-G_PB_P$,
-- $\kappa_H^2=2G_H(A_H-B_H)/D_H$,
-- $\kappa_P^2=2G_P(A_P+B_P)/D_P$,
-- $V_H=G_H/\rho_H$
-- $V_P=G_P/\rho_P$
+- $\kappa_H^2=2G_H(A_H-B_H)/\sigma^2_H$,
+- $\kappa_P^2=2G_P(A_P+B_P)/\sigma^2_P$,
+- $V_H=G_H/N_H$
+- $V_P=G_P/N_P$
 
 with $\alpha_H=\alpha_P=2$. An important question is to understand whether the parameterization of $\kappa_H$ and $\kappa_P$ will change when dispersal follows heavy-tailed distributions so that $\alpha_H,\alpha_P<2$. For now we side-step this question by proceeding with the parameterization using $b$'s, $\kappa$'s, $\alpha$'s and $V$'s.
 
@@ -467,10 +454,10 @@ Then, the integral ranges for spatial patterns of intraspecific traits are
 
 \begin{subequations}
   \begin{equation}
-    l_H=\sqrt{\frac{S_{\bar\zeta_{HH}}(\pmb 0)}{C_{HH}(\pmb 0)}}\approx\frac{\alpha_H-1}{\kappa_H}=(\alpha_H-1)\sqrt\frac{D_H}{2G_H(A_H-B_H)},
+    l_H=\sqrt{\frac{S_{\bar\zeta_{HH}}(\pmb 0)}{C_{HH}(\pmb 0)}}\approx\frac{\alpha_H-1}{\kappa_H}=(\alpha_H-1)\sqrt\frac{\sigma^2_H}{2G_H(A_H-B_H)},
   \end{equation}
   \begin{equation}
-    l_P=\sqrt{\frac{S_{\bar\zeta_{PP}}(\pmb 0)}{C_{PP}(\pmb 0)}}\approx\frac{\alpha_P-1}{\kappa_P}=(\alpha_P-1)\sqrt\frac{D_P}{2G_P(A_P+B_P)}.
+    l_P=\sqrt{\frac{S_{\bar\zeta_{PP}}(\pmb 0)}{C_{PP}(\pmb 0)}}\approx\frac{\alpha_P-1}{\kappa_P}=(\alpha_P-1)\sqrt\frac{\sigma^2_P}{2G_P(A_P+B_P)}.
   \end{equation}
 \end{subequations}
 
@@ -577,10 +564,10 @@ Then, an analogous metric for adaptation at spatial lag $\pmb x$ is given by
 
 \begin{subequations}
   \begin{equation}
-    \rho_H (\pmb x) = \bar w_H (\pmb 0,\pmb 0)/\bar w_H (\pmb 0,\pmb x)=\sqrt{\exp\left(\frac{(\bar Z_P(\pmb 0)-\bar Z_H(\pmb 0))^2}{\sigma_H^2+\sigma_P^2+1/B_H}-\frac{(\bar Z_P(\pmb x)-\bar Z_H(\pmb 0))^2}{\sigma_H^2+\sigma_P^2+1/B_H}\right)},
+    N_H (\pmb x) = \bar w_H (\pmb 0,\pmb 0)/\bar w_H (\pmb 0,\pmb x)=\sqrt{\exp\left(\frac{(\bar Z_P(\pmb 0)-\bar Z_H(\pmb 0))^2}{\sigma_H^2+\sigma_P^2+1/B_H}-\frac{(\bar Z_P(\pmb x)-\bar Z_H(\pmb 0))^2}{\sigma_H^2+\sigma_P^2+1/B_H}\right)},
   \end{equation}
   \begin{equation}
-    \rho_P (\pmb x) = \bar w_P (\pmb 0,\pmb 0)/\bar w_P (\pmb 0,\pmb x)=\sqrt{\exp\left(\frac{(\bar Z_H(\pmb x)-\bar Z_P(\pmb 0))^2}{\sigma_H^2+\sigma_P^2+1/B_P}-\frac{(\bar Z_H(\pmb 0)-\bar Z_P(\pmb 0))^2}{\sigma_H^2+\sigma_P^2+1/B_P}\right)}.
+    N_P (\pmb x) = \bar w_P (\pmb 0,\pmb 0)/\bar w_P (\pmb 0,\pmb x)=\sqrt{\exp\left(\frac{(\bar Z_H(\pmb x)-\bar Z_P(\pmb 0))^2}{\sigma_H^2+\sigma_P^2+1/B_P}-\frac{(\bar Z_H(\pmb 0)-\bar Z_P(\pmb 0))^2}{\sigma_H^2+\sigma_P^2+1/B_P}\right)}.
   \end{equation}
 \end{subequations}
 
@@ -592,10 +579,10 @@ We can extend our model to allow the abiotic optimum, representing environmental
 
 \begin{subequations}
   \begin{equation}
-    G_HA_H(\Theta_H-\bar Z_H)-G_HB_H(\bar Z_P-\bar Z_H)+\frac{D_H}{2}\Delta\bar Z_H=\sqrt\frac{G_H}{\rho_H}\dot W_H,
+    G_HA_H(\Theta_H-\bar Z_H)-G_HB_H(\bar Z_P-\bar Z_H)+\frac{\sigma^2_H}{2}\Delta\bar Z_H=\sqrt\frac{G_H}{N_H}\dot W_H,
   \end{equation}
   \begin{equation}
-    G_PA_P(\Theta_P-\bar Z_P)+G_PB_P(\bar Z_H-\bar Z_P)+\frac{D_P}{2}\Delta\bar Z_P=\sqrt\frac{G_P}{\rho_P}\dot W_P,
+    G_PA_P(\Theta_P-\bar Z_P)+G_PB_P(\bar Z_H-\bar Z_P)+\frac{\sigma^2_P}{2}\Delta\bar Z_P=\sqrt\frac{G_P}{N_P}\dot W_P,
   \end{equation}
   \begin{equation}
     \gamma_H(\theta_H-\Theta_H)+\frac{R_H}{2}\Delta\Theta_H=\dot Q_H,
@@ -609,10 +596,10 @@ where $\dot Q_H,\dot Q_P$ are spatial white-noise processes driving the abiotic 
 
 \begin{subequations}
   \begin{equation}
-    G_HA_H(\Theta_H-\bar Z_H)-G_HB_H(\bar Z_P-\bar Z_H)+\frac{D_H}{2}\Delta\bar Z_H=\sqrt\frac{G_H}{\rho_H}\dot W_H,
+    G_HA_H(\Theta_H-\bar Z_H)-G_HB_H(\bar Z_P-\bar Z_H)+\frac{\sigma^2_H}{2}\Delta\bar Z_H=\sqrt\frac{G_H}{N_H}\dot W_H,
   \end{equation}
   \begin{equation}
-    G_PA_P(\Theta_P-\bar Z_P)+G_PB_P(\bar Z_H-\bar Z_P)+\frac{D_P}{2}\Delta\bar Z_P=\sqrt\frac{G_P}{\rho_P}\dot W_P,
+    G_PA_P(\Theta_P-\bar Z_P)+G_PB_P(\bar Z_H-\bar Z_P)+\frac{\sigma^2_P}{2}\Delta\bar Z_P=\sqrt\frac{G_P}{N_P}\dot W_P,
   \end{equation}
   \begin{equation}
     \gamma_H\theta_H+\left(-\gamma_H+\frac{R_H}{2}\Delta\right)^{\beta_H/2}\Theta_H=\dot Q_H,
