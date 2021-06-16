@@ -23,12 +23,12 @@ pyplot()
 	Aₚ::Float64	# strength of abiotic selection on parasite
 	Bₕ::Float64	# strength of biotic selection on host
 	Bₚ::Float64	# strength of biotic selection on parasite
-	Dₕ::Float64	# host disperal distance
-	Dₚ::Float64	# parasite disperal distance
+	σₕ::Float64	# host disperal distance
+	σₚ::Float64	# parasite disperal distance
 
     # parameters for calculating local adaptation measures
-    σₕ²::Float64 # expressed variance of host
-	σₚ²::Float64 # expressed variance of parasite
+    vₕ::Float64 # expressed variance of host
+	vₚ::Float64 # expressed variance of parasite
 	rₕ::Float64  # intrinsic growth rate of host
     rₚ::Float64  # intrinsic growth rate of parasite
 	
@@ -41,18 +41,15 @@ Cₕₕ = function (x,p)
     # p = model parameters
 
     # unpack model parameters
-    @unpack Gₕ,Gₚ,Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,Dₕ,Dₚ = p
+    @unpack Gₕ,Gₚ,Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ = p
 
     # compute characteristic lengths of intraspecific spatial variation
-    ξₕ = √(Dₕ / (2 * Gₕ * (Aₕ - Bₕ)))
-    ξₚ = √(Dₚ / (2 * Gₚ * (Aₚ + Bₚ)))
+    ξₕ = σₕ / √(Gₕ * (Aₕ - Bₕ))
 
     # variance in mean trait values
-    # due to random genetic drift
-    local_varₕ = 1 / (Nₕ * Dₕ * (Aₕ - Bₕ))
-    local_varₚ = 1 / (Nₚ * Dₚ * (Aₚ + Bₚ))
+    Vₕ = 1 / (Nₕ * σₕ * (Aₕ - Bₕ))
 
-    return(local_varₕ * x * besselk(1, x / ξₕ) / ξₕ)
+    return(local_varₕ * x * besselk(1,√2 * x / ξₕ) / ξₕ)
 end
 
 Cₚₚ = function (x,p)
@@ -61,18 +58,15 @@ Cₚₚ = function (x,p)
     # p = model parameters
 
     # unpack model parameters
-    @unpack Gₕ,Gₚ,Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,Dₕ,Dₚ = p
+    @unpack Gₕ,Gₚ,Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ = p
 
     # compute characteristic lengths of intraspecific spatial variation
-    ξₕ = √(Dₕ / (2 * Gₕ * (Aₕ - Bₕ)))
-    ξₚ = √(Dₚ / (2 * Gₚ * (Aₚ + Bₚ)))
+    ξₚ = σₚ / √(Gₚ * (Aₚ + Bₚ))
 
     # variance in mean trait values
-    # due to random genetic drift
-    local_varₕ = 1 / (Nₕ * Dₕ * (Aₕ - Bₕ))
-    local_varₚ = 1 / (Nₚ * Dₚ * (Aₚ + Bₚ))
+    Vₚ = 1 / (Nₚ * σₚ * (Aₚ + Bₚ))
 
-    return(local_varₚ * x * besselk(1, x / ξₚ) / ξₚ)
+    return(Vₚ * x * besselk(1,√2 * x / ξₚ) / ξₚ)
 end
 
 # now for the convolution...
@@ -90,17 +84,15 @@ Cₕₚ = function (l₁, u₁, s₁, l₂, u₂, s₂, p)
     x₂ = filter(x -> x ≠ 0, x₂)
 
     # unpack model parameters
-    @unpack Gₕ,Gₚ,Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,Dₕ,Dₚ = p
+    @unpack Gₕ,Gₚ,Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ = p
 
     # compute characteristic lengths of intraspecific spatial variation
-    ξₕ = √(Dₕ / (2 * Gₕ * (Aₕ - Bₕ)))
-    ξₚ = √(Dₚ / (2 * Gₚ * (Aₚ + Bₚ)))
+    ξₕ = σₕ / √(Gₕ * (Aₕ - Bₕ))
+    ξₚ = σₚ / √(Gₚ * (Aₚ + Bₚ))
 
     # variance in mean trait values
-    # due to random genetic drift
-    local_varₕ = 1 / (Nₕ * Dₕ * (Aₕ - Bₕ))
-    local_varₚ = 1 / (Nₚ * Dₚ * (Aₚ + Bₚ))
-
+    Vₚ = 1 / (Nₚ * σₚ * (Aₚ + Bₚ))
+    Vₕ = 1 / (Nₕ * σₕ * (Aₕ - Bₕ))
 
     # holds values of Bessel K₀ function with host parameters
     K₀ₕ = zeros(length(x₁), length(x₂))
@@ -124,7 +116,7 @@ Cₕₚ = function (l₁, u₁, s₁, l₂, u₂, s₂, p)
     for x in x₁
         for y in x₂
             u = √(x^2 + y^2)
-            M₁ₕ[findfirst(z -> z == x, x₁),findfirst(z -> z == y, x₂)] = u * besselk(1, u / ξₕ) / ξₕ
+            M₁ₕ[findfirst(z -> z == x, x₁),findfirst(z -> z == y, x₂)] = √2 * u * besselk(1,√2 * u / ξₕ) / ξₕ
         end
     end
 
@@ -132,14 +124,14 @@ Cₕₚ = function (l₁, u₁, s₁, l₂, u₂, s₂, p)
     for x in x₁
         for y in x₂
             u = √(x^2 + y^2)
-            M₁ₚ[findfirst(z -> z == x, x₁),findfirst(z -> z == y, x₂)] = u * besselk(1, u / ξₚ) / ξₚ
+            M₁ₚ[findfirst(z -> z == x, x₁),findfirst(z -> z == y, x₂)] = √2 * u * besselk(1,√2 * u / ξₚ) / ξₚ
         end
     end
 
     K₀ₚM₁ₕ = conv(K₀ₚ, M₁ₕ)
     K₀ₕM₁ₚ = conv(K₀ₕ, M₁ₚ)
 
-    Cₕₚ = (2 .* Gₚ .* Bₚ .* local_varₕ .* (K₀ₚM₁ₕ) ./ Dₚ) .- (2 .* Gₕ .* Bₕ .* local_varₚ .* (K₀ₕM₁ₚ) ./ Dₕ)
+    Cₕₚ = (2 .* Gₚ .* Bₚ .* Vₕ .* (K₀ₚM₁ₕ) ./ σₚ) .- (2 .* Gₕ .* Bₕ .* Vₚ .* (K₀ₕM₁ₚ) ./ σₕ)
 
     return(Cₕₚ)
 
@@ -168,17 +160,17 @@ plotSpCorr = function (m,s,p)
     end
 
     # unpack some parameters
-    @unpack Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,Dₕ,Dₚ = p
+    @unpack Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ = p
 
     # calculate local variances to normalize correlations
-    local_varₕ = 1 / (Nₕ * Dₕ * (Aₕ - Bₕ))
-    local_varₚ = 1 / (Nₚ * Dₚ * (Aₚ + Bₚ))
+    local_varₕ = 1 / (Nₕ * σₕ * (Aₕ - Bₕ))
+    local_varₚ = 1 / (Nₚ * σₚ * (Aₚ + Bₚ))
 
-    ttle = string("Dispersal Ratio: σₕ/σₚ = ",√(Dₕ/Dₚ))
+    ttle = string("Dispersal Ratio: σₕ/σₚ = ", σₕ/σₚ)
 
     # make array with correlations on columns
     L = length(U)-1
-    ρs = hcat( CHH, CPP, CHP[(L-1):(2 * L - 1),L]/sqrt(local_varₕ*local_varₚ) )
+    ρs = hcat( CHH, CPP, CHP[(L-1):(2 * L - 1),L]/sqrt(Vₕ*Vₚ) )
     plot(U, ρs,label=["ρₕ" "ρₚ" "ρₕₚ"],title=ttle, legendfontsize=10)
     ylabel!("Trait Correlation")
     xlabel!("Spatial Lag")
@@ -193,11 +185,7 @@ plotLocAdapt = function (m,s,p,type)
     # p = model parameters
 
     # unpack some parameters
-    @unpack Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,Dₕ,Dₚ,rₕ,rₚ,σₕ²,σₚ² = p
-    
-    # these are same as Cₕₕ(0,p) and Cₚₚ(0,p) resp.
-    # local_varₕ = 1 / (Nₕ * Dₕ * (Aₕ - Bₕ))
-    # local_varₚ = 1 / (Nₚ * Dₚ * (Aₚ + Bₚ))
+    @unpack Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ,rₕ,rₚ,vₕ,vₚ = p
 
     # compute cross-covariance function
     CHP = Cₕₚ(-m,m,s,-m,m,s,p)
@@ -211,10 +199,9 @@ plotLocAdapt = function (m,s,p,type)
 
     Δₕ = Bₕ .* (CHPX .- CHP0)
     Δₚ = Bₚ .* (CHP0 .- CHPX)
-    # Δₕₚ = (rₕ-rₚ) .+ (Bₚ-Bₕ).*CHPX .+ ( (Bₕ-Aₕ-Bₚ)*σₕ² + (Aₚ+Bₚ+Bₕ)*σₚ² + (Bₚ-Aₕ-Bₕ)*local_varₕ + (Aₚ+Bₚ-Bₕ)*local_varₚ )/2    
 
-    if type == "D"
-        ttle = string("Dispersal Ratio: σₕ/σₚ = ",√(Dₕ/Dₚ))
+    if type == "σ"
+        ttle = string("Dispersal Ratio: σₕ/σₚ = ",σₕ/σₚ)
     elseif type == "B"
         ttle = string("Coevolution Ratio: Bₕ/Bₚ = ",Bₕ/Bₚ)
     end
@@ -227,91 +214,79 @@ plotLocAdapt = function (m,s,p,type)
 
 end
 
-# same dispersal distances
-p = CoevPars(Gₚ = 10, Gₕ = 10, σₕ²=10, σₚ²=10, Nₕ = 10, Nₚ = 10, Aₕ = 0.2, Aₚ = 0.2, Bₕ = 0.01, Bₚ = 0.01, Dₕ = 10^2, Dₚ = 10^2, rₕ = 0, rₚ = 0)
-# eqCorr = plotSpCorr(60,0.1,p)
-eqLA = plotLocAdapt(60,0.1,p,"D")
-title!("")
-# plot(eqCorr, eqLA, xlims=(0,40), layout = (2,1), size = (400,600))
-plot(eqLA, xlims=(0,40), title = "", size = (500,400))
-savefig("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/eq-pars.png")
 
-# parasite disperses further than host
-p = CoevPars(Gₚ = 10, Gₕ = 10, σₕ²=10, σₚ²=10, Nₕ = 10, Nₚ = 10, Aₕ = 0.2, Aₚ = 0.2, Bₕ = 0.01, Bₚ = 0.01, Dₕ = 10^2, Dₚ = 100^2, rₕ = 0, rₚ = 0)
-# Corrp = plotSpCorr(60,0.1,p)
-LAp = plotLocAdapt(60,0.1,p,"D")
-# plot(Corrp, LAp, xlims=(0,40), layout = (2,1), size = (400,600))
-# savefig("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/p-further.png")
+# returns a measure of local adaptation considering limited dispersal
+LimDispLA = function (m,s,p,type)
 
+    # m = max distance
+    # s = step size (ie., resolution)
+    # p = model parameters
 
-# host disperses a tiny bit further than parasite
-p = CoevPars(Gₚ = 10, Gₕ = 10, σₕ²=10, σₚ²=10, Nₕ = 10, Nₚ = 10, Aₕ = 0.2, Aₚ = 0.2, Bₕ = 0.01, Bₚ = 0.01, Dₕ = 10.5^2, Dₚ = 10^2, rₕ = 0, rₚ = 0)
-# Corrhl = plotSpCorr(60,0.1,p)
-LAht = plotLocAdapt(60,0.1,p,"D")
-# plot(Corrhl, LAhl, xlims=(0,40), layout = (2,1), size = (400,600))
-# savefig("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/h-l-further.png")
+    # unpack some parameters
+    @unpack Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ,rₕ,rₚ,vₕ,vₚ = p
+    
+    # these are same as Cₕₕ(0,p) and Cₚₚ(0,p) resp.
+    # local_varₕ = 1 / (Nₕ * σₕ * (Aₕ - Bₕ))
+    # local_varₚ = 1 / (Nₚ * σₚ * (Aₚ + Bₚ))
 
-# host disperses a little bit further than parasite
-p = CoevPars(Gₚ = 10, Gₕ = 10, σₕ²=10, σₚ²=10, Nₕ = 10, Nₚ = 10, Aₕ = 0.2, Aₚ = 0.2, Bₕ = 0.01, Bₚ = 0.01, Dₕ = 20^2, Dₚ = 10^2, rₕ = 0, rₚ = 0)
-# Corrhl = plotSpCorr(60,0.1,p)
-LAhl = plotLocAdapt(60,0.1,p,"D")
-# plot(Corrhl, LAhl, xlims=(0,40), layout = (2,1), size = (400,600))
-# savefig("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/h-l-further.png")
+    # compute cross-covariance function
+    CHP = Cₕₚ(-m,m,s,-m,m,s,p)
 
-# host disperses an intermediate bit further than parasite
-p = CoevPars(Gₚ = 10, Gₕ = 10, σₕ²=10, σₚ²=10, Nₕ = 10, Nₚ = 10, Aₕ = 0.2, Aₚ = 0.2, Bₕ = 0.01, Bₚ = 0.01, Dₕ = 50^2, Dₚ = 10^2, rₕ = 0, rₚ = 0)
-# Corrhi = plotSpCorr(60,0.1,p)
-LAhi = plotLocAdapt(60,0.1,p,"D")
-# plot(Corrhi, LAhi, xlims=(0,40), layout = (2,1), size = (400,600))
-# savefig("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/h-i-further.png")
+    # define range
+    U = 0:s:(2*m)
 
-# host disperses much further than parasite
-p = CoevPars(Gₚ = 10, Gₕ = 10, σₕ²=10, σₚ²=10, Nₕ = 10, Nₚ = 10, Aₕ = 0.2, Aₚ = 0.2, Bₕ = 0.01, Bₚ = 0.01, Dₕ = 100^2, Dₚ = 10^2, rₕ = 0, rₚ = 0)
-# Corrh = plotSpCorr(60,0.1,p)
-LAh = plotLocAdapt(60,0.1,p,"D")
-# plot(Corrh, LAh, xlims=(0,40), layout = (2,1), size = (400,600))
-# savefig("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/h-further.png")
+    L = length(U)-1
+    CHP0 = CHP[L,L]
+    CHPX = CHP[(L-1):(2 * L - 1),L] # replace this one with the value at the expected distance
 
-# plot(Corrp, eqCorr, Corrhl, Corrhi, Corrh, eqLA, LAp, LAhl, LAhi, LAh, xlims=(0,40), layout=(2,5), size=(1600,600))
-# savefig("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/corrs-las.png")
+    Δₕ = Bₕ .* (CHPX .- CHP0)
+    Δₚ = Bₚ .* (CHP0 .- CHPX)
+    # Δₕₚ = (rₕ-rₚ) .+ (Bₚ-Bₕ).*CHPX .+ ( (Bₕ-Aₕ-Bₚ)*vₕ + (Aₚ+Bₚ+Bₕ)*vₚ + (Bₚ-Aₕ-Bₕ)*Vₕ + (Aₚ+Bₚ-Bₕ)*Vₚ )/2    
 
-# equal strength
-p = CoevPars(Gₚ = 10, Gₕ = 10, σₕ²=10, σₚ²=10, Nₕ = 10, Nₚ = 10, Aₕ = 0.2, Aₚ = 0.2, Bₕ = 0.01, Bₚ = 0.01, Dₕ = 10^2, Dₚ = 10^2, rₕ = 0, rₚ = 0)
-# eqCorr = plotSpCorr(60,0.1,p)
-eqBLA = plotLocAdapt(60,0.1,p,"B")
+    if type == "D"
+        ttle = string("Dispersal Ratio: σₕ/σₚ = ",σₕ/σₚ)
+    elseif type == "B"
+        ttle = string("Coevolution Ratio: Bₕ/Bₚ = ",Bₕ/Bₚ)
+    end
 
-# host stronger
-p = CoevPars(Gₚ = 10, Gₕ = 10, σₕ²=10, σₚ²=10, Nₕ = 10, Nₚ = 10, Aₕ = 0.2, Aₚ = 0.2, Bₕ = 0.02, Bₚ = 0.01, Dₕ = 10^2, Dₚ = 10^2, rₕ = 0, rₚ = 0)
-# eqCorr = plotSpCorr(60,0.1,p)
-hsLA = plotLocAdapt(60,0.1,p,"B")
+    # make array with LA measures on columns    
+    las = hcat(Δₕ, Δₚ)
+    plot(U, las,label=["H" "P"],title=ttle, legendfontsize=10)
+    ylabel!("Fitness Difference")
+    xlabel!("Spatial Lag")
 
-# host little stronger
-p = CoevPars(Gₚ = 10, Gₕ = 10, σₕ²=10, σₚ²=10, Nₕ = 10, Nₚ = 10, Aₕ = 0.2, Aₚ = 0.2, Bₕ = 0.0106, Bₚ = 0.01, Dₕ = 10^2, Dₚ = 10^2, rₕ = 0, rₚ = 0)
-# eqCorr = plotSpCorr(60,0.1,p)
-hlsLA = plotLocAdapt(60,0.1,p,"B")
+end
 
-# host much stronger
-p = CoevPars(Gₚ = 10, Gₕ = 10, σₕ²=10, σₚ²=10, Nₕ = 10, Nₚ = 10, Aₕ = 0.2, Aₚ = 0.2, Bₕ = 0.1, Bₚ = 0.01, Dₕ = 10^2, Dₚ = 10^2, rₕ = 0, rₚ = 0)
-# eqCorr = plotSpCorr(60,0.1,p)
-hmsLA = plotLocAdapt(60,0.1,p,"B")
+# returns a measure of local adaptation considering limited dispersal
+ClassicLA = function (m,s,p)
 
-# parasite stronger
-p = CoevPars(Gₚ = 10, Gₕ = 10, σₕ²=10, σₚ²=10, Nₕ = 10, Nₚ = 10, Aₕ = 0.2, Aₚ = 0.2, Bₕ = 0.01, Bₚ = 0.02, Dₕ = 10^2, Dₚ = 10^2, rₕ = 0, rₚ = 0)
-# eqCorr = plotSpCorr(60,0.1,p)
-psLA = plotLocAdapt(60,0.1,p,"B")
+    # m = max distance
+    # s = step size (ie., resolution)
+    # p = model parameters
 
-# parasite much stronger
-p = CoevPars(Gₚ = 10, Gₕ = 10, σₕ²=10, σₚ²=10, Nₕ = 10, Nₚ = 10, Aₕ = 0.2, Aₚ = 0.2, Bₕ = 0.01, Bₚ = 0.1, Dₕ = 10^2, Dₚ = 10^2, rₕ = 0, rₚ = 0)
-# eqCorr = plotSpCorr(60,0.1,p)
-pmsLA = plotLocAdapt(60,0.1,p,"B")
+    # unpack some parameters
+    @unpack Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ,rₕ,rₚ,vₕ,vₚ = p
+    
+    # these are same as Cₕₕ(0,p) and Cₚₚ(0,p) resp.
+    # local_varₕ = 1 / (Nₕ * σₕ * (Aₕ - Bₕ))
+    # local_varₚ = 1 / (Nₚ * σₚ * (Aₚ + Bₚ))
 
-plot(LAp, eqLA, LAht, LAhl, LAhi, LAh, xlims=(0,40), size=(1200,600))
-savefig("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/d-las.png")
+    # compute cross-covariance function
+    CHP = Cₕₚ(-m,m,s,-m,m,s,p)
 
-plot(pmsLA, eqBLA, hlsLA, hmsLA, xlims=(0,40), size=(1200,600))
-savefig("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/b-las.png")
+    # define range
+    U = 0:s:(2*m)
 
-#
-# should change strengths of biotic selection to see how
-# that changes spatial correlations
-#
+    L = length(U)-1
+    CHP0 = CHP[L,L]
+    CHPX = CHP[(L-1):(2 * L - 1),L] # set to zero
+
+    
+    ℒₕ = -Bₕ .* CHP0
+    ℒₚ =  Bₚ .* CHP0
+
+    ℒ = [ℒₕ, ℒₚ]
+
+    return(ℒ)
+
+end

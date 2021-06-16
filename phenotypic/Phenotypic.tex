@@ -336,8 +336,8 @@ $A_H,A_P$                           & Strengths of abiotic stabilizing selection
 $\theta_H(\pmb x),\theta_P(\pmb x)$ & Abiotic trait optima at location $\pmb x$    & $\theta_H(\pmb x),\theta_P(\pmb x)\in\mathbb R$           \\ \\
 $B_H,B_P$                           & Strengths of biotic selection                & $B_H,B_P\geq0$                                            \\ \\
 $G_H,G_P$                           & Additive genetic variances                   & $G_H,G_P\geq0$                                            \\ \\
-$\sigma^2_H,\sigma^2_P$                           & Dispersal coefficients                       & $\sigma^2_H,\sigma^2_P\geq0$                                            \\ \\
-$N_H,N_P$                           & Effective population densities             & $N_H,N_P\geq0$                                            \\ \\
+$\sigma^2_H,\sigma^2_P$             & Dispersal coefficients                       & $\sigma^2_H,\sigma^2_P\geq0$                                            \\ \\
+$N_H,N_P$                           & Effective population densities               & $N_H,N_P\geq0$                                            \\ \\
 $\dot W_H,\dot W_P$                 & Independent space-time white noise processes & $\dot W_H(\pmb x),\dot W_P(\pmb x)$ random variables in $\mathbb R$ \\ \\
 $\bar Z_H(\pmb x),\bar Z_P(\pmb x)$ & Local mean traits at $\pmb x$                & $\bar Z_H(\pmb x),\bar Z_P(\pmb x)$ random variables in $\mathbb R$ \\ \\
 $\bar z_H(\pmb x),\bar z_P(\pmb x)$ & Expected local mean traits at $\pmb x$       & $\bar z_H(\pmb x),\bar z_P(\pmb x)\in\mathbb R$                     \\ \\ \hline
@@ -365,23 +365,25 @@ optima}\label{possible-extensions-to-spatially-heterogeneous-aboitic-optima}}
 \hypertarget{methods}{%
 \section{Methods}\label{methods}}
 
-We use results connecting theory of SPDE, random fields and geostats to
-calculate characteristic spatial scales at which various phenomena
-become visible.
+We use results connecting theory of SPDE, random fields and
+geostatistics to calculate characteristic spatial scales at which
+various phenomena become visible. In particular, we take advantage of
+the approach outlined by (Hu et al. 2013) to obtain spatial
+(intraspecific) covariance and (interspecific) cross-covariance
+functions of mean traits separated by a distance \(h\).
 
-\hypertarget{discussion}{%
-\section{Discussion}\label{discussion}}
+Below, we show under the deterministic model (eqn \ref{deterministic})
+that when the abiotic optima \(\theta_H,\theta_P\) are spatially
+homogeneous and when biotic selection on the host is sufficiently weak,
+mean trait values for both species converge to spatially homogeneous
+values.
 
-\newpage
-
-\begin{center}
-  \Large Appendices
-\end{center}
-
-\appendix
+Building off (Hu et al. 2013) and others, we know that the solution to
+SPDE (\ref{spde}) converges to a stationary isotropic Gaussian random
+field on \(\mathbb{R}^2\).
 
 \hypertarget{a-stable-equilibrium-of-pde}{%
-\section{\texorpdfstring{A Stable Equilibrium of PDE
+\subsection{\texorpdfstring{A Stable Equilibrium of PDE
 (\ref{deterministic})}{A Stable Equilibrium of PDE ()}}\label{a-stable-equilibrium-of-pde}}
 
 To find an equilibrium of the deterministic PDE (\ref{deterministic}) we
@@ -901,6 +903,13 @@ to
     \mathbb E[\Delta_P(\pmb x)] = B_P\left[C_{HP}(\pmb 0) - C_{HP}(\pmb x) \right].
   \end{equation}
 \end{subequations}
+
+The classical definition of local adaptation is obtained by sending
+\(\|\pmb x\|\to\infty\). In particular,
+\(\lim_{\|\pmb x\|\to\infty}C_{HP}(\pmb x)=0\). This can be compared to
+the case of limited dispersal by evaluating at
+\(\|\pmb x\|=\sqrt{\pi(\sigma_H^2+\sigma_P^2)/2}\), which is the
+expected distance between interacting individuals before dispersal.
 
 \hypertarget{comparing-interspecific-fitnesses}{%
 \subsection{Comparing Interspecific

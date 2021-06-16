@@ -4,8 +4,8 @@
 ##
 ## DATE: 10/16/2020
 ##
-## In this script we simulate an individual-based model for several interacting
-## species to compare with our results using population-level models.
+## In this script we simulate an individual-based model for hosts and parasites
+## coevolving in continous space.
 ##
 ## This script depends on another script called "ibm_functions_structs.jl".
 ## In that script we provide definitions of data structures for model parameters
@@ -19,7 +19,7 @@
 using Parameters, Statistics, Random, LinearAlgebra, Distributions,
 	StatsBase, StatsPlots, Plots, DataFrames, CSV, Optim
 
-include("/home/bb/Gits/white.noise.community.ecology/ibm_functions_structs.jl")
+include("/home/bb/gits/white.noise.community.ecology/ibm_functions_structs.jl")
 
 ########################################################
 #                                                      #

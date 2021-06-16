@@ -1,0 +1,146 @@
+---
+title: "Local & Global Parasite Adaptation"
+author: "Bob Week"
+date: "6/1/2021"
+output: html_document
+---
+
+The probability that a parasite with a quantitative trait $z_P$ is able to infect a host with quantitative trait $z_H$ is $\alpha(z_H,z_P)$. At location $x$, we denote by $\varphi_H(z_H,x)$ and $\varphi_P(z_P,x)$ the distributions of host and parasite traits respectively. Then, a randomly drawn parasite location $y$ infects a randomly drawn host drawn from location $x$ with probability
+
+$$\bar\alpha(x,y)=\int_\mathbb R\int_\mathbb R\alpha(z_H,z_P)\varphi_H(z_H,x)\varphi_P(z_P,y)dz_Hdz_P.$$
+
+### Calculation for finite number of locations
+
+For finite number of locations $x,y\in\{1,\dots,K\}$ local adaptation $\mathcal L$ is defined as the difference between the infection probabilities for parasites and hosts drawn from the same location averaged across all locations and the average infection probability of parasites and hosts independently drawn from anywhere in the metapopulation. In symbols:
+
+$$\mathcal L=\frac{1}{K}\sum_{x=1}^K\bar \alpha(x,x)-\frac{1}{K^2}\sum_{x=1}^K\sum_{y=1}^K\bar\alpha(x,y).$$
+
+Rewriting, we have
+
+$$\mathcal L=\int_\mathbb R\int_\mathbb R\alpha(z_H,z_P)\frac{1}{K}\sum_{x=1}^K\varphi_H(z_H,x)\varphi_P(z_P,x)$$
+
+$$-\alpha(z_H,z_P)\frac{1}{K^2}\sum_{x=1}^K\sum_{y=1}^K\varphi_H(z_H,x)\varphi_P(z_P,y)dz_Hdz_P.$$
+
+Denoting $\hat\varphi_S(z_S)=\frac{1}{K}\sum_x\varphi_X(z_S,x)$ as the spatial average of phenotypic distributions for species $S=H,P$ and 
+
+$$\hat{\Phi}_{HP}(z_H,z_S)=\frac{1}{K}\sum_x\varphi_H(z_H,x)\varphi_P(z_P,x)$$
+
+as the spatial average of the product of phenotypic distributions, we have
+
+$$\mathcal L=\int_\mathbb R\int_\mathbb R\alpha(z_H,z_P)\hat{\Phi}_{HP}(z_H,z_S)-\alpha(z_H,z_P)\hat\varphi_H(z_H)\hat\varphi_P(z_P)dz_Hdz_P$$
+
+$$=\int_\mathbb R\int_\mathbb R\alpha(z_H,z_P)\left[\hat{\Phi}_{HP}(z_H,z_S)-\hat\varphi_H(z_H)\hat\varphi_P(z_P)\right]dz_Hdz_P$$
+
+$$=\int_\mathbb R\int_\mathbb R\alpha(z_H,z_P)\mathbb C\left[\varphi_H(z_H),\varphi_P(z_P)\right]dz_Hdz_P$$
+
+where $\mathbb C\left[\varphi_H(z_H),\varphi_P(z_P)\right]$ is the spatial covariance of the phenotypic distributions. With respect to the continuous space model, this spatial covariance is analogous to the covariance of trait means at the same location.
+
+### Calculation for continuous space model
+
+Following the assumptions of our continuous space model we have both $\varphi_H(z_H,x)$ and $\varphi_P(z_P,x)$ are normal with respective means $\bar z_H(x),\bar z_P(x)$ and variances $v_H^2,v_P^2$. We assume fixed effective sizes $N_H,N_P$ and fixed trait variances $v_H^2,v_P^2$ across time and space. However, the trait means evolve in continuous two-dimensional space in response to coevolutionary selection, abiotic stabilizing selection and random genetic drift.
+
+At equilibrium, our model predicts mean traits to follow spatially homogeneous, isotropic stationary Gaussian random fields (GRF). That they are GRFs implies that $\bar z_H(x)$ and $\bar z_P(x)$ will be normally distributed with means $\mu_H(x),\mu_P(x)$, variances $V_H(x),V_P(x)$ and covariance $C_{HP}(x,x)$. Furthermore, because the mean traits follow GRFs, $\bar z_S(x),\bar z_S(y)$ will covary following a function $C_S(x,y)$ for $S=H,P$ and $\bar z_H(x),\bar z_P(y)$ will covary following $C_{HP}(x,y)$. We refer to $C_S(x,y)$ the intraspecific spatial covariance for species $S$ and $C_{HP}(x,y)$ as the interspecific spatial cross-covariance function. Spatial homogeneity implies the means $\mu_S(x)\equiv\mu _S$ and variances $V_S(x)\equiv V_S$ are constant across space for both $S=H,P$. Isotropy implies that the spatial covariances $C_H(x,y),C_P(x,y)$ and cross-covariance $C_{HP}(x,y)$ do not depend on the direction of $x$ to $y$. Finally, stationarity implies  that the spatial covariances $C_H(x,y),C_P(x,y)$ and cross-covariance $C_{HP}(x,y)$ are merely functions of the distance between $x$ and $y$. We therefore rewrite these covariances respectively as $C_H(h),C_P(h)$ and $C_{HP}(h)$ for spatial lag $h$.
+
+Using this model, spatial averages can be replaced with probabilistic expectations due to the stringent conditions our GRF satisfies. In particular, the spatial average of the phenotypic distribution $\varphi_S(z_S,x)$ can be written
+
+$$\hat\varphi_S(z_S)=\mathbb E[\varphi_S(z_S,x)]=\int_\mathbb R\int_\mathbb R\varphi_S(z_S,x)\Phi_0(\bar z_H,\bar z_P)d\bar z_Hd\bar z_P$$
+
+where $\Phi_0(\bar z_H,\bar z_P)$ is the density of a bivariate normal distribution with mean vector $\mu=(\mu_H,\mu_P)^\top$ and variance-covariance matrix
+
+$$V=\left(\begin{matrix}V_H & C_{HP}(0) \\ C_{HP}(0) & V_P\end{matrix}\right).$$
+
+This implies that $\hat\varphi_S(z_s)$ is normal with mean $\mu_S$ and variance $v_S+V_S$. Similarly, the spatial average of the product of phenotypic distributions can be written as
+
+$$\hat{\Phi}_{HP}(z_H,z_P)=\mathbb E[\varphi_H(z_H,x)\varphi_P(z_P,x)]=\int_\mathbb R\int_\mathbb R\varphi_H(z_H,x)\varphi_P(z_P,x)\Phi_0(\bar z_H,\bar z_P)d\bar z_Hd\bar z_P.$$
+
+Using the algebra of normal distributions we find that $\hat{\Phi}_{HP}(z_H,z_P)$ is bivariate normal with mean vector $\hat\mu=(\mu_H,\mu_P)^\top$ and variance covariance matrix
+
+$$\hat V=\left(\begin{matrix}v_H+V_H & C_{HP}(0) \\ C_{HP}(0) & v_P+V_P\end{matrix}\right).$$
+
+Similarly, the product $\hat\varphi_H(z_H)\hat\varphi_P(z_P)$ can be seen as the special case of $\hat\Phi_{HP}$ when $C_{HP}(0)=0$. Hence, computing the spatial covariance of phenotypic distributions from above using
+
+$$\mathbb C[\varphi_H(z_H,x),\varphi_P(z_P,x)]=\hat\Phi_{HP}(z_H,z_P)-\hat\varphi_H(z_H)\hat\varphi_P(z_P)$$
+
+demonstrates that the phenotypic distributions covary only when $\bar z_H(x),\bar z_P(x)$ covary, which agrees with our assumption that local trait variances $v_H,v_P$ are spatially homogeneous and that local encounters occur at random with repsect to individual trait values.
+
+### Trait-matching
+
+Under the trait-matching model we have
+
+$$\alpha(z_H,z_P)=\alpha_m\exp\left(-\frac{\gamma}{2}(z_H-z_P)^2\right),$$
+
+where $\gamma$ is the rate at which probability of infection decreases with trait differences and $\alpha_m$ is the maximum probability of infection.
+
+When we integrate $\alpha(z_H,z_P)$ against $\hat\Phi_{HP}(z_H,z_P)$ we can treat $z_H$ and $z_P$ as normally distributed random variables with means $\mu_H,\mu_P$, variances $v_H+V_H,v_P+V_P$ and covariance $C_{HP}(0)$. Hence, their difference $z_H-z_P$ will in this way also be normally distributed with mean $\xi=\mu_H-\mu_P$ and variance $\zeta=v_H+V_H+v_P+V_P-2C_{HP}(0)$. Then, using the algebra of normal distributions once again,
+
+$$\hat\alpha=\int_\mathbb R\int_\mathbb R\alpha(z_H,x_P)\hat\Phi_{HP}(z_H,z_P)dz_Hdz_P=\alpha_m\sqrt\frac{2\pi}{\gamma}\sqrt\frac{1}{2\pi(\zeta+1/\gamma)}\exp\left(-\frac{\xi^2}{2(\zeta+1/\gamma)}\right)$$
+
+$$=\frac{\alpha_m}{\sqrt{1+\gamma(v_H+V_H+v_P+V_P-2C_{HP}(0))}}$$
+
+$$\times\exp\left(-\frac{(\mu_H-\mu_P)^2}{2(v_H+V_H+v_P+V_P-2C_{HP}(0)+1/\gamma)}\right).$$
+
+Similarly, we find
+
+$$\hat\alpha_0=\int_\mathbb R\int_\mathbb R\alpha(z_H,x_P)\hat\varphi_H(z_H)\hat\varphi_P(z_P)dz_Hdz_P$$
+
+
+$$=\frac{\alpha_m}{\sqrt{1+\gamma(v_H+V_H+v_P+V_P)}}\exp\left(-\frac{(\mu_H-\mu_P)^2}{2(v_H+V_H+v_P+V_P+1/\gamma)}\right).$$
+
+
+Hence, using the above results, we can compute the index of local adaptation under the trait-matching model as
+
+$$\mathcal L=\hat\alpha-\hat\alpha_0.$$
+
+With this we can now parameterize using our continuous space model and check if our results match those found in the literature. It would be good to see if the same results are acquired using an analogous definition of $\mathcal L$ but with $\ln\alpha$ instead of $\alpha$. Under this alternative definition, we might expect nicer expressions that have more intuitive appeal and relate directly to our results on the spatial scale of local adaptation. Using the symbol $\ell$, we define this analog as
+
+$$\ell=\widehat{\ln\alpha}-\widehat{\ln\alpha}_0$$
+
+$$=\int_\mathbb R\int_\mathbb R\ln\alpha(z_H,z_P)\hat\Phi_{HP}(z_H,z_P)dz_Hdz_P$$
+
+$$-\int_\mathbb R\int_\mathbb R\ln\alpha(z_H,z_P)\hat\varphi_H(z_H)\hat\varphi_P(z_P)dz_Hdz_P.$$
+
+Then, under the trait-matching model
+
+$$\ell=-\frac{\gamma}{2}\big[(\mu_H-\mu_P)^2+v_H+V_H+v_P+V_P-2C_{HP}(0)$$
+
+$$-(\mu_H-\mu_P)^2-v_H-V_H-v_P-V_P\big]$$
+
+$$=\gamma C_{HP}(0).$$
+
+### Altenative measures of global adaptation
+
+If we measure global adaptation $\mathcal G$ as the expected fitness of an individual when placed in a randomly chosen environment, then we're using
+
+$$\mathcal G_S=\int_\mathbb R\int_\mathbb R W_S(z_H,z_P)\hat\varphi_H(z_H)\hat\varphi_P(z_P)dz_Hdz_P.$$
+
+Biologically, this corresponds to the situation where migration occurs globally, such as in an island model. 
+Denoting
+
+$$\hat\Phi_r(z_H,z_P)=\mathbb E[\varphi_H(z_H,x)\varphi(z_P,x+r)]$$
+
+then we recover $\hat\Phi_{HP}=\hat\Phi_0$ and $\hat\varphi_H\hat\varphi_P=\lim_{r\to\infty}\hat\Phi_r$. In particular
+
+$$\mathcal G_S=\lim_{r\to\infty}\int_\mathbb R\int_\mathbb R W_S(z_H,z_P)\hat\Phi_r(z_H,z_P)dz_Hdz_P.$$
+
+To capture the effects of limited dispersal on global adaptation, we can replace the limit with an expectation across possible total distances traveled by two interacting individuals. Using Bayes rule, we can condition on two individuals occurring at the same location and ask what their distance apart was before dispersal. By symmetry, this is equivalent to asking how far apart two individuals will be after a single dispersal event given that they began at the same location. If we set $p=(p_1,p_2)$ the change in location of the parasite and $h=(h_1,h_2)$ the change in location of the host, then their distance apart is $\|p-h\|=\sqrt{(p_1-h_1)^2+(p_2-h_2)^2}$. Following our assumptions on dispersal, we find $p_i-h_i\sim\mathcal N(0,\sigma_P^2+\sigma_H^2)$. In particular, this implies $\|p-h\|$ follows a Rayleigh distribution with expectation $\mathbb E[\Delta x]=\sqrt{\pi(\sigma_H^2+\sigma_P^2)/2}$ and density
+
+$$R(r;\sigma_H^2+\sigma_P^2)=\frac{r}{\sigma_H^2+\sigma_P^2}\exp\left(-\frac{r}{2(\sigma_H^2+\sigma_P^2)}\right).$$
+
+Hence, we might consider defining global adaptation either as
+
+$$\mathcal G_S=\int_\mathbb R\int_\mathbb R W_S(z_H,z_P)\hat\Phi_{\mathbb E[r]}(z_H,z_P)dz_Hdz_P$$
+
+or as
+
+$$\mathcal G_S=\int_0^\infty\int_\mathbb R\int_\mathbb R W_S(z_H,z_P)\hat\Phi_r(z_H,z_P)dz_Hdz_PR(r;\sigma_H^2+\sigma_P^2)dr$$
+
+or as?
+
+$$\mathcal G_S=\int_0^\infty\int_\mathbb R\int_\mathbb R W_S(z_H,z_P)\hat\Phi_r(z_H,z_P)dz_Hdz_PR(r;\sigma_H^2+\sigma_P^2)rdr$$
+
+or even better?
+
+$$\mathcal G_S=\int_{\mathbb R^2}\int_{\mathbb R^2}\int_\mathbb R\int_\mathbb R W_S(z_H,z_P)\mathbb E[\varphi_H(z_H,x)\varphi(z_P,y)]dz_Hdz_PD_H(x)D_P(y)dxdy$$
+
+- use $\mathbb E[\Delta x]=\sqrt{\pi(\sigma_H^2+\sigma_P^2)/2}$ to plug into julia and make plots for different ranges of dispersal and selection strengths
+

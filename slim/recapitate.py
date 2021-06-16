@@ -6,6 +6,8 @@ import numpy as np
 import pandas
 import pprint
 
+# is it possible to run slim from python????
+
 L1 = 10  # num qtl for each spp
 L2 = 1e4 # num neutral loci
 

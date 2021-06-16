@@ -128,8 +128,8 @@ $A_H,A_P$                           & Strengths of abiotic stabilizing selection
 $\theta_H(\pmb x),\theta_P(\pmb x)$ & Abiotic trait optima at location $\pmb x$    & $\theta_H(\pmb x),\theta_P(\pmb x)\in\mathbb R$           \\ \\
 $B_H,B_P$                           & Strengths of biotic selection                & $B_H,B_P\geq0$                                            \\ \\
 $G_H,G_P$                           & Additive genetic variances                   & $G_H,G_P\geq0$                                            \\ \\
-$\sigma^2_H,\sigma^2_P$                           & Dispersal coefficients                       & $\sigma^2_H,\sigma^2_P\geq0$                                            \\ \\
-$N_H,N_P$                           & Effective population densities             & $N_H,N_P\geq0$                                            \\ \\
+$\sigma^2_H,\sigma^2_P$             & Dispersal coefficients                       & $\sigma^2_H,\sigma^2_P\geq0$                                            \\ \\
+$N_H,N_P$                           & Effective population densities               & $N_H,N_P\geq0$                                            \\ \\
 $\dot W_H,\dot W_P$                 & Independent space-time white noise processes & $\dot W_H(\pmb x),\dot W_P(\pmb x)$ random variables in $\mathbb R$ \\ \\
 $\bar Z_H(\pmb x),\bar Z_P(\pmb x)$ & Local mean traits at $\pmb x$                & $\bar Z_H(\pmb x),\bar Z_P(\pmb x)$ random variables in $\mathbb R$ \\ \\
 $\bar z_H(\pmb x),\bar z_P(\pmb x)$ & Expected local mean traits at $\pmb x$       & $\bar z_H(\pmb x),\bar z_P(\pmb x)\in\mathbb R$                     \\ \\ \hline
@@ -525,6 +525,8 @@ Since $\bar z_P,\bar z_H$ are spatially homogeneous, this simplifies to
     \mathbb E[\Delta_P(\pmb x)] = B_P\left[C_{HP}(\pmb 0) - C_{HP}(\pmb x) \right].
   \end{equation}
 \end{subequations}
+
+The classical definition of local adaptation is obtained by sending $\|\pmb x\|\to\infty$. In particular, $\lim_{\|\pmb x\|\to\infty}C_{HP}(\pmb x)=0$. This can be compared to the case of limited dispersal by evaluating at $\|\pmb x\|=\sqrt{\pi(\sigma_H^2+\sigma_P^2)/2}$, which is the expected distance between interacting individuals before dispersal.
 
 ## Comparing Interspecific Fitnesses
 
