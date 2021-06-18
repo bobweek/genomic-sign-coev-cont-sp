@@ -47,7 +47,7 @@ Cₕₕ = function (x,p)
     ξₕ = σₕ / √(Gₕ * (Aₕ - Bₕ))
 
     # variance in mean trait values
-    Vₕ = 1 / (Nₕ * σₕ * (Aₕ - Bₕ))
+    Vₕ = 1 / (Nₕ * σₕ^2 * (Aₕ - Bₕ))
 
     return(local_varₕ * x * besselk(1,√2 * x / ξₕ) / ξₕ)
 end
@@ -64,10 +64,29 @@ Cₚₚ = function (x,p)
     ξₚ = σₚ / √(Gₚ * (Aₚ + Bₚ))
 
     # variance in mean trait values
-    Vₚ = 1 / (Nₚ * σₚ * (Aₚ + Bₚ))
+    Vₚ = 1 / (Nₚ * σₚ^2 * (Aₚ + Bₚ))
 
     return(Vₚ * x * besselk(1,√2 * x / ξₚ) / ξₚ)
 end
+
+# the marginal covariance
+Cₕₚ₀ = function (p)
+
+    # p = model parameters
+
+    # unpack model parameters
+    @unpack Gₕ,Gₚ,Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ = p
+
+    # compute characteristic lengths of intraspecific spatial variation
+    ξₕ = σₕ / √(Gₕ * (Aₕ - Bₕ))
+    ξₚ = σₚ / √(Gₚ * (Aₚ + Bₚ))
+
+    CHP0 = 8*Gₕ*Gₚ*(ξₕ*ξₚ)^2 * ( Bₚ*(ξₕ^4+(ξₕ*ξₚ)^2*(2*log(ξₚ/ξₕ)-1))/(Nₕ*σₕ^2) - Bₕ*(ξₚ^4+(ξₕ*ξₚ)^2*(2*log(ξₕ/ξₚ)-1))/(Nₚ*σₚ^2) ) / ( σₕ^2*σₚ^2*(ξₕ^2-ξₚ^2)^2 )
+
+    return(CHP0)
+
+end
+
 
 # now for the convolution...
 Cₕₚ = function (l₁, u₁, s₁, l₂, u₂, s₂, p)
@@ -91,15 +110,15 @@ Cₕₚ = function (l₁, u₁, s₁, l₂, u₂, s₂, p)
     ξₚ = σₚ / √(Gₚ * (Aₚ + Bₚ))
 
     # variance in mean trait values
-    Vₚ = 1 / (Nₚ * σₚ * (Aₚ + Bₚ))
-    Vₕ = 1 / (Nₕ * σₕ * (Aₕ - Bₕ))
+    Vₚ = 1 / (Nₚ * σₚ^2 * (Aₚ + Bₚ))
+    Vₕ = 1 / (Nₕ * σₕ^2 * (Aₕ - Bₕ))
 
     # holds values of Bessel K₀ function with host parameters
     K₀ₕ = zeros(length(x₁), length(x₂))
     for x in x₁
         for y in x₂
             u = √(x^2 + y^2)
-            K₀ₕ[findfirst(z -> z == x, x₁),findfirst(z -> z == y, x₂)] = besselk(0, u / ξₕ)
+            K₀ₕ[findfirst(z -> z == x, x₁),findfirst(z -> z == y, x₂)] = 2 .* besselk(0, √2*u/ξₕ) / ξₕ^2
         end
     end
 
@@ -108,7 +127,7 @@ Cₕₚ = function (l₁, u₁, s₁, l₂, u₂, s₂, p)
     for x in x₁
         for y in x₂
             u = √(x^2 + y^2)
-            K₀ₚ[findfirst(z -> z == x, x₁),findfirst(z -> z == y, x₂)] = besselk(0, u / ξₚ)
+            K₀ₚ[findfirst(z -> z == x, x₁),findfirst(z -> z == y, x₂)] = 2 .* besselk(0, √2*u/ξₚ) / ξₚ^2
         end
     end
 
@@ -116,7 +135,7 @@ Cₕₚ = function (l₁, u₁, s₁, l₂, u₂, s₂, p)
     for x in x₁
         for y in x₂
             u = √(x^2 + y^2)
-            M₁ₕ[findfirst(z -> z == x, x₁),findfirst(z -> z == y, x₂)] = √2 * u * besselk(1,√2 * u / ξₕ) / ξₕ
+            M₁ₕ[findfirst(z -> z == x, x₁),findfirst(z -> z == y, x₂)] = Vₕ * √2 * u * besselk(1, √2*u/ξₕ) / ξₕ
         end
     end
 
@@ -124,16 +143,77 @@ Cₕₚ = function (l₁, u₁, s₁, l₂, u₂, s₂, p)
     for x in x₁
         for y in x₂
             u = √(x^2 + y^2)
-            M₁ₚ[findfirst(z -> z == x, x₁),findfirst(z -> z == y, x₂)] = √2 * u * besselk(1,√2 * u / ξₚ) / ξₚ
+            M₁ₚ[findfirst(z -> z == x, x₁),findfirst(z -> z == y, x₂)] = Vₚ * √2 * u * besselk(1, √2*u/ξₚ) / ξₚ
         end
     end
 
     K₀ₚM₁ₕ = conv(K₀ₚ, M₁ₕ)
     K₀ₕM₁ₚ = conv(K₀ₕ, M₁ₚ)
 
-    Cₕₚ = (2 .* Gₚ .* Bₚ .* Vₕ .* (K₀ₚM₁ₕ) ./ σₚ) .- (2 .* Gₕ .* Bₕ .* Vₚ .* (K₀ₕM₁ₚ) ./ σₕ)
+
+    CHP0 = Cₕₚ₀(p)
+
+    Cₕₚ = ( Bₚ.*(K₀ₚM₁ₕ)./(Aₚ+Bₚ) ) .- ( Bₕ.*(K₀ₕM₁ₚ)./(Aₕ-Bₕ) )
+
+    Cₕₚ *= CHP0/maximum(Cₕₚ)
 
     return(Cₕₚ)
+
+end
+
+# the marginal covariance computed numerically
+Cₕₚ₀NUM = function (m,s,p)
+
+    # m = max distance
+    # s = step size (ie., resolution)
+    # p = model parameters
+
+    # unpack some parameters
+    @unpack Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ,rₕ,rₚ,vₕ,vₚ = p
+    
+    # these are same as Cₕₕ(0,p) and Cₚₚ(0,p) resp.
+    # local_varₕ = 1 / (Nₕ * σₕ * (Aₕ - Bₕ))
+    # local_varₚ = 1 / (Nₚ * σₚ * (Aₚ + Bₚ))
+
+    # compute cross-covariance function
+    CHP = Cₕₚ(-m,m,s,-m,m,s,p)
+
+    # define range
+    U = 0:s:(2*m)
+
+    L = length(U)-1
+    CHP0 = CHP[L,L]
+    
+    return(CHP0)
+
+end
+
+# the covariance at expected distance
+Cₕₚd̄ = function (m,s,p)
+
+    # m = max distance
+    # s = step size (ie., resolution)
+    # p = model parameters
+
+    # unpack some parameters
+    @unpack Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ,rₕ,rₚ,vₕ,vₚ = p
+    
+    # expected distance
+    d̄ = √(π*(σₕ^2+σₚ^2)/2)
+
+    # compute cross-covariance function
+    CHP = Cₕₚ(-m,m,s,-m,m,s,p)
+
+    # define range
+    U = 0:s:(2*m)
+
+    ind_d̄ = findfirst( z -> z >= d̄, U)
+
+    L = length(U) - 1
+    Ld̄ = ind_d̄ + length(U) - 1
+    CHPd̄ = CHP[Ld̄,L]
+    
+    return(CHPd̄)
 
 end
 
@@ -163,8 +243,8 @@ plotSpCorr = function (m,s,p)
     @unpack Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ = p
 
     # calculate local variances to normalize correlations
-    local_varₕ = 1 / (Nₕ * σₕ * (Aₕ - Bₕ))
-    local_varₚ = 1 / (Nₚ * σₚ * (Aₚ + Bₚ))
+    Vₕ = 1 / (Nₕ * σₕ^2 * (Aₕ - Bₕ))
+    Vₚ = 1 / (Nₚ * σₚ^2 * (Aₚ + Bₚ))
 
     ttle = string("Dispersal Ratio: σₕ/σₚ = ", σₕ/σₚ)
 
@@ -197,8 +277,8 @@ plotLocAdapt = function (m,s,p,type)
     CHP0 = CHP[L,L]
     CHPX = CHP[(L-1):(2 * L - 1),L]
 
-    Δₕ = Bₕ .* (CHPX .- CHP0)
-    Δₚ = Bₚ .* (CHP0 .- CHPX)
+    ℓₕ = Bₕ .* (CHPX .- CHP0)
+    ℓₚ = Bₚ .* (CHP0 .- CHPX)
 
     if type == "σ"
         ttle = string("Dispersal Ratio: σₕ/σₚ = ",σₕ/σₚ)
@@ -207,7 +287,7 @@ plotLocAdapt = function (m,s,p,type)
     end
 
     # make array with LA measures on columns    
-    las = hcat(Δₕ, Δₚ)
+    las = hcat(ℓₕ, ℓₚ)
     plot(U, las,label=["H" "P"],title=ttle, legendfontsize=10)
     ylabel!("Fitness Difference")
     xlabel!("Spatial Lag")
@@ -239,21 +319,12 @@ LimDispLA = function (m,s,p,type)
     CHP0 = CHP[L,L]
     CHPX = CHP[(L-1):(2 * L - 1),L] # replace this one with the value at the expected distance
 
-    Δₕ = Bₕ .* (CHPX .- CHP0)
-    Δₚ = Bₚ .* (CHP0 .- CHPX)
-    # Δₕₚ = (rₕ-rₚ) .+ (Bₚ-Bₕ).*CHPX .+ ( (Bₕ-Aₕ-Bₚ)*vₕ + (Aₚ+Bₚ+Bₕ)*vₚ + (Bₚ-Aₕ-Bₕ)*Vₕ + (Aₚ+Bₚ-Bₕ)*Vₚ )/2    
+    ℓₕ = Bₕ .* (CHPX .- CHP0)
+    ℓₚ = Bₚ .* (CHP0 .- CHPX)
+    
+    ℓ = [ℓₕ, ℓₚ]
 
-    if type == "D"
-        ttle = string("Dispersal Ratio: σₕ/σₚ = ",σₕ/σₚ)
-    elseif type == "B"
-        ttle = string("Coevolution Ratio: Bₕ/Bₚ = ",Bₕ/Bₚ)
-    end
-
-    # make array with LA measures on columns    
-    las = hcat(Δₕ, Δₚ)
-    plot(U, las,label=["H" "P"],title=ttle, legendfontsize=10)
-    ylabel!("Fitness Difference")
-    xlabel!("Spatial Lag")
+    return(ℓ)
 
 end
 
@@ -279,14 +350,12 @@ ClassicLA = function (m,s,p)
 
     L = length(U)-1
     CHP0 = CHP[L,L]
-    CHPX = CHP[(L-1):(2 * L - 1),L] # set to zero
-
     
-    ℒₕ = -Bₕ .* CHP0
-    ℒₚ =  Bₚ .* CHP0
+    ℓₕ = -Bₕ .* CHP0
+    ℓₚ =  Bₚ .* CHP0
 
-    ℒ = [ℒₕ, ℒₚ]
+    ℓ = [ℓₕ, ℓₚ]
 
-    return(ℒ)
+    return(ℓ)
 
 end

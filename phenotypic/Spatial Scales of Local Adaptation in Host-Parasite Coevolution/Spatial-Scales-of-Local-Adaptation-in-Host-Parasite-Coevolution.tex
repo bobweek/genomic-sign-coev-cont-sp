@@ -64,6 +64,9 @@
 \usepackage{mathrsfs}
 \usepackage{csquotes}
 \usepackage{textcomp}
+\usepackage[T3,T1]{fontenc}
+\DeclareSymbolFont{tipa}{T3}{cmr}{m}{n}
+\DeclareMathAccent{\invbreve}{\mathalpha}{tipa}{16}
 
 
 \begin{document}
@@ -314,7 +317,7 @@ Hence, \(C_S(\pmb x)=M_1(\pmb x|\xi_S,V_S)\) for both \(S=H,P\). With
 this notation, the interspecific spatial cross-covariance function can
 be approximated by
 
-\[C_{HP}(\pmb x)\approx \int_{\mathbb R^2}\frac{B_P}{A_P+B_P}\frac{K_0(\|\pmb y\|/\xi_P)}{\xi_P^2}M_1(\pmb x-\pmb y|\xi_H,V_H)-\frac{B_H}{A_H-B_H}\frac{K_0(\|\pmb y\|/\xi_P)}{\xi_H^2}M_1(\pmb x-\pmb y|\xi_P,V_P)d\pmb y.\]
+\[C_{HP}(\pmb x)\approx \int_{\mathbb R^2}\frac{2B_P}{A_P+B_P}\frac{K_0(\|\pmb y\|/\xi_P)}{\xi_P^2}M_1(\pmb x-\pmb y|\xi_H,V_H)-\frac{2B_H}{A_H-B_H}\frac{K_0(\|\pmb y\|/\xi_H)}{\xi_H^2}M_1(\pmb x-\pmb y|\xi_P,V_P)d\pmb y.\]
 
 \hypertarget{marginal-values-and-integrals-of-spatial-covariance-and-cross-covariance-functions}{%
 \section{Marginal values and integrals of spatial covariance and
@@ -407,13 +410,13 @@ parasite species. Under our model of trait matching/mis-matching,
 Similarly, we obtain \(\Delta_P(\pmb y)=B_PC_{HP}(\pmb y)\) for the
 parasite. To provide a global measure of local adaptation, one that
 accounts for all spatial distances, we might think
-\(\breve{\ell}_S=\int_{\mathbb R^2}\Delta_S(\pmb y)d\pmb y\) would
+\(\invbreve{\ell}_S=\int_{\mathbb R^2}\Delta_S(\pmb y)d\pmb y\) would
 provide a reasonable definition. Using our results from section A, we
 obtain
 
-\[\breve{\ell}_H\approx B_H\left(\frac{B_H}{G_PN_P(A_H-B_H)(A_P+B_P)^2}-\frac{B_P}{G_HN_H(A_H-B_H)^2(A_P+B_P)}\right),\]
+\[\invbreve{\ell}_H\approx B_H\left(\frac{B_H}{G_PN_P(A_H-B_H)(A_P+B_P)^2}-\frac{B_P}{G_HN_H(A_H-B_H)^2(A_P+B_P)}\right),\]
 
-\[\breve{\ell}_P\approx B_P\left(\frac{B_P}{G_HN_H(A_H-B_H)^2(A_P+B_P)}-\frac{B_H}{G_PN_P(A_H-B_H)(A_P+B_P)^2}\right).\]
+\[\invbreve{\ell}_P\approx B_P\left(\frac{B_P}{G_HN_H(A_H-B_H)^2(A_P+B_P)}-\frac{B_H}{G_PN_P(A_H-B_H)(A_P+B_P)^2}\right).\]
 
 These measures of local adaptation depend on the effective densities
 \(N_H,N_P\) which suggests they provide some indication for the role of
@@ -436,22 +439,22 @@ alternative global index of local adaptation captures the role of
 gene-flow. However, the absence effective densities in these expressions
 suggests \(\tilde{\ell}_H,\tilde{\ell}_P\) do not capture the effects of
 random genetic drift. Hence, the two sets of indices
-\((\breve{\ell}_H,\breve{\ell}_P)\) and
-\((\tilde{\ell}_H,\tilde{\ell}_P)\) capture complementary aspects of
-global patterns of local adaptation in coevolving hosts and parasites.
+\((\invbreve{\ell}_H,{\ell}_P)\) and \((\tilde{\ell}_H,\tilde{\ell}_P)\)
+capture complementary aspects of global patterns of local adaptation in
+coevolving hosts and parasites.
 
 In particular, they both measure adaptation of a host (resp parasite)
 when confronted with a randomly sampled parasite (resp host) drawn from
 a randomly chosen location. However, the spatial sampling scheme differs
-between the two. While \(\breve{\ell}\) samples space uniformly in
+between the two. While \(\invbreve{\ell}\) samples space uniformly in
 two-dimensions, \(\tilde{\ell}\) samples space uniformly along a
-transect. Hence, while \(\breve{\ell}\) captures orientation, it is
+transect. Hence, while \(\invbreve{\ell}\) captures orientation, it is
 sensitive to spatial dimension. In contrast, \(\tilde{\ell}\) focuses on
 the effect of distance and we therefore focus on results for
 \(\tilde{\ell}\) in the main text.
 
-curious: does \(\breve{\ell}\) match the conditions for winner/loser in
-the case of stochastic evolution without a spatial component?
+curious: does \(\invbreve{\ell}\) match the conditions for winner/loser
+in the case of stochastic evolution without a spatial component?
 
 Denoting \(D_S(\pmb x)\) the dispersal kernel of species \(S\) (ie, the
 probability density of moving \(\pmb x=(x_1,x_2)\) spatial units), our
@@ -465,23 +468,23 @@ environment, the limited dispersal analog is fitness ``at home'' versus
 fitness in a randomly selected environment weighted by the dispersel
 kernel. In particular, for species \(S=H,P\),
 
-\[\breve{\mathcal L}_S=\mathbb E[\bar w_S(\pmb x,\pmb x)]-\mathbb E\left[\int_{\mathbb R^2}\bar w_S(\pmb x,\pmb y)D(\pmb y)d\pmb y\right],\]
+\[\invbreve{\mathcal L}_S=\mathbb E[\bar w_S(\pmb x,\pmb x)]-\mathbb E\left[\int_{\mathbb R^2}\bar w_S(\pmb x,\pmb y)D(\pmb y)d\pmb y\right],\]
 
 where \(\bar w_H(\pmb x,\pmb y)\) and \(\bar w_P(\pmb x,\pmb y)\) are
 shortand for \(\bar w_H(\bar z_H(\pmb x),\bar z_P(\pmb y)\) and
 \(\bar w_P(\bar z_P(\pmb x),\bar z_H(\pmb y))\) respectively. Applying
 the trait matching/mis-matching model of fitness, we obtain
 
-\[\breve{\mathcal L}_H=\cdots\]
+\[\invbreve{\mathcal L}_H=\cdots\]
 
-\[\breve{\mathcal L}_P=\cdots\]
+\[\invbreve{\mathcal L}_P=\cdots\]
 
 For the sake of clarity, we focus on a closely related measure of local
 adaptation that utilizes the local population growth rate \(\bar m_S\)
 instead of the population mean fitness \(\bar w_S\) for species
 \(S=H,P\). In particular, we define
 
-\[\breve\ell_S=\mathbb E[\bar m_S(\pmb x,\pmb x)]-\mathbb E\left[\int_{\mathbb R^2}\bar m_S(\pmb x,\pmb x+\pmb y)D_S(\pmb y)d\pmb y\right],\]
+\[\invbreve\ell_S=\mathbb E[\bar m_S(\pmb x,\pmb x)]-\mathbb E\left[\int_{\mathbb R^2}\bar m_S(\pmb x,\pmb x+\pmb y)D_S(\pmb y)d\pmb y\right],\]
 
 where \(\bar m_H(\pmb x,\pmb y)\) and \(\bar m_P(\pmb x,\pmb y)\) are
 shortand for \(\bar m_H(\bar z_H(\pmb x),\bar z_P(\pmb y)\) and
@@ -523,9 +526,9 @@ obtain
 Hence, the expressions for local adaptation accounting for limited
 dispersal simplify to
 
-\[\breve\ell_H=B_H\left(\int_{\mathbb R^2}C_{HP}(\pmb y)D_H(\pmb y)d\pmb y-C_{HP}(0)\right),\]
+\[\invbreve{\ell}_H=B_H\left(\int_{\mathbb R^2}C_{HP}(\pmb y)D_H(\pmb y)d\pmb y-C_{HP}(0)\right),\]
 
-\[\breve\ell_P=B_P\left(C_{HP}(0)-\int_{\mathbb R^2}C_{HP}(\pmb y)D_P(\pmb y)d\pmb y\right).\]
+\[\invbreve{\ell}_P=B_P\left(C_{HP}(0)-\int_{\mathbb R^2}C_{HP}(\pmb y)D_P(\pmb y)d\pmb y\right).\]
 
 \begin{itemize}
 \item

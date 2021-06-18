@@ -1,4 +1,4 @@
-include("/home/bb/gits/white.noise.community.ecology/ibm_functions_structs.jl")
+include("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/numerical-cov.jl")
 
 # same dispersal distances
 p = CoevPars(Gₚ = 10, Gₕ = 10, vₕ=10, vₚ=10, Nₕ = 10, Nₚ = 10, Aₕ = 0.2, Aₚ = 0.2, Bₕ = 0.01, Bₚ = 0.01, σₕ = 10, σₚ = 10, rₕ = 0, rₚ = 0)
