@@ -435,9 +435,9 @@ $$\invbreve{\ell}_P=B_P\left(C_{HP}(0)-\int_{\mathbb R^2}C_{HP}(\pmb y)D_P(\pmb 
 
 - idea: instead calculating expectation of $C_{HP}$ wrt $D$, can plug in $r=\sigma$.
 
-# Relation to results derived under an island model
+# Relation to results derived without gene-flow
 
-Expressions for the spatial means, variance and covariance of local mean traits under an island model without gene-flow have been presented by Week & Nuismer (2019). In the model of Week & Nuismer (2019) coevolution was driven by an offset-matching mechanism to capture trait escalation. When a parameter of their model known as the optimal offset is set to zero, the classical trait-matching model is recovered. Here we show how the results of Week & Nuismer (2019) on the spatial moments of an island model with zero optimal offset are recovered as a special case of the SPDE model presented here in the limit of zero gene-flow (that is, in the limit of $\sigma_H,\sigma_P\to0$). In this limit our SPDE model becomes
+Expressions for the spatial means, variance and covariance of local mean traits across a set of discrete populations without gene-flow between them have been presented by Week & Nuismer (2019). In the model of Week & Nuismer (2019) coevolution was driven by an offset-matching mechanism to capture trait escalation. When a parameter of their model known as the optimal offset is set to zero, the classical trait-matching model is recovered. Here we show how the results of Week & Nuismer (2019) on the spatial moments of a discrete space model with zero optimal offset are recovered as a special case of the SPDE model presented here in the limit of zero gene-flow (that is, in the limit of $\sigma_H,\sigma_P\to0$). In this limit our SPDE model becomes
 
 $$\dot{\bar z}_H=G_HA_H(\theta_H-\bar z_H)-G_HB_H(\bar z_P-\bar z_H)+\sqrt\frac{G_H}{N_H}\dot W_H,$$
 

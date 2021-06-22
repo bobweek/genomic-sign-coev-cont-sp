@@ -1,9 +1,9 @@
 using SpecialFunctions     # provides Bessel and Gamma functions
-using GaussianRandomFields # for simulating (univariate) random fields
 using DSP                  # for numerical convolution
+using Cuba
 using Plots
 using Parameters
-pyplot()
+gr()
 
 #
 # to visualize host-parasite cross-covariance, we need to numerically convolve Bessel functions
@@ -17,8 +17,8 @@ pyplot()
     # primary parameters
     Gₕ::Float64 # additive genetic variance of host
 	Gₚ::Float64 # additive genetic variance of parasite
-	Nₕ::Float64 # effective population size of host
-    Nₚ::Float64 # effective population size of parasite
+	ρₕ::Float64 # effective population size of host
+    ρₚ::Float64 # effective population size of parasite
 	Aₕ::Float64	# strength of abiotic selection on host
 	Aₚ::Float64	# strength of abiotic selection on parasite
 	Bₕ::Float64	# strength of biotic selection on host
@@ -26,12 +26,166 @@ pyplot()
 	σₕ::Float64	# host disperal distance
 	σₚ::Float64	# parasite disperal distance
 
-    # parameters for calculating local adaptation measures
-    vₕ::Float64 # expressed variance of host
-	vₚ::Float64 # expressed variance of parasite
+    # other parameters
+    vₕ::Float64  # expressed variance of host
+	vₚ::Float64  # expressed variance of parasite
 	rₕ::Float64  # intrinsic growth rate of host
     rₚ::Float64  # intrinsic growth rate of parasite
+    𝓝ₕ::Float64 # Wright's neighborhood size of host
+    𝓝ₚ::Float64 # Wright's neighborhood size of parasite
 	
+end
+
+# power spectra
+Sₕ = function(k,p)
+
+    if length(k) != 2
+        print("k needs to be a 2d vector")
+        return
+    end
+
+    # k = [k₁, k₂] = wavenumber
+    # p = model parameters
+
+    # unpack model parameters
+    @unpack Gₕ,Gₚ,ρₕ,ρₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ = p
+
+    knorm = sqrt(k[1]^2+k[2]^2)
+    num = Bₕ^2*Gₕ^2*Gₚ/ρₚ + Gₕ*( Gₚ*(Aₚ+Bₚ)+0.5*σₚ^2*knorm^2 )^2/ρₕ
+    den = (2*π)*( Bₕ*Bₚ*Gₕ*Gₚ + (Gₕ*(Aₕ-Bₕ)+0.5*(σₕ*knorm)^2) * (Gₚ*(Aₚ+Bₚ)+0.5*(σₚ*knorm)^2) )^2
+
+    return(num/den)
+
+end
+
+Sₚ = function(k,p)
+
+    if length(k) != 2
+        print("k needs to be a 2d vector")
+        return
+    end
+
+    # k = [k₁, k₂] = wavenumber
+    # p = model parameters
+
+    # unpack model parameters
+    @unpack Gₕ,Gₚ,ρₕ,ρₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ = p
+
+    knorm = sqrt(k[1]^2+k[2]^2)
+    num = Bₚ^2*Gₚ^2*Gₕ/ρₕ + Gₚ*( Gₕ*(Aₕ-Bₕ)+0.5*σₕ^2*knorm^2 )^2/ρₚ
+    den = (2*π)*( Bₕ*Bₚ*Gₕ*Gₚ + (Gₕ*(Aₕ-Bₕ)+0.5*(σₕ*knorm)^2) * (Gₚ*(Aₚ+Bₚ)+0.5*(σₚ*knorm)^2) )^2
+
+    return(num/den)
+
+end
+
+Sₕₚ = function(k,p)
+
+    if length(k) != 2
+        print("k needs to be a 2d vector")
+        return
+    end
+
+    # k = [k₁, k₂] = wavenumber
+    # p = model parameters
+
+    # unpack model parameters
+    @unpack Gₕ,Gₚ,ρₕ,ρₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ = p
+
+    knorm = sqrt(k[1]^2+k[2]^2)
+    num = Bₚ*Gₚ*Gₕ*( Gₚ*(Aₚ+Bₚ)+0.5*(σₚ*knorm)^2 )/ρₕ - Bₕ*Gₕ*Gₚ*( Gₕ*(Aₕ-Bₕ)+0.5*(σₕ*knorm)^2 )/ρₚ
+    den = ( Bₕ*Bₚ*Gₕ*Gₚ + (Gₕ*(Aₕ-Bₕ)+0.5*(σₕ*knorm)^2) * (Gₚ*(Aₚ+Bₚ)+0.5*(σₚ*knorm)^2) )^2
+
+    return(num/den)
+
+end
+
+S̃ₕₚ = function(k,p)
+
+    if length(k) != 2
+        print("k needs to be a 2d vector")
+        return
+    end
+
+    # k = [k₁, k₂] = wavenumber
+    # p = model parameters
+
+    # unpack model parameters
+    @unpack Gₕ,Gₚ,ρₕ,ρₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ = p
+    
+    # compute characteristic lengths of intraspecific spatial variation
+    ξₕ = σₕ / √(Gₕ * (Aₕ - Bₕ))
+    ξₚ = σₚ / √(Gₚ * (Aₚ + Bₚ))
+
+    # variance in mean trait values
+    Vₕ = 1 / (ρₕ * σₕ^2 * (Aₕ - Bₕ))
+    Vₚ = 1 / (ρₚ * σₚ^2 * (Aₚ + Bₚ))
+    
+    knorm = sqrt(k[1]^2+k[2]^2)
+
+    numₚ = Bₚ*Vₕ*ξₕ^2
+    deρₚ = (Aₚ+Bₚ)*(1+0.5*(ξₕ*knorm)^2)^2*(1+0.5*(ξₚ*knorm)^2)
+
+    numₕ = Bₕ*Vₚ*ξₚ^2
+    deρₕ = (Aₕ-Bₕ)*(1+0.5*(ξₚ*knorm)^2)^2*(1+0.5*(ξₕ*knorm)^2)
+
+    return((numₚ/deρₚ) - (numₕ/deρₕ))
+
+end
+
+CubaSₕₚ = function(y,p)
+
+    if length(y) != 2
+        print("y needs to be a 2d vector")
+        return
+    end
+
+    k₁  = (2*y[1]-1) / (y[1]*(1-y[1]))
+    dk₁ = (2*y[1]^2-2*y[1]+1) / (y[1]^2*(1-y[1])^2)
+
+    k₂  = (2*y[2]-1) / (y[2]*(1-y[2]))
+    dk₂ = (2*y[2]^2-2*y[2]+1) / (y[2]^2*(1-y[2])^2)
+    
+    # k = [k₁, k₂] = wavenumber
+    # p = model parameters
+
+    # unpack model parameters
+    @unpack Gₕ,Gₚ,ρₕ,ρₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ = p
+
+    knorm = sqrt(k₁^2+k₂^2)
+    num = Bₚ*Gₚ*Gₕ*( Gₚ*(Aₚ+Bₚ)+0.5*(σₚ*knorm)^2 )/ρₕ - Bₕ*Gₕ*Gₚ*( Gₕ*(Aₕ-Bₕ)+0.5*(σₕ*knorm)^2 )/ρₚ
+    den = ( Bₕ*Bₚ*Gₕ*Gₚ + (Gₕ*(Aₕ-Bₕ)+0.5*(σₕ*knorm)^2) * (Gₚ*(Aₚ+Bₚ)+0.5*(σₚ*knorm)^2) )^2
+
+    return(dk₁*dk₂*num/den)
+
+end
+
+CubaD̂ = function(y,p)
+    
+    if length(y) != 2
+        print("y needs to be a 2d vector")
+        return
+    end
+
+    k₁  = (2*y[1]-1) / (y[1]*(1-y[1]))
+    dk₁ = (2*y[1]^2-2*y[1]+1) / (y[1]^2*(1-y[1])^2)
+
+    k₂  = (2*y[2]-1) / (y[2]*(1-y[2]))
+    dk₂ = (2*y[2]^2-2*y[2]+1) / (y[2]^2*(1-y[2])^2)
+    
+    D̂ = exp(-0.5*(k₁^2+k₂^2)*(p.σₕ^2+p.σₚ^2))/(2*π)
+
+    return(D̂*dk₁*dk₂)
+
+end
+
+# calculating expected covariance via numerical integration wrt distance distribution in fourier space
+C̄ₕₚ = function (p)
+
+    C̄ = cuhre((k,f) -> f[1] = CubaD̂(k,p)*CubaSₕₚ(k,p)/(2*π), 2)[1][1]
+
+    return(C̄)
+    
 end
 
 # covariance functions
@@ -41,15 +195,15 @@ Cₕₕ = function (x,p)
     # p = model parameters
 
     # unpack model parameters
-    @unpack Gₕ,Gₚ,Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ = p
+    @unpack Gₕ,Gₚ,ρₕ,ρₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ = p
 
     # compute characteristic lengths of intraspecific spatial variation
     ξₕ = σₕ / √(Gₕ * (Aₕ - Bₕ))
 
     # variance in mean trait values
-    Vₕ = 1 / (Nₕ * σₕ^2 * (Aₕ - Bₕ))
+    Vₕ = 1 / (ρₕ * σₕ^2 * (Aₕ - Bₕ))
 
-    return(local_varₕ * x * besselk(1,√2 * x / ξₕ) / ξₕ)
+    return(Vₕ * √2 * x * besselk(1,√2 * x / ξₕ) / ξₕ)
 end
 
 Cₚₚ = function (x,p)
@@ -58,15 +212,15 @@ Cₚₚ = function (x,p)
     # p = model parameters
 
     # unpack model parameters
-    @unpack Gₕ,Gₚ,Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ = p
+    @unpack Gₕ,Gₚ,ρₕ,ρₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ = p
 
     # compute characteristic lengths of intraspecific spatial variation
     ξₚ = σₚ / √(Gₚ * (Aₚ + Bₚ))
 
     # variance in mean trait values
-    Vₚ = 1 / (Nₚ * σₚ^2 * (Aₚ + Bₚ))
+    Vₚ = 1 / (ρₚ * σₚ^2 * (Aₚ + Bₚ))
 
-    return(Vₚ * x * besselk(1,√2 * x / ξₚ) / ξₚ)
+    return(Vₚ * √2 * x * besselk(1,√2 * x / ξₚ) / ξₚ)
 end
 
 # the marginal covariance
@@ -75,15 +229,21 @@ Cₕₚ₀ = function (p)
     # p = model parameters
 
     # unpack model parameters
-    @unpack Gₕ,Gₚ,Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ = p
+    @unpack Gₕ,Gₚ,ρₕ,ρₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ = p
 
     # compute characteristic lengths of intraspecific spatial variation
     ξₕ = σₕ / √(Gₕ * (Aₕ - Bₕ))
     ξₚ = σₚ / √(Gₚ * (Aₚ + Bₚ))
 
-    CHP0 = 8*Gₕ*Gₚ*(ξₕ*ξₚ)^2 * ( Bₚ*(ξₕ^4+(ξₕ*ξₚ)^2*(2*log(ξₚ/ξₕ)-1))/(Nₕ*σₕ^2) - Bₕ*(ξₚ^4+(ξₕ*ξₚ)^2*(2*log(ξₕ/ξₚ)-1))/(Nₚ*σₚ^2) ) / ( σₕ^2*σₚ^2*(ξₕ^2-ξₚ^2)^2 )
+    numₚ = Bₚ*Gₕ*Gₚ*(ξₕ^6*ξₚ^2-ξₕ^4*ξₚ^4-log(ξₕ^2)*ξₕ^4*ξₚ^4+log(ξₚ^2)*ξₕ^4*ξₚ^4)
+    deρₚ = ρₕ*(ξₕ^2-ξₚ^2)^2*σₕ^4*σₚ^2
 
-    return(CHP0)
+    numₕ = Bₕ*Gₕ*Gₚ*(ξₕ^4*ξₚ^4-log(ξₕ^2)*ξₕ^4*ξₚ^4+log(ξₚ^2)*ξₕ^4*ξₚ^4-ξₕ^2*ξₚ^6)
+    deρₕ = ρₕ*(ξₕ^2-ξₚ^2)^2*σₕ^4*σₚ^2
+
+    # CHP0 = 8*Gₕ*Gₚ*(ξₕ*ξₚ)^2 * ( Bₚ*(ξₕ^4+(ξₕ*ξₚ)^2*(2*log(ξₚ/ξₕ)-1))/(ρₕ*σₕ^2) - Bₕ*(ξₚ^4+(ξₕ*ξₚ)^2*(2*log(ξₕ/ξₚ)-1))/(ρₚ*σₚ^2) ) / ( σₕ^2*σₚ^2*(ξₕ^2-ξₚ^2)^2 )
+
+    return((numₚ/deρₚ)+(numₕ/deρₕ))
 
 end
 
@@ -103,15 +263,15 @@ Cₕₚ = function (l₁, u₁, s₁, l₂, u₂, s₂, p)
     x₂ = filter(x -> x ≠ 0, x₂)
 
     # unpack model parameters
-    @unpack Gₕ,Gₚ,Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ = p
+    @unpack Gₕ,Gₚ,ρₕ,ρₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ = p
 
     # compute characteristic lengths of intraspecific spatial variation
     ξₕ = σₕ / √(Gₕ * (Aₕ - Bₕ))
     ξₚ = σₚ / √(Gₚ * (Aₚ + Bₚ))
 
     # variance in mean trait values
-    Vₚ = 1 / (Nₚ * σₚ^2 * (Aₚ + Bₚ))
-    Vₕ = 1 / (Nₕ * σₕ^2 * (Aₕ - Bₕ))
+    Vₚ = 1 / (ρₚ * σₚ^2 * (Aₚ + Bₚ))
+    Vₕ = 1 / (ρₕ * σₕ^2 * (Aₕ - Bₕ))
 
     # holds values of Bessel K₀ function with host parameters
     K₀ₕ = zeros(length(x₁), length(x₂))
@@ -169,11 +329,11 @@ Cₕₚ₀NUM = function (m,s,p)
     # p = model parameters
 
     # unpack some parameters
-    @unpack Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ,rₕ,rₚ,vₕ,vₚ = p
+    @unpack ρₕ,ρₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ,rₕ,rₚ,vₕ,vₚ = p
     
     # these are same as Cₕₕ(0,p) and Cₚₚ(0,p) resp.
-    # local_varₕ = 1 / (Nₕ * σₕ * (Aₕ - Bₕ))
-    # local_varₚ = 1 / (Nₚ * σₚ * (Aₚ + Bₚ))
+    # local_varₕ = 1 / (ρₕ * σₕ * (Aₕ - Bₕ))
+    # local_varₚ = 1 / (ρₚ * σₚ * (Aₚ + Bₚ))
 
     # compute cross-covariance function
     CHP = Cₕₚ(-m,m,s,-m,m,s,p)
@@ -196,7 +356,7 @@ Cₕₚd̄ = function (m,s,p)
     # p = model parameters
 
     # unpack some parameters
-    @unpack Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ,rₕ,rₚ,vₕ,vₚ = p
+    @unpack ρₕ,ρₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ,rₕ,rₚ,vₕ,vₚ = p
     
     # expected distance
     d̄ = √(π*(σₕ^2+σₚ^2)/2)
@@ -240,11 +400,11 @@ plotSpCorr = function (m,s,p)
     end
 
     # unpack some parameters
-    @unpack Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ = p
+    @unpack ρₕ,ρₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ = p
 
     # calculate local variances to normalize correlations
-    Vₕ = 1 / (Nₕ * σₕ^2 * (Aₕ - Bₕ))
-    Vₚ = 1 / (Nₚ * σₚ^2 * (Aₚ + Bₚ))
+    Vₕ = 1 / (ρₕ * σₕ^2 * (Aₕ - Bₕ))
+    Vₚ = 1 / (ρₚ * σₚ^2 * (Aₚ + Bₚ))
 
     ttle = string("Dispersal Ratio: σₕ/σₚ = ", σₕ/σₚ)
 
@@ -265,17 +425,21 @@ plotLocAdapt = function (m,s,p,type)
     # p = model parameters
 
     # unpack some parameters
-    @unpack Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ,rₕ,rₚ,vₕ,vₚ = p
+    @unpack ρₕ,ρₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ,rₕ,rₚ,vₕ,vₚ = p
 
     # compute cross-covariance function
     CHP = Cₕₚ(-m,m,s,-m,m,s,p)
 
     # define range
-    U = 0:s:(2*m)
+    U = 0:s:(2*m-s)
 
-    L = length(U)-1
+    # expected distance
+    # integrate this into the plot
+    d̄ = √(π*(σₕ^2+σₚ^2)/2)
+
+    L = length(U)
     CHP0 = CHP[L,L]
-    CHPX = CHP[(L-1):(2 * L - 1),L]
+    CHPX = CHP[L:(2*L-1),L]
 
     ℓₕ = Bₕ .* (CHPX .- CHP0)
     ℓₚ = Bₚ .* (CHP0 .- CHPX)
@@ -295,32 +459,47 @@ plotLocAdapt = function (m,s,p,type)
 end
 
 
-# returns a measure of local adaptation considering limited dispersal
-LimDispLA = function (m,s,p,type)
+# returns a measure of local adaptation that accounts for limited dispersal
+# slow and only approximate, replacing with below
+# ℓₗᵢₘ = function (m,s,p)
+
+#     # m = max distance
+#     # s = step size (ie., resolution)
+#     # p = model parameters
+
+#     # unpack some parameters
+#     @unpack Bₕ,Bₚ = p
+
+#     # compute cross-covariance function
+#     CHPd̄ = Cₕₚd̄(m,s,p)
+#     CHP0 = Cₕₚ₀(p)
+
+#     ℓₕ = Bₕ * (CHPd̄ - CHP0)
+#     ℓₚ = Bₚ * (CHP0 - CHPd̄)
+    
+#     ℓ = [ℓₕ, ℓₚ]
+
+#     return(ℓ)
+
+# end
+
+
+# returns a measure of local adaptation that accounts for limited dispersal
+ℓₗᵢₘ = function (p)
 
     # m = max distance
     # s = step size (ie., resolution)
     # p = model parameters
 
     # unpack some parameters
-    @unpack Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ,rₕ,rₚ,vₕ,vₚ = p
-    
-    # these are same as Cₕₕ(0,p) and Cₚₚ(0,p) resp.
-    # local_varₕ = 1 / (Nₕ * σₕ * (Aₕ - Bₕ))
-    # local_varₚ = 1 / (Nₚ * σₚ * (Aₚ + Bₚ))
+    @unpack Bₕ,Bₚ = p
 
     # compute cross-covariance function
-    CHP = Cₕₚ(-m,m,s,-m,m,s,p)
+    C̄HP = C̄ₕₚ(p)
+    CHP0 = Cₕₚ₀(p)
 
-    # define range
-    U = 0:s:(2*m)
-
-    L = length(U)-1
-    CHP0 = CHP[L,L]
-    CHPX = CHP[(L-1):(2 * L - 1),L] # replace this one with the value at the expected distance
-
-    ℓₕ = Bₕ .* (CHPX .- CHP0)
-    ℓₚ = Bₚ .* (CHP0 .- CHPX)
+    ℓₕ = Bₕ * (C̄HP - CHP0)
+    ℓₚ = Bₚ * (CHP0 - C̄HP)
     
     ℓ = [ℓₕ, ℓₚ]
 
@@ -328,34 +507,90 @@ LimDispLA = function (m,s,p,type)
 
 end
 
-# returns a measure of local adaptation considering limited dispersal
-ClassicLA = function (m,s,p)
+# returns a measure of local adaptation pretending dispersal follows an island model when it's actually limited
+ℓₖₗₛ = function (p)
 
-    # m = max distance
-    # s = step size (ie., resolution)
     # p = model parameters
 
-    # unpack some parameters
-    @unpack Nₕ,Nₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ,rₕ,rₚ,vₕ,vₚ = p
+    # unpack strengths of coevolutionary selection
+    @unpack Bₕ,Bₚ = p
     
-    # these are same as Cₕₕ(0,p) and Cₚₚ(0,p) resp.
-    # local_varₕ = 1 / (Nₕ * σₕ * (Aₕ - Bₕ))
-    # local_varₚ = 1 / (Nₚ * σₚ * (Aₚ + Bₚ))
-
-    # compute cross-covariance function
-    CHP = Cₕₚ(-m,m,s,-m,m,s,p)
-
-    # define range
-    U = 0:s:(2*m)
-
-    L = length(U)-1
-    CHP0 = CHP[L,L]
-    
-    ℓₕ = -Bₕ .* CHP0
-    ℓₚ =  Bₚ .* CHP0
+    ℓₕ = -Bₕ .* Cₕₚ₀(p)
+    ℓₚ =  Bₚ .* Cₕₚ₀(p)
 
     ℓ = [ℓₕ, ℓₚ]
 
     return(ℓ)
 
 end
+
+# returns spatial covariance of trait means in the case of an island model
+CₕₚISL = function (p)
+
+    # p = model parameters
+
+    # unpack strengths of coevolutionary selection
+    @unpack Bₕ,Bₚ,Aₕ,Aₚ,Gₚ,Gₕ,ρₚ,ρₕ,σₚ,σₕ = p
+    
+    # use discretization of laplacian to justify analogous dispersal par σ^2
+
+    num = Gₕ*Gₚ*( Bₚ*(σₚ^2+(Aₚ+Bₚ)*Gₚ)*ρₚ - Bₕ*(σₕ^2+(Aₕ-Bₕ)*Gₕ)*ρₕ )
+
+    den = 2*ρₕ*ρₚ*(σₕ^2+σₚ^2+Gₕ*(Aₕ-Bₕ)+Gₚ*(Aₚ+Bₚ))*((σₕ*σₚ)^2+σₕ^2*Gₚ*(Aₚ+Bₚ)+σₚ^2*Gₕ*(Aₕ-Bₕ)+Gₕ*Gₚ*(Aₕ*Aₚ+Aₕ*Bₚ-Aₚ*Bₕ))
+
+    Cₕₚ = num/den
+
+    return(Cₕₚ)
+
+end
+
+# returns a measure of local adaptation in the absence of gene-flow
+ℓᵢₛₗ = function (p)
+
+    # p = model parameters
+
+    # unpack strengths of coevolutionary selection
+    @unpack Bₕ,Bₚ = p
+    
+    ℓₕ = -Bₕ * CₕₚISL(p)
+    ℓₚ =  Bₚ * CₕₚISL(p)
+
+    ℓ = [ℓₕ, ℓₚ]
+
+    return(ℓ)
+
+end
+
+# returns spatial covariance of trait means in the absence of gene-flow
+CₕₚNGF = function (p)
+
+    # p = model parameters
+
+    # unpack strengths of coevolutionary selection
+    @unpack Bₕ,Bₚ,Aₕ,Aₚ,Gₚ,Gₕ,ρₚ,ρₕ = p
+    
+    Cₕₚ = (Bₚ*(Aₚ+Bₚ)*Gₚ*ρₚ-Bₕ*(Aₕ-Bₕ)*Gₕ*ρₕ) / 
+        ( 2*ρₕ*ρₚ*(Aₕ*Aₚ+Aₕ*Bₚ-Aₚ*Bₕ)*(Gₕ*(Aₕ-Bₕ)+Gₚ*(Aₚ+Bₚ)) )
+
+    return(Cₕₚ)
+
+end
+
+# returns a measure of local adaptation in the absence of gene-flow
+ℓₘ₌₀ = function (p)
+
+    # p = model parameters
+
+    # unpack strengths of coevolutionary selection
+    @unpack Bₕ,Bₚ = p
+    
+    ℓₕ = -Bₕ .* CₕₚNGF(p)
+    ℓₚ =  Bₚ .* CₕₚNGF(p)
+
+    ℓ = [ℓₕ, ℓₚ]
+
+    return(ℓ)
+
+end
+
+/
