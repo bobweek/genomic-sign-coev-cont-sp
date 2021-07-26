@@ -6,7 +6,6 @@ using CSV
 
 include("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/numerical-cov.jl")
 
-
 # NOTATION
 
 # 𝓛, this font is \bscrL
@@ -25,7 +24,7 @@ include("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/numerical-cov.
 #
 
 # background parameters
-p = CoevPars(Gₚ = 10, Gₕ = 10, vₕ=10, vₚ=10, ρₕ = 10, ρₚ = 10, 𝓝ₕ=100, 𝓝ₚ=100, Aₕ = 1, Aₚ = 1, Bₕ = 0.01, Bₚ = 0.01, σₕ = 10, σₚ = 10, rₕ = 0, rₚ = 0)
+p = CoevPars(Gₚ = 10, Gₕ = 10, vₕ=10, vₚ=10, ρₕ = 100, ρₚ = 100, 𝓝ₕ=100, 𝓝ₚ=100, Aₕ = 1, Aₚ = 1, Bₕ = 0.01, Bₚ = 0.01, σₕ = 10, σₚ = 10, rₕ = 0, rₚ = 0)
 
 # for plotting LA under the island model
 σ = 10 .^ ((-1):0.01:2)
@@ -35,31 +34,37 @@ for sₕ in σ
 
         p.σₕ = sₕ
         p.σₚ = sₚ
-        # p.ρₕ = p.𝓝ₕ / (4*π*sₕ^2)
-        # p.ρₚ = p.𝓝ₚ / (4*π*sₚ^2)
+        # p.ρₕ = 100/sₕ
+        # p.ρₚ = 100/sₚ
+        # p.Gₕ = 100/p.ρₕ
+        # p.Gₚ = 100/p.ρₚ
         LAᵢₛₗ = ℓᵢₛₗ(p) # LA under island model
         push!(ISL_df₁₀,(sₕ, sₚ, LAᵢₛₗ[1], LAᵢₛₗ[2]))
 
     end
 end
-ISLpl = Gadfly.plot(ISL_df₁₀,x=:σₕ, y=:σₚ, z=:LAₚ, Geom.contour(), Scale.x_log10, Scale.y_log10, Guide.xlabel("log₁₀(Host Dispersal Rate)"), Guide.ylabel("log₁₀(Parasite Dispersal Rate)"), Guide.Title("Parasite Local Adaptation Under Island Model"), Coord.Cartesian(ymax=1))
+ISLpl = Gadfly.plot(ISL_df₁₀,x=:σₕ, y=:σₚ, z=:LAₚ, Geom.contour(), Scale.x_log10, Scale.y_log10, Guide.xlabel("log₁₀(Host Dispersal Rate)"), Guide.ylabel("log₁₀(Parasite Dispersal Rate)"), Guide.Title("Parasite Local Adaptation Under Island Model"))
 CSV.write("gits/genomic-sign-coev-cont-sp/phenotypic/julia/ISL.csv",ISL_df₁₀)
+
+p = CoevPars(Gₚ = 10, Gₕ = 10, vₕ=10, vₚ=10, ρₕ = 10, ρₚ = 10, 𝓝ₕ=100, 𝓝ₚ=100, Aₕ = 1, Aₚ = 1, Bₕ = 0.01, Bₚ = 0.01, σₕ = 10, σₚ = 10, rₕ = 0, rₚ = 0)
 
 # for plotting LA under limited disp
 σ = 10 .^ (0:0.01:3)
-CLS_df₁₀₀ = DataFrame(σₕ = Float64[], σₚ = Float64[], LAₕ = Float64[], LAₚ = Float64[] )
-LMD_df₁₀₀ = DataFrame(σₕ = Float64[], σₚ = Float64[], LAₕ = Float64[], LAₚ = Float64[] )
+CLS_df₁₀₀ = DataFrame(σₕ = Float64[], σₚ = Float64[], ρₕ = Float64[], ρₚ = Float64[], LAₕ = Float64[], LAₚ = Float64[] )
+LMD_df₁₀₀ = DataFrame(σₕ = Float64[], σₚ = Float64[], ρₕ = Float64[], ρₚ = Float64[], LAₕ = Float64[], LAₚ = Float64[] )
 for sₕ in σ
     for sₚ in σ
 
         p.σₕ = sₕ
         p.σₚ = sₚ
-
+        p.ρₕ = p.𝓝ₕ / (4*π*sₕ^2)
+        p.ρₚ = p.𝓝ₚ / (4*π*sₚ^2)
+        
         LAₖₗₛ = ℓₖₗₛ(p) # classical LA w limited disp
         LAₗᵢₘ = ℓₗᵢₘ(p) # modified LA w limited disp
 
-        push!(CLS_df₁₀₀,(sₕ, sₚ, LAₖₗₛ[1], LAₖₗₛ[2]))
-        push!(LMD_df₁₀₀,(sₕ, sₚ, LAₗᵢₘ[1], LAₗᵢₘ[2]))
+        push!(CLS_df₁₀₀,(sₕ, sₚ, p.ρₕ, p.ρₚ, LAₖₗₛ[1], LAₖₗₛ[2]))
+        push!(LMD_df₁₀₀,(sₕ, sₚ, p.ρₕ, p.ρₚ, LAₗᵢₘ[1], LAₗᵢₘ[2]))
 
     end
 end
@@ -76,7 +81,7 @@ alert("Done")
 #
 
 # resetting background parameters
-p = CoevPars(Gₚ = 10, Gₕ = 10, vₕ=10, vₚ=10, ρₕ = 10, ρₚ = 10, Aₕ = 1, Aₚ = 1, Bₕ = 0.2, Bₚ = 0.2, σₕ = 5, σₚ = 5, rₕ = 0, rₚ = 0)
+p = CoevPars(Gₚ = 10, Gₕ = 10, vₕ=10, vₚ=10, ρₕ = 100, ρₚ = 100, 𝓝ₕ=100, 𝓝ₚ=100, Aₕ = 1, Aₚ = 1, Bₕ = 0.01, Bₚ = 0.01, σₕ = 0.01, σₚ = 0.01, rₕ = 0, rₚ = 0)
 
 
 # parameters for numerical integration
@@ -110,7 +115,7 @@ for bₕ in B
         p.Bₚ = bₚ
 
         LAₖₗₛ = ℓₖₗₛ(p) # classical LA w limited disp
-        LAₗᵢₘ = ℓₗᵢₘ(m,s,p) # modified LA w limited disp
+        LAₗᵢₘ = ℓₗᵢₘ(p) # modified LA w limited disp
 
         push!(CLS_df_B,(bₕ, bₚ, LAₖₗₛ[1], LAₖₗₛ[2]))
         push!(LMD_df_B,(bₕ, bₚ, LAₗᵢₘ[1], LAₗᵢₘ[2]))

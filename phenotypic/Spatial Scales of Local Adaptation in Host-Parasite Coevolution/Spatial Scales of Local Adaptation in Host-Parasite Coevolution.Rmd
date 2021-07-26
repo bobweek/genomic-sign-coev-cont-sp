@@ -22,6 +22,7 @@ keywords:
 bibliography: references.bib
 header-includes:
   - \usepackage{amsmath}
+  - \usepackage{dutchcal}
   - \usepackage{mathrsfs}
   - \usepackage{csquotes}
   - \usepackage{textcomp}
@@ -283,15 +284,13 @@ We therefore conclude
 
 $$\int_0^\infty C_{HP}(r)dr\approx\frac{1}{4}\left(\frac{B_P}{A_P+B_P}\frac{\xi_H}{\sqrt2}-\frac{B_H}{A_H-B_H}\frac{\xi_P}{\sqrt2}\right).$$
 
-
-
-# Local and global measures of local adaptation
+# Measures of local adaptation
 
 - use $\mathcal L$ for measures in terms of mean fitness and $\ell$ for measures in terms of log-mean fitness
 
 Local adaptation is commonly measured as the difference in fitness for individuals experiencing their local environment and fitness for individuals experiencing foreign environments (Gandon & Nuismer 2009, Nuismer 2017, etc). In the case of coevolution, the environmental variable is replaced by the trait value of the interacting partner species.
 
-yada yada yada, folks end up with something like $\mathcal L_P=\tilde\alpha-\tilde\alpha_0$. Using a slightly different definition, parasite local adaptation simplifies to $\mathcal L_P'=\widetilde{\ln\alpha}-\widetilde{\ln\alpha}_0=B_PC_{HP}(0)$.
+yada yada yada, folks end up with something like $\mathcal L_P=\tilde\alpha-\tilde\alpha_0$. Using a slightly different definition, parasite local adaptation simplifies to $\ell_P=\widetilde{\ln\alpha}-\widetilde{\ln\alpha}_0=B_PC_{HP}(0)$.
 
 Here extend this notion of local adaptation to the case of populations distributed continuously in space. In particular, we denote by $\Delta_H(\pmb y)$ the difference in expected population growth rates of the host when confronted with parasites drawn from a spatial lag $\pmb y=(y_1,y_2)^\top$ away. That is,
 
@@ -317,73 +316,17 @@ Since $\xi_S\propto\sigma_S$ for $S=H,P$ we see that this alternative global ind
 
 In particular, they both measure adaptation of a host (resp parasite) when confronted with a randomly sampled parasite (resp host) drawn from a randomly chosen location. However, the spatial sampling scheme differs between the two. While $\invbreve{\ell}$ samples space uniformly in two-dimensions, $\tilde{\ell}$ samples space uniformly along a transect. Hence, while $\invbreve{\ell}$ captures orientation, it is sensitive to spatial dimension. In contrast, $\tilde{\ell}$ focuses on the effect of distance and we therefore focus on results for $\tilde{\ell}$ in the main text.
 
-```{r, echo=F, warning=F, eval=F}
-BH = 0.1
-BP = 0.1
-
-# make heat maps on (sH,sP)-coordinates spanning 0 to 100 on each axis
-s = seq(1,10,0.01)
-
-lH = matrix(0,nc=length(s),nr=length(s))
-lP = matrix(0,nc=length(s),nr=length(s))
-lprimeH = matrix(0,nc=length(s),nr=length(s))
-lprimeP = matrix(0,nc=length(s),nr=length(s))
-LbreveH = matrix(0,nc=length(s),nr=length(s))
-LbreveP = matrix(0,nc=length(s),nr=length(s))
-LtildeH = matrix(0,nc=length(s),nr=length(s))
-LtildeP = matrix(0,nc=length(s),nr=length(s))
-
-i = 1
-for(sH in s){
-  j = 1
-  for(sP in s){
-    
-    xiH = sH/sqrt(GH*(AH-BH))
-    xiP = sP/sqrt(GP*(AP+BP))
-
-    lH[i,j] = 0
-    lP[i,j] = 0
-
-    CHP0 = GH*GP*xiH^2*xiP^2*(BP*(xiH^4+xiH^2*xiP^2*(log(xiP^2)-log(xiH^2)-1))/(NH*sH^2)-BH*(xiP^4+xiH^2*xiP^2*(log(xiH^2)-log(xiP^2)-1))/(NP*sP^2))/(sH^2*sP^2*(xiH^2-xiP^2)^2)
-    
-    lprimeH[i,j] = -BH*CHP0
-    lprimeP[i,j] =  BP*CHP0
-    
-    LbreveH[i,j] = BH*(BH/(GP*NP*(AH-BH)*(AP+BP)^2)-BP/(GH*NH*(AH-BH)^2*(AP+BP)))
-    LbreveP[i,j] = BP*(BP/(GH*NH*(AH-BH)^2*(AP+BP))-BH/(GP*NP*(AH-BH)*(AP+BP)^2))
-
-    LtildeH[i,j] = BH*(BH*xiP/(sqrt(2)*(AH-BH)) - BP*xiH/(sqrt(2)*(AP+BP)))/4
-    LtildeP[i,j] = BP*(BP*xiH/(sqrt(2)*(AP+BP)) - BH*xiP/(sqrt(2)*(AH-BH)))/4
-
-    j = j + 1
-  }
-  i = i + 1
-}
-
-image(s,s,LtildeH)
-image(s,s,LtildeP)
-
-# there's sharp +/- peaks at sH=0 and sP=0
-# hence, you need to set the lower bounds high enough
-# to see the contours (it's all flat relative to peaks)
-filled.contour(s,s,lprimeH)
-filled.contour(s,s,lprimeP)
-
-# note, these results contrast. 
-
-```
-
 curious: does $\invbreve{\ell}$ match the conditions for winner/loser in the case of stochastic evolution without a spatial component?
 
-Denoting $D_S(\pmb x)$ the dispersal kernel of species $S$ (ie, the probability density of moving $\pmb x=(x_1,x_2)$ spatial units), our assumption of spatially homogeneous diffusive movement implies
+## Modified Index of Local Adaptation Accounting for Limited Dispersal
 
-$$D_S(\pmb x)=\frac{1}{\sqrt{2\pi\sigma_S^2}}\exp\left(-\frac{\|\pmb x\|^2}{2\sigma_S^2}\right).$$
+We denote by $D(\pmb x)$ the probability density that two individuals of opposing species were separated by $\pmb x$ before dispersal given that they end up at the same location after dispersal. We refer to $D(\pmb x)$ as the separation kernel. Since we assume dispersal for each species is bivariate Gaussian with respective standard deviations (in both coordinates) $\sigma_H,\sigma_P$, $D(\pmb x)$ will also be bivariate Gaussian with standard deviation $\sqrt{\sigma_H^2+\sigma_P^2}$.
 
-Wherease local adaptation is classically measured as the difference between fitness "at home" versus fitness in a randomly selected environment, the limited dispersal analog is fitness "at home" versus fitness in a randomly selected environment weighted by the dispersel kernel. In particular, for species $S=H,P$,
+Whereas local adaptation is classically measured as the difference between fitness "at home" versus fitness in a randomly selected environment, the limited dispersal analog is fitness "at home" versus fitness in a randomly selected environment weighted by the separation kernel. In particular, for species $S=H,P$,
 
-$$\invbreve{\mathcal L}_S=\mathbb E[\bar w_S(\pmb x,\pmb x)]-\mathbb E\left[\int_{\mathbb R^2}\bar w_S(\pmb x,\pmb y)D(\pmb y)d\pmb y\right],$$
+$$\invbreve{\mathcal L}_S=\mathbb E[\bar w_S(\pmb x,\pmb x)]-\mathbb E\left[\int_{\mathbb R^2}\bar w_S(\pmb x,\pmb x+\pmb y)D(\pmb y)d\pmb y\right],$$
 
-where $\bar w_H(\pmb x,\pmb y)$ and $\bar w_P(\pmb x,\pmb y)$ are shortand for $\bar w_H(\bar z_H(\pmb x),\bar z_P(\pmb y)$ and $\bar w_P(\bar z_P(\pmb x),\bar z_H(\pmb y))$ respectively. Applying the trait matching/mis-matching model of fitness, we obtain
+where $\bar w_H(\pmb x,\pmb y)$ and $\bar w_P(\pmb x,\pmb y)$ are shorthand for $\bar w_H(\bar z_H(\pmb x),\bar z_P(\pmb y)$ and $\bar w_P(\bar z_P(\pmb x),\bar z_H(\pmb y))$ respectively. Applying the trait matching/mis-matching model of fitness, we obtain
 
 $$\invbreve{\mathcal L}_H=\cdots$$
 
@@ -391,7 +334,7 @@ $$\invbreve{\mathcal L}_P=\cdots$$
 
 For the sake of clarity, we focus on a closely related measure of local adaptation that utilizes the local population growth rate $\bar m_S$ instead of the population mean fitness $\bar w_S$ for species $S=H,P$. In particular, we define
 
-$$\invbreve\ell_S=\mathbb E[\bar m_S(\pmb x,\pmb x)]-\mathbb E\left[\int_{\mathbb R^2}\bar m_S(\pmb x,\pmb x+\pmb y)D_S(\pmb y)d\pmb y\right],$$
+$$\invbreve\ell_S=\mathbb E[\bar m_S(\pmb x,\pmb x)]-\mathbb E\left[\int_{\mathbb R^2}\bar m_S(\pmb x,\pmb x+\pmb y)D(\pmb y)d\pmb y\right],$$
 
 where $\bar m_H(\pmb x,\pmb y)$ and $\bar m_P(\pmb x,\pmb y)$ are shortand for $\bar m_H(\bar z_H(\pmb x),\bar z_P(\pmb y)$ and $\bar m_P(\bar z_P(\pmb x),\bar z_H(\pmb y))$ respectively. Applying the trait matching/mis-matching model of fitness along with our assumption of spatially homogeneous abiotic stabilizing selection, we obtain
 
@@ -404,10 +347,10 @@ where $\bar m_H(\pmb x,\pmb y)$ and $\bar m_P(\pmb x,\pmb y)$ are shortand for $
 
 \begin{multline}
   \mathbb E\left[\int_{\mathbb R^2}\bar m_H(\pmb x,\pmb y)
-  D_H(\pmb y)d\pmb y\right]= 
+  D(\pmb y)d\pmb y\right]= 
   r_H-\frac{A_H}{2}[(\theta_H-\mu_H)^2+v_H+V_H] \\
   +\frac{B_H}{2}[(\mu_H-\mu_P)^2+v_H+v_P+V_H+V_P]
-  -B_H\int_{\mathbb R^2}C_{HP}(\pmb y)D_H(\pmb y)d\pmb y,
+  -B_H\int_{\mathbb R^2}C_{HP}(\pmb y)D(\pmb y)d\pmb y,
 \end{multline}
 
 \begin{multline}
@@ -419,21 +362,35 @@ where $\bar m_H(\pmb x,\pmb y)$ and $\bar m_P(\pmb x,\pmb y)$ are shortand for $
 
 \begin{multline}
   \mathbb E\left[\int_{\mathbb R^2}\bar m_P(\pmb x,\pmb y)
-  D_P(\pmb y)d\pmb y\right]= 
+  D(\pmb y)d\pmb y\right]= 
   r_P-\frac{A_P}{2}[(\theta_P-\mu_P)^2+v_P+V_P] \\
   -\frac{B_P}{2}[(\mu_P-\mu_H)^2+v_P+v_H+V_P+V_H]
-  +B_P\int_{\mathbb R^2}C_{HP}(\pmb y)D_P(\pmb y)d\pmb y,
+  +B_P\int_{\mathbb R^2}C_{HP}(\pmb y)D(\pmb y)d\pmb y,
 \end{multline}
 
-Hence, the expressions for local adaptation accounting for limited dispersal simplify to
+Setting $\bar C_{HP}\int_{\mathbb R^2}C_{HP}(\pmb y)D(\pmb y)d\pmb y$, the expressions for local adaptation accounting for limited dispersal simplify to
 
-$$\invbreve{\ell}_H=B_H\left(\int_{\mathbb R^2}C_{HP}(\pmb y)D_H(\pmb y)d\pmb y-C_{HP}(0)\right),$$
+$$\invbreve{\ell}_H=B_H\left(\bar C_{HP}-C_{HP}(0)\right),$$
 
-$$\invbreve{\ell}_P=B_P\left(C_{HP}(0)-\int_{\mathbb R^2}C_{HP}(\pmb y)D_P(\pmb y)d\pmb y\right).$$
+$$\invbreve{\ell}_P=B_P\left(C_{HP}(0)-\bar C_{HP}\right).$$
 
-- todo: calculate scotts measure of coevolutionary advantage
+# Scott's measure of coevolutionary advantage
 
-- idea: instead calculating expectation of $C_{HP}$ wrt $D$, can plug in $r=\sigma$.
+$$\mathcal a=\bar{\bar m}-\bar{\bar m}^0$$
+
+where $\bar{\bar m}^0$ is the spatial average of growth rate in the absence of biotic selection. Setting $\bar{\bar z}_S^0, V_S^0$ the spatial mean and variance of local mean traits for species $S$ and $C_{HP}^{S,0}$ the covariance of mean traits between species when $B_S=0$, our model assumptions then implies
+
+\begin{multline}
+  \mathcal a_P=B_P(C_{HP}-C_{HP}^{P,0})-\frac{B_P}{2}\big[(\bar{\bar z}_H-\bar{\bar z}_P)^2+V_H+V_P+v_H+v_P\big] \\
+  -\frac{A_P}{2}\big[(\theta_P-\bar{\bar z}_P)^2-(\theta_P-\bar{\bar z}_P^0)^2+V_P-V_P^0\big],
+\end{multline}
+
+\begin{multline}
+  \mathcal a_H=-B_P(C_{HP}-C_{HP}^{H,0})+\frac{B_H}{2}\big[(\bar{\bar z}_P-\bar{\bar z}_H)^2+V_H+V_P+v_H+v_P\big] \\
+  -\frac{A_H}{2}\big[(\theta_H-\bar{\bar z}_H)^2-(\theta_H-\bar{\bar z}_H^0)^2+V_H-V_H^0\big].
+\end{multline}
+
+- NOTE: Scott defines this measure by comparing the coevolutionary scenario to the no biotic selection for both species scenario. In this case it seems possible that $\mathcal a$ can be positive for both species, blurring the distinction of which species is "winning" the coevolutionary race. Alternatively, we can proceed as above and consider the case when just one or the other species incurs zero biotic selection.
 
 # Relation to results derived without gene-flow
 

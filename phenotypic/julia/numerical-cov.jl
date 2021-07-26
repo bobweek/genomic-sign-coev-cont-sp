@@ -153,7 +153,9 @@ CubaSₕₚ = function(y,p)
     @unpack Gₕ,Gₚ,ρₕ,ρₚ,Aₕ,Aₚ,Bₕ,Bₚ,σₕ,σₚ = p
 
     knorm = sqrt(k₁^2+k₂^2)
-    num = Bₚ*Gₚ*Gₕ*( Gₚ*(Aₚ+Bₚ)+0.5*(σₚ*knorm)^2 )/ρₕ - Bₕ*Gₕ*Gₚ*( Gₕ*(Aₕ-Bₕ)+0.5*(σₕ*knorm)^2 )/ρₚ
+    num₁ = Bₚ*Gₚ*Gₕ*( Gₚ*(Aₚ+Bₚ)+0.5*(σₚ*knorm)^2 )/ρₕ
+    num₂ = Bₕ*Gₕ*Gₚ*( Gₕ*(Aₕ-Bₕ)+0.5*(σₕ*knorm)^2 )/ρₚ
+    num = num₁ - num₂
     den = ( Bₕ*Bₚ*Gₕ*Gₚ + (Gₕ*(Aₕ-Bₕ)+0.5*(σₕ*knorm)^2) * (Gₚ*(Aₚ+Bₚ)+0.5*(σₚ*knorm)^2) )^2
 
     return(dk₁*dk₂*num/den)
@@ -182,7 +184,14 @@ end
 # calculating expected covariance via numerical integration wrt distance distribution in fourier space
 C̄ₕₚ = function (p)
 
-    C̄ = cuhre((k,f) -> f[1] = CubaD̂(k,p)*CubaSₕₚ(k,p)/(2*π), 2)[1][1]
+    cout = cuhre((k,f) -> f[1] = CubaD̂(k,p)*CubaSₕₚ(k,p)/(2*π), 2)
+
+    if cout[5]!=0
+        print("error\n")
+        return(0)
+    end
+
+    C̄ = cout[1][1]
 
     return(C̄)
     
@@ -534,11 +543,13 @@ CₕₚISL = function (p)
     
     # use discretization of laplacian to justify analogous dispersal par σ^2
 
-    num = Gₕ*Gₚ*( Bₚ*(σₚ^2+(Aₚ+Bₚ)*Gₚ)*ρₚ - Bₕ*(σₕ^2+(Aₕ-Bₕ)*Gₕ)*ρₕ )
+    num = Gₕ*Gₚ*( Bₚ*ρₚ*(σₚ+Gₚ*(Aₚ+Bₚ)) - Bₕ*ρₕ*(σₕ+Gₕ*(Aₕ-Bₕ)) )
 
-    den = 2*ρₕ*ρₚ*(σₕ^2+σₚ^2+Gₕ*(Aₕ-Bₕ)+Gₚ*(Aₚ+Bₚ))*((σₕ*σₚ)^2+σₕ^2*Gₚ*(Aₚ+Bₚ)+σₚ^2*Gₕ*(Aₕ-Bₕ)+Gₕ*Gₚ*(Aₕ*Aₚ+Aₕ*Bₚ-Aₚ*Bₕ))
+    den₁ = 2*ρₕ*ρₚ*(σₕ+σₚ+Gₕ*(Aₕ-Bₕ)+Gₚ*(Aₚ+Bₚ))
 
-    Cₕₚ = num/den
+    den₂ = σₕ*σₚ + σₕ*Gₚ*(Aₚ+Bₚ) + σₚ*Gₚ*(Aₕ-Bₕ) + Gₕ*Gₚ*(Aₕ*Aₚ+Aₕ*Bₚ-Aₚ*Bₕ)
+
+    Cₕₚ = num/(den₁*den₂)
 
     return(Cₕₚ)
 
@@ -593,4 +604,15 @@ end
 
 end
 
-/
+# index of coevolutionary advantage
+𝓪 = function(p)
+
+    @unpack Aₕ, Aₚ, Bₕ, Bₚ, Gₕ, Gₚ, ρₕ, ρₚ, σₕ, σₚ = p
+
+    Vₕ = 1/(ρₕ*σₕ^2*(Aₕ-Bₕ))
+    Vₚ = 1/(ρₚ*σₚ^2*(Aₚ+Bₚ))
+
+    Vₕ⁰ = 1/(ρₕ*σₕ^2*Aₕ)
+    Vₚ⁰ = 1/(ρₚ*σₚ^2*Aₚ)
+
+end

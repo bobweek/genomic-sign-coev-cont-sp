@@ -153,3 +153,20 @@ with open("both.txt", "w") as indfile:
         indfile.writelines("\t".join(data) + "\n")
 with open("both.vcf", "w") as vcffile:
       both_ts.write_vcf(vcffile, individuals=indivlist, individual_names=indivnames)
+
+
+# interpolating trait surfaces
+
+from scipy.interpolate import griddata
+
+grid_x, grid_y = np.mgrid[0:1:100j, 0:1:200j]
+
+h_traits = h_locs[:,2]
+h_glocs = h_locs[:,:2]/100
+
+grid_z2 = griddata(h_glocs, h_traits, (grid_x, grid_y), method='cubic')
+
+plt.subplot(111)
+plt.imshow(grid_z2.T)
+plt.title('Cubic')
+plt.show()

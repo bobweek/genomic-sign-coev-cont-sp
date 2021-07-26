@@ -1,0 +1,133 @@
+---
+title: "Equations of Local Adaptation"
+author: "Bob Week"
+date: "6/23/2021"
+header-includes:
+  - \usepackage{dutchcal}
+output: pdf_document
+---
+
+For the sake of brevity, we focus on equations describing parasite local adaptation. Equations for the host are expressed in an analogous manner.
+
+# Classic index of local adaptation in terms of absolute fitness and genotype frequencies
+
+- $K=$ number of populations
+
+- $\overline W_P(k,l)=$ expected fitness of a parasite drawn from population $k$ when confronted with a host drawn from population $l$
+
+- $\overline{\overline W}_P=\frac{1}{K}\sum_{k=1}^K\overline W_P(k,k)=$ spatial average of local fitness
+
+- $\mathcal G_P=\frac{1}{K^2}\sum_{k=1}^K\sum_{l=1}^K\overline W_P(k,l)=$ global adaptation of parasite, assuming an island model of dispersal
+
+- $\mathcal L_P=\overline{\overline W}_P-\mathcal G_P=$ local adaptation of parasite, also assuming an island model of dispersal
+
+$$\mathcal L=\overline{\overline W}-\mathcal G$$
+
+$$\mathcal L=\frac{1}{K}\sum_{k=1}^K\overline W(k,k)-\frac{1}{K^2}\sum_{k=1}^K\sum_{l=1}^K\overline W(k,l)$$
+
+- $n_P,n_H=$ numbers of parasite and host genotype frequencies respectively
+
+- $\varphi_P(k,i),\varphi_H(l,j)$ frequencies of parasite genotype $i$ in population $k$ and host genotype $j$ in population $l$
+
+- $W_P(i,j)=$ absolute fitness of a parasite with genotype $i$ when confronted with a host having genotype $j$
+
+  - Then, $\overline W_P(k,l)=\sum_{i=1}^{n_P}\sum_{j=1}^{n_H}W_P(i,j)\varphi_P(k,i)\varphi_H(l,j)$
+
+- $\mathrm{Cov}\big(\varphi_P(i),\varphi_H(j)\big)=$ spatial covariance between frequency of parasite genotype $i$ and frequency of host genotype $j$
+
+  - Then, $\mathcal L_P=\sum_{i=1}^{n_P}\sum_{j=1}^{n_H}W_P(i,j)\mathrm{Cov}\big(\varphi_P(i),\varphi_H(j)\big)$
+  
+# Classic index of local adaptation in terms of population growth rate and mean traits under trait matching/mis-matching
+
+- $\bar m_P(k,l)=$ expected population growth rate of parasite population $k$ when confronted with host population $l$
+
+- $\bar{\bar m}_P=\frac{1}{K}\sum_{k=1}^K\bar m_P(k,k)=$ spatial average of population growth rates
+
+- $\mathcal g_P=\frac{1}{K^2}\sum_{k=1}^K\sum_{l=1}^K\bar m_P(k,l)=$ global adaptation of parasite, assuming an island model of dispersal
+
+- $\ell_P=\bar{\bar m}_P-\mathcal g_P=$ local adaptation of parasite, also assuming an island model of dispersal
+
+$$\ell=\bar{\bar m}-\mathcal g$$
+
+$$\ell=\frac{1}{K}\sum_{k=1}^K\bar m(k,k)-\frac{1}{K^2}\sum_{k=1}^K\sum_{l=1}^K\bar m(k,l)$$
+
+- $\varphi_P(k,z_P),\varphi_H(l,z_H)$ frequencies of trait $z_P$ in parasite population $k$ and $z_H$ in host population $l$
+
+- $m_P(z_P,z_H)$ growth rate of a parasite subpopulation consisting of individuals with trait $z_P$ when confonting hosts with trait $z_H$
+
+  - Then $\bar m_P(k,l)=\int\int m_P(z_P,z_H)\varphi_P(k,z_P)\varphi_H(l,z_H)dz_Pdz_H$
+  
+### Everything above this is general and independent of the trait matching model
+  
+- Under trait matching $m_P(z_P,z_H)=r_P-\frac{B_P}{2}(z_H-z_P)^2$
+
+  - $r_P=$ instrinsic growth rate of parasite populations (assumed spatially homogeneous)
+  - $B_P=$ strength of biotic selection on parasite (assumed spatially homogeneous)
+
+- $\bar z_P(k),\bar z_H(l)=$ mean traits of parasite population $k$ and host population $l$
+
+- $v_H,v_P=$ local trait variances (assumed spatially homogeneous)
+
+  - Then $\bar m_P=r_P-\frac{B_P}{2}\big[(\bar z_H(l)-\bar z_P(k))^2+v_H+v_P\big]$
+
+- $\bar{\bar z}_P,\bar{\bar z}_H=$ spatial averages of local mean traits for parasite and host respectively
+
+- $V_P,V_H=$ spatial variances of local mean traits for parasite and host respectively
+
+- $C_{HP}$ spatial covariance of local mean traits for parasite and host respectively
+
+  - Then $\bar{\bar m}_P=r_P-\frac{B_P}{2}\big[(\bar{\bar z}_H-\bar{\bar z}_P)^2+V_H+V_P-2C_{HP}+v_H+v_P\big]$
+  
+  - and $\mathcal g_P=r_P-\frac{B_P}{2}\big[(\bar{\bar z}_H-\bar{\bar z}_P)^2+V_H+V_P+v_H+v_P\big]$
+  
+  - hence $\ell_P=B_PC_{HP}$
+  
+$$\ell_P=B_PC_{HP}$$
+
+
+$$\ell_H=-B_HC_{HP}$$
+
+# Modified index of local adaptation accounting for limited dispersal under trait matching/mis-matching
+
+- $\bar m_P(x,y)=$ expected population growth rate of parasite population at location $x=(x_1,x_2)$ when confronted with host population at location $y=(y_1,y_2)$.
+
+  - __From here on we write__ $\bar m_P(\mathcal d)$ as the expected population growth rate of a parasite population when confronted with host population located a distance $\mathcal d$ away. That is, for $\|x-y\|=\mathcal d$, $\bar m_P(\mathcal d)=\bar m_P(x,y)$.
+
+- $\bar{\bar m}_P=\mathbb E\big(\bar m_P(0)\big)=$ spatial average of population growth rates
+
+- $\tilde{\mathcal g}_P(\mathcal d)=\mathbb E\big(\bar m_P(\mathcal d)\big)=$ a pseudo measure of parasite global adaptation for all distances $\mathcal d\geq0$
+
+- $D(\mathcal d)=$ the probability density function for the distance $\mathcal d$ between two interacting individuals before dispersal
+
+- $\mathcal g_P=\int_0^\infty\tilde{\mathcal g}_P(\mathcal d)D(\mathcal d)d\mathcal d=$ a measure of parasite global adaptation accounting for limited dispersal within each species
+
+- $\tilde \ell_P(\mathcal d)=\bar{\bar m}_P-\tilde{\mathcal g}_P(\mathcal d)=$ a psuedo measure of parasite local adaptation for all distances $\mathcal d\geq0$
+
+- $\ell_P=\int_0^\infty\tilde\ell_P(\mathcal d)D(\mathcal d)d\mathcal d=\bar{\bar m}_P-\mathcal g_P=$ a measure of parasite local adaptation accounting for limited dispersal in each species
+
+### Everything above this is independent of the trait matching model
+
+- Assuming Gaussian dispersal in each species and the trait matching model we find
+
+$$\bar{\bar m}_P=r_P-\frac{B_P}{2}\big((\bar{\bar z}_H-\bar{\bar z}_P)^2+V_H+V_P-2C_{HP}+v_H+v_P\big)$$
+
+$$\tilde{\mathcal g}_P(\mathcal d)=r_P-\frac{B_P}{2}\big((\bar{\bar z}_H-\bar{\bar z}_P)^2+V_H+V_P-2C_{HP}(\mathcal d)+v_H+v_P\big)$$
+
+- $C_{HP}=C_{HP}(0)=$ the marginal covariance of mean traits (same thing as $C_{HP}$ above)
+
+- $C_{HP}(\mathcal d)=$ the spatial cross-covariance of host-parasite mean traits at the distance $\mathcal d$
+
+- $\bar C_{HP}=\int_0^\infty C_{HP}(\mathcal d)D(\mathcal d)d\mathcal d=$ expected covariance of mean traits of interacting individuals
+
+- Then, the psuedo measures of local adaptation work out to be
+
+$$\tilde\ell_P(\mathcal d)=B_P\big(C_{HP}-C_{HP}(\mathcal d)\big)$$
+$$\tilde\ell_H(\mathcal d)=B_H\big(C_{HP}(\mathcal d)-C_{HP}\big)$$
+
+- Since $\lim_{\mathcal d\to\infty}C_{HP}(\mathcal d)=0$, we see $\lim_{\mathcal  d\to\infty}\tilde\ell_P(\mathcal d)=$ the classical measure of parasite local adaptation above
+
+- The measure of local adaptation accounting for limited dispersal the works out to be
+
+$$\ell_P=B_P\big(C_{HP}-\bar C_{HP}\big)$$
+
+$$\ell_H=B_H\big(\bar C_{HP}-C_{HP}\big)$$
