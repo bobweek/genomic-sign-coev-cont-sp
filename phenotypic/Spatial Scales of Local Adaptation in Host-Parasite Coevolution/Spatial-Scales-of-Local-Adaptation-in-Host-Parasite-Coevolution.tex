@@ -79,18 +79,17 @@
 \begin{abstract}
 Studies of local adaptation between coevolving hosts and parasites have
 profited from theory that assumes a discrete set of populations.
-However, when dispersal is limited clinal patterns of phenotypic
+However, when dispersal is limited continuous patterns of phenotypic
 variation may emerge. Thus, patterns of local adaptation may occur on
-characteristic spatial scales determined by dispersal distances and
-strengths of coevolutionary selection. Here we study a two-dimensional
-continuous space model of host-parasite coevolution to understand the
-relative spatial scales of phenotypic turnover and local adaptation. We
-find that the species with more limited dispersal tends to be locally
-adapted, but XYZ about it being ahead in the coevolutionary race. To
-verify our results when model assumptions are broken, we use individual
-based simulations. We find XYZ about our results when coevolution is
-strong and XYZ when population densities significantly vary across
-space.
+characteristic spatial scales determined by relative dispersal distances
+and strengths of selection. Here we study a two-dimensional continuous
+space model of host-parasite coevolution to elucidate the spatial scales
+of phenotypic turnover and local adaptation. We find that the species
+with more limited dispersal tends to be locally adapted, but XYZ about
+it being ahead in the coevolutionary race. To verify our results when
+model assumptions are broken, we use individual based simulations. We
+find XYZ about our results when coevolution is strong and XYZ when
+population densities significantly vary across space.
 \end{abstract}
 
 \keywords{
@@ -107,6 +106,12 @@ space.
 
 \hypertarget{introduction}{%
 \section{Introduction}\label{introduction}}
+
+Local adaptation occurs when individuals reared in the same geographic
+location as their ancestors exhibit higher fitness than when reared
+elsewhere. This phenomenon is thought to occur (or has been show to
+occur) when selection is spatially heterogeneous and strong relative to
+dispersal (refs).
 
 \begin{itemize}
 \item
@@ -125,20 +130,124 @@ space.
 \hypertarget{methods}{%
 \section{Methods}\label{methods}}
 
-\hypertarget{spde-model}{%
-\subsection{SPDE Model}\label{spde-model}}
+To understand patterns of phenotypic variation and local adaptation in
+continuous space, we introduce and analyze a pair of stochastic partial
+partial differential equations (SPDE) that account for coevolution
+between host and parasite, abiotic stabilizing selection and random
+genetic drift. In particular, SPDE are stochastic generalizations of
+deterministic PDE which in turn have been widely employed in theoretical
+evolutionary ecology to study continuous space population dynamics
+(refs), the evolution of continuous trait distributions (refs) and
+feedbacks between the two (refs). Here we employ the SPDE framework to
+model the evolution of mean traits in coevolving hosts and parasites. By
+assuming additive genetic variances and population sizes are spatially
+and temporally homogeneous, we arrive at a pair of linear SPDE driven by
+space-time white noise processes. Linearity of the model allows us to
+employ spectral methods to approximate spatial auto-covariance functions
+of both mean traits along with a spatial cross-covariance function
+between the two mean traits. Finally, using the spatial auto-covariance
+functions, we identify spatial scales of phenotypic turnover.
 
-\ldots{}
+In section \ref{spde} we introduce our model and briefly outline our
+approach using spectral methods. More information on this approach is
+provided in Appendix \ref{spde-app}. We then adapt classical measures of
+local adaptation to the case of limited dispersal. Using these adapted
+measures, we apply our model results to illustrate the spatial scales of
+local adaptation and to determine which species has a coevolutionary
+advantage. These definitions are provided in section \ref{la} and
+further details are located in Appendix \ref{la-app}. To test our
+analytical results, we employ individual-based simulations conducted in
+the language Julia. In section \ref{ibs}, we provide a brief overview of
+our simulation model. Further details on the individual-based model can
+be found in Appendix \ref{ibs-app}
+
+\hypertarget{spde-model}{%
+\subsection{\texorpdfstring{SPDE model
+\label{spde}}{SPDE model }}\label{spde-model}}
+
+We employ a pair of stochastic partial differential equations to track
+the evolution of mean traits in the host, \(\bar z_H(x_1,x_2)\), and the
+parasite, \(\bar z_p(x_1,x_2)\), as functions of the two-dimensional
+spatial coordinates \((x_1,x_2)\). We assume geographical space is
+unbounded so that \((x_1,x_2)\) span the entire plane. We account for
+the effects of host parasite coevolution using a trait-matching model
+(ref other pprs using this model). Under this model, fitness of the host
+is minimized and fitness of the parasite is maximized when traits are
+matching. This induces a local coevolutionary chase, where the parasite
+evolves to match the host, but the host evolves to escape the parasite
+(this should be stated in the introduction somewhere). The strength of
+biotic selection (i.e., selection that is induced by the interaction
+between hosts and parasites) is denoted by \(B_H>0\) for the host and
+\(B_P>0\) for the parasite. We assume these strengths of selection are
+temporally and spatially homogeneous. To obtain an equilibrium solution
+to our model, we also account for the effects of abiotic stabilizing
+selection. Here, we assume abiotic optimal traits and strengths of
+abiotic selection for both species are temporally and spatially
+homogeneous. We denote by \(\theta_H,\theta_P\) the abiotic optimal
+traits and by \(A_H,A_P>0\) the strengths of abiotic stabilizing
+selection in the host and parasite respectively. Finally, our model also
+accounts for the effects of limited dispersal by assuming individuals
+disperse following a bivariate Gaussian distribution with mean zero and
+equal standard deviations in both directions. We denote by
+\(\sigma_H,\sigma_P\) the standard deviations of individual movement in
+the host and parasite respectively. In our SPDE model, this translates
+to diffusion with coefficients \(\sigma_H/2\) and \(\sigma_P/2\) (refs).
+For the sake of mathematical tractability, we also assume the additive
+genetic variances \(G_H,G_P>0\) and population densities
+\(\rho_H,\rho_P>0\) are temporally and spatially homogeneous for the
+host and parasite respectively. With this notation, our model can be
+written as
+
+\begin{subequations}\label{spde-model}
+  \begin{equation}
+    \frac{\partial\bar z_H}{\partial t}=G_HB_H(\bar z_H-\bar z_P)+G_HA_H(\theta_H-\bar z_H)+\frac{\sigma_H}{2}\left(\frac{\partial^2\bar z_H}{\partial x_1^2}+\frac{\partial^2\bar z_H}{\partial x_2^2}\right)+\sqrt\frac{G_H}{\rho_H}\dot W_H,
+  \end{equation}
+  \begin{equation}
+    \frac{\partial\bar z_P}{\partial t}=G_PB_P(\bar z_H-\bar z_P)+G_PA_P(\theta_P-\bar z_P)+\frac{\sigma_H}{2}\left(\frac{\partial^2\bar z_P}{\partial x_1^2}+\frac{\partial^2\bar z_P}{\partial x_2^2}\right)+\sqrt\frac{G_P}{\rho_P}\dot W_P.
+  \end{equation}
+\end{subequations}
+
+Here \(\dot W_H,\dot W_P\) denote independent space-time white noise
+processes, which are Gaussian processes independent in both space and
+time. In particular, integrating \(\dot W_S\), for either \(S=H,P\),
+over an interval of time \([t_1,t_2]\) and a geographic region \(U\)
+returns a normally distributed random variable with mean zero and
+variance equal to \((t_2-t_1)|U|\), where \(|U|\) denotes the area of
+\(U\) (refs). Hence, when for an interval of unit length and region of
+unit area, the integral of \(\sqrt{G_S/\rho_S}\dot W_S\) is normal with
+mean zero and variance \(G_S/\rho_S\) in analogy with classical models
+of random genetic drift in quantitative genetics (refs).
 
 The assumption of constant effective population size across time and
 space can be thought of as an extreme form of population regulation.
 However, the model is agnostic to whether population regulation is
 caused by top-down forces such as predation, bottom-up forces such as
-resource competition or some combination of these forces.
+resource competition or some combination of these forces. Similarly, the
+assumption of constant additive genetic variances can be justified
+theoretically via mutation-selection balance (refs).
+
+We analyze model (\ref{spde-model}) at its statistical equilibrium,
+which exists and is unique when \(A_H>B_H\) (see Appendix
+\ref{spde-app}). Following well established results of spatial
+statistics (refs), we know the stationary solution of model
+(\ref{spde-model}) is a bivariate Gaussian random field (refs). An
+example of a stationary solution to model (\ref{spde-model}) in an
+instant of time is illustrated in Figure X. A multivariate Gaussian
+random field of \(d\) variables has the convenient property of being
+characterized by its \(d\)-dimensional mean vector \(\pmb \mu(x_1,x_2)\)
+and \(d\times d\) spatial auto/cross-covariance matrix
+\(\Sigma(x_1,x_2)\). Under our model,
+\(\pmb\mu(x_1,x_2)=(\tilde z_H,\tilde z_P)^\top\) is the expected
+equilibrium trait values, which are spatially homogeneous and are
+determined by a balance between biotic and abiotic selection.
+
+\hypertarget{local-adaptation-in-continuous-space}{%
+\subsection{\texorpdfstring{Local adaptation in continuous space
+\label{la}}{Local adaptation in continuous space }}\label{local-adaptation-in-continuous-space}}
 
 \hypertarget{individual-based-simulations}{%
-\subsection{Individual-Based
-Simulations}\label{individual-based-simulations}}
+\subsection{\texorpdfstring{Individual-based simulations
+\label{ibs}}{Individual-based simulations }}\label{individual-based-simulations}}
 
 \hypertarget{results}{%
 \section{Results}\label{results}}
@@ -158,8 +267,21 @@ Simulations}\label{individual-based-simulations}}
 \end{center}
 
 \hypertarget{calculating-the-covariance-and-cross-covariance-functions}{%
-\section{Calculating the covariance and cross-covariance
-functions}\label{calculating-the-covariance-and-cross-covariance-functions}}
+\section{\texorpdfstring{Calculating the covariance and cross-covariance
+functions
+\label{spde-app}}{Calculating the covariance and cross-covariance functions }}\label{calculating-the-covariance-and-cross-covariance-functions}}
+
+Assuming the system has reached a statistical equilibrium, we make use
+of a Fourier transform convert the model from geographic coordinates to
+frequency coordinates, where the Fourier transformed solution represents
+the spatial harmonic content of the solution to the SPDE model. We then
+use the Fourier transformed model to construct so-called power spectra
+of the solution, which are exactly the Fourier transformed spatial
+auto-covariance functions. We then use a weak coevolution approximation
+to simplify the power spectra so they can be inverted, arriving at
+analytical expressions for the spatial auto-covariance functions. In
+turn, the functional form of the spatial auto-covariance functions
+allows the identification of spatial scales of phenotypic turnover.
 
 To compute formula for the spatial (intraspecific) covariance and
 (interspecific) cross-covariance functions, we make use of the relation
@@ -321,7 +443,7 @@ be approximated by
 \[C_{HP}(\pmb x)\approx \int_{\mathbb R^2}\frac{2B_P}{A_P+B_P}\frac{K_0(\|\pmb y\|/\xi_P)}{\xi_P^2}M_1(\pmb x-\pmb y|\xi_H,V_H)-\frac{2B_H}{A_H-B_H}\frac{K_0(\|\pmb y\|/\xi_H)}{\xi_H^2}M_1(\pmb x-\pmb y|\xi_P,V_P)d\pmb y.\]
 
 \hypertarget{marginal-values-and-integrals-of-spatial-covariance-and-cross-covariance-functions}{%
-\section{Marginal values and integrals of spatial covariance and
+\subsection{Marginal values and integrals of spatial covariance and
 cross-covariance
 functions}\label{marginal-values-and-integrals-of-spatial-covariance-and-cross-covariance-functions}}
 
@@ -372,8 +494,8 @@ We therefore conclude
 \[\int_0^\infty C_{HP}(r)dr\approx\frac{1}{4}\left(\frac{B_P}{A_P+B_P}\frac{\xi_H}{\sqrt2}-\frac{B_H}{A_H-B_H}\frac{\xi_P}{\sqrt2}\right).\]
 
 \hypertarget{measures-of-local-adaptation}{%
-\section{Measures of local
-adaptation}\label{measures-of-local-adaptation}}
+\section{\texorpdfstring{Measures of local adaptation
+\label{la-app}}{Measures of local adaptation }}\label{measures-of-local-adaptation}}
 
 \begin{itemize}
 \tightlist
@@ -540,7 +662,7 @@ simplify to
 \[\invbreve{\ell}_P=B_P\left(C_{HP}(0)-\bar C_{HP}\right).\]
 
 \hypertarget{scotts-measure-of-coevolutionary-advantage}{%
-\section{Scott's measure of coevolutionary
+\subsection{Scott's measure of coevolutionary
 advantage}\label{scotts-measure-of-coevolutionary-advantage}}
 
 \[\mathcal a=\bar{\bar m}-\bar{\bar m}^0\]
@@ -574,7 +696,7 @@ spatial mean and variance of local mean traits for species \(S\) and
 \end{itemize}
 
 \hypertarget{relation-to-results-derived-without-gene-flow}{%
-\section{Relation to results derived without
+\subsection{Relation to results derived without
 gene-flow}\label{relation-to-results-derived-without-gene-flow}}
 
 Expressions for the spatial means, variance and covariance of local mean
@@ -647,6 +769,10 @@ covariance \(C_{HP}\) does not return the marginal covariance found
 using the SPDE model with gene-flow. Hence, the presence of gene-flow
 and limited dispersal fundamentally alters patterns of spatial trait
 covariance between coevolving species.
+
+\hypertarget{the-individual-based-model}{%
+\section{\texorpdfstring{The individual-based model
+\label{ibs-app}}{The individual-based model }}\label{the-individual-based-model}}
 
 \newpage
 

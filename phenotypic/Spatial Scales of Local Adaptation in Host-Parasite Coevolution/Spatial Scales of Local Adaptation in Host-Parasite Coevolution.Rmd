@@ -12,7 +12,7 @@ authors:
     location: East Lansing, MI 48824
     email: bradburd@msu.edu
 abstract: |
-  Studies of local adaptation between coevolving hosts and parasites have profited from theory that assumes a discrete set of populations. However, when dispersal is limited clinal patterns of phenotypic variation may emerge. Thus, patterns of local adaptation may occur on characteristic spatial scales determined by dispersal distances and strengths of coevolutionary selection. Here we study a two-dimensional continuous space model of host-parasite coevolution to understand the relative spatial scales of phenotypic turnover and local adaptation. We find that the species with more limited dispersal tends to be locally adapted, but XYZ about it being ahead in the coevolutionary race. To verify our results when model assumptions are broken, we use individual based simulations. We find XYZ about our results when coevolution is strong and XYZ when population densities significantly vary across space.
+  Studies of local adaptation between coevolving hosts and parasites have profited from theory that assumes a discrete set of populations. However, when dispersal is limited continuous patterns of phenotypic variation may emerge. Thus, patterns of local adaptation may occur on characteristic spatial scales determined by relative dispersal distances and strengths of selection. Here we study a two-dimensional continuous space model of host-parasite coevolution to elucidate the spatial scales of phenotypic turnover and local adaptation. We find that the species with more limited dispersal tends to be locally adapted, but XYZ about it being ahead in the coevolutionary race. To verify our results when model assumptions are broken, we use individual based simulations. We find XYZ about our results when coevolution is strong and XYZ when population densities significantly vary across space.
 keywords:
   - coevolution
   - local adaptation
@@ -36,6 +36,8 @@ output:
 
 # Introduction
 
+Local adaptation occurs when individuals reared in the same geographic location as their ancestors exhibit higher fitness than when reared elsewhere. This phenomenon is thought to occur (or has been show to occur) when selection is spatially heterogeneous and strong relative to dispersal (refs).
+
 - It seems an old motivation for studying local adaptation in host-parasite coevolution comes from trying to make sense of the GMTC. So I think it would be good to include this.
 
 - Need to do lit review of local adaptation in coevolving host-parasite systems.
@@ -44,13 +46,33 @@ output:
 
 # Methods
 
-## SPDE Model
+To understand patterns of phenotypic variation and local adaptation in continuous space, we introduce and analyze a pair of stochastic partial partial differential equations (SPDE) that account for coevolution between host and parasite, abiotic stabilizing selection and random genetic drift. In particular, SPDE are stochastic generalizations of deterministic PDE which in turn have been widely employed in theoretical evolutionary ecology to study continuous space population dynamics (refs), the evolution of continuous trait distributions (refs) and feedbacks between the two (refs). Here we employ the SPDE framework to model the evolution of mean traits in coevolving hosts and parasites. By assuming additive genetic variances and population sizes are spatially and temporally homogeneous, we arrive at a pair of linear SPDE driven by space-time white noise processes. Linearity of the model allows us to employ spectral methods to approximate spatial auto-covariance functions of both mean traits along with a spatial cross-covariance function between the two mean traits. Finally, using the spatial auto-covariance functions, we identify spatial scales of phenotypic turnover.
 
-...
+In section \ref{spde} we introduce our model and briefly outline our approach using spectral methods. More information on this approach is provided in Appendix \ref{spde-app}. We then adapt classical measures of local adaptation to the case of limited dispersal. Using these adapted measures, we apply our model results to illustrate the spatial scales of local adaptation and to determine which species has a coevolutionary advantage. These definitions are provided in section \ref{la} and further details are located in Appendix \ref{la-app}. To test our analytical results, we employ individual-based simulations conducted in the language Julia. In section \ref{ibs}, we provide a brief overview of our simulation model. Further details on the individual-based model can be found in Appendix \ref{ibs-app}
 
-The assumption of constant effective population size across time and space can be thought of as an extreme form of population regulation. However, the model is agnostic to whether population regulation is caused by top-down forces such as predation, bottom-up forces such as resource competition or some combination of these forces.
+## SPDE model \label{spde}
 
-## Individual-Based Simulations
+We employ a pair of stochastic partial differential equations to track the evolution of mean traits in the host, $\bar z_H(x_1,x_2)$, and the parasite, $\bar z_p(x_1,x_2)$, as functions of the two-dimensional spatial coordinates $(x_1,x_2)$. We assume geographical space is unbounded so that $(x_1,x_2)$ span the entire plane. We account for the effects of host parasite coevolution using a trait-matching model (ref other pprs using this model). Under this model, fitness of the host is minimized and fitness of the parasite is maximized when traits are matching. This induces a local coevolutionary chase, where the parasite evolves to match the host, but the host evolves to escape the parasite (this should be stated in the introduction somewhere). The strength of biotic selection (i.e., selection that is induced by the interaction between hosts and parasites) is denoted by $B_H>0$ for the host and $B_P>0$ for the parasite. We assume these strengths of selection are temporally and spatially homogeneous. To obtain an equilibrium solution to our model, we also account for the effects of abiotic stabilizing selection. Here, we assume abiotic optimal traits and strengths of abiotic selection for both species are temporally and spatially homogeneous. We denote by $\theta_H,\theta_P$ the abiotic optimal traits and by $A_H,A_P>0$ the strengths of abiotic stabilizing selection in the host and parasite respectively. Finally, our model also accounts for the effects of limited dispersal by assuming individuals disperse following a bivariate Gaussian distribution with mean zero and equal standard deviations in both directions. We denote by $\sigma_H,\sigma_P$ the standard deviations of individual movement in the host and parasite respectively. In our SPDE model, this translates to diffusion with coefficients $\sigma_H/2$ and $\sigma_P/2$ (refs). For the sake of mathematical tractability, we also assume the additive genetic variances $G_H,G_P>0$ and population densities $\rho_H,\rho_P>0$ are temporally and spatially homogeneous for the host and parasite respectively. With this notation, our model can be written as
+
+\begin{subequations}\label{spde-model}
+  \begin{equation}
+    \frac{\partial\bar z_H}{\partial t}=G_HB_H(\bar z_H-\bar z_P)+G_HA_H(\theta_H-\bar z_H)+\frac{\sigma_H}{2}\left(\frac{\partial^2\bar z_H}{\partial x_1^2}+\frac{\partial^2\bar z_H}{\partial x_2^2}\right)+\sqrt\frac{G_H}{\rho_H}\dot W_H,
+  \end{equation}
+  \begin{equation}
+    \frac{\partial\bar z_P}{\partial t}=G_PB_P(\bar z_H-\bar z_P)+G_PA_P(\theta_P-\bar z_P)+\frac{\sigma_H}{2}\left(\frac{\partial^2\bar z_P}{\partial x_1^2}+\frac{\partial^2\bar z_P}{\partial x_2^2}\right)+\sqrt\frac{G_P}{\rho_P}\dot W_P.
+  \end{equation}
+\end{subequations}
+
+Here $\dot W_H,\dot W_P$ denote independent space-time white noise processes, which are Gaussian processes independent in both space and time. In particular, integrating $\dot W_S$, for either $S=H,P$, over an interval of time $[t_1,t_2]$ and a geographic region $U$ returns a normally distributed random variable with mean zero and variance equal to $(t_2-t_1)|U|$, where $|U|$ denotes the area of $U$ (refs). Hence, when for an interval of unit length and region of unit area, the integral of $\sqrt{G_S/\rho_S}\dot W_S$ is normal with mean zero and variance $G_S/\rho_S$ in analogy with classical models of random genetic drift in quantitative genetics (refs).
+
+The assumption of constant effective population size across time and space can be thought of as an extreme form of population regulation. However, the model is agnostic to whether population regulation is caused by top-down forces such as predation, bottom-up forces such as resource competition or some combination of these forces. Similarly, the assumption of constant additive genetic variances can be justified theoretically via mutation-selection balance (refs).
+
+We analyze model (\ref{spde-model}) at its statistical equilibrium, which exists and is unique when $A_H>B_H$ (see Appendix \ref{spde-app}). Following well established results of spatial statistics (refs), we know the stationary solution of model (\ref{spde-model}) is a bivariate Gaussian random field (refs). An example of a stationary solution to model (\ref{spde-model}) in an instant of time is illustrated in Figure X. A multivariate Gaussian random field of $d$ variables has the convenient property of being characterized by its $d$-dimensional mean vector $\pmb \mu(x_1,x_2)$ and $d\times d$ spatial auto/cross-covariance matrix $\Sigma(x_1,x_2)$. Under our model, $\pmb\mu(x_1,x_2)=(\tilde z_H,\tilde z_P)^\top$ is the vector of expected equilibrium trait values, which are spatially homogeneous and are determined by a balance between biotic and abiotic selection.
+
+
+## Local adaptation in continuous space \label{la}
+
+## Individual-based simulations \label{ibs}
 
 # Results
 
@@ -66,7 +88,9 @@ The assumption of constant effective population size across time and space can b
 \Large{Appendix}
 \end{center}
 
-# Calculating the covariance and cross-covariance functions
+# Calculating the covariance and cross-covariance functions \label{spde-app}
+
+Assuming the system has reached a statistical equilibrium, we make use of a Fourier transform convert the model from geographic coordinates to frequency coordinates, where the Fourier transformed solution represents the spatial harmonic content of the solution to the SPDE model. We then use the Fourier transformed model to construct so-called power spectra of the solution, which are exactly the Fourier transformed spatial auto-covariance functions. We then use a weak coevolution approximation to simplify the power spectra so they can be inverted, arriving at analytical expressions for the spatial auto-covariance functions. In turn, the functional form of the spatial auto-covariance functions allows the identification of spatial scales of phenotypic turnover.
 
 To compute formula for the spatial (intraspecific) covariance and (interspecific) cross-covariance functions, we make use of the relation between the covariance functions and power spectra of random fields. In particular, the power spectrum of a multivariate stationary random field $\pmb F(\pmb x)$, $\pmb x=(x_1,x_2)$ being spatial location, is defined by $S_{\pmb F}(\pmb k)=\mathbb E\left(\hat{\pmb F}(\pmb k)\hat{\pmb F}(\pmb k)^H\right)$ where $\hat{\pmb F}(\pmb k)$ is the Fourier transform of $\pmb F$, the symbol $^H$ denotes Hessian transpose and $\pmb k=(k_1,k_2)$ are the Fourier transformed coordinates which represent the frequencies of fluctuations across the two spatial dimensions. Hence, $\hat{\pmb F}$ represents the harmonic content of the process $\pmb F$. The spatial covariance function $C_{\pmb F}(\pmb x)$ is just the inverse Fourier transform of the power spectrum $S_{\pmb F}(\pmb k)$.
 
@@ -246,7 +270,7 @@ Hence, $C_S(\pmb x)=M_1(\pmb x|\xi_S,V_S)$ for both $S=H,P$. With this notation,
 
 $$C_{HP}(\pmb x)\approx \int_{\mathbb R^2}\frac{2B_P}{A_P+B_P}\frac{K_0(\|\pmb y\|/\xi_P)}{\xi_P^2}M_1(\pmb x-\pmb y|\xi_H,V_H)-\frac{2B_H}{A_H-B_H}\frac{K_0(\|\pmb y\|/\xi_H)}{\xi_H^2}M_1(\pmb x-\pmb y|\xi_P,V_P)d\pmb y.$$
 
-# Marginal values and integrals of spatial covariance and cross-covariance functions
+## Marginal values and integrals of spatial covariance and cross-covariance functions
 
 Following results from section A, the marginal covariance of species mean traits can be approximated via
 
@@ -284,7 +308,7 @@ We therefore conclude
 
 $$\int_0^\infty C_{HP}(r)dr\approx\frac{1}{4}\left(\frac{B_P}{A_P+B_P}\frac{\xi_H}{\sqrt2}-\frac{B_H}{A_H-B_H}\frac{\xi_P}{\sqrt2}\right).$$
 
-# Measures of local adaptation
+# Measures of local adaptation \label{la-app}
 
 - use $\mathcal L$ for measures in terms of mean fitness and $\ell$ for measures in terms of log-mean fitness
 
@@ -374,7 +398,7 @@ $$\invbreve{\ell}_H=B_H\left(\bar C_{HP}-C_{HP}(0)\right),$$
 
 $$\invbreve{\ell}_P=B_P\left(C_{HP}(0)-\bar C_{HP}\right).$$
 
-# Scott's measure of coevolutionary advantage
+## Scott's measure of coevolutionary advantage
 
 $$\mathcal a=\bar{\bar m}-\bar{\bar m}^0$$
 
@@ -392,7 +416,7 @@ where $\bar{\bar m}^0$ is the spatial average of growth rate in the absence of b
 
 - NOTE: Scott defines this measure by comparing the coevolutionary scenario to the no biotic selection for both species scenario. In this case it seems possible that $\mathcal a$ can be positive for both species, blurring the distinction of which species is "winning" the coevolutionary race. Alternatively, we can proceed as above and consider the case when just one or the other species incurs zero biotic selection.
 
-# Relation to results derived without gene-flow
+## Relation to results derived without gene-flow
 
 Expressions for the spatial means, variance and covariance of local mean traits across a set of discrete populations without gene-flow between them have been presented by Week & Nuismer (2019). In the model of Week & Nuismer (2019) coevolution was driven by an offset-matching mechanism to capture trait escalation. When a parameter of their model known as the optimal offset is set to zero, the classical trait-matching model is recovered. Here we show how the results of Week & Nuismer (2019) on the spatial moments of a discrete space model with zero optimal offset are recovered as a special case of the SPDE model presented here in the limit of zero gene-flow (that is, in the limit of $\sigma_H,\sigma_P\to0$). In this limit our SPDE model becomes
 
@@ -421,6 +445,8 @@ $$V_H=\frac{\frac{1}{2N_H}-B_HC_{HP}}{A_H-B_H}, \ \ V_P=\frac{\frac{1}{2N_P}+B_P
 $$C_{HP}=\frac{B_P(A_P+B_P)G_PN_P-B_H(A_H-B_H)G_HN_H}{2(A_HA_P+A_HB_P-A_PB_H)((A_H-B_H)G_H+(A_P+B_P)G_P)N_HN_P}.$$
 
 This results correspond to the results found by Week & Nuismer (2019) when the optimal offset is set to zero. Hence, the statistical model of Week & Nuismer (2019) can be interpreted as a special case of the continuous space model presented here in the limit of zero gene-flow. Assuming weak coevolution so that $B_H^2,B_P^2,B_HB_P\approx0$, we recover the marginal variances of mean trait values found using the SPDE with gene-flow. However, applying the same approximation to the covariance $C_{HP}$ does not return the marginal covariance found using the SPDE model with gene-flow. Hence, the presence of gene-flow and limited dispersal fundamentally alters patterns of spatial trait covariance between coevolving species.
+
+# The individual-based model \label{ibs-app}
 
 \newpage
 

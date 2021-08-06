@@ -1,7 +1,6 @@
 ---
 title: "All of the correlations"
 author: "Bob Week"
-date: "7/7/2021"
 output: pdf_document
 header-includes:
   - \usepackage{bbm}
@@ -139,7 +138,7 @@ Since we are interested in studying spatial patterns of transpecific linkage dis
 
 $$\tau_{ij}(h)=\theta_{ij}M(h|\nu_{ij},\xi_{ij})$$
 
-where $\nu_{ij}=(\nu_i+\nu_j)/2$ and $\xi_{ij}=\min(\xi_i,\xi_j)$.
+where $\nu_{ij}=(\nu_i+\nu_j)/2$ and $\xi_{ij}=\min(\xi_i,\xi_j)$ and $\theta_{ij}$ is the collocated correlation between alleles at locus $i$ in species $H$ and locus $j$ in species $P$.
 
 \newpage
 
@@ -219,8 +218,20 @@ require(ggplot2)
 # using a R-by-R region
 R = 100
 
+#
+#
+# generate two indep sets of samples at each location and investigate spurious spatial correlations since both are sp autocorr
+#
+#
+
+#
+#
+# what is the expected corr of mean traits in space analytically? on a bounded region?
+#
+#
+
 # sample locations uniformly
-n = 3
+n = 5
 x1 = runif(n,0,R)
 x2 = runif(n,0,R)
 # xi is the vector of ith coordinates of sampled individuals
@@ -302,6 +313,12 @@ for(i in 1:choose(n,2)){
 # numerically fit the 2^n-dim param aa of the Dirichlet to desired conditions
 #
 
+Mean <- function(a,aa){
+  alpha = sum(a)
+  beta = sum(aa) - alpha
+  return(alpha/(alpha+beta))
+}
+
 # covariance in terms of aa components
 Cov <- function(a1,a2,a12,a0){
   a11 = sum(a12)
@@ -317,7 +334,7 @@ Var <- function(a,aa){
   alpha = sum(a)
   beta = sum(aa)-sum(a)
   num = alpha*beta
-  den = (sum(aa)+1)*sum(aa)^2
+  den = (alpha+beta+1)*(alpha+beta)^2
   return(num/den)
 }
 
@@ -341,13 +358,14 @@ ftaa <- function(a){
   }
   for(i in 1:n){
     prpMat[i,i] = Var(a[DirBet[i,]],a)
+    prpmn[i] = Mean(a[DirBet[i,]],a)
   }
 
   # l2 dist between desired and proposed cov's
-  pMv = prpMat[!lower.tri(prpMat)]
-  cMv = covMat[!lower.tri(covMat)]
+  pMv = prpMat #[!lower.tri(prpMat)]
+  cMv = covMat #[!lower.tri(covMat)]
   
-  fit = sqrt(sum((cMv-pMv)^2)+sum((m-prpmn)^2))
+  fit = sqrt(sum(sum(abs(cMv-pMv)))+sum((m-prpmn)^2))
   
   return(fit)
 
@@ -363,12 +381,13 @@ afit$convergence
 # get fitted a
 af = exp(afit$par)
 
+K = dim(DirUnq)[2]
 prpMat = zeros(n)
 for(i in 1:choose(n,2)){
   k = BetBet[i,1]
   l = BetBet[i,2]
-  a1  = af[DirUnq[i,1:(n-1)]]
-  a2  = af[DirUnq[i,n:(2*(n-1))]]
+  a1  = af[DirUnq[i,1:(K/2)]]
+  a2  = af[DirUnq[i,(1+K/2):K]]
   a12 = af[DirDir[i,]]
   a0 = af[DirCmp[i,]]
   prpMat[k,l] = Cov(a1,a2,a12,a0)
@@ -378,11 +397,18 @@ for(i in 1:n){
   prpMat[i,i] = Var(af[DirBet[i,]],af)
 }
 
+prpMn = zeros(n,1)
+for(i in 1:n){
+  prpMn[i] = Mean(af[DirBet[i,]],af)
+}
+
+prpMn
+
 prpMat
 covMat
 
 # draw from 2^n-dim Dirichlet with 2^n-dim param aa
-X = t(rdirichlet(100,af))
+X = t(rdirichlet(1,af))
 
 # generate the Beta distr allele frequencies
 p = trfM%*%X
@@ -395,6 +421,7 @@ rowVars(p)
 
 V
 
+require(fields) # for mle inference of matern cov pars
 
 
 # # sample allele frequencies
