@@ -1,6 +1,8 @@
-require(ggplot2)
-require(gridExtra)
-require(scales)
+require(groundhog)
+
+pkgs = c("ggplot2","gridExtra","scales")
+groundhog.day = "2021-03-01"
+groundhog.library(pkgs, groundhog.day)
 
 ISL = read.csv("~/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ISL.csv")
 CLS = read.csv("~/gits/genomic-sign-coev-cont-sp/phenotypic/julia/CLS.csv")

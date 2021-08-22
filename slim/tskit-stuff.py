@@ -16,6 +16,14 @@ p_ts = pyslim.load(
 
 both_ts = pyslim.SlimTreeSequence(h_ts.union(p_ts, np.repeat(tskit.NULL,p_ts.num_nodes), add_populations=True))
 
+# bin space into K x K grid
+
+K = 20
+binwidth = 2*space_width/K
+bins = range()
+
+h_ts.individual_locations[:,range(2)].max()
+
 # draw smaller samples of inds for plotting
 sSize = 100
 ht0 = np.random.choice(range(h_ts.num_individuals),sSize,replace=False)
