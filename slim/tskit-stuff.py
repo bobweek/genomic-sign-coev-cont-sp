@@ -22,6 +22,8 @@ K = 20
 binwidth = 2*space_width/K
 bins = range()
 
+h_ts.individuals_alive_at(0)
+
 h_ts.individual_locations[:,range(2)].max()
 
 # draw smaller samples of inds for plotting

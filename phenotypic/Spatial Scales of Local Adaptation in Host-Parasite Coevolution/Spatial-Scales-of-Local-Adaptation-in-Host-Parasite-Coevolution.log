@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021) (preloaded format=pdflatex 2021.8.5)  21 AUG 2021 17:44
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021) (preloaded format=pdflatex 2021.8.22)  23 AUG 2021 09:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -657,52 +657,63 @@ pdfTeX warning (ext4): destination with the same identifier (name{equation.2.2}
 l.293 \begin{equation}
                       
 
-LaTeX Warning: Reference `' on page 3 undefined on input line 339.
+LaTeX Warning: Reference `' on page 3 undefined on input line 342.
 
 [3]
 
-LaTeX Warning: Reference `' on page 4 undefined on input line 384.
+LaTeX Warning: Reference `' on page 4 undefined on input line 399.
 
-pdfTeX warning (ext4): destination with the same identifier (name{equation.2.1}
+[4]
+
+LaTeX Warning: Reference `' on page 5 undefined on input line 495.
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+[5] [6]
+
+LaTeX Warning: Reference `' on page 7 undefined on input line 664.
+
+pdfTeX warning (ext4): destination with the same identifier (name{equation.3.1}
 ) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.390   \begin{equation}
+l.670   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
-fier (name{equation.2.2}) has been already used, duplicate ignored
+fier (name{equation.3.2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.393   \begin{equation}
+l.673   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
-fier (name{equation.2.1}) has been already used, duplicate ignored
+fier (name{equation.3.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.410   \begin{equation}
+l.684   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
-fier (name{equation.2.2}) has been already used, duplicate ignored
+fier (name{equation.3.2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.413   \begin{equation}
-                         [4] [5] [6] [7]
+l.687   \begin{equation}
+                         [7] [8] [9]
 <Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution_files/figure-l
-atex/unnamed-chunk-1-1.pdf, id=180, 469.755pt x 433.62pt>
+atex/unnamed-chunk-1-1.pdf, id=202, 469.755pt x 433.62pt>
 File: Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution_files/fig
 ure-latex/unnamed-chunk-1-1.pdf Graphic file (type pdf)
 <use Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution_files/figu
 re-latex/unnamed-chunk-1-1.pdf>
 Package pdftex.def Info: Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Co
-evolution_files/figure-latex/unnamed-chunk-1-1.pdf  used on input line 721.
+evolution_files/figure-latex/unnamed-chunk-1-1.pdf  used on input line 852.
 (pdftex.def)             Requested size: 469.75386pt x 433.61894pt.
-[8] [9 <./Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution_files
-/figure-latex/unnamed-chunk-1-1.pdf>]
-Underfull \hbox (badness 1371) in paragraph at lines 761--764
+[10] [11 <./Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution_fil
+es/figure-latex/unnamed-chunk-1-1.pdf>]
+Underfull \hbox (badness 1371) in paragraph at lines 892--895
 []\T1/lmr/m/n/10 (+20) The spa-tial co-vari-ance func-tions, equal to the in-ve
 rse Fourier trans-forms of the power spec-tra
  []
 
-[10] [11] [12] [13] [14] [15]
+[12] [13] [14] [15] [16] [17]
 No file Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution.bbl.
-[16] (./Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution.aux)
+[18] (./Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
@@ -714,19 +725,19 @@ LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `Spatial-Scales-of-Local-Adaptation-in-Host-P
 arasite-Coevolution.out' has not changed.
-(rerunfilecheck)             Checksum: 30C1141BA1737FDC3911EA677C495833;3930.
+(rerunfilecheck)             Checksum: EDEF157268E7F4228600BF2BE5BEC32E;4424.
  ) 
 Here is how much of TeX's memory you used:
- 13499 strings out of 480502
- 210128 string characters out of 5899853
- 670083 words of memory out of 5000000
- 30656 multiletter control sequences out of 15000+600000
- 468377 words of font info for 156 fonts, out of 8000000 for 9000
+ 13526 strings out of 480502
+ 210553 string characters out of 5899852
+ 670288 words of memory out of 5000000
+ 30661 multiletter control sequences out of 15000+600000
+ 469016 words of font info for 163 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 72i,12n,81p,1608b,451s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/home/bb/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/home/bb/.TinyTeX
-/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/home/bb/.TinyTeX/texmf-dist/font
-s/enc/dvips/lm/lm-rm.enc}{/home/bb/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ma
+ 72i,12n,81p,1609b,451s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/home/bb/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/home/bb/.Tin
+yTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/home/bb/.TinyTeX/texmf-dist/font
+s/enc/dvips/lm/lm-ec.enc}{/home/bb/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ma
 thex.enc}{/home/bb/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/home/
 bb/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}</home/bb/.TinyTeX/texmf-d
 ist/fonts/type1/public/dutchcal/DutchCalReg.pfb></home/bb/.TinyTeX/texmf-dist/f
@@ -747,10 +758,10 @@ b/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></home/bb/.TinyTeX/texmf
 ymbols/msbm7.pfb></home/bb/.TinyTeX/texmf-dist/fonts/type1/public/rsfs/rsfs10.p
 fb></home/bb/.TinyTeX/texmf-dist/fonts/type1/public/tipa/tipa10.pfb>
 Output written on Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevoluti
-on.pdf (16 pages, 389910 bytes).
+on.pdf (18 pages, 404248 bytes).
 PDF statistics:
- 365 PDF objects out of 1000 (max. 8388607)
- 298 compressed objects within 3 object streams
- 75 named destinations out of 1000 (max. 500000)
- 29334 words of extra memory for PDF output out of 29859 (max. 10000000)
+ 390 PDF objects out of 1000 (max. 8388607)
+ 320 compressed objects within 4 object streams
+ 83 named destinations out of 1000 (max. 500000)
+ 29350 words of extra memory for PDF output out of 29859 (max. 10000000)
 

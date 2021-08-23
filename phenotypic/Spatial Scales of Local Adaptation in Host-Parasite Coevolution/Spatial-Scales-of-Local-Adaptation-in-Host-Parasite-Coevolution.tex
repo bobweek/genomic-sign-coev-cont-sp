@@ -255,7 +255,7 @@ potentially different locations. In particular, the \((i,j)\)th entry of
 \(\pmb C(\pmb x,\pmb y)\) measures the covariance between the \(i\)th
 and \(j\)th variables sampled at locations \(\pmb x=(x_1,x_2)\) and
 \(\pmb y=(y_1,y_2)\) respectively. Taking expectation of our model at
-equilibrium, we have \(\pmb\mu(x_1,x_2)=(\tilde z_H,\tilde z_P)^\top\)
+equilibrium, we find \(\pmb\mu(x_1,x_2)=(\tilde z_H,\tilde z_P)^\top\)
 is the vector of expected equilibrium trait values, which are spatially
 homogeneous and are determined by a balance between biotic and abiotic
 selection (expressions and derivation are provided in Appendix
@@ -265,11 +265,11 @@ Obtaining the spatial auto/cross-covariance matrix
 \(\pmb C(\pmb x,\pmb y)\) is more challenging. However, since we assume
 all model parameters are spatio-temporally homogeneous, we can use known
 results on linear SPDE to conclude that \(\pmb C(\pmb x,\pmb y)\) is
-stationary which implies that it only depends on the distance
-\(\|\pmb x-\pmb y\|\) (refs). Hence, from hereon we write \(\pmb C(d)\)
-for some distance \(d\geq0\) between sampled locations. Linearity of the
-SPDE model (\ref{spde-model}) and stationarity of the
-auto/cross-covariance matrix allows us to employ spectral methods and
+stationary which implies that it only depends on the distance between
+\(\pmb x\) and \(\pmb y\) (refs). Hence, from hereon we write
+\(\pmb C(d)\) for some distance \(d\geq0\) between sampled locations.
+Linearity of the SPDE model (\ref{spde-model}) and stationarity of the
+auto/cross-covariance matrix allow us to employ spectral methods and
 capitalize on the relationship between spatial auto-covariance functions
 and power spectra of stationary Gaussian random fields. In particular,
 the power spectrum of a stationary Gaussian random field (where
@@ -302,7 +302,10 @@ straightforward when the power spectra take simple forms. In Appendix
 \ref{spde-app} we use a weak coevolution approximation to simplify
 expressions of power spectra and calculate analytical expressions for
 the spatial (intraspecific) auto-covariance and (interspecific)
-cross-covariance functions of host and parasite mean traits.
+cross-covariance functions of host and parasite mean traits. In the next
+section, we make use of the spatial cross-covariance function
+\(C_{HP}(d)\) to define a measure of local adaptation for species
+distributed continuously in space.
 
 \hypertarget{local-adaptation-in-continuous-space}{%
 \subsection{\texorpdfstring{Local adaptation in continuous space
@@ -336,19 +339,19 @@ commonly used definition of local adaptation is given by
 \(\mathcal L_S=\bar{\bar w}_S-\hat{\bar w}_S\) (refs). In turn,
 \(\mathcal L_S\) can be written in terms of the spatial covariance of
 host and parasite genotype frequencies (refs) or of host and parasite
-phenotypic distributions respectively (see Appendix \ref{}). In
-particular, this definition implies the parasite species is locally
-adapted when genotype or phenotype frequencies between host and parasite
-positively covary across locations. Conversely, the host is locally
-adapted when this covariance is negative.
+phenotypic distributions (see Appendix \ref{}). In particular, this
+definition implies the parasite species is locally adapted when genotype
+or phenotype frequencies between host and parasite positively covary
+across locations. Conversely, the host is locally adapted when this
+covariance is negative.
 
 To obtain an analogous measure of local adaptation to \(\mathcal L_S\)
 for species distributed continuously in space, we consider the
-difference in Malthusian growth rates \(m_H,m_P\) for individuals reared
-in local conditions versus those reared in randomly drawn locations. In
-particular, \(m_H(z_H,z_P)\) denotes the respective growth rates of host
-individuals having trait \(z_H\) encountering parasite individuals with
-trait \(z_P\). Similarly, \(m_P(z_P,z_H)\) is the growth rate of
+difference in Malthusian growth rates for individuals reared in local
+conditions versus those reared in randomly drawn locations. In
+particular, we denote by \(m_H(z_H,z_P)\) the Malthusian growth rate of
+host individuals having trait \(z_H\) encountering parasite individuals
+with trait \(z_P\). Similarly, \(m_P(z_P,z_H)\) is the growth rate of
 parasite individuals with trait \(z_P\) encountering host individuals
 with trait \(z_H\). Setting \(\varphi_S(z_S,\pmb x)\) the frequency of
 trait value \(z_S\) in species \(S\) at location \(\pmb x\), the
@@ -378,52 +381,143 @@ Since our model of mean trait evolution described in section \ref{spde}
 implies \((\bar z_H(\pmb x),\bar z_P(\pmb x))^\top\) is a stationary,
 isotropic Gaussian random field, \(\bar m_S(\pmb x,\pmb y)\) and
 \(\Delta_S(\pmb x,\pmb y)\) depend only on the distance \(d\geq0\)
-between locations \(\pmb x\) and \(\pmb y\) for both \(S=H,P\). We
-therefore write \(\bar m_S(d)=\bar m_S(\pmb x,\pmb y)\) and
+between locations \(\pmb x\) and \(\pmb y\) for both host and parasite.
+We therefore write \(\bar m_S(d)=\bar m_S(\pmb x,\pmb y)\) and
 \(\Delta_S(d)=\Delta_S(\pmb x,\pmb y)\) when the distance between
-\(\pmb x\) and \(\pmb y\) is \(d\). In Appendix \ref{} we show that the
-trait-matching model of fitness used to obtain the mean trait dynamics
-described by equation (\ref{spde-model}) implies that \(\Delta_H(d)\)
-and \(\Delta_S(d)\) can be simplified to
+\(\pmb x\) and \(\pmb y\) is \(d\). Furthermore, since we model host and
+parasite species as being distributed continuously across the entire
+plane \(\mathbb R^2\), the assumption that the location transplanted to
+is drawn uniformly at random (consistent with the classical measure
+\(\mathcal L_S\)) implies the distance transplanted will almost surely
+be infinite. We therefore define our continuous space analog of local
+adaptation for species \(S\) as
 
-\begin{subequations}
-  \begin{equation}
-    \Delta_H(d)=B_H\big(C_{HP}(d)-C_{HP}(0)\big)
-  \end{equation}
-  \begin{equation}
-    \Delta_P(d)=B_P\big(C_{HP}(0)-C_{HP}(d)\big).
-  \end{equation}
-\end{subequations}
+\begin{equation}\label{la-cont-sp}
+  \ell_S=\lim_{d\to\infty}\Delta_S(d).
+\end{equation}
 
-Furthermore, since we assume host and parasite species are distributed
-continuously across the entire plane \(\mathbb R^2\), then assuming the
-location transplanted to is drawn uniformly at random (consistent with
-the classical measure \(\mathcal L_S\)), the distance \(d\) will almost
-surely be infinite. We therefore define our continuous space analog of
-local adaptation as \(\ell_S=\lim_{d\to\infty}\Delta_S(d)\) for species
-\(S\). Finally, since the cross-covariance function \(C_{HP}(d)\) decays
-to zero as \(d\to\infty\) under the trait-matching model of
-host-parasite coevolution, our measure of local adaptation for each
-species simplifies to
+In section \ref{} we present results found by combining our definition
+of local adaptation in continuous space with our model of host-parasite
+coevolution. Although this definition and analytical results presented
+below have relatively simple expressions, they come at the cost of
+several important model assumptions. We therefore developed
+individual-based simulations to relax these key assumptions. In the
+following section, we describe the structure of our individual-based
+simulations and approach taken to analyze simulated output for
+comparison with results found using the SPDE model (\ref{spde-model}).
 
-\begin{subequations}\label{la-eq}
-  \begin{equation}
-    \ell_H = -B_HC_{HP}(0),
-  \end{equation}
-  \begin{equation}
-    \ell_P = B_PC_{HP}(0).
-  \end{equation}
-\end{subequations}
+\hypertarget{relaxing-model-assumptions}{%
+\subsection{\texorpdfstring{Relaxing model assumptions
+\label{ibs}}{Relaxing model assumptions }}\label{relaxing-model-assumptions}}
 
-From equations (\ref{la-eq}), we see that the host is locally adapted
-(\(\ell_H>0\)) when host and parasite mean traits are negatively
-correlated across space (i.e., when \(C_{HP}(0)<0\)) and that the
-parasite is locally adapted when mean traits are positively correlated
-across space, consistent with the classical measure \(\mathcal L_S\).
+To understand the robustness of our results, we developed
+individual-based simulations that relax key model assumptions. In
+particular, we investigated the consequences of relaxing the assumptions
+of weak coevolution and unbounded habitat along with spatio-temporally
+homogeneous population densities, additive genetic variances and abiotic
+optimal trait values. In this section we begin by describing the
+structure of our individual-based models, our approach taken to
+implement or relax key assumptions and methods used to assess the
+robustness of our analytical results.
 
 \hypertarget{individual-based-simulations}{%
-\subsection{\texorpdfstring{Individual-based simulations
-\label{ibs}}{Individual-based simulations }}\label{individual-based-simulations}}
+\subsubsection{Individual-based
+simulations}\label{individual-based-simulations}}
+
+In each of our individual-based simulations, we track the dynamics of
+host and parasite species consisting of a finite number of individuals
+distributed on the unit square. We assume discrete, non-overlapping
+generations so that time can be measured in integral steps. At the
+beginning of each generation, we accumulate consequences of intra and
+interspecific interactions on the fitness of individuals. In particular,
+we assume a spatial competition model where individual fitness is
+reduced multiplicatively by an amount \(0<\kappa_S<1\) for each
+conspecific within a radius \(R_S>0\), where both of these parameters
+depend on the species \(S\). For example, if the base fitness of a host
+individual located at \(\pmb x\) is \(w\) and there are \(n\) other
+hosts within \(R_H\) of \(\pmb x\), the resulting fitness of this host
+individual after spatial competition is \(w'=w\times(\kappa_H)^n\).
+Interspecific interactions between host and parasite individuals are
+modeled in a similar fashion. We assume parasites choose a single host
+at random from within a radius \(R_\iota>0\) of the focal parasite
+location. The probability of infection \(\pi(z_H,z_P)\) is determined by
+the degree to which host and parasite traits match, with a maximum
+probability of infection \(\pi_{\max}>0\) occurring when \(z_H=z_P\).
+The rate at which the probability of infection decays with \(|z_H-z_P|\)
+is mediated by \(\gamma>0\). When infection fails, we assume no
+consequences for the fitnesses of individuals involved. In the case of
+successful infection, we assume the host incurs a fitness cost of
+\(0<\iota_H<1\) and the parasite receives a fitness benefit of
+\(\iota_P>1\). To decouple the effects of spatial competition from
+coevolution, we allow multiple parasites to infect the same host. Then,
+given a base fitness of \(w\) for a host individual being infected by
+\(n\) parasites, the updated host fitness becomes
+\(w'=w\times(\iota_H)^n\). Finally, we incorporate abiotic stabilizing
+selection on each species. In particular, individuals accumulate
+multiplicative fitness effect \(\mathcal A_S(z_S,\theta_S)\) that
+depends on the difference \(|z_S-\theta_S|\) where \(\theta_S\) is the
+abiotic optimal trait for species \(S\) and may depend on geographical
+location. The maximum fitness effect due to the abiotic environment is
+\(\alpha_S>0\) and occurs when \(z_S=\theta_S\). The rate at which
+\(\mathcal A_S(z_S,\theta_S)\) decays with \(|z_S-\theta_S|\) is
+mediated by \(a_S>0\). Before fitness effects are accumulated, we assume
+all host and parasite individuals begin with a base fitness of one.
+Population densities can be controlled by tuning the fitness effects of
+spatial competition \(\kappa_H,\kappa_P\), interspecific interactions
+\(\iota_H,\iota_P\), the maximum fitness effects of abiotic selection
+\(\alpha_H,\alpha_P\) and the interaction radii \(R_H,R_P,R_\iota\).
+
+At the end of each generation each individual is replaced by a random
+number of offspring. In particular, for an individual that has
+accumulated a fitness of \(w\), the number of offspring is drawn from a
+Poisson distribution with mean \(w\). Trait values of offspring are
+normally distributed around parental values with variance \(\mu_S\) for
+species \(S\). For simplicity, we assume traits are perfectly heritable.
+Geographical locations of individuals are also normally distributed
+(bivariate normal in particular) around parental locations with standard
+deviation in each direction \(\sigma_S\) for species \(S\). If an
+offspring location falls outside the unit square, one of three
+possibilities occur depending on the boundary conditions chosen. For
+absorbing boundary conditions, the offspring is removed from the
+population. For reflecting boundary conditions, the offspring bounces
+off the habitat boundary with symmetric angles of incidence and
+reflection. Multiple bounces are possible until the offspring travels
+the same distance as it would in the absence of boundaries. In the case
+of periodic boundaries, an offspring that falls off the edge of the
+habitat appears on the opposite side as if the habitat boundaries were
+connected to form a torus. Note that spatial competition prevents the
+famed \emph{pain in the torus} problem (refs). The boundary conditions
+chosen (e.g., absorbing, reflecting or periodic) for a given simulation
+depended on whether or not that simulation was developed for
+investigating the effects of geographically bounded habitats.
+
+This concludes the general description of our simulation model. Further
+details can be found in Appendix \ref{} (including details on spatially
+heterogeneous abiotic optima). Simulation model parameters are
+summarized in Table Y. Code for simulations were written in the language
+Julia (Bezanson et al. 2017) and can be found in the github repository
+\url{https://github.com/bobweek/continuous-space-coevolution}. In the
+next subsection, we describe our use of this simulation model to check
+the robustness of our analytical results.
+
+\hypertarget{assessing-robustness-of-analytical-results}{%
+\subsubsection{Assessing robustness of analytical
+results}\label{assessing-robustness-of-analytical-results}}
+
+To assess the robustness of our analytical results in face of broken
+assumptions, we quantified spatial scales of phenotypic turnover and
+local adaptation for simulated populations. In particular, to simplify
+comparison with analytical results, we fitted simulated trait data to
+Matérn covariance functions with smoothness parameter \(\nu=1\)
+separately for each species. This by fitting Matérn covariance functions
+we were able to estimate spatial scales of phenotypic turnover in each
+species for direct comparisons with analytical results. To quantify
+local adaptation, we discretized space into \(100\times100\) subunits.
+
+To compare characteristic scales of phenotypic turnover, we can consider
+the distance at which the numerical SCF obtains the same correlation as
+the Matern with smoothness one. Also implement a method to assess the
+fit of a Matern covariance function to the numerically inferred SCF.
 
 \hypertarget{results}{%
 \section{Results}\label{results}}
@@ -567,7 +661,44 @@ results to understand patterns of host and parasite local adaptation.
 \hypertarget{local-adaptation}{%
 \subsection{Local adaptation}\label{local-adaptation}}
 
-\textasciitilde{} insert figure here \textasciitilde{}
+In Appendix \ref{} we show that the trait-matching model of fitness used
+to obtain the mean trait dynamics described by equation
+(\ref{spde-model}) implies that \(\Delta_H(d)\) and \(\Delta_P(d)\) can
+be simplified to
+
+\begin{subequations}
+  \begin{equation}
+    \Delta_H(d)=B_H\big(C_{HP}(d)-C_{HP}(0)\big)
+  \end{equation}
+  \begin{equation}
+    \Delta_P(d)=B_P\big(C_{HP}(0)-C_{HP}(d)\big).
+  \end{equation}
+\end{subequations}
+
+Finally, since under our model of host-parasite coevolution the
+cross-covariance function \(C_{HP}(d)\) decays to zero as
+\(d\to\infty\), our measure of local adaptation for each species
+simplifies to
+
+\begin{subequations}\label{la-eq}
+  \begin{equation}
+    \ell_H = -B_HC_{HP}(0),
+  \end{equation}
+  \begin{equation}
+    \ell_P = B_PC_{HP}(0).
+  \end{equation}
+\end{subequations}
+
+From equations (\ref{la-eq}), we see that the host is locally adapted
+(\(\ell_H>0\)) when host and parasite mean traits are negatively
+correlated across sufficiently long distances (i.e., when
+\(C_{HP}(0)<0\)) and that the parasite is locally adapted when mean
+traits are positively correlated across sufficiently long distances,
+where sufficiently long distances here correspond to distances at which
+intraspecific spatial autocorrelations of mean trait values are
+negligible. Hence, this definition is consistent with the classical
+measure \(\mathcal L_S\) defined for species distributed across discrete
+patches.
 
 \hypertarget{discussion}{%
 \section{Discussion}\label{discussion}}
@@ -1120,6 +1251,11 @@ covariance between coevolving species.
 
 \hypertarget{refs}{}
 \begin{CSLReferences}{1}{0}
+\leavevmode\hypertarget{ref-Julia-2017}{}%
+Bezanson, Jeff, Alan Edelman, Stefan Karpinski, and Viral B Shah. 2017.
+{``Julia: A Fresh Approach to Numerical Computing.''} \emph{SIAM
+{R}eview} 59 (1): 65--98. \url{https://doi.org/10.1137/141000671}.
+
 \leavevmode\hypertarget{ref-Vatiwutipong2019}{}%
 Vatiwutipong, P., and N. Phewchean. 2019. {``Alternative Way to Derive
 the Distribution of the Multivariate Ornstein-Uhlenbeck Process.''}
