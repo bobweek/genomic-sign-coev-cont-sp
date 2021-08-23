@@ -495,7 +495,8 @@ This concludes the general description of our simulation model. Further
 details can be found in Appendix \ref{} (including details on spatially
 heterogeneous abiotic optima). Simulation model parameters are
 summarized in Table Y. Code for simulations were written in the language
-Julia (Bezanson et al. 2017) and can be found in the github repository
+\emph{Julia} (Bezanson et al. 2017) and can be found in the github
+repository
 \url{https://github.com/bobweek/continuous-space-coevolution}. In the
 next subsection, we describe our use of this simulation model to check
 the robustness of our analytical results.
@@ -506,18 +507,32 @@ results}\label{assessing-robustness-of-analytical-results}}
 
 To assess the robustness of our analytical results in face of broken
 assumptions, we quantified spatial scales of phenotypic turnover and
-local adaptation for simulated populations. In particular, to simplify
-comparison with analytical results, we fitted simulated trait data to
-Matérn covariance functions with smoothness parameter \(\nu=1\)
-separately for each species. This by fitting Matérn covariance functions
-we were able to estimate spatial scales of phenotypic turnover in each
-species for direct comparisons with analytical results. To quantify
-local adaptation, we discretized space into \(100\times100\) subunits.
+local adaptation for simulated populations. We then compared the
+simulated results to analytical results. In particular, to simplify
+comparison with analytical results, we fitted Matérn spatial correlation
+functions to simulated trait data separately for each species. To do
+this, we first implemented a non-parametric estimator of the spatial
+correlation function using the \emph{R} package \texttt{ncf} (Bjørnstad
+and Bascompte 2001). We then used the \emph{R} function \texttt{optim}
+to find a least squares approximation of the non-parametric estimator
+across all parameter combinations of the Matérn correlation functions.
+Matérn correlation functions are parameterized by a characteristic
+length \(\xi\) and a roughness parameter \(\nu\). Hence, this approach
+allowed us to estimate characteristic lengths of phenotypic turnover for
+direct comparison with analytical results. However, before making such
+comparisons we first assessed whether a Matérn correlation function
+adequately describes the simulated data using a randomization test. In
+the case that the simulated data significantly differed from a Matérn
+correlation function, we concluded that our analytical result failed for
+that region of model parameters and set of assumptions broken. In the
+case that the simulated did not significantly differ from a Matérn
+correlation function, we then used a randomization test to determine
+whether or not the analytically predicted spatial scale of phenotypic
+turnover is a good approximation of the simulated spatial scale of
+phenotypic turnover. We did this for each species separately.
 
-To compare characteristic scales of phenotypic turnover, we can consider
-the distance at which the numerical SCF obtains the same correlation as
-the Matern with smoothness one. Also implement a method to assess the
-fit of a Matern covariance function to the numerically inferred SCF.
+Next, we tested our results on local adaptation and coevolutionary
+advantage.
 
 \hypertarget{results}{%
 \section{Results}\label{results}}
@@ -1255,6 +1270,12 @@ covariance between coevolving species.
 Bezanson, Jeff, Alan Edelman, Stefan Karpinski, and Viral B Shah. 2017.
 {``Julia: A Fresh Approach to Numerical Computing.''} \emph{SIAM
 {R}eview} 59 (1): 65--98. \url{https://doi.org/10.1137/141000671}.
+
+\leavevmode\hypertarget{ref-Bjrnstad2001}{}%
+Bjørnstad, Ottar N., and Jordi Bascompte. 2001. {``Synchrony and
+Second-Order Spatial Correlation in Host-Parasitoid Systems.''}
+\emph{Journal of Animal Ecology} 70 (6): 924--33.
+\url{https://doi.org/10.1046/j.0021-8790.2001.00560.x}.
 
 \leavevmode\hypertarget{ref-Vatiwutipong2019}{}%
 Vatiwutipong, P., and N. Phewchean. 2019. {``Alternative Way to Derive

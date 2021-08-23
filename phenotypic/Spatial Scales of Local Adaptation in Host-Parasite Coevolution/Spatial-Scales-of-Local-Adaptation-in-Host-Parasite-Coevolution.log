@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021) (preloaded format=pdflatex 2021.8.22)  23 AUG 2021 09:11
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021) (preloaded format=pdflatex 2021.8.22)  23 AUG 2021 09:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -668,32 +668,32 @@ LaTeX Warning: Reference `' on page 4 undefined on input line 399.
 LaTeX Warning: Reference `' on page 5 undefined on input line 495.
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 1577) has occurred while \output is active []
 
 [5] [6]
 
-LaTeX Warning: Reference `' on page 7 undefined on input line 664.
+LaTeX Warning: Reference `' on page 7 undefined on input line 679.
 
 pdfTeX warning (ext4): destination with the same identifier (name{equation.3.1}
 ) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.670   \begin{equation}
+l.685   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
 fier (name{equation.3.2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.673   \begin{equation}
+l.688   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
 fier (name{equation.3.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.684   \begin{equation}
+l.699   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
 fier (name{equation.3.2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.687   \begin{equation}
+l.702   \begin{equation}
                          [7] [8] [9]
 <Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution_files/figure-l
 atex/unnamed-chunk-1-1.pdf, id=202, 469.755pt x 433.62pt>
@@ -702,11 +702,11 @@ ure-latex/unnamed-chunk-1-1.pdf Graphic file (type pdf)
 <use Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution_files/figu
 re-latex/unnamed-chunk-1-1.pdf>
 Package pdftex.def Info: Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Co
-evolution_files/figure-latex/unnamed-chunk-1-1.pdf  used on input line 852.
+evolution_files/figure-latex/unnamed-chunk-1-1.pdf  used on input line 867.
 (pdftex.def)             Requested size: 469.75386pt x 433.61894pt.
 [10] [11 <./Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution_fil
 es/figure-latex/unnamed-chunk-1-1.pdf>]
-Underfull \hbox (badness 1371) in paragraph at lines 892--895
+Underfull \hbox (badness 1371) in paragraph at lines 907--910
 []\T1/lmr/m/n/10 (+20) The spa-tial co-vari-ance func-tions, equal to the in-ve
 rse Fourier trans-forms of the power spec-tra
  []
@@ -728,11 +728,11 @@ arasite-Coevolution.out' has not changed.
 (rerunfilecheck)             Checksum: EDEF157268E7F4228600BF2BE5BEC32E;4424.
  ) 
 Here is how much of TeX's memory you used:
- 13526 strings out of 480502
- 210553 string characters out of 5899852
+ 13529 strings out of 480502
+ 210593 string characters out of 5899852
  670288 words of memory out of 5000000
  30661 multiletter control sequences out of 15000+600000
- 469016 words of font info for 163 fonts, out of 8000000 for 9000
+ 469146 words of font info for 164 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  72i,12n,81p,1609b,451s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/home/bb/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/home/bb/.Tin
@@ -758,10 +758,10 @@ b/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></home/bb/.TinyTeX/texmf
 ymbols/msbm7.pfb></home/bb/.TinyTeX/texmf-dist/fonts/type1/public/rsfs/rsfs10.p
 fb></home/bb/.TinyTeX/texmf-dist/fonts/type1/public/tipa/tipa10.pfb>
 Output written on Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevoluti
-on.pdf (18 pages, 404248 bytes).
+on.pdf (18 pages, 407556 bytes).
 PDF statistics:
- 390 PDF objects out of 1000 (max. 8388607)
- 320 compressed objects within 4 object streams
- 83 named destinations out of 1000 (max. 500000)
+ 393 PDF objects out of 1000 (max. 8388607)
+ 323 compressed objects within 4 object streams
+ 84 named destinations out of 1000 (max. 500000)
  29350 words of extra memory for PDF output out of 29859 (max. 10000000)
 
