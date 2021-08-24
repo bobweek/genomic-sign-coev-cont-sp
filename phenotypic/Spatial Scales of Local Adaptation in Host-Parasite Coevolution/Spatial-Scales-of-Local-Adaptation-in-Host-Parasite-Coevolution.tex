@@ -199,8 +199,8 @@ Gaussian distribution with mean zero and equal standard deviations in
 both directions. We denote by \(\sigma_H,\sigma_P>0\) the standard
 deviations of individual movement in the host and parasite respectively.
 In our SPDE model, this translates to diffusion with coefficients
-\(\sigma_H/2\) and \(\sigma_P/2\) (refs). For the sake of mathematical
-tractability, we also assume the additive genetic variances
+\(\sigma_H^2/2\) and \(\sigma_P^2/2\) (refs). For the sake of
+mathematical tractability, we also assume the additive genetic variances
 \(G_H,G_P>0\) and population densities \(\rho_H,\rho_P>0\) are
 temporally and spatially homogeneous for the host and parasite
 respectively. In Table X we provide a summary of model parameters. With
@@ -208,10 +208,10 @@ this notation, our model can be written as
 
 \begin{subequations}\label{spde-model}
   \begin{equation}
-    \frac{\partial\bar z_H}{\partial t}=G_HB_H(\bar z_H-\bar z_P)+G_HA_H(\theta_H-\bar z_H)+\frac{\sigma_H}{2}\left(\frac{\partial^2\bar z_H}{\partial x_1^2}+\frac{\partial^2\bar z_H}{\partial x_2^2}\right)+\sqrt\frac{G_H}{\rho_H}\dot W_H,
+    \frac{\partial\bar z_H}{\partial t}=G_HB_H(\bar z_H-\bar z_P)+G_HA_H(\theta_H-\bar z_H)+\frac{\sigma_H^2}{2}\left(\frac{\partial^2\bar z_H}{\partial x_1^2}+\frac{\partial^2\bar z_H}{\partial x_2^2}\right)+\sqrt\frac{G_H}{\rho_H}\dot W_H,
   \end{equation}
   \begin{equation}
-    \frac{\partial\bar z_P}{\partial t}=G_PB_P(\bar z_H-\bar z_P)+G_PA_P(\theta_P-\bar z_P)+\frac{\sigma_H}{2}\left(\frac{\partial^2\bar z_P}{\partial x_1^2}+\frac{\partial^2\bar z_P}{\partial x_2^2}\right)+\sqrt\frac{G_P}{\rho_P}\dot W_P.
+    \frac{\partial\bar z_P}{\partial t}=G_PB_P(\bar z_H-\bar z_P)+G_PA_P(\theta_P-\bar z_P)+\frac{\sigma_H^2}{2}\left(\frac{\partial^2\bar z_P}{\partial x_1^2}+\frac{\partial^2\bar z_P}{\partial x_2^2}\right)+\sqrt\frac{G_P}{\rho_P}\dot W_P.
   \end{equation}
 \end{subequations}
 
@@ -460,7 +460,7 @@ abiotic optimal trait for species \(S\) and may depend on geographical
 location. The maximum fitness effect due to the abiotic environment is
 \(\alpha_S>0\) and occurs when \(z_S=\theta_S\). The rate at which
 \(\mathcal A_S(z_S,\theta_S)\) decays with \(|z_S-\theta_S|\) is
-mediated by \(a_S>0\). Before fitness effects are accumulated, we assume
+mediated by \(A_S>0\). Before fitness effects are accumulated, we assume
 all host and parasite individuals begin with a base fitness of one.
 Population densities can be controlled by tuning the fitness effects of
 spatial competition \(\kappa_H,\kappa_P\), interspecific interactions

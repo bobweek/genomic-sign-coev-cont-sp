@@ -2,7 +2,7 @@
 ##
 ## AUTHOR: Bob Week
 ##
-## DATE: 10/16/2020
+## DATE: 08/23/2021
 ##
 ## In this script we simulate an individual-based model for hosts and parasites
 ## coevolving in continous space.
@@ -30,118 +30,69 @@ include("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm_functions_
 ########################################################
 
 # parameter values
-S = 5
-λ = fill(0.1, S)  # niche breadths
-U = fill(1.0, S)  # total niche use
-c = fill(1e-5,S) # strengths of competition
-Ω = sum(U)        # niche use scaling
-E = fill(1e-3, S) # environmental variances
-μ = fill(1e-5, S) # mutation rates
-V = fill(2.0, S)  # magnitudes of drift
-R = fill(0.1, S)  # innate rate of growth
-a = fill(1e-2,S)  # strengths of abiotic selection
-θ = fill(0.0, S)  # phenotypic optima
-n = fill(10.0, S) # scaling parameter
+μₕ = 0.1
+μₚ = 0.1
+Eₕ = 0.01
+Eₚ = 0.01
+σₕ = 0.01
+σₚ = 0.01
+κₕ = 0.99
+κₚ = 0.99
+Rₕ = 0.02
+Rₚ = 0.02
+ιₕ = 0.9
+ιₚ = 1.1
+Rᵢ = 0.02
+πₘ = 0.9
+γ = 0.1
+αₕ = 1.2
+αₚ = 1.1
+Aₕ = 0.1
+Aₚ = 0.1
+θ₀ₕ =  1
+θ₀ₚ = -1
 
-# equilibrium abundance an the absence of interspecific interactions
-# we use this as the initial abundance
+# initial population sizes
+nₕ = 1000
+nₚ = 1000
 
-C = c.*(U.^2)./.√(4 .*π.*w)
-N₀ = Int64.(floor.( (n.^2).*( (R./n).-0.5*( η.*a .+ .√(μ.*a) ) )./C ) )
+# uniform random positions on unit square
+xₕ = rand(nₕ,2)
+xₚ = rand(nₚ,2)
 
 # initial breeding values
-g₀ = rand.(Normal(0.0,1.0),N₀)
+gₕ = rand( Normal(θ₀ₕ,√μₕ), nₕ)
+gₚ = rand( Normal(θ₀ₚ,√μₚ), nₚ)
 
 # initial trait values
-x₀ = fill(zeros(0),S)
-for i in 1:S
-	ηₘ = √η[i]*Matrix(I, N₀[i], N₀[i])
-	x₀[i] = vec(rand(MvNormal(g₀[i],ηₘ),1))
-end
-
-##
-## VERY IMPORTANT REQUIREMENT   -->  V >= exp(r)
-##
-## this inequality must be satisfied to use negative binomial sampling
-##
-##
-## TWO MORE IMPORTANT REQUIREMENTS --> 2*r > √(μ*a) && c > r - √(μ*a)/2
-##
-## these inequalities must be satisfied for positive equilibrium abundance
-##
+Eₕₘ = √Eₕ*Matrix(I, nₕ, nₕ)
+zₕ = vec(rand(MvNormal(gₕ,Eₕₘ)))
+Eₚₘ = √Eₚ*Matrix(I, nₚ, nₚ)
+zₚ = vec(rand(MvNormal(gₚ,Eₚₘ)))
 
 # set up initial population
-X = community(S=S, x=x₀, g=g₀, N=N₀, n=n, x̄=mean.(x₀), σ²=var.(x₀),
-	G=var.(g₀), R=R, a=a, θ=θ, c=c, w=w, U=U, E=E, μ=μ, V=V)
+X = hp_struct(zₕ=zₕ, zₚ=zₚ, gₕ=gₕ, gₚ=gₚ, nₕ=nₕ, nₚ=nₚ, xₕ=xₕ, xₚ=xₚ, μₕ=μₕ, μₚ=μₚ, Eₕ=Eₕ, Eₚ=Eₚ, σₕ=σₕ, σₚ=σₚ, 
+	θ₀ₕ=θ₀ₕ, θ₀ₚ=θ₀ₚ, κₕ=κₕ, κₚ=κₚ, Rₕ=Rₕ, Rₚ=Rₚ, ιₕ=ιₕ, ιₚ=ιₚ, Rᵢ=Rᵢ, πₘ=πₘ, γ=γ, αₕ=αₕ, αₚ=αₚ, Aₕ=Aₕ, Aₚ=Aₚ)
 
 # always a good idea to inspect a single iteration
-rescaled_lower(X)
+X = update(X)
 
 # number of generations to halt at
-T = 100
+T = 10
 
 # set up history of population
 Xₕ = fill(X,T)
 
 # simulate
 for i in 2:T
-
-	if prod( log.( 1 .+ Xₕ[i-1].N ) ) > 0
-
-		Xₕ[i] = rescaled_lower(Xₕ[i-1])
-
+	if Xₕ[i-1].nₕ>0 && Xₕ[i-1].nₚ>0
+		Xₕ[i] = update(Xₕ[i-1])
 	else
-
 		Xₕ[i] = Xₕ[i-1]
-
-	end
-
-end
-
-# set up containers for paths of N, x̄ and σ²
-Nₕ = zeros(S,T)
-x̄ₕ = zeros(S,T)
-σ²ₕ= zeros(S,T)
-Gₕ = zeros(S,T)
-
-# container for individuals
-#individualₕ = zeros(2)
-
-# fill them in
-for i in 1:S
-	for j in 1:T
-		Nₕ[i,j] =Xₕ[j].N[i]
-		x̄ₕ[i,j] =Xₕ[j].x̄[i]
-		σ²ₕ[i,j]=Xₕ[j].σ²[i]
-		Gₕ[i,j] =Xₕ[j].G[i]
 	end
 end
 
-# rescaled time
-resc_time = (1:T)./N₀[1]
 
-# total number of individuals across entire simulation
-total_inds = Int64(sum(Nₕ[1,:]))
+scatter(Xₕ[10].xₕ[:,1],Xₕ[10].xₕ[:,2])
 
-# traits of each individual across entire simulation
-inds = zeros(2,total_inds)
-
-ind = 0
-for i in 1:T
-	for j in 1:Int64(Nₕ[1,i])
-
-		global ind += 1
-		inds[1,ind] = i
-		inds[2,ind] = Xₕ[i].x[1][j]
-
-	end
-end
-
-scatter(inds[1,:], inds[2,:], legend=false, ms=1)
-
-plot(resc_time,Nₕ[1,:]./n[1])
-plot(resc_time,x̄ₕ[1,:]./√(n[1]))
-plot(resc_time,σ²ₕ[1,:]./n[1])
-
-
-histogram(Xₕ[500].x[1])
+scatter(Xₕ[10].xₚ[:,1],Xₕ[10].xₚ[:,2])
