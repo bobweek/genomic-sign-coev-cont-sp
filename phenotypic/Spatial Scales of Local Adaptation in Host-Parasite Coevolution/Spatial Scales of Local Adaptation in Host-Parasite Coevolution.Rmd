@@ -96,12 +96,12 @@ The analogous quantity for the parasite species, $\bar m_P(\pmb x,\pmb y)$, can 
   \Delta_S(\pmb x,\pmb y)=\mathbb E\big[\bar m_S(\pmb x,\pmb x)-\bar m_S(\pmb x,\pmb y)\big].
 \end{equation}
 
-Since our model of mean trait evolution described in section \ref{spde} implies $(\bar z_H(\pmb x),\bar z_P(\pmb x))^\top$ is a stationary, isotropic Gaussian random field, $\bar m_S(\pmb x,\pmb y)$ and $\Delta_S(\pmb x,\pmb y)$ depend only on the distance $d\geq0$ between locations $\pmb x$ and $\pmb y$ for both host and parasite. We therefore write $\bar m_S(d)=\bar m_S(\pmb x,\pmb y)$ and $\Delta_S(d)=\Delta_S(\pmb x,\pmb y)$ when the distance between $\pmb x$ and $\pmb y$ is $d$. Furthermore, since we model host and parasite species as being distributed continuously across the entire plane $\mathbb R^2$, the assumption that the location transplanted to is drawn uniformly at random (consistent with the classical measure $\mathcal L_S$) implies the distance transplanted will almost surely be infinite. We therefore define our continuous space analog of local adaptation for species $S$ as
+Since our model of mean trait evolution described in section \ref{spde} implies $(\bar z_H(\pmb x),\bar z_P(\pmb x))^\top$ is a stationary, isotropic Gaussian random field, $\bar m_S(\pmb x,\pmb y)$ and $\Delta_S(\pmb x,\pmb y)$ depend only on the distance $d\geq0$ between locations $\pmb x$ and $\pmb y$ for both host and parasite. We therefore write $\bar m_S(d)=\bar m_S(\pmb x,\pmb y)$ and $\Delta_S(d)=\Delta_S(\pmb x,\pmb y)$ when the distance between $\pmb x$ and $\pmb y$ is $d$. Furthermore, since we model host and parasite species as being distributed continuously across the entire plane $\mathbb R^2$, the assumption that the location transplanted to is drawn uniformly at random (consistent with the classical measure $\mathcal L_S$) implies the distance transplanted will almost surely be infinite. We therefore define our continuous space analog of local adaptation for species $S$ distributed in unbounded habitats as
 
 \begin{equation}\label{la-cont-sp}
-  \ell_S=\lim_{d\to\infty}\Delta_S(d).
+  \ell_S^\infty=\lim_{d\to\infty}\Delta_S(d).
 \end{equation}
-  
+
 In section \ref{} we present results found by combining our definition of local adaptation in continuous space with our model of host-parasite coevolution. Although this definition and analytical results presented below have relatively simple expressions, they come at the cost of several important model assumptions. We therefore developed individual-based simulations to relax these key assumptions. In the following section, we describe the structure of our individual-based simulations and approach taken to analyze simulated output for comparison with results found using the SPDE model (\ref{spde-model}).
 
 ## Relaxing model assumptions \label{ibs}
@@ -406,7 +406,11 @@ $$\approx \frac{G_HG_P}{\sigma_H^2\sigma_P^2}\frac{\xi_H^2\xi_P^2}{(\xi_H^2-\xi_
 
 $$\left.-\frac{B_H}{N_P\sigma_P^2}\Big(\xi_P^4+\xi_H^2\xi_P^2(\ln\xi_H^2-\ln\xi_P^2-1)\Big)\right].$$
 
-Similarly, the integral of $C_{HP}(\pmb x)$ is approximated via
+The integral correlation lengths of intraspecific phenotypic variation are given by $S_S(\pmb 0)/V_S=\xi_S^2$ for $S=H,P$. This motivates the definition of an integral cross-correlation length as 
+
+$$\frac{S_{HP}(\pmb 0)}{C_{HP}(\pmb 0)}=\frac{1}{C_{HP}(\pmb 0)}\left(\frac{}{}-\frac{}{}\right)$$
+
+The integral of $C_{HP}(\pmb x)$ is approximated via
 
 $$\int_{\mathbb R^2}C_{HP}(\pmb x)d\pmb x=2\pi S_{HP}(\pmb 0)\approx2\pi \left(\frac{B_P}{G_HN_H(A_H-B_H)^2(A_P+B_P)}-\frac{B_H}{G_PN_P(A_H-B_H)(A_P+B_P)^2}\right)$$
 
@@ -428,11 +432,33 @@ $$-\frac{B_H}{A_H-B_H}\frac{1}{1+\frac{1}{2}\xi_H^2\|\pmb k\|^2} \frac{V_P\xi_P/
 
 where $E(\zeta)=\int_0^{\pi/2}\sqrt{1-\zeta\sin^2\theta}d\theta$ is an elliptic integral. In particular, this provides
 
-$$\mathcal F\left\{\frac{C_{HP}(\pmb x)}{\|\pmb x\|}\right\}_{\pmb k=\pmb 0}\approx\frac{\pi}{2}\left(\frac{B_P}{A_P+B_P}\frac{\xi_H}{\sqrt2}-\frac{B_H}{A_H-B_H}\frac{\xi_P}{\sqrt2}\right).$$
+$$\lim_{\pmb k\to\pmb 0}\mathcal F\left\{\frac{C_{HP}(\pmb x)}{\|\pmb x\|}\right\}\approx\frac{\pi}{2}\left(\frac{B_P}{A_P+B_P}\frac{\xi_H}{\sqrt2}V_H-\frac{B_H}{A_H-B_H}\frac{\xi_P}{\sqrt2}V_P\right).$$
 
 We therefore conclude
 
-$$\int_0^\infty C_{HP}(r)dr\approx\frac{1}{4}\left(\frac{B_P}{A_P+B_P}\frac{\xi_H}{\sqrt2}-\frac{B_H}{A_H-B_H}\frac{\xi_P}{\sqrt2}\right).$$
+$$\int_0^\infty C_{HP}(r)dr\approx\frac{1}{4}\left(\frac{B_P}{A_P+B_P}\frac{\xi_H}{\sqrt2}V_H-\frac{B_H}{A_H-B_H}\frac{\xi_P}{\sqrt2}V_P\right).$$
+
+Using the same trick to compute the integral lengths of intraspecific phenotypic variation, we find
+
+$$\int_0^\infty C_S(r)dr=\frac{1}{2\pi}\lim_{\pmb k\to\pmb 0}\mathcal F\left\{\frac{C_S(\pmb x)}{\|\pmb x\|}\right\}\approx\frac{V_S\xi_S}{4\sqrt2}.$$
+
+The quantity $\mathcal I_S=\int_0^\infty C_S(r)dr$ has been referred to as the integral length of spatial covariance (here the integral length of intraspecific spatial covariance). Then, an integral length of interspecific spatial covariance may be computed as
+
+$$\mathcal I_{HP}:=\int_0^\infty |C_{HP}(r)|dr.$$
+
+Assuming $C_{HP}(r)$ is either always positive or always negative allows us to move the absolute value outside of the integral. Then, under our model, we find
+
+$$\mathcal I_{HP}\approx\frac{1}{4\sqrt2}\left|\frac{B_P}{A_P+B_P}V_H\xi_H-\frac{B_H}{A_H-B_H}V_P\xi_P\right|$$
+
+$$=\frac{1}{4\sqrt2}\left|\frac{B_P}{(A_P+B_P)(A_H-B_H)^{3/2}}\frac{1}{\sigma_H\rho_H\sqrt{G_H}}-\frac{B_H}{(A_H-B_H)(A_P+B_P)^{3/2}}\frac{1}{\sigma_P\rho_P\sqrt{G_P}}\right|.$$
+
+## Spurious spatial correlations on bounded regions
+
+Consider the region $U$ of $\mathbb R^2$ such that $|U|<\infty$. Then, the covariance of mean traits on this region is given by
+
+$$\mathrm{Cov}_U(\bar z_H,\bar z_P)=\frac{1}{|U|}\int_U\big(\bar z_H(\pmb x)-\bar{\bar z}_H\big)\big(\bar z_P(\pmb x)-\bar{\bar z}_P\big)d\pmb x,$$
+
+where $\bar{\bar z}_S$ is the average of $\bar z_S$ on the region $U$. What is the mean and variance of $\mathrm{Cov}_U(\bar z_H,\bar z_P)$? How does the radius of $U$ relative to the dispersal rates mediate these moments? Is the calculation easier when $U$ is a disk of radius $R>0$?
 
 # Measures of local adaptation \label{la-app}
 

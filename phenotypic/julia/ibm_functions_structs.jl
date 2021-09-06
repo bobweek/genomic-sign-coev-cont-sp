@@ -49,6 +49,30 @@
     θ₀ₚ::Float64         # baseline abiotic optimal trait value for parasite
 end
 
+@with_kw mutable struct hp_pars
+    μₕ::Float64          # variance of mutation for host
+    μₚ::Float64          # variance of mutation for parasite
+    Eₕ::Float64          # variance of environmental deviation for host
+    Eₚ::Float64          # variance of environmental deviation for parasite
+    σₕ::Float64          # dispersal distance of host
+    σₚ::Float64          # dispersal distance of parasite
+    κₕ::Float64          # fitness effect of spatial competition for host
+    κₚ::Float64          # fitness effect of spatial competition for parasite
+    Rₕ::Float64          # radius of spatial competition for host
+    Rₚ::Float64          # radius of spatial competition for parasite
+    ιₕ::Float64          # fitness effect of interspp interaction for host
+    ιₚ::Float64          # fitness effect of interspp interaction for parasite
+    Rᵢ::Float64          # radius of interspp interactions
+    πₘ::Float64          # maximum probability of infection
+    γ::Float64           # rate of decay of infection prb with trait difference
+    αₕ::Float64          # maximum fitness effect of abiotic selection for host
+    αₚ::Float64          # maximum fitness effect of abiotic selection for parasite
+    Aₕ::Float64          # sensitivity of abiotic selection to trait value for host
+    Aₚ::Float64          # sensitivity of abiotic selection to trait value for parasite
+    θ₀ₕ::Float64         # baseline abiotic optimal trait value for host
+    θ₀ₚ::Float64         # baseline abiotic optimal trait value for parasite
+end
+
 # abiotic optima as fct of location x
 function θₓ(x,whch,θ₀)
     if whch==0
@@ -67,11 +91,15 @@ function update(X)
     #
 
     # base fitnesses for each individual
-    wₕ = ones(nₕ)
-    wₚ = ones(nₚ)
+    wₕ = zeros(nₕ)
+    wₚ = zeros(nₚ)
+
+    # compute distances between all individuals out here first
 
     # accumulate effects of abiotic sel and comp on host
-    for i in 1:nₕ
+    for i in findall(x-> xₕ[x,1]>0 && xₕ[x,2]>0 && xₕ[x,1]<1 && xₕ[x,2]<1, 1:nₕ)
+        
+        wₕ[i] = 1
 
         #
         # accumulate effects of abiotic selection on host
@@ -86,18 +114,20 @@ function update(X)
         # first compute vct of distances from focal ind
         dists = zeros(nₕ)
         for j in 1:nₕ
-            dists[j] = sum((xₕ[i].-xₕ[j]).^2)
+            dists[j] = sum((xₕ[i,:].-xₕ[j,:]).^2)
         end
 
-        # next accumulate effects of spatial competition
-        wₕ[i] *= κₕ^length(findall(x -> x<Rₕ && x≠0, dists))
-        
+        # next accumulate effects of local competition
+        wₕ[i] *= κₕ^length(findall(x -> x<Rₕ && x≠0, dists))        
+                
     end
 
     # accumulate effects of abiotic sel and comp on parasite
     # and effects of host-par intxns on host and parasite
-    for i in 1:nₚ
+    for i in findall(x-> xₚ[x,1]>0 && xₚ[x,2]>0 && xₚ[x,1]<1 && xₚ[x,2]<1, 1:nₚ)
 
+        wₚ[i] = 1
+        
         #
         # accumulate effects of abiotic selection on parasite
         #
@@ -111,7 +141,7 @@ function update(X)
         # first compute vct of distances from focal ind
         dists = zeros(nₚ)
         for j in 1:nₚ
-            dists[j] = sum((xₚ[i].-xₚ[j]).^2)
+            dists[j] = sum((xₚ[i,:].-xₚ[j,:]).^2)
         end
 
         # next accumulate effects of spatial competition
@@ -124,25 +154,36 @@ function update(X)
         # first compute vct of host dists from focal parasite
         dists = zeros(nₕ)
         for j in 1:nₕ
-            dists[j] = sum((xₚ[i].-xₕ[j]).^2)
+            dists[j] = sum((xₚ[i,:].-xₕ[j,:]).^2)
         end
 
-        # next choose a random host within radius Rᵢ
-        choice_host = rand(findall(x -> x<Rᵢ, dists))
+        # if there's any hosts nearby
+        if length(dists) > 0
 
-        # pull trait values
-        Zₕ = zₕ[choice_host]
-        Zₚ = zₚ[i]
+            nbr = findall(x -> x<Rᵢ, dists)
 
-        # compute pr of infection
-        π = πₘ*exp(-γ*(Zₕ-Zₚ)^2)
+            if length(nbr) > 0
 
-        # if infection occurs, accumulate consequences
-        if(rand()<π)
-            wₕ[choice_host] *= ιₕ
-            wₚ[i] *= ιₚ
+                # choose a random host within radius Rᵢ
+                choice_host = rand(nbr)
+
+                # pull trait values
+                Zₕ = zₕ[choice_host]
+                Zₚ = zₚ[i]
+
+                # compute pr of infection
+                π = πₘ*exp(-γ*(Zₕ-Zₚ)^2)
+
+                # if infection occurs, accumulate consequences
+                if rand()<π
+                    wₕ[choice_host] *= ιₕ
+                    wₚ[i] *= ιₚ
+                end
+
+            end
+
         end
-        
+    
     end
 
     #
@@ -184,32 +225,74 @@ function update(X)
     nₕ = Int64(sum(Wₕ))
     nₚ = Int64(sum(Wₚ))
 
-    if nₕ>0
         
-        # generate offspring breeding values
-        gₕₚ += rand( Normal( 0, √μₕ ), nₕ)
+    # generate offspring breeding values
+    gₕₚ += rand( Normal( 0, √μₕ ), nₕ)
 
-        # generate offspring trait values
-        zₕₚ = gₕₚ + rand( Normal( 0, Eₕ ), nₕ)
+    # generate offspring trait values
+    zₕₚ = gₕₚ + rand( Normal( 0, Eₕ ), nₕ)
     
-        # generate offspring locations (with periodic boundaries)
-        xₕₚ = mod.([x1ₕₚ x2ₕₚ] + transpose(rand( MvNormal( [0,0], Matrix(I,2,2).*σₕ ), nₕ)), 1)
-    
-    end
+    # generate offspring locations (with periodic boundaries)
+    # xₕₚ = mod.([x1ₕₚ x2ₕₚ] + transpose(rand( MvNormal( [0,0], Matrix(I,2,2).*σₕ ), nₕ)), 1)
 
-    if nₚ>0
-    
-        gₚₚ += rand( Normal( 0, √μₚ ), nₚ)
+    # generate offspring locations (with absorbing boundaries implemented in fitness calc above)    
+    xₕₚ = [x1ₕₚ x2ₕₚ] + transpose(rand( MvNormal( [0,0], Matrix(I,2,2).*σₕ ), nₕ))
 
-        zₚₚ = gₚₚ + rand( Normal( 0, Eₚ ), nₚ)
+    gₚₚ += rand( Normal( 0, √μₚ ), nₚ)
 
-        xₚₚ = mod.([x1ₚₚ x2ₚₚ] + transpose(rand( MvNormal( [0,0], Matrix(I,2,2).*σₚ ), nₚ)), 1)
+    zₚₚ = gₚₚ + rand( Normal( 0, Eₚ ), nₚ)
 
-    end
+    # xₚₚ = mod.([x1ₚₚ x2ₚₚ] + transpose(rand( MvNormal( [0,0], Matrix(I,2,2).*σₚ ), nₚ)), 1)    
+    xₚₚ = [x1ₚₚ x2ₚₚ] + transpose(rand( MvNormal( [0,0], Matrix(I,2,2).*σₚ ), nₚ))
     
     Xₚ = hp_struct(zₕ=zₕₚ, zₚ=zₚₚ, gₕ=gₕₚ, gₚ=gₚₚ, nₕ=nₕ, nₚ=nₚ, xₕ=xₕₚ, xₚ=xₚₚ, μₕ=μₕ, μₚ=μₚ, σₕ=σₕ, σₚ=σₚ, Eₕ=Eₕ, Eₚ=Eₚ,
         θ₀ₕ=θ₀ₕ, θ₀ₚ=θ₀ₚ, κₕ=κₕ, κₚ=κₚ, Rₕ=Rₕ, Rₚ=Rₚ, ιₕ=ιₕ, ιₚ=ιₚ, Rᵢ=Rᵢ, πₘ=πₘ, γ=γ, αₕ=αₕ, αₚ=αₚ, Aₕ=Aₕ, Aₚ=Aₚ)
 
     return Xₚ
 
+end
+
+function sim(prs,n₀,T)
+
+    @unpack μₕ, μₚ, Eₕ, Eₚ, σₕ, σₚ, θ₀ₕ, θ₀ₚ, κₕ, κₚ, Rₕ, Rₚ, ιₕ, ιₚ, Rᵢ, πₘ, γ, 
+        αₕ, αₚ, Aₕ, Aₚ = prs
+
+    nₕ = n₀[1]
+    nₚ = n₀[2]
+
+    # uniform random positions on unit square
+    xₕ = rand(nₕ,2)
+    xₚ = rand(nₚ,2)
+
+    # initial breeding values
+    gₕ = rand( Normal(θ₀ₕ,√μₕ), nₕ)
+    gₚ = rand( Normal(θ₀ₚ,√μₚ), nₚ)
+
+    # initial trait values
+    Eₕₘ = √Eₕ*Matrix(I, nₕ, nₕ)
+    zₕ = vec(rand(MvNormal(gₕ,Eₕₘ)))
+    Eₚₘ = √Eₚ*Matrix(I, nₚ, nₚ)
+    zₚ = vec(rand(MvNormal(gₚ,Eₚₘ)))
+
+    # set up initial population
+    X = hp_struct(zₕ=zₕ, zₚ=zₚ, gₕ=gₕ, gₚ=gₚ, nₕ=nₕ, nₚ=nₚ, xₕ=xₕ, xₚ=xₚ, μₕ=μₕ, μₚ=μₚ, 
+        Eₕ=Eₕ, Eₚ=Eₚ, σₕ=σₕ, σₚ=σₚ, θ₀ₕ=θ₀ₕ, θ₀ₚ=θ₀ₚ, κₕ=κₕ, κₚ=κₚ, Rₕ=Rₕ, Rₚ=Rₚ, ιₕ=ιₕ, ιₚ=ιₚ, 
+            Rᵢ=Rᵢ, πₘ=πₘ, γ=γ, αₕ=αₕ, αₚ=αₚ, Aₕ=Aₕ, Aₚ=Aₚ)
+
+    # set up history of population
+    Xₕ = fill(X,T)
+
+    # simulate
+    for i in 2:T
+    	nh = Xₕ[i-1].nₕ
+    	np = Xₕ[i-1].nₚ
+    	if nh*np>0
+		    Xₕ[i] = update(Xₕ[i-1])
+	    else
+    		Xₕ[i] = Xₕ[i-1]
+    	end
+    end
+
+    return Xₕ
+    
 end

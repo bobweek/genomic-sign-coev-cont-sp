@@ -21,78 +21,76 @@ using Parameters, Statistics, Random, LinearAlgebra, Distributions,
 
 include("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm_functions_structs.jl")
 
-########################################################
-#                                                      #
-#  An individual-based model for the entire community  #
-#                                                      #
-#  Used to compare with diffusion approximation        #
-#                                                      #
-########################################################
+################################################################################
+#                                                      						   #
+#  An individual-based model of host-parasite coevolution in continuous space  #
+#                                                      						   #
+#  Used to compare with results found under the SPDE model        			   #
+#                                                      						   #
+################################################################################
 
 # parameter values
-μₕ = 0.1
-μₚ = 0.1
-Eₕ = 0.01
-Eₚ = 0.01
-σₕ = 0.01
-σₚ = 0.01
-κₕ = 0.99
-κₚ = 0.99
-Rₕ = 0.02
-Rₚ = 0.02
-ιₕ = 0.9
-ιₚ = 1.1
-Rᵢ = 0.02
-πₘ = 0.9
-γ = 0.1
-αₕ = 1.2
-αₚ = 1.1
-Aₕ = 0.1
-Aₚ = 0.1
-θ₀ₕ =  1
-θ₀ₚ = -1
+μₕ = 0.1;	# mutation rates
+μₚ = 0.1;	
+Eₕ = 0.01;	# environmental deviations
+Eₚ = 0.01;
+σₕ = 0.01;	# dispersal distances
+σₚ = 0.01;
+κₕ = 0.99;	# competition effects
+κₚ = 0.99;
+Rₕ = 0.02;	# competition radii
+Rₚ = 0.02;
+ιₕ = 0.95;	# interaction effects
+ιₚ = 1.1;
+Rᵢ = 0.02;	# interaction radius
+πₘ = 0.9;	# max infection probability
+γ = 0.05;	# infection sensitivity
+αₕ = 1.4;	# abiotic effects
+αₚ = 1.2;
+Aₕ = 0.001;	# abiotic selection strengths
+Aₚ = 0.001;
+θ₀ₕ = 0;	# abiotic optima
+θ₀ₚ = 0;
 
-# initial population sizes
-nₕ = 1000
-nₚ = 1000
-
-# uniform random positions on unit square
-xₕ = rand(nₕ,2)
-xₚ = rand(nₚ,2)
-
-# initial breeding values
-gₕ = rand( Normal(θ₀ₕ,√μₕ), nₕ)
-gₚ = rand( Normal(θ₀ₚ,√μₚ), nₚ)
-
-# initial trait values
-Eₕₘ = √Eₕ*Matrix(I, nₕ, nₕ)
-zₕ = vec(rand(MvNormal(gₕ,Eₕₘ)))
-Eₚₘ = √Eₚ*Matrix(I, nₚ, nₚ)
-zₚ = vec(rand(MvNormal(gₚ,Eₚₘ)))
-
-# set up initial population
-X = hp_struct(zₕ=zₕ, zₚ=zₚ, gₕ=gₕ, gₚ=gₚ, nₕ=nₕ, nₚ=nₚ, xₕ=xₕ, xₚ=xₚ, μₕ=μₕ, μₚ=μₚ, Eₕ=Eₕ, Eₚ=Eₚ, σₕ=σₕ, σₚ=σₚ, 
-	θ₀ₕ=θ₀ₕ, θ₀ₚ=θ₀ₚ, κₕ=κₕ, κₚ=κₚ, Rₕ=Rₕ, Rₚ=Rₚ, ιₕ=ιₕ, ιₚ=ιₚ, Rᵢ=Rᵢ, πₘ=πₘ, γ=γ, αₕ=αₕ, αₚ=αₚ, Aₕ=Aₕ, Aₚ=Aₚ)
-
-# always a good idea to inspect a single iteration
-X = update(X)
+prs = hp_pars(μₕ=μₕ, μₚ=μₚ, Eₕ=Eₕ, Eₚ=Eₚ, σₕ=σₕ, σₚ=σₚ, θ₀ₕ=θ₀ₕ, θ₀ₚ=θ₀ₚ, κₕ=κₕ, κₚ=κₚ, 
+	Rₕ=Rₕ, Rₚ=Rₚ, ιₕ=ιₕ, ιₚ=ιₚ, Rᵢ=Rᵢ, πₘ=πₘ, γ=γ, αₕ=αₕ, αₚ=αₚ, Aₕ=Aₕ, Aₚ=Aₚ);
 
 # number of generations to halt at
-T = 10
+T = 200;
 
-# set up history of population
-Xₕ = fill(X,T)
+# initial population sizes
+nₕ = 100;
+nₚ = 100;
+n₀ = [nₕ nₚ];
 
-# simulate
-for i in 2:T
-	if Xₕ[i-1].nₕ>0 && Xₕ[i-1].nₚ>0
-		Xₕ[i] = update(Xₕ[i-1])
-	else
-		Xₕ[i] = Xₕ[i-1]
-	end
+# run the sim
+Xₕ = sim(prs,n₀,T);
+
+# pull out abundance time-series
+nₕₕ = zeros(T);
+nₚₕ = zeros(T);
+for i in 1:T
+	nₕₕ[i] = Xₕ[i].nₕ
+	nₚₕ[i] = Xₕ[i].nₚ
 end
 
+# abundance dynamics
+plot(1:T,nₚₕ)
+plot(1:T,nₕₕ)
 
-scatter(Xₕ[10].xₕ[:,1],Xₕ[10].xₕ[:,2])
+# spatial distribution in final generation
+scatter(Xₕ[T].xₕ[:,1],Xₕ[T].xₕ[:,2])
+scatter(Xₕ[T].xₚ[:,1],Xₕ[T].xₚ[:,2])
 
-scatter(Xₕ[10].xₚ[:,1],Xₕ[10].xₚ[:,2])
+# trait distributions
+histogram(Xₕ[T].zₕ)
+histogram(Xₕ[T].zₚ)
+
+# export space-trait data in final gen to a csv
+host_df = DataFrame(id = 1:Xₕ[T].nₕ, trait = Xₕ[T].zₕ, x1 = Xₕ[T].xₕ[:,1], x2 = Xₕ[T].xₕ[:,2]);
+para_df = DataFrame(id = 1:Xₕ[T].nₚ, trait = Xₕ[T].zₚ, x1 = Xₕ[T].xₚ[:,1], x2 = Xₕ[T].xₚ[:,2]);
+
+CSV.write("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/host_df.csv",host_df)
+CSV.write("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/para_df.csv",para_df)
+
+# need to export multiple sets of results for use with ncf R pkg...

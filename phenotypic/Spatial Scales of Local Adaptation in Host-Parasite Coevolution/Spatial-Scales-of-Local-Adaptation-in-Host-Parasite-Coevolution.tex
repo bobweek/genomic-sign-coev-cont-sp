@@ -390,10 +390,10 @@ plane \(\mathbb R^2\), the assumption that the location transplanted to
 is drawn uniformly at random (consistent with the classical measure
 \(\mathcal L_S\)) implies the distance transplanted will almost surely
 be infinite. We therefore define our continuous space analog of local
-adaptation for species \(S\) as
+adaptation for species \(S\) distributed in unbounded habitats as
 
 \begin{equation}\label{la-cont-sp}
-  \ell_S=\lim_{d\to\infty}\Delta_S(d).
+  \ell_S^\infty=\lim_{d\to\infty}\Delta_S(d).
 \end{equation}
 
 In section \ref{} we present results found by combining our definition
@@ -507,29 +507,30 @@ results}\label{assessing-robustness-of-analytical-results}}
 
 To assess the robustness of our analytical results in face of broken
 assumptions, we quantified spatial scales of phenotypic turnover and
-local adaptation for simulated populations. We then compared the
-simulated results to analytical results. In particular, to simplify
-comparison with analytical results, we fitted Matérn spatial correlation
-functions to simulated trait data separately for each species. To do
-this, we first implemented a non-parametric estimator of the spatial
-correlation function using the \emph{R} package \texttt{ncf} (Bjørnstad
-and Bascompte 2001). We then used the \emph{R} function \texttt{optim}
-to find a least squares approximation of the non-parametric estimator
-across all parameter combinations of the Matérn correlation functions.
-Matérn correlation functions are parameterized by a characteristic
-length \(\xi\) and a roughness parameter \(\nu\). Hence, this approach
-allowed us to estimate characteristic lengths of phenotypic turnover for
-direct comparison with analytical results. However, before making such
-comparisons we first assessed whether a Matérn correlation function
-adequately describes the simulated data using a randomization test. In
-the case that the simulated data significantly differed from a Matérn
-correlation function, we concluded that our analytical result failed for
-that region of model parameters and set of assumptions broken. In the
-case that the simulated did not significantly differ from a Matérn
-correlation function, we then used a randomization test to determine
-whether or not the analytically predicted spatial scale of phenotypic
-turnover is a good approximation of the simulated spatial scale of
-phenotypic turnover. We did this for each species separately.
+local adaptation for populations simulated for 1000 generations. We then
+compared the simulated results to analytical results. In particular, to
+simplify comparison with analytical results, we fitted Matérn spatial
+correlation functions to simulated trait data separately for each
+species. To do this, we first implemented a non-parametric estimator of
+the spatial correlation function using the \emph{R} package \texttt{ncf}
+(Bjørnstad and Bascompte 2001). We then used the \emph{R} function
+\texttt{optim} to find a least squares approximation of the
+non-parametric estimator across all parameter combinations of the Matérn
+correlation functions. Matérn correlation functions are parameterized by
+a characteristic length \(\xi\) and a roughness parameter \(\nu\).
+Hence, this approach allowed us to estimate characteristic lengths of
+phenotypic turnover for direct comparison with analytical results.
+However, before making such comparisons we first assessed whether a
+Matérn correlation function adequately describes the simulated data
+using a randomization test. In the case that the simulated data
+significantly differed from a Matérn correlation function, we concluded
+that our analytical result failed for that region of model parameters
+and set of assumptions broken. In the case that the simulated did not
+significantly differ from a Matérn correlation function, we then used a
+randomization test to determine whether or not the analytically
+predicted spatial scale of phenotypic turnover is a good approximation
+of the simulated spatial scale of phenotypic turnover. We did this for
+each species separately.
 
 Next, we tested our results on local adaptation and coevolutionary
 advantage.
@@ -940,7 +941,13 @@ mean traits can be approximated via
 
 \[\left.-\frac{B_H}{N_P\sigma_P^2}\Big(\xi_P^4+\xi_H^2\xi_P^2(\ln\xi_H^2-\ln\xi_P^2-1)\Big)\right].\]
 
-Similarly, the integral of \(C_{HP}(\pmb x)\) is approximated via
+The integral correlation lengths of intraspecific phenotypic variation
+are given by \(S_S(\pmb 0)/V_S=\xi_S^2\) for \(S=H,P\). This motivates
+the definition of an integral cross-correlation length as
+
+\[\frac{S_{HP}(\pmb 0)}{C_{HP}(\pmb 0)}=\frac{1}{C_{HP}(\pmb 0)}\left(\frac{}{}-\frac{}{}\right)\]
+
+The integral of \(C_{HP}(\pmb x)\) is approximated via
 
 \[\int_{\mathbb R^2}C_{HP}(\pmb x)d\pmb x=2\pi S_{HP}(\pmb 0)\approx2\pi \left(\frac{B_P}{G_HN_H(A_H-B_H)^2(A_P+B_P)}-\frac{B_H}{G_PN_P(A_H-B_H)(A_P+B_P)^2}\right)\]
 
@@ -971,11 +978,46 @@ transform of \(C_{HP}(\pmb x)/\|\pmb x\|\), we find
 where \(E(\zeta)=\int_0^{\pi/2}\sqrt{1-\zeta\sin^2\theta}d\theta\) is an
 elliptic integral. In particular, this provides
 
-\[\mathcal F\left\{\frac{C_{HP}(\pmb x)}{\|\pmb x\|}\right\}_{\pmb k=\pmb 0}\approx\frac{\pi}{2}\left(\frac{B_P}{A_P+B_P}\frac{\xi_H}{\sqrt2}-\frac{B_H}{A_H-B_H}\frac{\xi_P}{\sqrt2}\right).\]
+\[\lim_{\pmb k\to\pmb 0}\mathcal F\left\{\frac{C_{HP}(\pmb x)}{\|\pmb x\|}\right\}\approx\frac{\pi}{2}\left(\frac{B_P}{A_P+B_P}\frac{\xi_H}{\sqrt2}V_H-\frac{B_H}{A_H-B_H}\frac{\xi_P}{\sqrt2}V_P\right).\]
 
 We therefore conclude
 
-\[\int_0^\infty C_{HP}(r)dr\approx\frac{1}{4}\left(\frac{B_P}{A_P+B_P}\frac{\xi_H}{\sqrt2}-\frac{B_H}{A_H-B_H}\frac{\xi_P}{\sqrt2}\right).\]
+\[\int_0^\infty C_{HP}(r)dr\approx\frac{1}{4}\left(\frac{B_P}{A_P+B_P}\frac{\xi_H}{\sqrt2}V_H-\frac{B_H}{A_H-B_H}\frac{\xi_P}{\sqrt2}V_P\right).\]
+
+Using the same trick to compute the integral lengths of intraspecific
+phenotypic variation, we find
+
+\[\int_0^\infty C_S(r)dr=\frac{1}{2\pi}\lim_{\pmb k\to\pmb 0}\mathcal F\left\{\frac{C_S(\pmb x)}{\|\pmb x\|}\right\}\approx\frac{V_S\xi_S}{4\sqrt2}.\]
+
+The quantity \(\mathcal I_S=\int_0^\infty C_S(r)dr\) has been referred
+to as the integral length of spatial covariance (here the integral
+length of intraspecific spatial covariance). Then, an integral length of
+interspecific spatial covariance may be computed as
+
+\[\mathcal I_{HP}:=\int_0^\infty |C_{HP}(r)|dr.\]
+
+Assuming \(C_{HP}(r)\) is either always positive or always negative
+allows us to move the absolute value outside of the integral. Then,
+under our model, we find
+
+\[\mathcal I_{HP}\approx\frac{1}{4\sqrt2}\left|\frac{B_P}{A_P+B_P}V_H\xi_H-\frac{B_H}{A_H-B_H}V_P\xi_P\right|\]
+
+\[=\frac{1}{4\sqrt2}\left|\frac{B_P}{(A_P+B_P)(A_H-B_H)^{3/2}}\frac{1}{\sigma_H\rho_H\sqrt{G_H}}-\frac{B_H}{(A_H-B_H)(A_P+B_P)^{3/2}}\frac{1}{\sigma_P\rho_P\sqrt{G_P}}\right|.\]
+
+\hypertarget{spurious-spatial-correlations-on-bounded-regions}{%
+\subsection{Spurious spatial correlations on bounded
+regions}\label{spurious-spatial-correlations-on-bounded-regions}}
+
+Consider the region \(U\) of \(\mathbb R^2\) such that \(|U|<\infty\).
+Then, the covariance of mean traits on this region is given by
+
+\[\mathrm{Cov}_U(\bar z_H,\bar z_P)=\frac{1}{|U|}\int_U\big(\bar z_H(\pmb x)-\bar{\bar z}_H\big)\big(\bar z_P(\pmb x)-\bar{\bar z}_P\big)d\pmb x,\]
+
+where \(\bar{\bar z}_S\) is the average of \(\bar z_S\) on the region
+\(U\). What is the mean and variance of
+\(\mathrm{Cov}_U(\bar z_H,\bar z_P)\)? How does the radius of \(U\)
+relative to the dispersal rates mediate these moments? Is the
+calculation easier when \(U\) is a disk of radius \(R>0\)?
 
 \hypertarget{measures-of-local-adaptation}{%
 \section{\texorpdfstring{Measures of local adaptation

@@ -27,3 +27,4 @@ fit2 <- Sncf.srf(x = x, y = y, z = z, w = w, avg = 0, avg2 = 0, corr = FALSE,
                  resamp = 0)
 ## Not run: plot(fit2)
 summary(fit2)
+
