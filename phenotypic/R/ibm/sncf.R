@@ -6,64 +6,82 @@
 require(ncf)
 
 # load in host/parasite trait/space data
-host_df = read.csv("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/host_df.csv");
-para_df = read.csv("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/para_df.csv");
+host_df1 = read.csv("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/host_df1.csv");
+para_df1 = read.csv("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/para_df1.csv");
+host_df2 = read.csv("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/host_df2.csv");
+para_df2 = read.csv("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/para_df2.csv");
+host_df3 = read.csv("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/host_df3.csv");
+para_df3 = read.csv("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/para_df3.csv");
+host_df4 = read.csv("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/host_df4.csv");
+para_df4 = read.csv("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/para_df4.csv");
+host_df5 = read.csv("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/host_df5.csv");
+para_df5 = read.csv("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/para_df5.csv");
+
+host_df = list(host_df1,host_df2,host_df3,host_df4,host_df5)
+para_df = list(para_df1,para_df2,para_df3,para_df4,para_df5)
 
 # discretize space into S^2 units
 S = 20;
 xbins = (1:S)/S;
 
-# denotes which horiz/vert bin each ind belongs to
-hbins = matrix(0,nrow=length(host_df$id),ncol=2);
-pbins = matrix(0,nrow=length(para_df$id),ncol=2);
+hmeans = list(NULL,NULL,NULL,NULL,NULL) # format = c(x1 bin, x2 bin, trait mean)
+pmeans = list(NULL,NULL,NULL,NULL,NULL)
+tmeans = list(NULL,NULL,NULL,NULL,NULL) # format = c(x1 bin, x2 bin, h trait mean, p trait mean)
 
-# first bins
-hsbst = subset(host_df, x1<xbins[1])
-psbst = subset(para_df, x1<xbins[1])
-hbins[hsbst$id,1] = 1
-pbins[psbst$id,1] = 1
-
-hsbst = subset(host_df, x2<xbins[1])
-psbst = subset(para_df, x2<xbins[1])
-hbins[hsbst$id,2] = 1
-pbins[psbst$id,2] = 1
-
-# rest of the bins
-for(i in 2:S){
+for(k in 1:5){
+  # denotes which horiz/vert bin each ind belongs to
+  hbins = matrix(0,nrow=length(host_df[[k]]$id),ncol=2);
+  pbins = matrix(0,nrow=length(para_df[[k]]$id),ncol=2);
   
-  hsbst = subset(host_df, x1>xbins[i-1] & x1<xbins[i])
-  psbst = subset(para_df, x1>xbins[i-1] & x1<xbins[i])
-  hbins[hsbst$id,1] = i
-  pbins[psbst$id,1] = i
+  # first bins
+  hsbst = subset(host_df[[k]], x1<xbins[1])
+  psbst = subset(para_df[[k]], x1<xbins[1])
+  hbins[hsbst$id,1] = 1
+  pbins[psbst$id,1] = 1
   
-  hsbst = subset(host_df, x2>xbins[i-1] & x2<xbins[i])
-  psbst = subset(para_df, x2>xbins[i-1] & x2<xbins[i])
-  hbins[hsbst$id,2] = i
-  pbins[psbst$id,2] = i
+  hsbst = subset(host_df[[k]], x2<xbins[1])
+  psbst = subset(para_df[[k]], x2<xbins[1])
+  hbins[hsbst$id,2] = 1
+  pbins[psbst$id,2] = 1
   
-}
-
-# accumulate average trait values for each non-empty bin
-hmeans = NULL # format = c(x1 bin, x2 bin, trait mean)
-pmeans = NULL
-tmeans = NULL # format = c(x1 bin, x2 bin, h trait mean, p trait mean)
-for(i in 1:S){
-  for(j in 1:S){
+  # rest of the bins
+  for(i in 2:S){
     
-    hi = which(hbins[,1]==i)
-    hj = which(hbins[,2]==j)
-    hinds = intersect(hi,hj)
-    if(length(hinds)>0) hmeans = rbind(hmeans,c(i/S,j/S,mean(host_df$trait[hinds])))
+    hsbst = subset(host_df[[k]], x1>xbins[i-1] & x1<xbins[i])
+    psbst = subset(para_df[[k]], x1>xbins[i-1] & x1<xbins[i])
+    hbins[hsbst$id,1] = i
+    pbins[psbst$id,1] = i
     
-    pi = which(pbins[,1]==i)
-    pj = which(pbins[,2]==j)
-    pinds = intersect(pi,pj)
-    if(length(pinds)>0) pmeans = rbind(pmeans,c(i/S,j/S,mean(para_df$trait[pinds])))
-    
-    if(length(hinds)>0 & length(pinds)>0) tmeans = rbind(tmeans,c(i/S,j/S,mean(host_df$trait[hinds]),mean(para_df$trait[pinds])))
+    hsbst = subset(host_df[[k]], x2>xbins[i-1] & x2<xbins[i])
+    psbst = subset(para_df[[k]], x2>xbins[i-1] & x2<xbins[i])
+    hbins[hsbst$id,2] = i
+    pbins[psbst$id,2] = i
     
   }
+  
+  # accumulate average trait values for each non-empty bin
+  for(i in 1:S){
+    for(j in 1:S){
+      
+      hi = which(hbins[,1]==i)
+      hj = which(hbins[,2]==j)
+      hinds = intersect(hi,hj)
+      if(length(hinds)>0) hmeans[[k]] = rbind(hmeans[[k]],c(i/S,j/S,mean(host_df[[k]]$trait[hinds])))
+      
+      pi = which(pbins[,1]==i)
+      pj = which(pbins[,2]==j)
+      pinds = intersect(pi,pj)
+      if(length(pinds)>0) pmeans[[k]] = rbind(pmeans[[k]],c(i/S,j/S,mean(para_df[[k]]$trait[pinds])))
+      
+      if(length(hinds)>0 & length(pinds)>0) tmeans[[k]] = rbind(tmeans[[k]],c(i/S,j/S,mean(host_df[[k]]$trait[hinds]),mean(para_df[[k]]$trait[pinds])))
+      
+    }
+  }
 }
+
+# now we need to go through and lump together replicates at each location
+# i think we'll need same number of replicates for each location
+tmeans
 
 fit <- Sncf.srf(x = tmeans[,1], y = tmeans[,2], z = tmeans[,3:4], avg = NULL, resamp = 0) 
 
@@ -71,9 +89,9 @@ fit <- Sncf.srf(x = hmeans[,1], y = hmeans[,2], z = hmeans[,3], avg = NULL, corr
 
 fit <- Sncf.srf(x = tmeans[,1], y = tmeans[,2], z = tmeans[,3], w = tmeans[,4], avg = NULL, avg2 = NULL, corr = TRUE, resamp = 0) 
 
-cor(tmeans[,3:4])
-
 fit <- Sncf(x = tmeans[,1], y = tmeans[,2], z = tmeans[,3:4], resamp = 0)
+
+cor(tmeans[[4]][,3:4])
 
 plot(fit)
 summary(fit)
