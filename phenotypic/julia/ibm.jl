@@ -71,24 +71,24 @@ X4 = sim(prs,n₀,T);
 X5 = sim(prs,n₀,T);
 
 # pull out abundance time-series
-nₕₕ = zeros(T);
-nₚₕ = zeros(T);
-for i in 1:T
-	nₕₕ[i] = X1[i].nₕ
-	nₚₕ[i] = X1[i].nₚ
-end
+# nₕₕ = zeros(T);
+# nₚₕ = zeros(T);
+# for i in 1:T
+# 	nₕₕ[i] = X1[i].nₕ
+# 	nₚₕ[i] = X1[i].nₚ
+# end
 
 # abundance dynamics
-plot(1:T,nₚₕ)
-plot(1:T,nₕₕ)
+# plot(1:T,nₚₕ)
+# plot(1:T,nₕₕ)
 
 # spatial distribution in final generation
-scatter(Xₕ[T].xₕ[:,1],Xₕ[T].xₕ[:,2])
-scatter(Xₕ[T].xₚ[:,1],Xₕ[T].xₚ[:,2])
+# scatter(Xₕ[T].xₕ[:,1],Xₕ[T].xₕ[:,2])
+# scatter(Xₕ[T].xₚ[:,1],Xₕ[T].xₚ[:,2])
 
 # trait distributions
-histogram(Xₕ[T].zₕ)
-histogram(Xₕ[T].zₚ)
+# histogram(Xₕ[T].zₕ)
+# histogram(Xₕ[T].zₚ)
 
 # export space-trait data in final gen to a csv
 host_df1 = DataFrame(id = 1:X1[T].nₕ, trait = X1[T].zₕ, x1 = X1[T].xₕ[:,1], x2 = X1[T].xₕ[:,2]);
@@ -102,15 +102,15 @@ para_df4 = DataFrame(id = 1:X4[T].nₚ, trait = X4[T].zₚ, x1 = X4[T].xₚ[:,1]
 host_df5 = DataFrame(id = 1:X5[T].nₕ, trait = X5[T].zₕ, x1 = X5[T].xₕ[:,1], x2 = X5[T].xₕ[:,2]);
 para_df5 = DataFrame(id = 1:X5[T].nₚ, trait = X5[T].zₚ, x1 = X5[T].xₚ[:,1], x2 = X5[T].xₚ[:,2]);
 
-CSV.write("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/host_df1.csv",host_df1)
-CSV.write("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/para_df1.csv",para_df1)
-CSV.write("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/host_df2.csv",host_df2)
-CSV.write("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/para_df2.csv",para_df2)
-CSV.write("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/host_df3.csv",host_df3)
-CSV.write("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/para_df3.csv",para_df3)
-CSV.write("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/host_df4.csv",host_df4)
-CSV.write("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/para_df4.csv",para_df4)
-CSV.write("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/host_df5.csv",host_df5)
-CSV.write("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/para_df5.csv",para_df5)
+CSV.write("/ibm/host_df1.csv",host_df1)
+CSV.write("/ibm/para_df1.csv",para_df1)
+CSV.write("/ibm/host_df2.csv",host_df2)
+CSV.write("/ibm/para_df2.csv",para_df2)
+CSV.write("/ibm/host_df3.csv",host_df3)
+CSV.write("/ibm/para_df3.csv",para_df3)
+CSV.write("/ibm/host_df4.csv",host_df4)
+CSV.write("/ibm/para_df4.csv",para_df4)
+CSV.write("/ibm/host_df5.csv",host_df5)
+CSV.write("/ibm/para_df5.csv",para_df5)
 
 # need to export multiple sets of results for use with ncf R pkg...
