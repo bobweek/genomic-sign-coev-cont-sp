@@ -102,15 +102,15 @@ para_df4 = DataFrame(id = 1:X4[T].nₚ, trait = X4[T].zₚ, x1 = X4[T].xₚ[:,1]
 host_df5 = DataFrame(id = 1:X5[T].nₕ, trait = X5[T].zₕ, x1 = X5[T].xₕ[:,1], x2 = X5[T].xₕ[:,2]);
 para_df5 = DataFrame(id = 1:X5[T].nₚ, trait = X5[T].zₚ, x1 = X5[T].xₚ[:,1], x2 = X5[T].xₚ[:,2]);
 
-CSV.write("/ibm/host_df1.csv",host_df1)
-CSV.write("/ibm/para_df1.csv",para_df1)
-CSV.write("/ibm/host_df2.csv",host_df2)
-CSV.write("/ibm/para_df2.csv",para_df2)
-CSV.write("/ibm/host_df3.csv",host_df3)
-CSV.write("/ibm/para_df3.csv",para_df3)
-CSV.write("/ibm/host_df4.csv",host_df4)
-CSV.write("/ibm/para_df4.csv",para_df4)
-CSV.write("/ibm/host_df5.csv",host_df5)
-CSV.write("/ibm/para_df5.csv",para_df5)
+CSV.write("ibm/host_df1.csv",host_df1)
+CSV.write("ibm/para_df1.csv",para_df1)
+CSV.write("ibm/host_df2.csv",host_df2)
+CSV.write("ibm/para_df2.csv",para_df2)
+CSV.write("ibm/host_df3.csv",host_df3)
+CSV.write("ibm/para_df3.csv",para_df3)
+CSV.write("ibm/host_df4.csv",host_df4)
+CSV.write("ibm/para_df4.csv",para_df4)
+CSV.write("ibm/host_df5.csv",host_df5)
+CSV.write("ibm/para_df5.csv",para_df5)
 
 # need to export multiple sets of results for use with ncf R pkg...
