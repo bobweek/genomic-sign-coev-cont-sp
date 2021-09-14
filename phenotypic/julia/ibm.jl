@@ -19,7 +19,7 @@
 using Parameters, Statistics, Random, LinearAlgebra, Distributions,
 	StatsBase, StatsPlots, Plots, DataFrames, CSV, Optim
 
-include("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm_functions_structs.jl")
+include("ibm_functions_structs.jl")
 
 ################################################################################
 #                                                      						   #
