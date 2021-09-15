@@ -81,7 +81,27 @@ for(k in 1:5){
 
 # now we need to go through and lump together replicates at each location
 # i think we'll need same number of replicates for each location
-tmeans
+intsct = list(c(),c(),c(),c(),c())
+for(i in 1:S){
+  for(j in 1:S){
+    
+    # rw contains row numbers corresponding to (i,j)th bin
+    rw = c(0,0,0,0,0)
+    for(k in 1:5){
+      if(length(which(tmeans[[k]][,1]==i/S & tmeans[[k]][,2]==j/S))>0){
+        rw[k] = which(tmeans[[k]][,1]==i/S & tmeans[[k]][,2]==j/S)
+      }
+    }
+
+    if( min(rw)>0 ){
+      print('poopi')
+      for(k in 1:5) intsct[[k]] = rbind(intsct[[k]], tmeans[[k]][rw[k],])
+    }
+
+  }
+}
+
+
 
 fit <- Sncf.srf(x = tmeans[,1], y = tmeans[,2], z = tmeans[,3:4], avg = NULL, resamp = 0) 
 
