@@ -4,24 +4,38 @@
 
 # this is the package used to get non-parametric corr fct
 require(ncf)
+require(spatialEco)
 
 # load in host/parasite trait/space data
-host_df1 = read.csv("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/host_df1.csv");
-para_df1 = read.csv("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/para_df1.csv");
-host_df2 = read.csv("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/host_df2.csv");
-para_df2 = read.csv("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/para_df2.csv");
-host_df3 = read.csv("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/host_df3.csv");
-para_df3 = read.csv("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/para_df3.csv");
-host_df4 = read.csv("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/host_df4.csv");
-para_df4 = read.csv("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/para_df4.csv");
-host_df5 = read.csv("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/host_df5.csv");
-para_df5 = read.csv("/home/bb/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ibm/para_df5.csv");
+host_df1 = read.csv("phenotypic/julia/ibm/host_df1.csv");
+para_df1 = read.csv("phenotypic/julia/ibm/para_df1.csv");
+host_df2 = read.csv("phenotypic/julia/ibm/host_df2.csv");
+para_df2 = read.csv("phenotypic/julia/ibm/para_df2.csv");
+host_df3 = read.csv("phenotypic/julia/ibm/host_df3.csv");
+para_df3 = read.csv("phenotypic/julia/ibm/para_df3.csv");
+host_df4 = read.csv("phenotypic/julia/ibm/host_df4.csv");
+para_df4 = read.csv("phenotypic/julia/ibm/para_df4.csv");
+host_df5 = read.csv("phenotypic/julia/ibm/host_df5.csv");
+para_df5 = read.csv("phenotypic/julia/ibm/para_df5.csv");
+
+# trying out chens thingi
+# X = host_df1$trait
+# Y = para_df1$trait
+# wmat = matrix(0, length(X), length(Y))
+# for(i in 1:length(X)){
+#   for(j in 1:length(Y)){
+#     x = c(host_df1$x1[i], host_df1$x2[i])
+#     y = c(para_df1$x1[j], para_df1$x2[j])
+#     wmat[i,j] = sqrt(sum((x-y)^2))
+#   }
+# }
+# crossCorrelation(x=X,y=Y,w=wmat)
 
 host_df = list(host_df1,host_df2,host_df3,host_df4,host_df5)
 para_df = list(para_df1,para_df2,para_df3,para_df4,para_df5)
 
 # discretize space into S^2 units
-S = 20;
+S = 5;
 xbins = (1:S)/S;
 
 hmeans = list(NULL,NULL,NULL,NULL,NULL) # format = c(x1 bin, x2 bin, trait mean)
@@ -94,24 +108,33 @@ for(i in 1:S){
     }
 
     if( min(rw)>0 ){
-      print('poopi')
       for(k in 1:5) intsct[[k]] = rbind(intsct[[k]], tmeans[[k]][rw[k],])
     }
 
   }
 }
 
+zmat = NULL
+wmat = NULL
+for(k in 1:5){
+  zmat = cbind(zmat,intsct[[k]][,3])
+  wmat = cbind(wmat,intsct[[k]][,4])
+}
 
+fit1 <- Sncf.srf(x = intsct[[1]][,1], y = intsct[[1]][,2], z = zmat, avg = NULL, resamp = 0) 
 
-fit <- Sncf.srf(x = tmeans[,1], y = tmeans[,2], z = tmeans[,3:4], avg = NULL, resamp = 0) 
+fit2 <- Sncf.srf(x = intsct[[1]][,1], y = intsct[[1]][,2], z = wmat, avg = NULL, resamp = 0) 
 
-fit <- Sncf.srf(x = hmeans[,1], y = hmeans[,2], z = hmeans[,3], avg = NULL, corr = TRUE, resamp = 0) 
+fitx <- Sncf.srf(x = intsct[[1]][,1], y = intsct[[1]][,2], z = zmat, w = wmat, avg = NULL, resamp = 0) 
 
-fit <- Sncf.srf(x = tmeans[,1], y = tmeans[,2], z = tmeans[,3], w = tmeans[,4], avg = NULL, avg2 = NULL, corr = TRUE, resamp = 0) 
+fit <- Sncf.srf(x = intsct[[1]][,1], y = intsct[[1]][,2], z = zmat, w = wmat, avg = NULL, avg2 = NULL, corr = TRUE, resamp = 0) 
 
-fit <- Sncf(x = tmeans[,1], y = tmeans[,2], z = tmeans[,3:4], resamp = 0)
-
-cor(tmeans[[4]][,3:4])
-
-plot(fit)
+plot(fit2)
 summary(fit)
+
+print.default(fit)
+
+
+cC = crossCorrelation(x=tmeans[[1]][,3],y=tmeans[[1]][,4],coords=tmeans[[1]][,1:2])
+
+plot(cC)
