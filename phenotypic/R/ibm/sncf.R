@@ -18,19 +18,6 @@ para_df4 = read.csv("phenotypic/julia/ibm/para_df4.csv");
 host_df5 = read.csv("phenotypic/julia/ibm/host_df5.csv");
 para_df5 = read.csv("phenotypic/julia/ibm/para_df5.csv");
 
-# trying out chens thingi
-# X = host_df1$trait
-# Y = para_df1$trait
-# wmat = matrix(0, length(X), length(Y))
-# for(i in 1:length(X)){
-#   for(j in 1:length(Y)){
-#     x = c(host_df1$x1[i], host_df1$x2[i])
-#     y = c(para_df1$x1[j], para_df1$x2[j])
-#     wmat[i,j] = sqrt(sum((x-y)^2))
-#   }
-# }
-# crossCorrelation(x=X,y=Y,w=wmat)
-
 host_df = list(host_df1,host_df2,host_df3,host_df4,host_df5)
 para_df = list(para_df1,para_df2,para_df3,para_df4,para_df5)
 
@@ -129,12 +116,38 @@ fitx <- Sncf.srf(x = intsct[[1]][,1], y = intsct[[1]][,2], z = zmat, w = wmat, a
 
 fit <- Sncf.srf(x = intsct[[1]][,1], y = intsct[[1]][,2], z = zmat, w = wmat, avg = NULL, avg2 = NULL, corr = TRUE, resamp = 0) 
 
-plot(fit2)
-summary(fit)
-
+summary(fit1)
+plot(fit1)
+0
 print.default(fit)
 
+nlocs = length(tmeans[[1]][,1])
+wmat = matrix(0, nlocs, nlocs)
+for(i in 1:nlocs){
+  for(j in 1:nlocs){
+    x = tmeans[[1]][i,]
+    y = tmeans[[1]][j,]
+    wmat[i,j] = sqrt(sum((x-y)^2))
+  }
+}
+wmat = wmat/sum(wmat)
 
-cC = crossCorrelation(x=tmeans[[1]][,3],y=tmeans[[1]][,4],coords=tmeans[[1]][,1:2])
+X = tmeans[[1]][,3]
+Y = tmeans[[1]][,4]
 
-plot(cC)
+muX = mean(X)
+muY = mean(Y)
+
+sX = sqrt((nlocs-1)*var(X)/nlocs)
+sY = sqrt((nlocs-1)*var(Y)/nlocs)
+
+x = (X-muX)/sX
+y = (Y-muY)/sY
+
+Rc = t(x)%*%wmat%*%y
+
+cor(x,y)
+
+cC = crossCorrelation(x=X,y=Y,w=wmat)
+
+summary(cC)
