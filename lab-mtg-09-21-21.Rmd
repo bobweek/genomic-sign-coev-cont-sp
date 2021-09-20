@@ -1,0 +1,48 @@
+---
+title: "Modelling Coevolution in Continuous Space"
+output: 
+  revealjs::revealjs_presentation:
+    theme: serif
+    transition: fade
+    incremental: true
+---
+
+## Coevolution can lead to 
+
+spatial mosaics of phenotypic and genomic diversity
+
+- Classically: interspecific spatial correlation $\implies$ coevolution
+
+  - Not true since other processes can generate correlation
+  
+  - In particular, spatial autocorrelation due to limited dispersal
+  
+## Two projects
+
+focused on disentangling spatial patterns due to 
+
+coevolution, limited dispersal and drift
+
+- Phenotypic (math)
+- Genomic (slim)
+
+- Focusing on phenotypic model today
+
+## Goals
+
+- Approximate spatial scales of phenotypic turnover and coadaptation
+- Introduce measures of local adaptation for continuously distributed populations
+- Use results to determine which species is locally adapted
+  - As function of relative dispersal abilities and strengths of selection
+
+## The model
+
+- 2D habitat
+- Offspring location bivariate normal around parental location
+
+## Results
+
+```{r, echo=F, warning=F}
+source("phenotypic/R/ibm/geo-pheno.R")
+```
+

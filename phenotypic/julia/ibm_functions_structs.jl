@@ -105,7 +105,7 @@ function update(X)
         # accumulate effects of abiotic selection on host
         #
         θ = θₓ(xₕ[i],0,θ₀ₕ)
-        wₕ[i] *= αₕ*exp(-Aₕ*(θ-zₕ[i])^2)
+        wₕ[i] *= αₕ*exp(-0.5*Aₕ*(θ-zₕ[i])^2)
 
         #
         # accumulate effects of spatial competition on host
@@ -132,7 +132,7 @@ function update(X)
         # accumulate effects of abiotic selection on parasite
         #
         θ = θₓ(xₚ[i],0,θ₀ₚ)
-        wₚ[i] *= αₚ*exp(-Aₚ*(θ-zₚ[i])^2)
+        wₚ[i] *= αₚ*exp(-0.5*Aₚ*(θ-zₚ[i])^2)
 
         #
         # accumulate effects of spatial competition on parasite
@@ -172,10 +172,10 @@ function update(X)
                 Zₚ = zₚ[i]
 
                 # compute pr of infection
-                π = πₘ*exp(-γ*(Zₕ-Zₚ)^2)
+                πr = πₘ*exp(-γ*(Zₕ-Zₚ)^2/2)
 
                 # if infection occurs, accumulate consequences
-                if rand()<π
+                if rand()<πr
                     wₕ[choice_host] *= ιₕ
                     wₚ[i] *= ιₚ
                 end

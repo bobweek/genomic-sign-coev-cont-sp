@@ -1,9 +1,3 @@
-require(groundhog)
-
-pkgs = c("ggplot2","gridExtra","scales")
-groundhog.day = "2021-03-01"
-groundhog.library(pkgs, groundhog.day)
-
 ISL = read.csv("~/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ISL.csv")
 CLS = read.csv("~/gits/genomic-sign-coev-cont-sp/phenotypic/julia/CLS.csv")
 LMD = read.csv("~/gits/genomic-sign-coev-cont-sp/phenotypic/julia/LMD.csv")
@@ -33,6 +27,37 @@ ISL.pl.h = ggplot(ISL,aes(x=σₕ,y=σₚ,z=LAₕ)) +
   theme_minimal() + theme(plot.title = element_text(hjust = 0.5))
 
 grid.arrange(ISL.pl.p,ISL.pl.h,nrow=1)
+
+# making plot of just classical index
+CLS.sml.pl.p = ggplot(CLS.sml,aes(x=σₕ,y=σₚ,z=LAₚ)) + 
+  scale_x_log10() + scale_y_log10() + 
+  ylab("σₚ") +
+  ggtitle("Parasite Local Adpataion") +
+  geom_contour_filled(bins=100, show.legend = F) + 
+  geom_contour(aes(colour = after_stat(level))) + 
+  scale_colour_viridis_c(name="LA",labels=scientific_format()) + 
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+CLS.sml.pl.h = ggplot(CLS.sml,aes(x=σₕ,y=σₚ,z=LAₕ)) + 
+  scale_x_log10() + scale_y_log10() + 
+  ylab("σₚ") +
+  ggtitle("Host Local Adpataion") +
+  geom_contour_filled(bins=100, show.legend = F) + 
+  geom_contour(aes(colour = after_stat(level))) + 
+  scale_colour_viridis_c(name="LA",labels=scientific_format()) + 
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+grid.arrange(CLS.sml.pl.p,CLS.sml.pl.h,nrow=1)
+
+sml_la = which(abs(CLS.sml$`LAₕ`)==min(abs(CLS.sml$`LAₕ`)))
+CLS.sml$`σₕ`[sml_la]/CLS.sml$`σₚ`[sml_la]
+
+plot(unique(CLS.sml$`σₕ`/CLS.sml$`σₚ`),unique(CLS.sml$`LAₕ`),xlab="σₕ/σₚ",ylab="Local Adaptation",cex=0.3)
+points(CLS.sml$`σₕ`/CLS.sml$`σₚ`,CLS.sml$`LAₚ`,cex=0.3,col="red")
+text(9,2.5e-6,"Parasite",col="red")
+text(9,-2.5e-6,"Host")
+abline(v=1)
+text(1.2,-1.1e-5,"1")
 
 # small scale parasite LA
 CLS.sml.pl.p = ggplot(CLS.sml,aes(x=σₕ,y=σₚ,z=LAₚ)) + 

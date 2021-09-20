@@ -2,6 +2,28 @@
 # this script is for analyzing spatial correlations of simulated trait data
 #
 
+# plot phenotypic distance against geographic distance
+
+#
+# 3 plots
+#
+
+# general
+# x-axis: expected char length, y-axis: inferred char length from sim
+
+# first: wiggle biotic selection
+# second: change the ratio dispersal dists
+
+# take home: for a given strength of biotic sel and given set of disp dists for two spp, can generate exps of how phen cov across space. further allows predictions about who ought to win the coev race given rel dispersal abilities. to test validity developed ibm. present results to show that empirical results match theoretical predictions.
+
+#
+# TODO:
+# 
+# - map variables of simulation to theory
+# - use gideon's stan scripts to fit matern cov's
+# - see if cross-cov can be approx by matern cov with averaged spatial scales
+#
+
 # this is the package used to get non-parametric corr fct
 require(ncf)
 require(spatialEco)
@@ -108,17 +130,23 @@ for(k in 1:5){
   wmat = cbind(wmat,intsct[[k]][,4])
 }
 
+cor(tmeans[[1]][,3:4])
+
 fit1 <- Sncf.srf(x = intsct[[1]][,1], y = intsct[[1]][,2], z = zmat, avg = NULL, resamp = 0) 
 
 fit2 <- Sncf.srf(x = intsct[[1]][,1], y = intsct[[1]][,2], z = wmat, avg = NULL, resamp = 0) 
 
 fitx <- Sncf.srf(x = intsct[[1]][,1], y = intsct[[1]][,2], z = zmat, w = wmat, avg = NULL, resamp = 0) 
 
-fit <- Sncf.srf(x = intsct[[1]][,1], y = intsct[[1]][,2], z = zmat, w = wmat, avg = NULL, avg2 = NULL, corr = TRUE, resamp = 0) 
-
 summary(fit1)
 plot(fit1)
-0
+
+summary(fit2)
+plot(fit2)
+
+summary(fitx)
+plot(fitx)
+
 print.default(fit)
 
 nlocs = length(tmeans[[1]][,1])

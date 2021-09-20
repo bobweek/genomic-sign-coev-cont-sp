@@ -126,7 +126,7 @@ Next, we tested our results on local adaptation and coevolutionary advantage.
 
 ## Spatial covariances and characteristic lengths of phenotypic turnover
 
-Using a weak coevolution approximation to simplify expressions for the power spectra (see Appendix \ref{spde-app}), we were able to employ an inverse Fourier transform to obtain analytic expressions for the (intraspecific) spatial auto-covariance and (interspecific) spatial cross-covariance functions of host and parasite mean trait values. In particular, we find cross-covariance functions for the host and parasite respectively taking the forms
+Using a weak coevolution approximation to simplify expressions for the power spectra (see Appendix \ref{spde-app}), we were able to employ an inverse Fourier transform to obtain analytic expressions for the (intraspecific) spatial auto-covariance and (interspecific) spatial cross-covariance functions of host and parasite mean trait values. In particular, we find spatial auto-covariance functions for the host and parasite respectively taking the forms
 
 \begin{subequations}
   \begin{equation}
@@ -139,7 +139,7 @@ Using a weak coevolution approximation to simplify expressions for the power spe
 
 where $V_H,V_P$ are the collocated variances (i.e., $C_S(0)=V_S$ for $S=H,P$), $\xi_H,\xi_P$ are the characteristic lengths of phenotypic turnover across geographic space in each species and $K_\nu(d)$ is a modified Bessel function of second order, degree $\nu$ (ref aboromitz). These spatial covariance functions belong to the class of Matern covariance functions which have been widely employed in the fields of spatial statistics (refs) and machine learning (refs).
 
-The collocated variances $V_H,V_P$ represent uncertainty in mean trait value at any particular location as opposed to variance of trait values among individuals at that location. Hence, mean traits of species $S$ (where $S=H$ or $S=P$) at locations separated by distances much greater than the characteristic length $\xi_S$ returns essentially independent and identically distributed random variables with variances equal to the collocated variance $V_S$. Thus, the collocated variances also provide measures of global diversity of mean traits across space. In terms of our model parameters, the collocated variances can be expressed as
+The collocated variances $V_H,V_P$ represent uncertainty in mean trait value at any particular location as opposed to variance of trait values among individuals at that location. Since solutions to our model are spatially homogeneous random fields (i.e., they have the same statistical properties at any given spatial location), mean traits of species $S$ (where $S=H$ or $S=P$) at locations separated by distances much greater than the characteristic length $\xi_S$ return essentially independent and identically distributed random variables with variances equal to the collocated variance $V_S$. Thus, the collocated variances also provide measures of global diversity of mean traits across space. In terms of our model parameters, the collocated variances can be expressed as
 
 \begin{equation}
   V_H = \frac{1}{\rho_H\sigma_H^2(A_H-B_H)}, \ V_P = \frac{1}{\rho_P\sigma_P^2(A_P+B_P)}.
@@ -168,12 +168,14 @@ In analogy to how the collocated variances $V_H,V_P$ provide global measures of 
   C_{HP}(0)\approx \frac{\xi^4}{2}G_HG_P\left(\frac{B_P}{\rho_H\sigma_H^4\sigma_P^2}-\frac{B_H}{\rho_P\sigma_H^2\sigma_P^4}\right).
 \end{equation}
 
-Hence, in this limiting case, we see that increased selection on the parasite over the host tends to increase spatial covariance of host and parasite mean traits. The same pattern holds true for population densities $\rho_H,\rho_P$ and for the dispersal distances when $\sigma_H,\sigma_P>1$. In the next section we capitalize on these results to understand patterns of host and parasite local adaptation.
+Hence, in this limiting case, we see that increased biotic selection on the parasite over the host ($B_P>B_H$) tends to increase spatial covariance of host and parasite mean traits. We also see spatial covariance increases when the parasite population density is greater than the host population density ($\rho_P>\rho_H$) and when parasite dispersal distance exceeds host dispersal distance ($\sigma_P>\sigma_H$) under the condition that $\sigma_H,\sigma_P>1$. In the next section we capitalize on these results to understand patterns of host and parasite local adaptation.
+
+- what happens when $\xi_H\gg\xi_P$ and when $\xi_P\gg\xi_H$?
 
 ## Local adaptation
 
 
-In Appendix \ref{} we show that the trait-matching model of fitness used to obtain the mean trait dynamics described by equation (\ref{spde-model}) implies that $\Delta_H(d)$ and $\Delta_P(d)$ can be simplified to
+Recall that $\Delta_S(d)$ is the differences in fitness (measured as population growth rates) for individuals of species $S=H,P$ reared in their local environment versus individuals transplanted at some distance $d$. In Appendix \ref{} we show that the trait-matching model of fitness used to obtain the mean trait dynamics described by equation (\ref{spde-model}) implies that $\Delta_H(d)$ and $\Delta_P(d)$, the difference in growth rates for respective host or parasite individuals reared in local environment versus those transplanted a distance $d$, can be simplified to
 
 \begin{subequations}
   \begin{equation}
