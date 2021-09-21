@@ -1,5 +1,5 @@
 ---
-title: "Modelling Coevolution in Continuous Space"
+title: "Modelling Host-Parasite Coevolution in Continuous Space"
 output: 
   revealjs::revealjs_presentation:
     theme: serif
@@ -12,11 +12,11 @@ output:
 
 spatial mosaics of phenotypic and genomic diversity
 
+![](snewt.jpg)
+
 - Classically: interspecific spatial correlation $\implies$ coevolution
 
-  - Not true since other processes can generate correlation
-  
-  - In particular, spatial autocorrelation due to limited dispersal
+  - Not true since other processes can generate correlation, limited dispersal in particular
   
 ## Two projects
 
@@ -36,34 +36,48 @@ coevolution, limited dispersal and drift
 - Use results to determine which species is locally adapted
   - As function of relative dispersal abilities and strengths of selection
 - Test accuracy of math using simulations (_not_ slim)
-  - Benefit: allows us to relax key assumptions
+  - Benefit: allows us to relax key model assumptions
   - Cost: mapping simulation parameters to math parameters is hard
     - e.g. no such thing as interaction radius in math model
 
 ## The model
 
-- 2D habitat
-- Offspring location bivariate normal around parental location
-- Interaction is host-parasite
-- Single trait mediates interaction
-- Drift captured by Gaussian noise in evolution of (local) mean traits
+- Tracks (co)evolution of mean traits across 2D habitat
+- Drift captured by Gaussian noise in mean trait evolution
+- Dispersal is Gaussian in both species
+- Single trait mediates interaction/coevolution
+  - Trait matching/mismatching
 
-## Key assumptions
+## Key assumptions <br> (to be relaxed)
 
 - Spatially homogeneous:
   - abundance densities
   - additive genetic and phenotypic variances
 - Weak coevolutionary selection
 
+## What it looks like
+
+<video width="640" height="480" data-autoplay src="host-parasite-coevolution.mp4"></video>
+
+## Methods
+
+- Apply Fourier theory to model to approximate:
+  - Spatial (intraspecific) auto-covariance functions
+    - Provides notion of scale for within species spatial patterns
+  - Spatial (interspecific) cross-covariance function
+    - Provides notion of scale for between species spatial patterns
+
 ## Spatial scales of phenotypic turnover
 
-$$\xi_H = \frac{\sigma_H}{\sqrt{G_H(A_H-B_H)}}, \ \xi_P = \frac{\sigma_P}{\sqrt{G_P(A_P+B_P)}}$$
+- Spatial (intraspp) auto-cov functions are approximately Matérn
+  - Matérn comes with built-in notion of spatial scale:
+- $$\xi_S = \frac{\sigma_S}{\sqrt{G_S\psi_S}}$$
 
-- $\sigma_H,\sigma_P=$ dispersal distances
-- $G_H,G_P=$ additive genetic variances
-- $A_H,A_P=$ strengths of abiotic selection
-- $B_H,B_P=$ strengths of biotic selection
-
+- $\sigma_S=$ dispersal distance of species $S=H,P$
+- $G_S=$ additive genetic variance
+- $\psi_S=$ cumulative strength of selection
+  - $\psi_H=A_H-B_H, \ \ \ \psi_P=A_P+B_P$
+  
 ## Spatial scale of coadaptation?
 
 - Spatial (interspp) cross-cov function analytically intractable
@@ -75,12 +89,14 @@ $$\xi_H = \frac{\sigma_H}{\sqrt{G_H(A_H-B_H)}}, \ \xi_P = \frac{\sigma_P}{\sqrt{
 
 ## Local adaptation
 
-$$\mathcal{L}_H = -B_H\mathrm{Cov}(\bar z_H,\bar z_P)$$
+- Can quantify local adaptation using collocated covariance
 
-$$\mathcal{L}_P = B_P\mathrm{Cov}(\bar z_H,\bar z_P)$$
+- $\mathcal{L}_H = -B_H\mathrm{Cov}(\bar z_H,\bar z_P)$
 
-- $\bar z_H,\bar z_P=$ local mean traits
+- $\mathcal{L}_P = B_P\mathrm{Cov}(\bar z_H,\bar z_P)$
+
 - $B_H,B_P=$ strengths of biotic selection
+- $\bar z_H,\bar z_P=$ local mean traits
 
 ## Local adaptation as function of relative dispersal distances
 
@@ -186,8 +202,10 @@ GP_vec = rep(0,ndisk)
 for(i in 1:ndisk){
   zbarH_vec[i] = mean(host_df1$trait[indsH[[i]]])
   zbarP_vec[i] = mean(para_df1$trait[indsP[[i]]])
-  GH_vec[i] = var(host_df1$trait[indsH[[i]]])
-  GP_vec[i] = var(para_df1$trait[indsP[[i]]])
+  nH = length(indsH[[i]])
+  nP = length(indsP[[i]])
+  GH_vec[i] = (nH-1)*var(host_df1$trait[indsH[[i]]])/nH
+  GP_vec[i] = (nP-1)*var(para_df1$trait[indsP[[i]]])/nP
 }
 
 GH_hat = mean(GH_vec)
