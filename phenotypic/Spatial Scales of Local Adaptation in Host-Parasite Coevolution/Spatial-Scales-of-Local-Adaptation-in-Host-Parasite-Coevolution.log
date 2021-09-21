@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021) (preloaded format=pdflatex 2021.9.16)  20 SEP 2021 14:05
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021) (preloaded format=pdflatex 2021.9.16)  21 SEP 2021 11:56
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -664,41 +664,41 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [5] [6]
 
-LaTeX Warning: Reference `' on page 7 undefined on input line 694.
+LaTeX Warning: Reference `' on page 7 undefined on input line 706.
 
-pdfTeX warning (ext4): destination with the same identifier (name{equation.3.1}
-) has been already used, duplicate ignored
+[7]pdfTeX warning (ext4): destination with the same identifier (name{equation.3
+.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.702   \begin{equation}
+l.714   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
 fier (name{equation.3.2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.705   \begin{equation}
+l.717   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
 fier (name{equation.3.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.716   \begin{equation}
-                         [7]pdfTeX warning (ext4): destination with the same id
-entifier (name{equation.3.2}) has been already used, duplicate ignored
+l.728   \begin{equation}
+                        pdfTeX warning (ext4): destination with the same identi
+fier (name{equation.3.2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.719   \begin{equation}
+l.731   \begin{equation}
                          [8] [9]
 <Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution_files/figure-l
-atex/unnamed-chunk-1-1.pdf, id=206, 463.7325pt x 421.575pt>
+atex/unnamed-chunk-1-1.pdf, id=209, 463.7325pt x 421.575pt>
 File: Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution_files/fig
 ure-latex/unnamed-chunk-1-1.pdf Graphic file (type pdf)
 <use Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution_files/figu
 re-latex/unnamed-chunk-1-1.pdf>
 Package pdftex.def Info: Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Co
-evolution_files/figure-latex/unnamed-chunk-1-1.pdf  used on input line 884.
+evolution_files/figure-latex/unnamed-chunk-1-1.pdf  used on input line 896.
 (pdftex.def)             Requested size: 463.73135pt x 421.57396pt.
 [10] [11 <./Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution_fil
 es/figure-latex/unnamed-chunk-1-1.pdf>]
-Underfull \hbox (badness 1371) in paragraph at lines 924--927
+Underfull \hbox (badness 1371) in paragraph at lines 936--939
 []\T1/lmr/m/n/10 (+20) The spa-tial co-vari-ance func-tions, equal to the in-ve
 rse Fourier trans-forms of the power spec-tra
  []
@@ -720,16 +720,16 @@ arasite-Coevolution.out' has not changed.
 (rerunfilecheck)             Checksum: 6E7035838567DFFB9FD2B75CFEEE833F;4738.
  ) 
 Here is how much of TeX's memory you used:
- 13113 strings out of 480559
- 201832 string characters out of 5903131
- 573216 words of memory out of 5000000
- 30202 multiletter control sequences out of 15000+600000
+ 13116 strings out of 480559
+ 201874 string characters out of 5903131
+ 573408 words of memory out of 5000000
+ 30204 multiletter control sequences out of 15000+600000
  469016 words of font info for 163 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 72i,12n,80p,1609b,444s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/home/bobweek/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/home/bo
-bweek/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/home/bobweek/.TinyTeX/
-texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/home/bobweek/.TinyTeX/texmf-dist/font
+ 72i,12n,80p,1609b,415s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/home/bobweek/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/home/bobwee
+k/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/home/bobweek/.TinyTeX/texm
+f-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/home/bobweek/.TinyTeX/texmf-dist/font
 s/enc/dvips/lm/lm-mathex.enc}{/home/bobweek/.TinyTeX/texmf-dist/fonts/enc/dvips
 /lm/lm-mathsy.enc}{/home/bobweek/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.
 enc}</home/bobweek/.TinyTeX/texmf-dist/fonts/type1/public/dutchcal/DutchCalReg.
@@ -752,10 +752,10 @@ nyTeX/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb></home/bobweek/.
 TinyTeX/texmf-dist/fonts/type1/public/rsfs/rsfs10.pfb></home/bobweek/.TinyTeX/t
 exmf-dist/fonts/type1/public/tipa/tipa10.pfb>
 Output written on Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevoluti
-on.pdf (18 pages, 413098 bytes).
+on.pdf (18 pages, 415220 bytes).
 PDF statistics:
- 401 PDF objects out of 1000 (max. 8388607)
- 330 compressed objects within 4 object streams
- 86 named destinations out of 1000 (max. 500000)
+ 404 PDF objects out of 1000 (max. 8388607)
+ 333 compressed objects within 4 object streams
+ 87 named destinations out of 1000 (max. 500000)
  29358 words of extra memory for PDF output out of 29859 (max. 10000000)
 

@@ -91,9 +91,9 @@ coevolution, limited dispersal and drift
 
 - Can quantify local adaptation using collocated covariance
 
-- $\mathcal{L}_H = -B_H\mathrm{Cov}(\bar z_H,\bar z_P)$
+- $\ell_H = -B_H\mathrm{Cov}(\bar z_H,\bar z_P)$
 
-- $\mathcal{L}_P = B_P\mathrm{Cov}(\bar z_H,\bar z_P)$
+- $\ell_P = B_P\mathrm{Cov}(\bar z_H,\bar z_P)$
 
 - $B_H,B_P=$ strengths of biotic selection
 - $\bar z_H,\bar z_P=$ local mean traits

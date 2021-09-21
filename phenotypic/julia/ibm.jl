@@ -15,7 +15,6 @@
 ##
 ################################################################################
 
-
 using Parameters, Statistics, Random, LinearAlgebra, Distributions,
 	StatsBase, StatsPlots, Plots, DataFrames, CSV, Optim
 	

@@ -564,7 +564,7 @@ where \(V_H,V_P\) are the collocated variances (i.e., \(C_S(0)=V_S\) for
 turnover across geographic space in each species and \(K_\nu(d)\) is a
 modified Bessel function of second order, degree \(\nu\) (ref
 aboromitz). These spatial covariance functions belong to the class of
-Matern covariance functions which have been widely employed in the
+Matérn covariance functions which have been widely employed in the
 fields of spatial statistics (refs) and machine learning (refs).
 
 The collocated variances \(V_H,V_P\) represent uncertainty in mean trait
@@ -580,7 +580,7 @@ collocated variances also provide measures of global diversity of mean
 traits across space. In terms of our model parameters, the collocated
 variances can be expressed as
 
-\begin{equation}
+\begin{equation}\label{coll-vars}
   V_H = \frac{1}{\rho_H\sigma_H^2(A_H-B_H)}, \ V_P = \frac{1}{\rho_P\sigma_P^2(A_P+B_P)}.
 \end{equation}
 
@@ -666,7 +666,7 @@ approximately equal spatial scales of phenotypic turnover (i.e., when
 collocated covariance is approximately
 
 \begin{equation}
-  C_{HP}(0)\approx \frac{\xi^4}{2}G_HG_P\left(\frac{B_P}{\rho_H\sigma_H^4\sigma_P^2}-\frac{B_H}{\rho_P\sigma_H^2\sigma_P^4}\right).
+  C_{HP}^{(\xi_H\approx\xi_P)}(0)\approx \frac{\xi^4}{2}G_HG_P\left(\frac{B_P}{\rho_H\sigma_H^4\sigma_P^2}-\frac{B_H}{\rho_P\sigma_H^2\sigma_P^4}\right).
 \end{equation}
 
 Hence, in this limiting case, we see that increased biotic selection on
@@ -676,14 +676,26 @@ covariance increases when the parasite population density is greater
 than the host population density (\(\rho_P>\rho_H\)) and when parasite
 dispersal distance exceeds host dispersal distance
 (\(\sigma_P>\sigma_H\)) under the condition that
-\(\sigma_H,\sigma_P>1\). In the next section we capitalize on these
-results to understand patterns of host and parasite local adaptation.
+\(\sigma_H,\sigma_P>1\).
 
-\begin{itemize}
-\tightlist
-\item
-  what happens when \(\xi_H\gg\xi_P\) and when \(\xi_P\gg\xi_H\)?
-\end{itemize}
+We can also investigate the collocated covariance under two other
+extremes; when the spatial scale of phenotypic turnover for the host is
+much less than the scale of phenotypic turnover in the parasite, so that
+\(\xi_H\ll\xi_P\), and when this relationship is reversed so that
+\(\xi_P\ll\xi_H\). For \(\xi_H\ll\xi_P\) and \(\xi_P\ll\xi_H\)
+respectively, second order Taylor expansion yields
+
+\begin{equation}\label{coll-cov-extreme}
+  C_{HP}^{(\xi_H\ll\xi_P)}(0)\approx-\frac{B_H}{(A_H-B_H)(A_P+B_P)\sigma_P^2\rho_P}, \ C_{HP}^{(\xi_P\ll\xi_H)}(0)\approx\frac{B_P}{(A_H-B_H)(A_P+B_P)\sigma_H^2\rho_H}.
+\end{equation}
+
+From these two limiting cases we see the collocated spatial covariance
+is always negative when \(\xi_P\ll\xi_H\) and always positive when
+\(\xi_P\ll\xi_H\). The collocated spatial correlation is given by
+\(C_{HP}(0)/\sqrt{V_HV_P}\) and can therefore be approximated by
+combining expressions (\ref{coll-vars}) and (\ref{coll-cov-extreme}). In
+the next section we capitalize on these results to understand patterns
+of host and parasite local adaptation.
 
 \hypertarget{local-adaptation}{%
 \subsection{Local adaptation}\label{local-adaptation}}
