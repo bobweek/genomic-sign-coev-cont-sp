@@ -1,0 +1,135 @@
+---
+title: "Likelihood of Heirarchical Matern Gaussian Random Field"
+header-includes:
+  - \usepackage{amsmath}
+  - \usepackage{dutchcal}
+  - \usepackage{mathrsfs}
+  - \usepackage{csquotes}
+  - \usepackage{textcomp}
+  - \usepackage[T3,T1]{fontenc}
+  - \DeclareSymbolFont{tipa}{T3}{cmr}{m}{n}
+  - \DeclareMathAccent{\invbreve}{\mathalpha}{tipa}{16}
+output: pdf_document
+editor_options: 
+  chunk_output_type: console
+---
+
+We model trait values of individuals as independent normally distributed variables around a mean $\bar z$ with variance $v$. In turn the mean $\bar z$ is a function of location $\pmb x=(x_1,x_2)^\top$ and follows a stationary Gaussian random field with spatially homogeneous mean $\tilde z$ and Matern covariance $C(d)$ with collocated variance $V=C(0)$, characteristic length $\xi$ and smoothness parameter $\nu=1$. Hence, observed individual trait values $z_1$ and $z_2$ at locations $\pmb x_1,\pmb x_2$ separated at a distance $d$ will be bivariate normally distributed with the following statistical properties:
+
+$$\mathbb Ez_1=\mathbb Ez_2=\tilde z, \ \mathbb Vz_1=\mathbb Vz_2=v+V, \mathbb C(z_1,z_2)=C(d),$$
+
+$$\mathbb E(z_i|\bar z)=\bar z(\pmb x_i), \ \mathbb V(z_i|\bar z)=v, \ \mathbb C(z_1,z_2|\bar z)=0.$$
+
+Since we only get a single sample of this random field, the likelihood function is just
+
+$$L(\tilde z,v,V,\xi|\pmb z)=\frac{1}{\sqrt{(2\pi)^n|\Sigma|}}\exp\left(-\frac{1}{2}(\pmb z-\pmb{\tilde z})\Sigma^{-1}(\pmb z-\pmb{\tilde z})^\top\right),$$
+
+where $\pmb z=(z_1,\dots,z_n)^\top$ is the vector of observed individual trait values (here there are $n$ individuals) observed at locations $\pmb x_1,\dots,\pmb x_n$, $\pmb{\tilde z}$ is the vector of expected trait values $(\tilde z,\dots,\tilde z)^\top$ and $\Sigma$ is a covariance matrix with $v+V$ on the diagonal and $C(\|\pmb x_i-\pmb x_j\|)$ on the $i,j$th off-diagonal entry.
+
+To maximize likelihood, we first compute gradients of the log-likelihood $\ell=\ln L$ with respect to model parameters. We then solve for the parameter values when those gradients are zero:
+
+$$\frac{\partial\ell}{\partial\tilde z}=-\frac{1}{2}\frac{\partial}{\partial\tilde z}\left[(\pmb z-\pmb{\tilde z})\Sigma^{-1}(\pmb z-\pmb{\tilde z})^\top\right]=-\frac{1}{2}\frac{\partial}{\partial\tilde z}\sum_{ij}(\sigma^{-1})_{ij}(z_i-\tilde z)(z_j-\tilde z)$$
+
+$$=\sum_{ij}(\sigma^{-1})_{ij}\Big(\tfrac{z_i+z_j}{2}-\tilde z\Big)=\sum_{ij}\tfrac{z_i+z_j}{2}(\sigma^{-1})_{ij}-\tilde z\sum_{ij}(\sigma^{-1})_{ij},$$
+
+$$\implies \hat{\tilde z}=\frac{\sum_{ij}\tfrac{z_i+z_j}{2}(\sigma^{-1})_{ij}}{\sum_{ij}(\sigma^{-1})_{ij}}.$$
+
+Unfortunately, the rest is analytically intractable. So we proceed via numerical optimization to maximize likelihood.
+
+
+```{r}
+require(MASS)
+require(rSPDE)
+require(clusterGeneration)
+
+# for coloring data
+logit = function(x){
+  1/(1+exp(-x))
+}
+
+# euclidean distance function
+Euc = function(x1,x2){
+  val = sqrt(sum((x1-x2)^2))
+}
+
+# making the matern in 
+# my preferred parameterization
+C = function(d,V,xi){
+  matern.covariance(d,sqrt(2)/xi,1,sqrt(V))
+}
+
+# spits out covariance matrix given locations
+Cmat = function(x,V,xi,v){
+  n = dim(x)[1]
+  val = matrix(0,n,n)
+  for(i in 1:n){
+    for(j in 1:n){
+      dd = Euc(x[i,],x[j,])
+      val[i,j] = C(dd,V,xi)
+    }
+  }
+  return(val + v*diag(n))
+}
+
+# provides MLE of expectation of local mean trait
+hattildez = function(z,S){
+  val = 0
+  n = length(z)
+  Sinv = solve(S)
+  for(i in 1:n){
+    for(j in 1:n){
+      val = val + Sinv[i,j]*(z[i]+z[j])/2
+    }
+  }
+  return(val/sum(Sinv))
+}
+
+# log-likelihood function
+ell = function(z,x,V,xi,v){
+  n = length(z)
+  S = Cmat(x,V,xi,v)
+  ztilde = hattildez(z,S)
+  val = log(det(S)) + t(z-ztilde)%*%solve(S)%*%(z-ztilde)
+  return(val)
+}
+
+
+
+# mean
+ztilde = 0
+
+# char scale
+xi = 1
+
+# marginal var
+V = 10
+
+# within pop var
+v = 0.1
+
+# number of individuals measured
+n = 1000
+
+# their locations
+x = mvrnorm(n,c(0,0),xi^2*diag(2))
+S = Cmat(x,V,xi,v)
+obs = mvrnorm(1,rep(ztilde,n),S)
+
+# look at data
+clr = 0.8*logit(obs)
+plot(x[,1],x[,2],pch=20,col=rgb(clr,clr,clr))
+
+minThis = function(Y){
+  V = exp(Y[1])
+  xi = exp(Y[2])
+  v = exp(Y[3])
+  val = ell(obs,x,V,xi,v)
+  return(val)
+}
+
+ests = exp(optim(rexp(3),minThis)$par)
+
+plot(S,Cmat(x,ests[1],ests[2],ests[3]),pch=20,xlab="Input Covariance",ylab="MLE Covariance")
+abline(0,1)
+```
+

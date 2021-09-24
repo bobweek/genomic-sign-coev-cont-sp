@@ -52,14 +52,14 @@ transformed parameters {
 	zbarVec = rep_vector(zbar,N);
 }
 model {
-	V ~ exp(1);										// prior on V
-	xi ~ exp(1);										// prior on xi
+	V ~ exponential(1);										// prior on V
+	xi ~ exponential(1);										// prior on xi
 	zbar ~ normal(0,1);										// prior on zbar
-	P ~ zbarlti_normal(zbarVec,parCov);							// prior on global covariance
+	P ~ multi_normal(zbarVec,parCov);							// prior on global covariance
 }
 "
 
-library(rstan)
+require(rstan)
 
 # compile the model here
 #
@@ -71,11 +71,11 @@ library(rstan)
 myMod <- stan_model(model_code=stanBlock)
 
 ################################
-#	sizbarlate a spatial process
-#		for N populations
+#	simulate a spatial process
+#		for N populations (pops or locations?)
 ################################
 
-N <- 100 #number of individuals
+N <- 100 #number of individuals (locations?)
 coords <- cbind(runif(N),runif(N))
 geoDist <- fields::rdist(coords)
 params <- list("V" = 1.3,
@@ -83,12 +83,12 @@ params <- list("V" = 1.3,
 				"zbar" = 1.1)
 simCov <- sqrt(2)*params$V*(geoDist/params$xi)*besselK(x=sqrt(2)*(geoDist/params$xi),nu=1)
 diag(simCov) <- params$V
-simPheno <- MASS::mvrnorm(n=1,zbar=rep(params$zbar,N),Sigma=simCov)
+simPheno <- MASS::mvrnorm(n=1,mu=rep(params$zbar,N),Sigma=simCov)
 
 
 ################################
 #	use the stan model to infer 
-#		sizbarlating parameters
+#		simulating parameters
 ################################
 
 dataBlock <- list("N" = N,
@@ -99,9 +99,9 @@ fit <- sampling(object = myMod,
 				 chains = 2)
 
 # check and see how it looks
-V <- extract(fit,"V",perzbarte=FALSE,inc_warzbarp=FALSE)[,,1]
-xi <- extract(fit,"xi",perzbarte=FALSE,inc_warzbarp=FALSE)[,,1]
-zbar <- extract(fit,"zbar",perzbarte=FALSE,inc_warzbarp=FALSE)[,,1]
+V <- extract(fit,"V",permute=FALSE,inc_warmup=FALSE)[,,1]
+xi <- extract(fit,"xi",permute=FALSE,inc_warmup=FALSE)[,,1]
+zbar <- extract(fit,"zbar",permute=FALSE,inc_warmup=FALSE)[,,1]
 
 par(mfrow=c(1,3))
 matplot(V,type='l',col=adjustcolor("black",0.5),ylim=range(c(V,params$V)))
