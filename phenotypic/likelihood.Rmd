@@ -108,7 +108,7 @@ V = 10
 v = 0.1
 
 # number of individuals measured
-n = 1000
+n = 50
 
 # their locations
 x = mvrnorm(n,c(0,0),xi^2*diag(2))
