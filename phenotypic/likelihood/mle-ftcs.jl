@@ -1,15 +1,21 @@
-using Optim, Distances, Distributions, SpecialFunctions, LinearAlgebra
-
-# for coloring data
-function logit(x)
-    return 1 / (1 + exp(-x))
-end
+using Optim, Distances, Distributions, LinearAlgebra, MLKernels 
 
 # making the matern in 
 # my preferred parameterization
 function C(d, V, ξ)
-    if d > 0
-        val = V * (√2 * d / ξ) * besselk(1, √2 * d / ξ)
+    if (d/ξ) > 1e-300 && (d/ξ) < 1e+5
+        try
+            val = V * (√2 * d / ξ) * besselk(1.0, √2 * d / ξ)                            
+        catch err
+            if isa(err, SpecialFunctions.AmosException)
+                print("\n")
+                print([d,V,ξ])
+                print("\n")                
+            end
+        end
+        
+    elseif (d/ξ) > 1e+5
+        val = 0
     else
         val = V
     end
@@ -31,7 +37,7 @@ end
 
 # provides MLE of expectation of local mean trait
 function hattildez(z, S)
-    val = 0
+    val = 0.0
     n = length(z)
     Sinv = inv(S)
     for i = 1:n

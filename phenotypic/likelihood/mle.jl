@@ -21,8 +21,8 @@ ncombo = length(v) * length(V) * length(ξ) * length(n)
 ztilde = 0
 
 # containers for input and estim pars
-input = fill(0.0, 3, ncombo, N)
-mle = fill(0.0, 3, ncombo, N)
+input = fill(0.0, 3, ncombo, N);
+mle = fill(0.0, 3, ncombo, N);
 
 for j = 1:N
     i = 1
@@ -54,7 +54,10 @@ for j = 1:N
                         end
 
                         # do the optimization
-                        res = optimize(minThis, rand(Exponential(1), 3))
+                        # adding 1e-3 to initial pars
+                        # to prevent numerical weirdness
+                        initp = 1e-3 .+ rand(Exponential(1), 3)
+                        res = optimize(minThis, initp)
 
                         # if the optimizer converged
                         # save the results
@@ -64,6 +67,8 @@ for j = 1:N
                             input[:, i, j] = [VV, ξξ, vv]
                             i += 1
                         end
+
+
                     end
                 end
             end
@@ -82,11 +87,11 @@ Vs = []
 vs = []
 for j = 1:ncombo
     for i = 1:N
-      append!(ids, j)      
+        append!(ids, j)
     end
-    append!(Vs, mle[1,j,:])
-    append!(ξs, mle[2,j,:])
-    append!(vs, mle[3,j,:])
+    append!(Vs, mle[1, j, :])
+    append!(ξs, mle[2, j, :])
+    append!(vs, mle[3, j, :])
 end
 
 # first column labels the parameter combo, this id is repeated N times for each combo
@@ -96,7 +101,17 @@ end
 mle_df = DataFrame(id = ids, V = Vs, ξ = ξs, v = vs);
 
 # dataframe for input parameters
-input_df = DataFrame(id = collect(1:ncombo), V = input[1,:,1], ξ = input[2,:,1], v = input[3,:,1] );
+input_df = DataFrame(
+    id = collect(1:ncombo),
+    V = input[1, :, 1],
+    ξ = input[2, :, 1],
+    v = input[3, :, 1],
+);
 
-CSV.write("mle.csv",mle_df)
-CSV.write("input.csv",input_df)
+CSV.write("mle.csv", mle_df)
+CSV.write("input.csv", input_df)
+
+Y = rand(Exponential(0.1), 3)
+C(Y[1], Y[2], Y[3])
+
+optimize(minThis)
