@@ -1,20 +1,6 @@
-################################################################################
-##
-## AUTHOR: Bob Week
-##
-## DATE: 08/23/2021
-##
-## In this script we simulate an individual-based model for hosts and parasites
-## coevolving in continous space.
-##
-## This script depends on another script called "ibm_functions_structs.jl".
-## In that script we provide definitions of data structures for model parameters
-## and for state variables. In that script we also define methods for iterating
-## the simulation. With all the gory details located elsewhere, we can focus
-## this script on simulating the model for a specified duration.
-##
-################################################################################
-
+#
+# script for checking how well theoretical prediction of model parameters holds up
+#
 
 using Parameters,
     Statistics,
@@ -28,15 +14,10 @@ using Parameters,
     CSV,
     Optim
 
-include("ibm_functions_structs.jl")
+include("../ibm_functions_structs.jl")
 
-################################################################################
-#                                                      						   #
-#  An individual-based model of host-parasite coevolution in continuous space  #
-#                                                      						   #
-#  Used to compare with results found under the SPDE model        			   #
-#                                                      						   #
-################################################################################
+# number of simulations to run per param combo
+N = 10
 
 # parameter values
 μₕ = 0.1;# mutation rates

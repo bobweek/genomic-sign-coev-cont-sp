@@ -110,8 +110,3 @@ input_df = DataFrame(
 
 CSV.write("mle.csv", mle_df)
 CSV.write("input.csv", input_df)
-
-Y = rand(Exponential(0.1), 3)
-C(Y[1], Y[2], Y[3])
-
-optimize(minThis)

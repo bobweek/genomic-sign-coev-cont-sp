@@ -7,6 +7,8 @@ function C(d, V, ξ)
         try
             val = V * (√2 * d / ξ) * besselk(1.0, √2 * d / ξ)                            
         catch err
+            # if evaluating the besselk function returns an error,
+            # this will spit out the variables used to generate the error
             if isa(err, SpecialFunctions.AmosException)
                 print("\n")
                 print([d,V,ξ])
