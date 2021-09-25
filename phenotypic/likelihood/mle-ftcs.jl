@@ -1,4 +1,4 @@
-using Optim, Distances, Distributions, LinearAlgebra, MLKernels 
+using Optim, Distances, Distributions, LinearAlgebra, SpecialFunctions
 
 # making the matern in 
 # my preferred parameterization
