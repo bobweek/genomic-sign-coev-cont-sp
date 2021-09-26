@@ -4,13 +4,13 @@ include("mle-ftcs.jl")
 N = 10
 
 # number of individuals measured
-n = [50 100]
+n = [100 1000]
 
 # char scale
 ξ = [0.01 0.1 1]
 
 # marginal var
-V = [0.1 1 10]
+V = [1 10 100]
 
 # within pop var
 v = [0.1 1 10]
@@ -98,13 +98,13 @@ end
 # second column is estimates of V
 # third is estimates of ξ
 # fourth is v
-mle_df = DataFrame(id = ids, V = Vs, ξ = ξs, v = vs);
+mle_df = DataFrame(id = ids, V = Vs, xi = ξs, v = vs);
 
 # dataframe for input parameters
 input_df = DataFrame(
     id = collect(1:ncombo),
     V = input[1, :, 1],
-    ξ = input[2, :, 1],
+    xi = input[2, :, 1],
     v = input[3, :, 1],
 );
 

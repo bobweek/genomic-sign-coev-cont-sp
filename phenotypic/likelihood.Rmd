@@ -34,102 +34,30 @@ $$=\sum_{ij}(\sigma^{-1})_{ij}\Big(\tfrac{z_i+z_j}{2}-\tilde z\Big)=\sum_{ij}\tf
 
 $$\implies \hat{\tilde z}=\frac{\sum_{ij}\tfrac{z_i+z_j}{2}(\sigma^{-1})_{ij}}{\sum_{ij}(\sigma^{-1})_{ij}}.$$
 
-Unfortunately, the rest is analytically intractable. So we proceed via numerical optimization to maximize likelihood.
+Unfortunately, the rest is analytically intractable. So we proceed via numerical optimization to maximize likelihood... in julia... then import the results below.
 
+```{r, echo=F}
+mle = read.csv("likelihood/mle.csv")
+input = read.csv("likelihood/input.csv")
 
-```{r}
-require(MASS)
-require(rSPDE)
-require(clusterGeneration)
-
-# for coloring data
-logit = function(x){
-  1/(1+exp(-x))
+mlmeans.v = c()
+mlmeans.V = c()
+mlmeans.ξ = c()
+for(i in 27:54){
+  mlmeans.v = c( mlmeans.v, mean(mle$v[which(mle$id==i & mle$v!=Inf)]) )
+  mlmeans.V = c( mlmeans.V, mean(mle$V[which(mle$id==i & mle$V!=Inf)]) )
+  mlmeans.ξ = c( mlmeans.ξ, mean(mle$ξ[which(mle$id==i & mle$ξ!=Inf)]) )
 }
 
-# euclidean distance function
-Euc = function(x1,x2){
-  val = sqrt(sum((x1-x2)^2))
-}
+inpt = subset(input,id%in%(27:54))
 
-# making the matern in 
-# my preferred parameterization
-C = function(d,V,xi){
-  matern.covariance(d,sqrt(2)/xi,1,sqrt(V))
-}
+plot(inpt$v,mlmeans.v, log="xy")
+abline(0,1)
 
-# spits out covariance matrix given locations
-Cmat = function(x,V,xi,v){
-  n = dim(x)[1]
-  val = matrix(0,n,n)
-  for(i in 1:n){
-    for(j in 1:n){
-      dd = Euc(x[i,],x[j,])
-      val[i,j] = C(dd,V,xi)
-    }
-  }
-  return(val + v*diag(n))
-}
+plot(inpt$V,mlmeans.V, log="xy")
+abline(0,1)
 
-# provides MLE of expectation of local mean trait
-hattildez = function(z,S){
-  val = 0
-  n = length(z)
-  Sinv = solve(S)
-  for(i in 1:n){
-    for(j in 1:n){
-      val = val + Sinv[i,j]*(z[i]+z[j])/2
-    }
-  }
-  return(val/sum(Sinv))
-}
-
-# log-likelihood function
-ell = function(z,x,V,xi,v){
-  n = length(z)
-  S = Cmat(x,V,xi,v)
-  ztilde = hattildez(z,S)
-  val = log(det(S)) + t(z-ztilde)%*%solve(S)%*%(z-ztilde)
-  return(val)
-}
-
-
-
-# mean
-ztilde = 0
-
-# char scale
-xi = 1
-
-# marginal var
-V = 10
-
-# within pop var
-v = 0.1
-
-# number of individuals measured
-n = 50
-
-# their locations
-x = mvrnorm(n,c(0,0),xi^2*diag(2))
-S = Cmat(x,V,xi,v)
-obs = mvrnorm(1,rep(ztilde,n),S)
-
-# look at data
-clr = 0.8*logit(obs)
-plot(x[,1],x[,2],pch=20,col=rgb(clr,clr,clr))
-
-minThis = function(Y){
-  V = exp(Y[1])
-  xi = exp(Y[2])
-  v = exp(Y[3])
-  val = ell(obs,x,V,xi,v)
-  return(val)
-}
-
-ests = exp(optim(rexp(3),minThis)$par)
-
-plot(S,Cmat(x,ests[1],ests[2],ests[3]),pch=20,xlab="Input Covariance",ylab="MLE Covariance")
+plot(inpt$ξ,mlmeans.ξ,ylim=c(0.08,1), log="xy")
 abline(0,1)
 ```
 
