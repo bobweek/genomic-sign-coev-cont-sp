@@ -4,10 +4,10 @@ include("mle-ftcs.jl")
 N = 10
 
 # number of individuals measured
-n = [100 1000]
+n = [100]
 
 # char scale
-ξ = [0.01 0.1 1]
+ξ = [0.1 1 10]
 
 # marginal var
 V = [1 10 100]

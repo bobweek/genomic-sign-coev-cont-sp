@@ -209,8 +209,6 @@ for(i in 1:ndisk){
   zbarP = mean(para_df1$trait[indsP[[i]]])
 }
 
-
-
 pi = 3.14159
 
 rhoH_hat = mean(nindsH) #/(pi*RH^2)

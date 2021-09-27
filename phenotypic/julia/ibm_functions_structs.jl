@@ -9,6 +9,18 @@
 ##
 ################################################################################
 
+using Parameters,
+    Statistics,
+    Random,
+    LinearAlgebra,
+    Distributions,
+    StatsBase,
+    StatsPlots,
+    Plots,
+    DataFrames,
+    CSV,
+    Optim
+
 # data type that holds population and parameters
 
 @with_kw mutable struct hp_struct
@@ -395,5 +407,9 @@ function sim(prs, n₀, T)
     end
 
     return Xₕ
+
+end
+
+function ̃ρ()
 
 end

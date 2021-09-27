@@ -91,12 +91,16 @@ simPheno <- MASS::mvrnorm(n=1,mu=rep(params$zbar,N),Sigma=simCov)
 #		simulating parameters
 ################################
 
+
 dataBlock <- list("N" = N,
 				 "geoDist" = geoDist,
 				 "P" = simPheno)
-fit <- sampling(object = myMod,
-				 data = dataBlock,iter=2e3,
-				 chains = 2)
+
+system.time(
+  fit <- sampling(object = myMod,
+                  data = dataBlock,iter=2e3,
+                  chains = 2)
+)
 
 # check and see how it looks
 V <- extract(fit,"V",permute=FALSE,inc_warmup=FALSE)[,,1]

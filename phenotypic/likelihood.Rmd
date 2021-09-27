@@ -42,22 +42,57 @@ input = read.csv("likelihood/input.csv")
 
 mlmeans.v = c()
 mlmeans.V = c()
-mlmeans.ξ = c()
-for(i in 27:54){
+mlmeans.xi = c()
+for(i in input$id){
   mlmeans.v = c( mlmeans.v, mean(mle$v[which(mle$id==i & mle$v!=Inf)]) )
   mlmeans.V = c( mlmeans.V, mean(mle$V[which(mle$id==i & mle$V!=Inf)]) )
-  mlmeans.ξ = c( mlmeans.ξ, mean(mle$ξ[which(mle$id==i & mle$ξ!=Inf)]) )
+  mlmeans.xi = c( mlmeans.xi, mean(mle$xi[which(mle$id==i & mle$xi!=Inf)]) )
 }
 
-inpt = subset(input,id%in%(27:54))
+cols = rep("purple",max(input$id))
+cols[which((input$v/input$V)>1)] = "red"
+cols[which((input$v/input$V)==1)] = "green"
 
-plot(inpt$v,mlmeans.v, log="xy")
+cols.xi = rep("purple",max(input$id))
+cols.xi[which(min(input$xi)==input$xi)] = "red"
+cols.xi[which(max(input$xi)==input$xi)] = "green"
+```
+
+```{r, echo=F, fig.height=3}
+par(mfrow=c(1,3))
+
+plot(input$v,mlmeans.v, log="xy", bg=cols, pch=21, cex=1.5, xlab="Local phenotypic variance, v",ylab="MLE")
 abline(0,1)
 
-plot(inpt$V,mlmeans.V, log="xy")
+plot(input$V,mlmeans.V, log="xy", bg=cols, pch=21, cex=1.5, xlab="Collocated mean trait variance, V", ylab="")
 abline(0,1)
 
-plot(inpt$ξ,mlmeans.ξ,ylim=c(0.08,1), log="xy")
+plot(input$xi,mlmeans.xi, log="xy", bg=cols, pch=21, cex=1.5, xlab="Characteristic scale, xi", ylab="")
 abline(0,1)
+text(x=2.5,y=1e+98, labels=c("V=v"), col="black", cex=1.5)
+text(x=1,y=1e+98, labels=c("*"), col="green",cex=4)
+text(x=2.5,y=1e+85, labels=c("V<v"), col="black", cex=1.5)
+text(x=1,y=1e+85, labels=c("*"), col="red",cex=4)
+text(x=2.5,y=1e+70, labels=c("V>v"), col="black", cex=1.5)
+text(x=1,y=1e+70, labels=c("*"), col="purple",cex=4)
+```
+
+```{r, echo=F, fig.height=3}
+par(mfrow=c(1,3))
+
+plot(input$v,mlmeans.v, log="xy", bg=cols.xi, pch=21, cex=1.5, xlab="Local phenotypic variance, v",ylab="MLE")
+abline(0,1)
+
+plot(input$V,mlmeans.V, log="xy", bg=cols.xi, pch=21, cex=1.5, xlab="Collocated mean trait variance, V", ylab="")
+abline(0,1)
+
+plot(input$xi,mlmeans.xi, log="xy", bg=cols.xi, pch=21, cex=1.5, xlab="Characteristic scale, xi", ylab="")
+abline(0,1)
+text(x=2.5,y=1e+98, labels=c("xi=10"), col="black", cex=1.5)
+text(x=0.8,y=1e+98, labels=c("*"), col="green",cex=4)
+text(x=2.5,y=1e+85, labels=c("xi=0.1"), col="black", cex=1.5)
+text(x=0.8,y=1e+85, labels=c("*"), col="red",cex=4)
+text(x=2.5,y=1e+70, labels=c("xi=1.0"), col="black", cex=1.5)
+text(x=0.8,y=1e+70, labels=c("*"), col="purple",cex=4)
 ```
 
