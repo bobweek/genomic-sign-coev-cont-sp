@@ -30,6 +30,30 @@ Aₚ = 0.002;
 θ₀ₕ = 0;# abiotic optima
 θ₀ₚ = 0;
 
+kₕ = κₕ[1]
+kₚ = κₚ[1]
+
+# solving for expected densities
+function ρsolve(X)
+    ρ̃ₕ = X[1]
+    ρ̃ₚ = X[2]
+    
+    B̃ₕ = Bₕ(γ,πₘ,ιₚ,Rᵢ,ρ̃ₕ)
+    B̃ₚ = Bₚ(γ,πₘ,ιₕ,ρ̃ₚ,ρ̃ₕ)
+    ṽₚ = vₚ(Eₚ,μₚ,Aₚ,B̃ₚ)
+    r̃ₕ = rₕ(αₕ,πₘ,ιₕ,γ,ṽₚ,ρ̃ₚ,ρ̃ₕ)
+    r̃ₚ = rₚ(αₚ,πₘ,ιₚ,Rᵢ,ρ̃ₕ)
+
+    val = √((ρ̃ₕ-ρₕ(kₕ,r̃ₕ,μₕ,Aₕ,B̃ₕ))^2 + (ρ̃ₚ-ρₚ(kₚ,r̃ₚ,μₚ,Aₚ,B̃ₚ))^2)
+
+    return val
+
+end
+
+initp = rand(Uniform(1,20), 2)
+res = optimize(ρsolve, initp)
+Optim.minimizer(res)
+
 ncombo = length(κₕ) * length(κₚ)
 
 prs = hp_pars(

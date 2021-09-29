@@ -1,6 +1,6 @@
 ################################################################################
 ##
-## AUTHOR: Bob Week
+## AUTHOR: Bob Week ⚧
 ##
 ## DATE: 08/23/2021
 ##
@@ -410,6 +410,31 @@ function sim(prs, n₀, T)
 
 end
 
-function ̃ρ()
+# define spde pars in terms of sim pars
+function rₚ(αₚ,πₘ,ιₚ,Rᵢ,ρₕ)
+    log(αₚ)+πₘ*(ιₚ-1)*(1-exp(-2*π*ρₕ*(Rᵢ^2)))
+end
 
+function rₕ(αₕ,πₘ,ιₕ,γ,vₚ,ρₚ,ρₕ)
+    log(αₕ)+πₘ*(ιₕ-1)*(1-γ*vₚ/2)*ρₚ/ρₕ
+end
+
+function ρₚ(κₚ,rₚ,μₚ,Aₚ,Bₚ)
+    -(rₚ-0.5*√(μₚ*(Aₚ+Bₚ)))/log(κₚ)
+end
+
+function ρₕ(κₕ,rₕ,μₕ,Aₕ,Bₕ)
+    -(rₕ-0.5*√(μₕ*(Aₕ-Bₕ)))/log(κₕ)
+end
+
+function Bₚ(γ,πₘ,ιₚ,Rᵢ,ρₕ)
+    γ*πₘ*(ιₚ-1)*(1-exp(-2*π*ρₕ*(Rᵢ^2)))
+end
+
+function Bₕ(γ,πₘ,ιₕ,ρₚ,ρₕ)
+    γ*πₘ*(1-ιₕ)*ρₚ/ρₕ
+end
+
+function vₚ(Eₚ,μₚ,Aₚ,Bₚ)
+    Eₚ + √(μₚ/(Aₚ+Bₚ))
 end

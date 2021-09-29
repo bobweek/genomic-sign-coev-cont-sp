@@ -120,9 +120,9 @@ However, which $v$ and which $G$ depends on the scale considered. The 'local pop
 
 Given $n$ individuals within a radius $R_S$, the fitness of an individual in species $S$ will be attenuated by $(\kappa_S)^n$. This corresponds to an additive effect on growth rate of $-n\ln\kappa_S$. Then, at the scale on which competition occurs the equilibrium expectation is
 
-$$\rho_P\approx \frac{1}{\ln\kappa_P}\Big(r_P-\frac{1}{2}\sqrt{\mu_P(A_P+B_P)}\Big)$$
+$$\rho_P\approx \frac{-1}{\ln\kappa_P}\Big(r_P-\frac{1}{2}\sqrt{\mu_P(A_P+B_P)}\Big)$$
 
-$$\rho_H\approx \frac{1}{\ln\kappa_H}\Big(r_H-\frac{1}{2}\sqrt{\mu_S(A_H-B_H)}\Big)$$
+$$\rho_H\approx \frac{-1}{\ln\kappa_H}\Big(r_H-\frac{1}{2}\sqrt{\mu_S(A_H-B_H)}\Big)$$
 
 where
 
@@ -130,7 +130,7 @@ $$r_H=\ln\alpha_H+\pi_{\max}(\iota_S-1)(1-\gamma v_P/2)\frac{\rho_P}{\rho_H},$$
 
 $$r_P=\ln\alpha_P+\pi_{\max}(\iota_P-1)\big(1-e^{-2\pi R_\iota^2\rho_H}\big),$$
 
-$$B_H\approx\gamma\pi_{\max}|\iota_S-1|\frac{\rho_P}{\rho_H}$$
+$$B_H\approx\gamma\pi_{\max}(1-\iota_H)\frac{\rho_P}{\rho_H}$$
 
 $$B_P\approx\gamma\pi_{\max}(\iota_P-1)\big(1-e^{-2\pi R_\iota^2\rho_H}\big)$$
 

@@ -143,7 +143,7 @@ ndisk = 20
 RH = 0.005	# competition radii
 RP = 0.005
 
-# pick their centers, calulate distance & count individuals
+# pick their centers, calculate distance & count individuals
 centersH = matrix(runif(2*ndisk, min=RH, max=1-RH),ndisk,2)
 centersP = matrix(runif(2*ndisk, min=RP, max=1-RP),ndisk,2)
 distsH = matrix(0,ndisk,ndisk)
