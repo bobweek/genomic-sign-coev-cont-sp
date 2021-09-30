@@ -14,8 +14,8 @@ Eₕ = 0.001;# environmental deviations
 Eₚ = 0.001;
 σₕ = 0.001;# dispersal distances
 σₚ = 0.001;
-κₕ = [0.975 0.985 0.995];# competition effects
-κₚ = [0.98 0.99 0.999];
+κₕ = [0.75 0.8 0.975];# competition effects
+κₚ = [0.85 0.9 0.985];
 Rₕ = 0.005;# competition radii
 Rₚ = 0.005;
 ιₕ = 0.99;# interaction effects
@@ -30,8 +30,9 @@ Aₚ = 0.002;
 θ₀ₕ = 0;# abiotic optima
 θ₀ₚ = 0;
 
-kₕ = κₕ[1]
-kₚ = κₚ[1]
+# values of competition effects to check
+kₕ = 0.975
+kₚ = 0.985
 
 # solving for expected densities
 function ρsolve(X)
