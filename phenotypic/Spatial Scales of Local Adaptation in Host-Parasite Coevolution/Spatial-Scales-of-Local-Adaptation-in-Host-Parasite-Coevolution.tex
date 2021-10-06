@@ -34,31 +34,6 @@
 
 
 % Pandoc citation processing
-\newlength{\csllabelwidth}
-\setlength{\csllabelwidth}{3em}
-\newlength{\cslhangindent}
-\setlength{\cslhangindent}{1.5em}
-% for Pandoc 2.8 to 2.10.1
-\newenvironment{cslreferences}%
-  {}%
-  {\par}
-% For Pandoc 2.11+
-\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
- {% don't indent paragraphs
-  \setlength{\parindent}{0pt}
-  % turn on hanging indent if param 1 is 1
-  \ifodd #1 \everypar{\setlength{\hangindent}{\cslhangindent}}\ignorespaces\fi
-  % set entry spacing
-  \ifnum #2 > 0
-  \setlength{\parskip}{#2\baselineskip}
-  \fi
- }%
- {}
-\usepackage{calc} % for calculating minipage widths
-\newcommand{\CSLBlock}[1]{#1\hfill\break}
-\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
-\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
-\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
 \usepackage{amsmath}
 \usepackage{dutchcal}
@@ -1147,10 +1122,10 @@ bivariate Gaussian with standard deviation
 \(\sqrt{\sigma_H^2+\sigma_P^2}\).
 
 Whereas local adaptation is classically measured as the difference
-between fitness ``at home'' versus fitness in a randomly selected
-environment, the limited dispersal analog is fitness ``at home'' versus
-fitness in a randomly selected environment weighted by the separation
-kernel. In particular, for species \(S=H,P\),
+between fitness \enquote{at home} versus fitness in a randomly selected
+environment, the limited dispersal analog is fitness \enquote{at home}
+versus fitness in a randomly selected environment weighted by the
+separation kernel. In particular, for species \(S=H,P\),
 
 \[\invbreve{\mathcal L}_S=\mathbb E[\bar w_S(\pmb x,\pmb x)]-\mathbb E\left[\int_{\mathbb R^2}\bar w_S(\pmb x,\pmb x+\pmb y)D(\pmb y)d\pmb y\right],\]
 
@@ -1243,10 +1218,10 @@ spatial mean and variance of local mean traits for species \(S\) and
   NOTE: Scott defines this measure by comparing the coevolutionary
   scenario to the no biotic selection for both species scenario. In this
   case it seems possible that \(\mathcal a\) can be positive for both
-  species, blurring the distinction of which species is ``winning'' the
-  coevolutionary race. Alternatively, we can proceed as above and
-  consider the case when just one or the other species incurs zero
-  biotic selection.
+  species, blurring the distinction of which species is
+  \enquote{winning} the coevolutionary race. Alternatively, we can
+  proceed as above and consider the case when just one or the other
+  species incurs zero biotic selection.
 \end{itemize}
 
 \hypertarget{relation-to-results-derived-without-gene-flow}{%
@@ -1335,25 +1310,22 @@ covariance between coevolving species.
 \addcontentsline{toc}{section}{References}
 
 \hypertarget{refs}{}
-\begin{CSLReferences}{1}{0}
 \leavevmode\hypertarget{ref-Julia-2017}{}%
 Bezanson, Jeff, Alan Edelman, Stefan Karpinski, and Viral B Shah. 2017.
-{``Julia: A Fresh Approach to Numerical Computing.''} \emph{SIAM
-{R}eview} 59 (1): 65--98. \url{https://doi.org/10.1137/141000671}.
+``Julia: A Fresh Approach to Numerical Computing.'' \emph{SIAM Review}
+59 (1): 65--98. \url{https://doi.org/10.1137/141000671}.
 
 \leavevmode\hypertarget{ref-Bjrnstad2001}{}%
-Bjørnstad, Ottar N., and Jordi Bascompte. 2001. {``Synchrony and
-Second-Order Spatial Correlation in Host-Parasitoid Systems.''}
+Bjørnstad, Ottar N., and Jordi Bascompte. 2001. ``Synchrony and
+Second-Order Spatial Correlation in Host-Parasitoid Systems.''
 \emph{Journal of Animal Ecology} 70 (6): 924--33.
 \url{https://doi.org/10.1046/j.0021-8790.2001.00560.x}.
 
 \leavevmode\hypertarget{ref-Vatiwutipong2019}{}%
-Vatiwutipong, P., and N. Phewchean. 2019. {``Alternative Way to Derive
-the Distribution of the Multivariate Ornstein-Uhlenbeck Process.''}
+Vatiwutipong, P., and N. Phewchean. 2019. ``Alternative Way to Derive
+the Distribution of the Multivariate Ornstein-Uhlenbeck Process.''
 \emph{Advances in Difference Equations} 2019 (1).
 \url{https://doi.org/10.1186/s13662-019-2214-1}.
-
-\end{CSLReferences}
 
 \bibliographystyle{unsrt}
 \bibliography{references.bib}

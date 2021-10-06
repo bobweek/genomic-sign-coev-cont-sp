@@ -411,30 +411,51 @@ function sim(prs, n₀, T)
 end
 
 # define spde pars in terms of sim pars
-function rₚ(αₚ,πₘ,ιₚ,Rᵢ,ρₕ)
-    log(αₚ)+πₘ*(ιₚ-1)*(1-exp(-2*π*ρₕ*(Rᵢ^2)))
+function rₚ(αₚ, πₘ, ιₚ, Rᵢ, ρₕ)
+    log(αₚ) + πₘ * (ιₚ - 1) * (1 - exp(-2 * π * ρₕ * (Rᵢ^2)))
 end
 
-function rₕ(αₕ,πₘ,ιₕ,γ,vₚ,ρₚ,ρₕ)
-    log(αₕ)+πₘ*(ιₕ-1)*(1-γ*vₚ/2)*ρₚ/ρₕ
+function rₕ(αₕ, πₘ, ιₕ, γ, vₚ, ρₚ, ρₕ)
+    log(αₕ) + πₘ * (ιₕ - 1) * (1 - γ * vₚ / 2) * ρₚ / ρₕ
 end
 
-function ρₚ(κₚ,rₚ,μₚ,Aₚ,Bₚ)
-    -(rₚ-0.5*√(μₚ*(Aₚ+Bₚ)))/log(κₚ)
+function ρₚ(κₚ, rₚ, μₚ, Aₚ, Bₚ)
+    -(rₚ - 0.5 * √(μₚ * (Aₚ + Bₚ))) / log(κₚ)
 end
 
-function ρₕ(κₕ,rₕ,μₕ,Aₕ,Bₕ)
-    -(rₕ-0.5*√(μₕ*(Aₕ-Bₕ)))/log(κₕ)
+function ρₕ(κₕ, rₕ, μₕ, Aₕ, Bₕ)
+    -(rₕ - 0.5 * √(μₕ * (Aₕ - Bₕ))) / log(κₕ)
 end
 
-function Bₚ(γ,πₘ,ιₚ,Rᵢ,ρₕ)
-    γ*πₘ*(ιₚ-1)*(1-exp(-2*π*ρₕ*(Rᵢ^2)))
+function Bₚ(γ, πₘ, ιₚ, Rᵢ, ρₕ)
+    γ * πₘ * (ιₚ - 1) * (1 - exp(-2 * π * ρₕ * (Rᵢ^2)))
 end
 
-function Bₕ(γ,πₘ,ιₕ,ρₚ,ρₕ)
-    γ*πₘ*(1-ιₕ)*ρₚ/ρₕ
+function Bₕ(γ, πₘ, ιₕ, ρₚ, ρₕ)
+    γ * πₘ * (1 - ιₕ) * ρₚ / ρₕ
 end
 
-function vₚ(Eₚ,μₚ,Aₚ,Bₚ)
-    Eₚ + √(μₚ/(Aₚ+Bₚ))
+function vₚ(Eₚ, μₚ, Aₚ, Bₚ)
+    Eₚ + √(μₚ / (Aₚ + Bₚ))
 end
+
+function vₕ(Eₕ, μₕ, Aₕ, Bₕ)
+    Eₕ + √(μₕ / (Aₕ - Bₕ))
+end
+
+function Vₚ(ρₚ, σₚ, Aₚ, Bₚ)
+    1 / (σₚ^2 * ρₚ * (Aₚ + Bₚ))
+end
+
+function Vₕ(ρₕ, σₕ, Aₕ, Bₕ)
+    1 / (σₕ^2 * ρₕ * (Aₕ - Bₕ))
+end
+
+function ξₚ(Gₚ, σₚ, Aₚ, Bₚ)
+    σₚ / √(Gₚ * (Aₚ + Bₚ))
+end
+
+function ξₕ(Gₕ, σₕ, Aₕ, Bₕ)
+    σₕ / √(Gₕ * (Aₕ - Bₕ))
+end
+

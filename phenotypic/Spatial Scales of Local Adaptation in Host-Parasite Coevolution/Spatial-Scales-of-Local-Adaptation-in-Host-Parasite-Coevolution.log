@@ -1,14 +1,14 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021) (preloaded format=pdflatex 2021.9.16)  21 SEP 2021 11:56
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021) (preloaded format=pdflatex 2021.10.3)  4 OCT 2021 13:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution.tex
 (./Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution.tex
 LaTeX2e <2021-06-01> patch level 1
-L3 programming layer <2021-08-27> (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/
-base/article.cls
+L3 programming layer <2021-08-27> (/home/bb/.TinyTeX/texmf-dist/tex/latex/base/
+article.cls
 Document Class: article 2021/02/12 v1.4n Standard LaTeX document class
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/base/size10.clo
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/base/size10.clo
 File: size10.clo 2021/02/12 v1.4n Standard LaTeX file (size option)
 )
 \c@part=\count182
@@ -22,15 +22,14 @@ File: size10.clo 2021/02/12 v1.4n Standard LaTeX file (size option)
 \abovecaptionskip=\skip47
 \belowcaptionskip=\skip48
 \bibindent=\dimen138
-) (./arxiv.sty (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/geometry/geometry.s
-ty
+) (./arxiv.sty (/home/bb/.TinyTeX/texmf-dist/tex/latex/geometry/geometry.sty
 Package: geometry 2020/01/02 v5.9 Page Geometry
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/graphics/keyval.sty
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/graphics/keyval.sty
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \KV@toks@=\toks16
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/generic/iftex/ifvtex.sty
+) (/home/bb/.TinyTeX/texmf-dist/tex/generic/iftex/ifvtex.sty
 Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
-(/home/bobweek/.TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty
+(/home/bb/.TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty
 Package: iftex 2020/03/06 v1.0d TeX engine tests
 ))
 \Gm@cnth=\count190
@@ -45,7 +44,7 @@ Package: iftex 2020/03/06 v1.0d TeX engine tests
 \Gm@layouthoffset=\dimen145
 \Gm@layoutvoffset=\dimen146
 \Gm@dimlist=\toks17
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty
+) (/home/bb/.TinyTeX/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty
 Package: fancyhdr 2021/01/28 v4.0.1 Extensive control of page headers and foote
 rs
 \f@nch@headwidth=\skip49
@@ -60,17 +59,17 @@ rs
 )
 \@abovecaptionskip=\skip58
 \@belowcaptionskip=\skip59
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/base/inputenc.sty
+) (/home/bb/.TinyTeX/texmf-dist/tex/latex/base/inputenc.sty
 Package: inputenc 2021/02/14 v1.3d Input encoding file
 \inpenc@prehook=\toks18
 \inpenc@posthook=\toks19
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/base/fontenc.sty
+) (/home/bb/.TinyTeX/texmf-dist/tex/latex/base/fontenc.sty
 Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
 LaTeX Font Info:    Trying to load font information for T1+ptm on input line 11
 2.
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/psnfss/t1ptm.fd
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/psnfss/t1ptm.fd
 File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
-)) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/lm/lmodern.sty
+)) (/home/bb/.TinyTeX/texmf-dist/tex/latex/lm/lmodern.sty
 Package: lmodern 2015/05/01 v1.6.1 Latin Modern Fonts
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
 (Font)                  OT1/cmr/m/n --> OT1/lmr/m/n on input line 22.
@@ -104,52 +103,51 @@ LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
 (Font)                  OT1/cmr/bx/it --> OT1/lmr/bx/it on input line 37.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
 (Font)                  OT1/cmtt/m/n --> OT1/lmtt/m/n on input line 38.
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/hyperref/hyperref.sty
+) (/home/bb/.TinyTeX/texmf-dist/tex/latex/hyperref/hyperref.sty
 Package: hyperref 2021-06-07 v7.00m Hypertext links for LaTeX
-(/home/bobweek/.TinyTeX/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
+(/home/bb/.TinyTeX/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
 Package: ltxcmds 2020-05-10 v1.25 LaTeX kernel commands for general use (HO)
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+) (/home/bb/.TinyTeX/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
 Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO
 )
-(/home/bobweek/.TinyTeX/texmf-dist/tex/generic/infwarerr/infwarerr.sty
+(/home/bb/.TinyTeX/texmf-dist/tex/generic/infwarerr/infwarerr.sty
 Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
 )
 Package pdftexcmds Info: \pdf@primitive is available.
 Package pdftexcmds Info: \pdf@ifprimitive is available.
 Package pdftexcmds Info: \pdfdraftmode found.
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/generic/kvsetkeys/kvsetkeys.sty
+) (/home/bb/.TinyTeX/texmf-dist/tex/generic/kvsetkeys/kvsetkeys.sty
 Package: kvsetkeys 2019/12/15 v1.18 Key value parser (HO)
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty
+) (/home/bb/.TinyTeX/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty
 Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/generic/pdfescape/pdfescape.sty
+) (/home/bb/.TinyTeX/texmf-dist/tex/generic/pdfescape/pdfescape.sty
 Package: pdfescape 2019/12/09 v1.15 Implements pdfTeX's escape features (HO)
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/hycolor/hycolor.sty
+) (/home/bb/.TinyTeX/texmf-dist/tex/latex/hycolor/hycolor.sty
 Package: hycolor 2020-01-27 v1.10 Color options for hyperref/bookmark (HO)
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/letltxmacro/letltxmacro.sty
+) (/home/bb/.TinyTeX/texmf-dist/tex/latex/letltxmacro/letltxmacro.sty
 Package: letltxmacro 2019/12/03 v1.6 Let assignment for LaTeX macros (HO)
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/auxhook/auxhook.sty
+) (/home/bb/.TinyTeX/texmf-dist/tex/latex/auxhook/auxhook.sty
 Package: auxhook 2019-12-17 v1.6 Hooks for auxiliary files (HO)
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/kvoptions/kvoptions.sty
+) (/home/bb/.TinyTeX/texmf-dist/tex/latex/kvoptions/kvoptions.sty
 Package: kvoptions 2020-10-07 v3.14 Key value format for package options (HO)
 )
 \@linkdim=\dimen147
 \Hy@linkcounter=\count193
 \Hy@pagecounter=\count194
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/hyperref/pd1enc.def
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/hyperref/pd1enc.def
 File: pd1enc.def 2021-06-07 v7.00m Hyperref: PDFDocEncoding definition (HO)
 Now handling font encoding PD1 ...
 ... no UTF-8 mapping file for font encoding PD1
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/hyperref/hyperref-langpatches.de
-f
+) (/home/bb/.TinyTeX/texmf-dist/tex/latex/hyperref/hyperref-langpatches.def
 File: hyperref-langpatches.def 2021-06-07 v7.00m Hyperref: patches for babel la
 nguages
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/generic/intcalc/intcalc.sty
+) (/home/bb/.TinyTeX/texmf-dist/tex/generic/intcalc/intcalc.sty
 Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/generic/etexcmds/etexcmds.sty
+) (/home/bb/.TinyTeX/texmf-dist/tex/generic/etexcmds/etexcmds.sty
 Package: etexcmds 2019/12/15 v1.7 Avoid name clashes with e-TeX commands (HO)
 )
 \Hy@SavedSpaceFactor=\count195
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/hyperref/puenc.def
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/hyperref/puenc.def
 File: puenc.def 2021-06-07 v7.00m Hyperref: PDF Unicode definition (HO)
 Now handling font encoding PU ...
 ... no UTF-8 mapping file for font encoding PU
@@ -162,15 +160,15 @@ Package hyperref Info: Backreferencing OFF on input line 4212.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4445.
 \c@Hy@tempcnt=\count196
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/url/url.sty
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/url/url.sty
 \Urlmuskip=\muskip16
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 4804.
 \XeTeXLinkMargin=\dimen148
-(/home/bobweek/.TinyTeX/texmf-dist/tex/generic/bitset/bitset.sty
+(/home/bb/.TinyTeX/texmf-dist/tex/generic/bitset/bitset.sty
 Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
-(/home/bobweek/.TinyTeX/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty
+(/home/bb/.TinyTeX/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty
 Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
 )
 ))
@@ -186,7 +184,7 @@ Package hyperref Info: Link coloring with OCG OFF on input line 6101.
 Package hyperref Info: PDF/A mode OFF on input line 6106.
 LaTeX Info: Redefining \ref on input line 6146.
 LaTeX Info: Redefining \pageref on input line 6150.
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/base/atbegshi-ltx.sty
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/base/atbegshi-ltx.sty
 Package: atbegshi-ltx 2021/01/10 v1.0c Emulation of the original atbegshi
 package with kernel methods
 )
@@ -195,25 +193,25 @@ package with kernel methods
 \c@Hfootnote=\count266
 )
 Package hyperref Info: Driver (autodetected): hpdftex.
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/hyperref/hpdftex.def
 File: hpdftex.def 2021-06-07 v7.00m Hyperref driver for pdfTeX
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/base/atveryend-ltx.sty
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/base/atveryend-ltx.sty
 Package: atveryend-ltx 2020/08/19 v1.0a Emulation of the original atvery packag
 e
 with kernel methods
 )
 \Fld@listcount=\count267
 \c@bookmark@seq@number=\count268
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
 Package: rerunfilecheck 2019/12/05 v1.9 Rerun checks for auxiliary files (HO)
-(/home/bobweek/.TinyTeX/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty
+(/home/bb/.TinyTeX/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty
 Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
 )
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 86.
 )
 \Hy@SectionHShift=\skip60
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/booktabs/booktabs.sty
+) (/home/bb/.TinyTeX/texmf-dist/tex/latex/booktabs/booktabs.sty
 Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 \heavyrulewidth=\dimen151
 \lightrulewidth=\dimen152
@@ -232,7 +230,7 @@ Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 \@thisruleclass=\count271
 \@lastruleclass=\count272
 \@thisrulewidth=\dimen163
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+) (/home/bb/.TinyTeX/texmf-dist/tex/latex/amsfonts/amsfonts.sty
 Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 \@emptytoks=\toks20
 \symAMSa=\mathgroup4
@@ -240,14 +238,14 @@ Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/units/nicefrac.sty
+) (/home/bb/.TinyTeX/texmf-dist/tex/latex/units/nicefrac.sty
 Package: nicefrac 1998/08/04 v0.9b Nice fractions
 \L@UnitsRaiseDisplaystyle=\skip61
 \L@UnitsRaiseTextstyle=\skip62
 \L@UnitsRaiseScriptstyle=\skip63
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/base/ifthen.sty
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/base/ifthen.sty
 Package: ifthen 2020/11/24 v1.1c Standard LaTeX ifthen package (DPC)
-)) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/microtype/microtype.sty
+)) (/home/bb/.TinyTeX/texmf-dist/tex/latex/microtype/microtype.sty
 Package: microtype 2021/03/14 v2.8c Micro-typographical refinements (RS)
 \MT@toks=\toks21
 \MT@count=\count273
@@ -255,7 +253,7 @@ LaTeX Info: Redefining \textls on input line 790.
 \MT@outer@kern=\dimen164
 LaTeX Info: Redefining \textmicrotypecontext on input line 1374.
 \MT@listname@count=\count274
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/microtype/microtype-pdftex.def
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/microtype/microtype-pdftex.def
 File: microtype-pdftex.def 2021/03/14 v2.8c Definitions specific to pdftex (RS)
 
 LaTeX Info: Redefining \lsstyle on input line 915.
@@ -263,153 +261,138 @@ LaTeX Info: Redefining \lslig on input line 915.
 \MT@outer@space=\skip64
 )
 Package microtype Info: Loading configuration file microtype.cfg.
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/microtype/microtype.cfg
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/microtype/microtype.cfg
 File: microtype.cfg 2021/03/14 v2.8c microtype main configuration file (RS)
-)) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/graphics/graphicx.sty
+)) (/home/bb/.TinyTeX/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2020/12/05 v1.2c Enhanced LaTeX Graphics (DPC,SPQR)
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/graphics/graphics.sty
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/graphics/graphics.sty
 Package: graphics 2021/03/04 v1.4d Standard LaTeX Graphics (DPC,SPQR)
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/graphics/trig.sty
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/graphics/trig.sty
 Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+) (/home/bb/.TinyTeX/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
 File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
 Package graphics Info: Driver file: pdftex.def on input line 107.
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/graphics-def/pdftex.def
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/graphics-def/pdftex.def
 File: pdftex.def 2020/10/05 v1.2a Graphics/color driver for pdftex
 ))
 \Gin@req@height=\dimen165
 \Gin@req@width=\dimen166
-)
-\csllabelwidth=\skip65
-\cslhangindent=\skip66
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/tools/calc.sty
-Package: calc 2017/05/25 v4.3 Infix arithmetic (KKT,FJ)
-\calc@Acount=\count275
-\calc@Bcount=\count276
-\calc@Adimen=\dimen167
-\calc@Bdimen=\dimen168
-\calc@Askip=\skip67
-\calc@Bskip=\skip68
-LaTeX Info: Redefining \setlength on input line 80.
-LaTeX Info: Redefining \addtolength on input line 81.
-\calc@Ccount=\count277
-\calc@Cskip=\skip69
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/amsmath/amsmath.sty
+) (/home/bb/.TinyTeX/texmf-dist/tex/latex/amsmath/amsmath.sty
 Package: amsmath 2021/04/20 v2.17j AMS math features
-\@mathmargin=\skip70
+\@mathmargin=\skip65
 For additional information on amsmath, use the `?' option.
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/amsmath/amstext.sty
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/amsmath/amstext.sty
 Package: amstext 2000/06/29 v2.01 AMS text
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/amsmath/amsgen.sty
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/amsmath/amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0 generic functions
 \@emptytoks=\toks22
-\ex@=\dimen169
-)) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/amsmath/amsbsy.sty
+\ex@=\dimen167
+)) (/home/bb/.TinyTeX/texmf-dist/tex/latex/amsmath/amsbsy.sty
 Package: amsbsy 1999/11/29 v1.2d Bold Symbols
-\pmbraise@=\dimen170
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/amsmath/amsopn.sty
+\pmbraise@=\dimen168
+) (/home/bb/.TinyTeX/texmf-dist/tex/latex/amsmath/amsopn.sty
 Package: amsopn 2016/03/08 v2.02 operator names
 )
-\inf@bad=\count278
+\inf@bad=\count275
 LaTeX Info: Redefining \frac on input line 234.
-\uproot@=\count279
-\leftroot@=\count280
+\uproot@=\count276
+\leftroot@=\count277
 LaTeX Info: Redefining \overline on input line 399.
-\classnum@=\count281
-\DOTSCASE@=\count282
+\classnum@=\count278
+\DOTSCASE@=\count279
 LaTeX Info: Redefining \ldots on input line 496.
 LaTeX Info: Redefining \dots on input line 499.
 LaTeX Info: Redefining \cdots on input line 620.
 \Mathstrutbox@=\box50
 \strutbox@=\box51
-\big@size=\dimen171
+\big@size=\dimen169
 LaTeX Font Info:    Redeclaring font encoding OML on input line 743.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
-\macc@depth=\count283
-\c@MaxMatrixCols=\count284
+\macc@depth=\count280
+\c@MaxMatrixCols=\count281
 \dotsspace@=\muskip17
-\c@parentequation=\count285
-\dspbrk@lvl=\count286
+\c@parentequation=\count282
+\dspbrk@lvl=\count283
 \tag@help=\toks23
-\row@=\count287
-\column@=\count288
-\maxfields@=\count289
+\row@=\count284
+\column@=\count285
+\maxfields@=\count286
 \andhelp@=\toks24
-\eqnshift@=\dimen172
-\alignsep@=\dimen173
-\tagshift@=\dimen174
-\tagwidth@=\dimen175
-\totwidth@=\dimen176
-\lineht@=\dimen177
+\eqnshift@=\dimen170
+\alignsep@=\dimen171
+\tagshift@=\dimen172
+\tagwidth@=\dimen173
+\totwidth@=\dimen174
+\lineht@=\dimen175
 \@envbody=\toks25
-\multlinegap=\skip71
-\multlinetaggap=\skip72
+\multlinegap=\skip66
+\multlinetaggap=\skip67
 \mathdisplay@stack=\toks26
 LaTeX Info: Redefining \[ on input line 2923.
 LaTeX Info: Redefining \] on input line 2924.
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/dutchcal/dutchcal.sty
+) (/home/bb/.TinyTeX/texmf-dist/tex/latex/dutchcal/dutchcal.sty
 Package: dutchcal 2011/06/16 v1 U/dutchcal
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/xkeyval/xkeyval.sty
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/xkeyval/xkeyval.sty
 Package: xkeyval 2020/11/20 v2.8 package option processing (HA)
-(/home/bobweek/.TinyTeX/texmf-dist/tex/generic/xkeyval/xkeyval.tex (/home/bobwe
-ek/.TinyTeX/texmf-dist/tex/generic/xkeyval/xkvutils.tex
+(/home/bb/.TinyTeX/texmf-dist/tex/generic/xkeyval/xkeyval.tex (/home/bb/.TinyTe
+X/texmf-dist/tex/generic/xkeyval/xkvutils.tex
 \XKV@toks=\toks27
 \XKV@tempa@toks=\toks28
 )
-\XKV@depth=\count290
+\XKV@depth=\count287
 File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
 ))
 LaTeX Font Info:    Redeclaring math alphabet \mathcal on input line 8.
 LaTeX Font Info:    Overwriting math alphabet `\mathcal' in version `bold'
 (Font)                  U/dutchcal/m/n --> U/dutchcal/b/n on input line 9.
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/jknapltx/mathrsfs.sty
+) (/home/bb/.TinyTeX/texmf-dist/tex/latex/jknapltx/mathrsfs.sty
 Package: mathrsfs 1996/01/01 Math RSFS package v1.0 (jk)
 \symrsfs=\mathgroup6
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/csquotes/csquotes.sty
+) (/home/bb/.TinyTeX/texmf-dist/tex/latex/csquotes/csquotes.sty
 Package: csquotes 2021-02-22 v5.2l context-sensitive quotations (JAW)
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/etoolbox/etoolbox.sty
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/etoolbox/etoolbox.sty
 Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
-\etb@tempcnta=\count291
+\etb@tempcnta=\count288
 )
-\csq@reset=\count292
-\csq@gtype=\count293
-\csq@glevel=\count294
-\csq@qlevel=\count295
-\csq@maxlvl=\count296
-\csq@tshold=\count297
+\csq@reset=\count289
+\csq@gtype=\count290
+\csq@glevel=\count291
+\csq@qlevel=\count292
+\csq@maxlvl=\count293
+\csq@tshold=\count294
 \csq@ltx@everypar=\toks29
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/csquotes/csquotes.def
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/csquotes/csquotes.def
 File: csquotes.def 2021-02-22 v5.2l csquotes generic definitions (JAW)
 )
 Package csquotes Info: Trying to load configuration file 'csquotes.cfg'...
 Package csquotes Info: ... configuration file loaded successfully.
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/csquotes/csquotes.cfg
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/csquotes/csquotes.cfg
 File: csquotes.cfg 
-)) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/base/textcomp.sty
+)) (/home/bb/.TinyTeX/texmf-dist/tex/latex/base/textcomp.sty
 Package: textcomp 2020/02/02 v2.0n Standard LaTeX package
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/base/fontenc.sty
+) (/home/bb/.TinyTeX/texmf-dist/tex/latex/base/fontenc.sty
 Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/tipa/t3enc.def
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/tipa/t3enc.def
 File: t3enc.def 2001/12/31 T3 encoding
 Now handling font encoding T3 ...
 ... no UTF-8 mapping file for font encoding T3
 LaTeX Font Info:    Trying to load font information for T1+lmss on input line 3
 57.
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/lm/t1lmss.fd
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/lm/t1lmss.fd
 File: t1lmss.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ))
 LaTeX Font Info:    Trying to load font information for T1+lmr on input line 11
 2.
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/lm/t1lmr.fd
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/lm/t1lmr.fd
 File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ))
 \symtipa=\mathgroup7
 Package csquotes Info: Checking for multilingual support...
 Package csquotes Info: ... none found.
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2021-08-04 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count298
+\l__color_backend_stack_int=\count295
 \l__pdf_internal_box=\box52
 ) (./Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution.aux
 
@@ -419,31 +402,31 @@ LaTeX Warning: Label `spde-model' multiply defined.
 \openout1 = `Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution.au
 x'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 73.
-LaTeX Font Info:    ... okay on input line 73.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 73.
-LaTeX Font Info:    ... okay on input line 73.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 73.
-LaTeX Font Info:    ... okay on input line 73.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 73.
-LaTeX Font Info:    ... okay on input line 73.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 73.
-LaTeX Font Info:    ... okay on input line 73.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 73.
-LaTeX Font Info:    ... okay on input line 73.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 73.
-LaTeX Font Info:    ... okay on input line 73.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 73.
-LaTeX Font Info:    ... okay on input line 73.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 73.
-LaTeX Font Info:    ... okay on input line 73.
-LaTeX Font Info:    Checking defaults for T3/cmr/m/n on input line 73.
-LaTeX Font Info:    Trying to load font information for T3+cmr on input line 73
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
+LaTeX Font Info:    Checking defaults for T3/cmr/m/n on input line 48.
+LaTeX Font Info:    Trying to load font information for T3+cmr on input line 48
 .
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/tipa/t3cmr.fd
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/tipa/t3cmr.fd
 File: t3cmr.fd 2001/12/31 TIPA font definitions
 )
-LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    ... okay on input line 48.
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
@@ -510,46 +493,44 @@ LaTeX Font Info:    ... okay on input line 73.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring OFF on input line 73.
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/hyperref/nameref.sty
+Package hyperref Info: Link coloring OFF on input line 48.
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/refcount/refcount.sty
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/refcount/refcount.sty
 Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
-)
-(/home/bobweek/.TinyTeX/texmf-dist/tex/generic/gettitlestring/gettitlestring.st
-y
+) (/home/bb/.TinyTeX/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count299
+\c@section@level=\count296
 )
-LaTeX Info: Redefining \ref on input line 73.
-LaTeX Info: Redefining \pageref on input line 73.
-LaTeX Info: Redefining \nameref on input line 73.
+LaTeX Info: Redefining \ref on input line 48.
+LaTeX Info: Redefining \pageref on input line 48.
+LaTeX Info: Redefining \nameref on input line 48.
 (./Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution.out) (./Spat
 ial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution.out)
 \@outlinefile=\write3
 \openout3 = `Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution.ou
 t'.
 
-LaTeX Info: Redefining \microtypecontext on input line 73.
+LaTeX Info: Redefining \microtypecontext on input line 48.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `alltext-nott'.
-LaTeX Info: Redefining \showhyphens on input line 73.
+LaTeX Info: Redefining \showhyphens on input line 48.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/microtype/mt-cmr.cfg
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/microtype/mt-cmr.cfg
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
 (RS)
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+) (/home/bb/.TinyTeX/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 85.
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
@@ -559,54 +540,54 @@ Package microtype Info: Character `029' is missing
 Package microtype Info: Character `029' is missing
 (microtype)             in font `T1/lmr/m/sc/10'.
 (microtype)             Ignoring protrusion settings for this character.
-LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 7
-5.
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/lm/ot1lmr.fd
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 5
+0.
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 7
-5.
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/lm/omllmm.fd
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 5
+0.
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-75.
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/lm/omslmsy.fd
+50.
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
-75.
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/lm/omxlmex.fd
+50.
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 75.
+(Font)              <10> on input line 50.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 75.
+(Font)              <7> on input line 50.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 75.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 75.
+(Font)              <5> on input line 50.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 50.
 
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/microtype/mt-msa.cfg
+) (/home/bb/.TinyTeX/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 75.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 50.
 
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) (/home/bobweek/.TinyTeX/texmf-dist/tex/latex/microtype/mt-msb.cfg
+) (/home/bb/.TinyTeX/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+rsfs on input line 75
+LaTeX Font Info:    Trying to load font information for U+rsfs on input line 50
 .
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/jknapltx/ursfs.fd
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/jknapltx/ursfs.fd
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
 )
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 7
-5.
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 5
+0.
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 Package microtype Info: Loading generic protrusion settings for font family
@@ -615,90 +596,90 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             See the microtype manual for details.
 
 LaTeX Font Warning: Font shape `T1/lmr/bx/sc' undefined
-(Font)              using `T1/lmr/bx/n' instead on input line 79.
+(Font)              using `T1/lmr/bx/n' instead on input line 54.
 
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 1
-23.
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 9
+8.
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) [1
 
 
-{/home/bobweek/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2pdfTeX
- warning (ext4): destination with the same identifier (name{equation.2.1}) has 
-been already used, duplicate ignored
+{/home/bb/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2pdfTeX warn
+ing (ext4): destination with the same identifier (name{equation.2.1}) has been 
+already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.240 W
+l.215 W
        e analyze model (\ref{spde-model}) at its statistical equilibrium,]
 LaTeX Font Info:    Trying to load font information for U+dutchcal on input lin
-e 279.
-(/home/bobweek/.TinyTeX/texmf-dist/tex/latex/dutchcal/udutchcal.fd
+e 254.
+(/home/bb/.TinyTeX/texmf-dist/tex/latex/dutchcal/udutchcal.fd
 File: udutchcal.fd 2011/06/16 Fontinst v1.933 font definitions for U/dutchcal.
 )
 LaTeX Font Info:    Font shape `U/dutchcal/m/n' will be
-(Font)              scaled to size 10.0pt on input line 279.
+(Font)              scaled to size 10.0pt on input line 254.
 LaTeX Font Info:    Font shape `U/dutchcal/m/n' will be
-(Font)              scaled to size 7.0pt on input line 279.
+(Font)              scaled to size 7.0pt on input line 254.
 LaTeX Font Info:    Font shape `U/dutchcal/m/n' will be
-(Font)              scaled to size 5.0pt on input line 279.
+(Font)              scaled to size 5.0pt on input line 254.
 pdfTeX warning (ext4): destination with the same identifier (name{equation.2.2}
 ) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.293 \begin{equation}
+l.268 \begin{equation}
                       
 
-LaTeX Warning: Reference `' on page 3 undefined on input line 342.
+LaTeX Warning: Reference `' on page 3 undefined on input line 317.
 
 [3]
 
-LaTeX Warning: Reference `' on page 4 undefined on input line 399.
+LaTeX Warning: Reference `' on page 4 undefined on input line 374.
 
 [4]
 
-LaTeX Warning: Reference `' on page 5 undefined on input line 495.
+LaTeX Warning: Reference `' on page 5 undefined on input line 470.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [5] [6]
 
-LaTeX Warning: Reference `' on page 7 undefined on input line 706.
+LaTeX Warning: Reference `' on page 7 undefined on input line 681.
 
 [7]pdfTeX warning (ext4): destination with the same identifier (name{equation.3
 .1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.714   \begin{equation}
+l.689   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
 fier (name{equation.3.2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.717   \begin{equation}
+l.692   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
 fier (name{equation.3.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.728   \begin{equation}
+l.703   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
 fier (name{equation.3.2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.731   \begin{equation}
+l.706   \begin{equation}
                          [8] [9]
 <Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution_files/figure-l
-atex/unnamed-chunk-1-1.pdf, id=209, 463.7325pt x 421.575pt>
+atex/unnamed-chunk-1-1.pdf, id=209, 469.755pt x 433.62pt>
 File: Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution_files/fig
 ure-latex/unnamed-chunk-1-1.pdf Graphic file (type pdf)
 <use Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution_files/figu
 re-latex/unnamed-chunk-1-1.pdf>
 Package pdftex.def Info: Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Co
-evolution_files/figure-latex/unnamed-chunk-1-1.pdf  used on input line 896.
-(pdftex.def)             Requested size: 463.73135pt x 421.57396pt.
+evolution_files/figure-latex/unnamed-chunk-1-1.pdf  used on input line 871.
+(pdftex.def)             Requested size: 469.75386pt x 433.61894pt.
 [10] [11 <./Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution_fil
 es/figure-latex/unnamed-chunk-1-1.pdf>]
-Underfull \hbox (badness 1371) in paragraph at lines 936--939
+Underfull \hbox (badness 1371) in paragraph at lines 911--914
 []\T1/lmr/m/n/10 (+20) The spa-tial co-vari-ance func-tions, equal to the in-ve
 rse Fourier trans-forms of the power spec-tra
  []
@@ -720,42 +701,40 @@ arasite-Coevolution.out' has not changed.
 (rerunfilecheck)             Checksum: 6E7035838567DFFB9FD2B75CFEEE833F;4738.
  ) 
 Here is how much of TeX's memory you used:
- 13116 strings out of 480559
- 201874 string characters out of 5903131
- 573408 words of memory out of 5000000
- 30204 multiletter control sequences out of 15000+600000
+ 13027 strings out of 480559
+ 199584 string characters out of 5903047
+ 572499 words of memory out of 5000000
+ 30117 multiletter control sequences out of 15000+600000
  469016 words of font info for 163 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  72i,12n,80p,1609b,415s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/home/bobweek/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/home/bobwee
-k/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/home/bobweek/.TinyTeX/texm
-f-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/home/bobweek/.TinyTeX/texmf-dist/font
-s/enc/dvips/lm/lm-mathex.enc}{/home/bobweek/.TinyTeX/texmf-dist/fonts/enc/dvips
-/lm/lm-mathsy.enc}{/home/bobweek/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.
-enc}</home/bobweek/.TinyTeX/texmf-dist/fonts/type1/public/dutchcal/DutchCalReg.
-pfb></home/bobweek/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></home/
-bobweek/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></home/bobweek/.Ti
-nyTeX/texmf-dist/fonts/type1/public/lm/lmbxi10.pfb></home/bobweek/.TinyTeX/texm
-f-dist/fonts/type1/public/lm/lmcsc10.pfb></home/bobweek/.TinyTeX/texmf-dist/fon
-ts/type1/public/lm/lmex10.pfb></home/bobweek/.TinyTeX/texmf-dist/fonts/type1/pu
-blic/lm/lmmi10.pfb></home/bobweek/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmm
-i5.pfb></home/bobweek/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi7.pfb></hom
-e/bobweek/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></home/bobweek/.T
-inyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></home/bobweek/.TinyTeX/texmf
--dist/fonts/type1/public/lm/lmr5.pfb></home/bobweek/.TinyTeX/texmf-dist/fonts/t
-ype1/public/lm/lmr7.pfb></home/bobweek/.TinyTeX/texmf-dist/fonts/type1/public/l
-m/lmri10.pfb></home/bobweek/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pf
-b></home/bobweek/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy7.pfb></home/bob
-week/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></home/bobweek/.TinyT
-eX/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></home/bobweek/.Ti
-nyTeX/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb></home/bobweek/.
-TinyTeX/texmf-dist/fonts/type1/public/rsfs/rsfs10.pfb></home/bobweek/.TinyTeX/t
-exmf-dist/fonts/type1/public/tipa/tipa10.pfb>
+{/home/bb/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/home/bb/.TinyTeX
+/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/home/bb/.TinyTeX/texmf-dist/fonts/en
+c/dvips/lm/lm-mathit.enc}{/home/bb/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ma
+thex.enc}{/home/bb/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/home/
+bb/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}</home/bb/.TinyTeX/texmf-d
+ist/fonts/type1/public/dutchcal/DutchCalReg.pfb></home/bb/.TinyTeX/texmf-dist/f
+onts/type1/public/lm/lmbx10.pfb></home/bb/.TinyTeX/texmf-dist/fonts/type1/publi
+c/lm/lmbx12.pfb></home/bb/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmbxi10.pfb
+></home/bb/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmcsc10.pfb></home/bb/.Tin
+yTeX/texmf-dist/fonts/type1/public/lm/lmex10.pfb></home/bb/.TinyTeX/texmf-dist/
+fonts/type1/public/lm/lmmi10.pfb></home/bb/.TinyTeX/texmf-dist/fonts/type1/publ
+ic/lm/lmmi5.pfb></home/bb/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi7.pfb><
+/home/bb/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></home/bb/.TinyTeX
+/texmf-dist/fonts/type1/public/lm/lmr12.pfb></home/bb/.TinyTeX/texmf-dist/fonts
+/type1/public/lm/lmr5.pfb></home/bb/.TinyTeX/texmf-dist/fonts/type1/public/lm/l
+mr7.pfb></home/bb/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></home/b
+b/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></home/bb/.TinyTeX/texmf
+-dist/fonts/type1/public/lm/lmsy7.pfb></home/bb/.TinyTeX/texmf-dist/fonts/type1
+/public/lm/lmtt10.pfb></home/bb/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts
+/symbols/msbm10.pfb></home/bb/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/s
+ymbols/msbm7.pfb></home/bb/.TinyTeX/texmf-dist/fonts/type1/public/rsfs/rsfs10.p
+fb></home/bb/.TinyTeX/texmf-dist/fonts/type1/public/tipa/tipa10.pfb>
 Output written on Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevoluti
-on.pdf (18 pages, 415220 bytes).
+on.pdf (18 pages, 414747 bytes).
 PDF statistics:
- 404 PDF objects out of 1000 (max. 8388607)
- 333 compressed objects within 4 object streams
+ 402 PDF objects out of 1000 (max. 8388607)
+ 332 compressed objects within 4 object streams
  87 named destinations out of 1000 (max. 500000)
  29358 words of extra memory for PDF output out of 29859 (max. 10000000)
 
