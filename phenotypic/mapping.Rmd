@@ -38,7 +38,7 @@ $$\ln w_S^{(B)}\approx\pi_{\max}(\iota_S-1)\left(1-\frac{\gamma}{2}(z_H-z_P)^2\r
 
 Under our SPDE model, the growth rate utilized took the form
 
-$$m_S(z_H,z_P)=r_S-\frac{A_S}{2}(\theta_S-z_S)^2\pm\frac{B_S}{2}(z_H-z_P)^2,$$
+$$\bar m_S=r_S-\frac{A_S}{2}(\theta_S-\bar z_S)^2\pm\frac{B_S}{2}(\bar z_H-\bar z_P)^2,$$
 
 where the biotic term is added for $S=H$ and subtracted for $S=P$. Relating the two, we see the $\pi_{\max}(\iota_S-1)$ term out front can be accounted for by the intrinsic growth rate $r_S$ leaving
 
@@ -46,31 +46,37 @@ $$B_S\approx\gamma\pi_{\max}|\iota_S-1|.$$
 
 #### Parasite Biotic Selection
 
-Since parasites may not be close enough to a host to experience an encounter, we need to modify our calculations. Given host density $\rho_H$, we can model the number of observed hosts within a region of radius $R$ as Poisson with parameter $2\pi R^2\rho_H$. We can then approximate the probability that no hosts will be within a given region of radius $R$ as
+Since parasites may not be close enough to a host to experience an encounter, we need to modify our calculations. Given host density $\rho_H$, we can model the number of observed hosts within a region of radius $R$ as Poisson with parameter $N_H(R)=\pi R^2\rho_H$. We can then approximate the probability that no hosts will be within a given region of radius $R$ as
 
-$$\mathbb P_R(\text{no hosts} \ | \ \rho_H)=e^{-2\pi R^2\rho_H}.$$
+$$\mathbb P_R(\text{no hosts} \ | \ \rho_H)=e^{-N_H(R)}.$$
 
 Then, since for infection to occur there needs to be a host present within the interaction radius $R_\iota$ of the parasite, the infection probability for the parasite is replaced by
 
-$$\pi(z_H,z_P)\to\big(1-e^{-2\pi R_\iota^2\rho_H}\big)\pi(z_H,z_P)$$
+$$\pi(z_H,z_P)\to\big(1-e^{-N_H(R_\iota)}\big)\pi(z_H,z_P)$$
 
-Then, repeating the same calculation as above, we find new parameterizations of $B_P$ and intrinsic growth rate $r_P$:
+Then, repeating the same calculation as above, we find the strength of biotic selection on the parasite can be parameterized as
 
-$$B_P\approx\gamma\pi_{\max}(\iota_P-1)\big(1-e^{-2\pi R_\iota^2\rho_H}\big)$$
+$$B_P\approx\gamma\pi_{\max}(\iota_P-1)\big(1-e^{-N_H(R_\iota)}\big).$$
 
-$$r_P^{(B)}\approx\pi_{\max}(\iota_P-1)\big(1-e^{-2\pi R_\iota^2\rho_H}\big).$$
+Then, averaging over local host and parasite populations with respective means and variances $\bar z_H,\bar z_P,v_H,v_P$ we find the local parasite growth rate
+
+$$\bar m_P\approx\pi_{\max}(\iota_P-1)\big(1-e^{-N_H(R_\iota)}\big)-B_P(v_H+v_P)/2-B_P(\bar z_H-\bar z_P)^2/2$$
+
+which implies the biotic component of the innate growth rate can be parameterized as
+
+$$r_P^{(B)}\approx\pi_{\max}(\iota_P-1)\big(1-e^{-N_H(R_\iota)}\big)-B_P(v_H+v_P)/2.$$
 
 #### Host Biotic Selection
 
-Since hosts may not be close enough to a parasite to experience an encounter or may experience multiple encounters if there are several parasites nearby (which will depend on host density), we need to modify our calculations. Following the above approach, we can model the number of parasites within the interaction radius $R_\iota$ of the host as Poisson with parameter $2\pi R_\iota^2\rho_P$. For parasite $i$ within this region, we model the number of hosts within their interaction radius $n_i$ and compute the probability of encounter with the focal host as the inverse of this number, $1/n_i$. We then accumulate the total number of encounters times their probabilities of infection. We will denote the $i$th parasites trait by $z_i$ and the focal hosts trait by $z_H$.
+Since hosts may not be close enough to a parasite to experience an encounter or may experience multiple encounters if there are several parasites nearby (which will depend on host density), we need to modify our calculations. Following the above approach, we can model the number of parasites within the interaction radius $R_\iota$ of the host as Poisson with parameter $N_P(R_\iota)=\pi R_\iota^2\rho_P$. For parasite $i$ within this region, we model the number of hosts within their interaction radius $n_i$ and compute the probability of encounter with the focal host as the inverse of this number, $1/n_i$. We then accumulate the total number of encounters times their probabilities of infection. We will denote the $i$th parasites trait by $z_i$ and the focal hosts trait by $z_H$.
 
 The probability of $K$ parasites within the interaction radius of the focal host is
 
-$$\mathbb P(K)=\frac{1}{K!}(2\pi R_\iota^2\rho_P)^Ke^{-2\pi R_\iota^2\rho_P}.$$
+$$\mathbb P(K)=\frac{1}{K!}N_P^K(R_\iota)^Ke^{-N_P(R_\iota)}.$$
 
-For the $i$th parasite, the probability of $n_i$ hosts with its interaction radius is
+For the $i$th parasite, the probability of $n_i$ hosts within its interaction radius is
 
-$$\mathbb P(n_i)=\frac{1}{n_i!}(2\pi R_\iota^2\rho_H)^{n_i}e^{-2\pi R_\iota^2\rho_H}.$$
+$$\mathbb P(n_i)=\frac{1}{n_i!}N_H^{n_i}(R_\iota)e^{-N_H(R_\iota)}.$$
 
 Denote the rv determining whether parasite $i$ encounters the focal host by $\varepsilon_i\sim\mathrm{Bern}(1/n_i)$ and the probability that parasite $i$ infects the focal host by $\chi_i\sim\mathrm{Bern}(\pi(z_H,z_i))$. Then the cumulative fitness effect of interactions with parasites on the focal host is given by
 
@@ -92,11 +98,17 @@ Setting $\bar z_P, v_P$ as the local parasite mean trait and trait variance resp
 
 $$\ln w_H^{(B)}\approx K\left((\iota_H-1)\frac{\pi_{\max}}{n_i}-(\iota_H-1)\frac{\pi_{\max}}{n_i}\frac{\gamma}{2}[(z_H-\bar z_P)^2+v_P]\right).$$
 
-Finally, we approximate $K$ and the $n_i$ with their respective expectations $2\pi R_\iota^2\rho_P$ and $2\pi R_\iota^2\rho_H$. Hence, the updated strength of biotic selection and biotic contribution to intrinsic growth rate are
+Finally, we approximate $K$ and the $n_i$ with their respective expectations $N_P(R_\iota)$ and $N_H(R_\iota)$. Hence, the strength of biotic selection on the host can be expressed as
 
-$$B_H\approx 2\pi R_\iota^2\rho_P\gamma(\iota_H-1)\frac{\pi_{\max}}{2\pi R_\iota^2\rho_H}=\gamma\pi_{\max}(\iota_H-1)\frac{\rho_P}{\rho_H},$$
+$$B_H\approx N_P(R_\iota)\gamma(\iota_H-1)\frac{\pi_{\max}}{N_H(R_\iota)}=\gamma\pi_{\max}(\iota_H-1)\frac{\rho_P}{\rho_H}.$$
 
-$$r_H^{(B)}\approx\pi_{\max}(\iota_H-1)(1-\gamma v_P/2)\frac{\rho_P}{\rho_H}.$$
+Averaging over the local host population with trait variance $v_H$ results in the innate growth rate
+
+$$r_H^{(B)}\approx\pi_{\max}(\iota_H-1)(1-\gamma v_P/2)\frac{\rho_P}{\rho_H}-B_H(v_H+v_P)/2.$$
+
+### Abiotic component of growth rate
+
+For species $S$, the abiotic component of the individual fitness function is $w^{(A)}_S(z)=\alpha_S\exp\left(-\frac{A_S}{2}(\theta_S-z)^2\right)$. In the diffusion-limit, the resulting growth rate averaged across a local population is $m^{(A)}_S=\ln\alpha_S-A_S[(\theta_S-\bar z_S)^2+v_S]/2$, where $\bar z_S$ is the local mean trait and $v_S$ is the local phenotypic variance around the mean. Hence, in terms of the SPDE model parameterization we have $r_S=r_S^{(A)}+r_S^{(B)}$ where $r_S^{(B)}$ is as above and $r_S^{(A)}=\ln\alpha_S-A_Sv_S/2$.
 
 ### Additive Genetic Variance
 
@@ -120,19 +132,21 @@ However, which $v$ and which $G$ depends on the scale considered. The 'local pop
 
 Given $n$ individuals within a radius $R_S$, the fitness of an individual in species $S$ will be attenuated by $(\kappa_S)^n$. This corresponds to an additive effect on growth rate of $-n\ln\kappa_S$. Then, at the scale on which competition occurs the equilibrium expectation is
 
-$$\rho_P\approx \frac{-1}{\ln\kappa_P}\Big(r_P-\frac{1}{2}\sqrt{\mu_P(A_P+B_P)}\Big)$$
+$$\rho_P\approx \frac{-1}{\ln\kappa_P}\Big(\bar m_P-\frac{1}{2}\sqrt{\mu_P(A_P+B_P)}\Big)$$
 
-$$\rho_H\approx \frac{-1}{\ln\kappa_H}\Big(r_H-\frac{1}{2}\sqrt{\mu_S(A_H-B_H)}\Big)$$
+$$\rho_H\approx \frac{-1}{\ln\kappa_H}\Big(\bar m_H-\frac{1}{2}\sqrt{\mu_S(A_H-B_H)}\Big)$$
 
 where
 
-$$r_H=\ln\alpha_H+\pi_{\max}(\iota_S-1)(1-\gamma v_P/2)\frac{\rho_P}{\rho_H},$$
+$$\bar m_S=r_S-\frac{A_S}{2}(\theta_S-\bar z_S)^2\pm\frac{B_S}{2}(\bar z_H-\bar z_P)^2,$$
 
-$$r_P=\ln\alpha_P+\pi_{\max}(\iota_P-1)\big(1-e^{-2\pi R_\iota^2\rho_H}\big),$$
+$$r_H=\ln\alpha_H-A_Hv_H/2+\pi_{\max}(\iota_S-1)(1-\gamma v_P/2)\frac{\rho_P}{\rho_H}+B_H(v_H+v_P)/2,$$
+
+$$r_P=\ln\alpha_P-A_Pv_P/2+\pi_{\max}(\iota_P-1)\big(1-e^{-N_H(R_\iota)}\big)-B_P(v_H+v_P)/2,$$
 
 $$B_H\approx\gamma\pi_{\max}(1-\iota_H)\frac{\rho_P}{\rho_H}$$
 
-$$B_P\approx\gamma\pi_{\max}(\iota_P-1)\big(1-e^{-2\pi R_\iota^2\rho_H}\big)$$
+$$B_P\approx\gamma\pi_{\max}(\iota_P-1)\big(1-e^{-N_H(R_\iota)}\big).$$
 
 - Need to test these predictions against simulations...
 

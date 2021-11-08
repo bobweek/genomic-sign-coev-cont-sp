@@ -1,0 +1,18 @@
+---
+title: "Genomic & Phenotypic Distances"
+author: "bb"
+date: "11/8/2021"
+output: pdf_document
+---
+
+Assume a trait is encoded by $L$ biallelic loci in a haploid population. Normalize the effects of alleles so major alleles correspond to effect size zero. At locus $\ell$ the additive effect on trait value of the minor allele is $a_\ell$. Consider the haploid genomes of sampled individuals. For the $i$th individual this can be represented by a binary string $(I^i_1,\dots,I^i_L)$, where $I^i_\ell=0$ if it carries the major allele at the $\ell$th locus and $1$ if it carries the minor allele. Then the breeding value of the $i$th individual is given by $g_i=\sum_\ell a_\ell I^i_\ell$. The distance between the breeding values of the $i$th and $j$th individuals is naturally defined by $d_{bv}(g_i,g_j)=|g_i-g_j|$. This expands to
+
+$$d_{bv}(g_i,g_j)=\left|\sum_\ell a_\ell(I^i_\ell-I^j_\ell)\right|.$$
+
+Similarly, the genetic distance between sampled haploid genomes is commonly computed as the number of allelic differences per locus:
+
+$$\pi_{ij}=\tfrac{1}{L}\sum_\ell (1-I^i_\ell)I^j_\ell + I^i_\ell(1-I^j_\ell)$$
+
+$$=\tfrac{1}{L}\sum_\ell I^j_\ell-I^j_\ell I^i_\ell + I^i_\ell-I^i_\ell I^j_\ell=\tfrac{1}{L}\sum_\ell I^j_\ell - 2I^i_\ell I^j_\ell + I^i_\ell.$$
+
+Hmmm, dang. Was hoping some interesting relation would pop out. Not seeing anything though...
