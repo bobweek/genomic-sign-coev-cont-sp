@@ -1,5 +1,5 @@
 ---
-title: Spatial Scales of Local Adaptation and Host-Parasite Coevolution
+title: The role of geography/dispersal in patterns of local adaptation
 authors:
   - name: Bob Week
     department: Integrative Biology
