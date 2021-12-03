@@ -1,3 +1,7 @@
+require(ggplot2)
+require(gridExtra)
+require(scales)
+
 ISL = read.csv("~/gits/genomic-sign-coev-cont-sp/phenotypic/julia/ISL.csv")
 CLS = read.csv("~/gits/genomic-sign-coev-cont-sp/phenotypic/julia/CLS.csv")
 LMD = read.csv("~/gits/genomic-sign-coev-cont-sp/phenotypic/julia/LMD.csv")
@@ -18,7 +22,7 @@ ISL.pl.p = ggplot(ISL,aes(x=σₕ,y=σₚ,z=LAₚ)) +
   geom_contour(aes(colour = after_stat(level))) + 
   scale_colour_viridis_c(name="LA",labels=scientific_format()) + 
   theme_minimal() + theme(plot.title = element_text(hjust = 0.5))
-ISL.pl.h = ggplot(ISL,aes(x=σₕ,y=σₚ,z=LAₕ)) + 
+ISL.pl.h = ggplot(ISL,aes(x=σₕ,y=σₚ,z=LAₕ)) +
   scale_x_log10() + scale_y_log10() + 
   ggtitle("Host Local Adpataion") +
   geom_contour_filled(bins=100, show.legend = F) + 
@@ -52,7 +56,19 @@ grid.arrange(CLS.sml.pl.p,CLS.sml.pl.h,nrow=1)
 sml_la = which(abs(CLS.sml$`LAₕ`)==min(abs(CLS.sml$`LAₕ`)))
 CLS.sml$`σₕ`[sml_la]/CLS.sml$`σₚ`[sml_la]
 
-plot(unique(CLS.sml$`σₕ`/CLS.sml$`σₚ`),unique(CLS.sml$`LAₕ`),xlab="σₕ/σₚ",ylab="Local Adaptation",cex=0.3)
+ggplot(CLS.sml,aes(x=σₕ/σₚ)) + 
+  scale_x_log10() + 
+  geom_smooth(aes(y=LAₚ),color="red") +
+  geom_smooth(aes(y=LAₕ),color="black") +
+  annotate("text",label="Parasite",x=7.5,y=5e-6,color="red",size=3) +
+  annotate("text",label="Host",x=7.5,y=-5e-6, size=3) +
+  geom_vline(xintercept=1,linetype="dotted") +
+  ylab("Local Adaptation") +
+  xlab("Relative Dispersal Distance (Host/Parasite)") +
+  theme_minimal() + 
+  theme(text = element_text(size=10))
+
+plot(CLS.sml$`σₕ`/CLS.sml$`σₚ`,CLS.sml$`LAₕ`,xlab="σₕ/σₚ",ylab="Local Adaptation",cex=0.3)
 points(CLS.sml$`σₕ`/CLS.sml$`σₚ`,CLS.sml$`LAₚ`,cex=0.3,col="red")
 text(9,2.5e-6,"Parasite",col="red")
 text(9,-2.5e-6,"Host")
