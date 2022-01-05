@@ -1,0 +1,264 @@
+initialize() {
+	
+	initializeSLiMModelType("nonWF");
+	initializeSLiMOptions(dimensionality="xy",periodicity="xy");
+	initializeTreeSeq();
+	
+	defineConstant("L1", 5000000);
+	defineConstant("L2", 5000000);
+	
+	// will be used from computing harmonic mean of pop size
+//	defineGlobal("h_harm", c());
+//	defineGlobal("p_harm", c());
+	
+	// what is the radius in wright's nbhd size?
+	// is it simply dispersal distance or mate choice distance?
+	// perhaps it's their sum?
+	defineConstant("hSD", 1.0);  			// host dispersal distance	
+	defineConstant("pSD", 1.0);  			// parasite dispersal distance
+	defineConstant("SI", 1.0);  			// spatial interspp interaction distance
+	defineConstant("hSM", hSD);  			// host mate choice distance
+	defineConstant("pSM", pSD);  			// parasite mate choice distance
+	defineConstant("W", 100.0);  			// width and height of the simulated area
+	defineConstant("ch", 0.02); 			// strength of host competition (pop sizes need to be suff large for signal to become clear)
+	defineConstant("cp", 0.02); 			// strength of para competition	
+	defineConstant("lmbda", 2.0);			// (spatial) niche breadth (~=dispersal distance)
+	defineConstant("h_base", 1.1);		// host base fitness
+	defineConstant("p_base", 1.1);		// para base fitness
+	
+	defineConstant("hc", 0.99); 		// multiplicative cost on host fitness for each infection
+	defineConstant("pc", 0.5); 		// multiplicative cost on parasite fitness for failing to infect
+	defineConstant("pb", 1.01); 		// multiplicative benefit on parasite fitness for successful infection
+	defineConstant("minpr", 0.2);		// minimum probability of infection (when genotypes don't match)
+	defineConstant("maxpr", 9.0);		// maximum probability of infection (when genotypes do match)
+	
+	// we make two sets of loci, one for each species
+	// the first set of loci will be ignored by spp 2
+	// the second set of loci will be ignored by spp 1
+	
+	// causal loci are biallelic with two alleles denoted 0,1
+	CausalScrpt = "if (runif(1) < 0.5) 0; else 1;";
+	// need to rewrite so that if current state is X, replace with 1-X
+	initializeMutationType("m1", 0.5, "s", CausalScrpt);
+	initializeMutationType("m2", 0.5, "s", CausalScrpt);
+	
+	// m1 for host and m2 for parasite
+	m1.convertToSubstitution = F;  	// do these need to be kept?
+	m1.mutationStackPolicy = "l";  	// instead of stacking, use last mutation
+	m1.color = "yellow";	
+	m2.convertToSubstitution = F;  	// do these need to be kept?
+	m2.mutationStackPolicy = "l";	// instead of stacking, use last mutation
+	m2.color = "pink";
+	
+	// host chromosome	
+	initializeGenomicElementType("g1", m1, 1.0);
+	initializeGenomicElement(g1, 0, 2*L1);
+	
+	// para chromosome
+	initializeGenomicElementType("g2", m2, 1.0);
+	initializeGenomicElement(g2, 2*L1+1, 2*L1+2*L2+1);
+	
+	// mutation rate of 1e-8 at causal loci
+	initializeMutationRate(c(0,1e-8,0,1e-8,0),c(L1-1,L1,2*L1+L2,2*L1+L2+1,2*L1+2*L2+1));
+	
+	// make host and para loci physically unlinked
+	initializeRecombinationRate(c(1e-7,0.5,1e-7),c(2*L1,2*L1+1,2*L1+2*L2+1));
+	
+	// host spatial competition
+	initializeInteractionType(1, "xy", reciprocal=T, maxDistance=lmbda);
+
+	// parasite spatial competition
+	initializeInteractionType(2, "xy", reciprocal=T, maxDistance=lmbda);
+
+	// host mate choice
+	initializeInteractionType(3, "xy", reciprocal=T, maxDistance=hSM);
+	
+	// parasite mate choice
+	initializeInteractionType(4, "xy", reciprocal=T, maxDistance=pSM);
+	
+	// predation/parasitism
+	initializeInteractionType(5, "xy", reciprocal=T, maxDistance=SI);
+
+}
+
+// make causal mutions neutral :B
+fitness(m1) { return 1.0; }
+fitness(m2) { return 1.0; }
+
+// host mating
+reproduction(p1) {
+	mate = i3.drawByStrength(individual, 1); // find a single partner to mate with
+	if(mate.size()) {
+		nOff = rpois(1, individual.tagF);
+		for(i in seqLen(nOff)) {
+			pos = 0.5*(individual.spatialPosition + mate.spatialPosition) + rnorm(2, 0, hSD); // add dispersal
+			bb = subpop.addCrossed(individual, mate);			
+			bb = subpop.addCrossed(individual, mate);			
+			bb.setSpatialPosition(p1.pointPeriodic(pos));
+		}
+	}
+	return;
+}
+
+// parasite mating
+reproduction(p2) {
+	mate = i4.drawByStrength(individual, 1);
+	if(mate.size()) {
+		nOff = rpois(1, individual.tagF);
+		for(i in seqLen(nOff)) {
+			pos = 0.5*(individual.spatialPosition + mate.spatialPosition) + rnorm(2, 0, pSD); // add dispersal
+			bb = subpop.addCrossed(individual, mate);			
+			bb.setSpatialPosition(p2.pointPeriodic(pos));
+		}
+	}
+	return;
+}
+
+1 early() {
+	
+	// distribute a bunch of individuals uniformly in space
+	IPS = asInteger(1 * W * W); // Initial Population Size
+	sim.addSubpop("p1", IPS);
+	sim.addSubpop("p2", IPS);
+	p1.setSpatialBounds(c(0, 0, W, W));
+	p2.setSpatialBounds(c(0, 0, W, W));
+	p1.individuals.setSpatialPosition(p1.pointUniform(IPS));
+	p2.individuals.setSpatialPosition(p1.pointUniform(IPS));
+
+	// initiates standing variation at causal loci
+	g = sim.subpopulations.genomes;
+	isPlus = asLogical(rbinom(size(g), 1, 0.5));
+	g[isPlus].addNewMutation(m1, 1.0, L1);
+	g[!isPlus].addNewMutation(m1, 0.0, L1);
+	isPlus = asLogical(rbinom(size(g), 1, 0.5));
+	g[isPlus].addNewMutation(m2, 1.0, 2*L1+L2+1);
+	g[!isPlus].addNewMutation(m2, 0.0, 2*L1+L2+1);
+	
+}
+
+late() {
+
+	// will be used from computing harmonic mean of pop size
+//	if(integerMod(sim.generation,100)==0){
+//		h_harm = c(h_harm,1/length(p1.individuals));
+//		p_harm = c(p_harm,1/length(p2.individuals));
+//		catn("generation: ");
+//		catn(sim.generation);
+//		catn("\n");
+//		catn("host size: ");
+//		catn(length(h_harm));
+//		catn("\n");
+//		catn("para size: ");
+//		catn(length(p_harm));
+//		catn("\n");
+//	}
+
+	i1.evaluate(p1);
+	i2.evaluate(p2);
+	i3.evaluate(p1);
+	i4.evaluate(p2);
+	i5.evaluate(p1);
+	i5.evaluate(p2);
+		
+	// caculating the phenotype as sum of loci with mutation
+	h_trt = p1.individuals.sumOfMutationsOfType(m1);
+	p_trt = p2.individuals.sumOfMutationsOfType(m2);
+	
+	// save trait values
+	p1.individuals.z = h_trt;
+	p2.individuals.z = p_trt;
+	
+	// identify genotypes by brightness
+	for(ind in p1.individuals){
+		val = 0.25+0.75*ind.z/2;
+		ind.color = rgb2color(hsv2rgb(c(1.0, 0.0, val)));
+	}
+	for(ind in p2.individuals){
+		val = 0.25+0.75*ind.z/2;
+		ind.color = rgb2color(hsv2rgb(c(1.0, 0.0, val)));
+	}
+	
+	// compute fx of intraspp compet on host fecun
+	for(h in p1.individuals){
+		h_loc = c(h.x,h.y);
+		
+		// accumulate comp intxns
+		h_nbs = i1.nearestNeighborsOfPoint(p1, h_loc, p1.individualCount);
+//		h_comp = 0;
+//		for(hnb in h_nbs){ // using a gaussian kernel
+//			hnb_l = c(hnb.x,hnb.y);
+//			d = sum((h_loc-hnb_l)^2);
+//			h_comp = h_comp + U*U*exp(-d/2*lmbda)/sqrt(4*PI*lmbda);
+//		}
+//		h_fit = h_fit*exp(-ch*h_comp);
+		h.tagF = h_base*exp(-ch*length(h_nbs)); // using disc
+//		h.tagF = h_fit;
+		
+	}	
+	
+	// compute fx of intraspp comp on para fecun
+	// and incorporate fx of interspp intxns on host/para fecun
+	for(p in p2.individuals){
+		p_loc = c(p.x,p.y);
+		
+		// accumulate comp intxns
+		p_nbs = i2.nearestNeighborsOfPoint(p2, p_loc, p2.individualCount);
+//		p_comp = 0;
+//		for(pnb in p_nbs){
+//			pnb_l = c(pnb.x,pnb.y);
+//			d = sum((p_loc-pnb_l)^2);
+//			p_comp = p_comp + U*U*exp(-d/2*lmbda)/sqrt(4*PI*lmbda);
+//		}
+//		p_fit = p_fit*exp(-cp*p_comp);
+		p_fit = p_base*exp(-cp*length(p_nbs));
+		
+		// if there's any hosts out there
+		if( p1.individualCount > 0 ){
+			// draw hosts within radius SI of focal parasite
+			h_nbrs= i5.nearestNeighborsOfPoint(p1, p_loc, count=p1.individualCount);
+		} else h_nbrs = c();	
+		
+		// if there's hosts nearby
+		if(length(h_nbrs) > 0){
+			
+			// choose one living host at random for parasite to interact with
+			hnb = h_nbrs[rdunif(1, 0, length(h_nbrs)-1)];
+			
+			// mam-model
+			if(p_trt[p.index] == h_trt[hnb.index]){
+				inf_pr = maxpr;
+			}else inf_pr= minpr;
+			
+			// deterministic option is faster and easier to analyze
+			p_fit = (pb*inf_pr+pc*(1-inf_pr))*p_fit;
+			hnb.tagF = (hc*inf_pr+(1-inf_pr))*hnb.tagF;
+			
+		}else p_fit = pc*p_fit;	// cost of not having anyone to infect
+		// note: each parasite infects at most one host, but each host can be infected by multiple parasites
+		//			hence, if a host is infected by three parasites it will incur the fitness cost of hc^3
+		p.tagF = p_fit;
+	}
+		
+	// forces non-overlapping generations
+	p1.individuals.fitnessScaling = 0;
+	p2.individuals.fitnessScaling = 0;
+	
+}
+
+modifyChild(p1) {
+	pos = parent1.spatialPosition + rnorm(2, 0, hSD);
+	child.setSpatialPosition(p1.pointPeriodic(pos));
+	return T;
+}
+
+modifyChild(p2) {
+	pos = parent1.spatialPosition + rnorm(2, 0, pSD);
+	child.setSpatialPosition(p1.pointPeriodic(pos));
+	return T;
+}
+
+1000 early() {
+	sim.treeSeqOutput("~/mam.trees");
+	catn("Done.");
+   sim.simulationFinished();
+}
