@@ -1,11 +1,12 @@
+import time # for timing computations
 import allel
+import pyslim # for pulling model parameters from metadata
 import numpy as np
-import skgstat as skg
 import matplotlib.pyplot as plt 
 import mam_classes_fcts as cf
 # from sklearn.neighbors import KernelDensity
 # from sklearn.model_selection import GridSearchCV
-from scipy.stats import t, normaltest, kstest, anderson, shapiro, binned_statistic
+from scipy.stats import t, normaltest, kstest, anderson, shapiro
 
 # for reloading custom module while developing
 import importlib
@@ -16,7 +17,8 @@ import importlib
 #
 
 # yields type(sys) = System
-sys = cf.loadUp('host.mam.txt','parasite.mam.txt','causL.mam.txt','host.mam.vcf','parasite.mam.vcf')
+sys = cf.loadUp('host.mam.txt','parasite.mam.txt','causL.mam.txt',
+                'h_snps.csv','p_snps.csv','host.mam.npy','para.mam.npy')
 
 #
 # drop low frequency loci (prevents large spurious correlations when we discretize)
@@ -24,6 +26,8 @@ sys = cf.loadUp('host.mam.txt','parasite.mam.txt','causL.mam.txt','host.mam.vcf'
 
 # yields type(sys) = System
 sys = cf.dropSmolFreqs(sys, p_min=0.2)
+np.savetxt("h_midfreq_snps.csv", sys.h.snp, delimiter=",")
+np.savetxt("p_midfreq_snps.csv", sys.p.snp, delimiter=",")
 
 #
 # identify independent loci in each species to form null distribution(s)
@@ -63,9 +67,9 @@ h, p = dis_sys
 
 cf.plot_p(dis_sys,res)
 
-# #
-# # filter loci using single spp Fst patterns (hold off for now)
-# #
+#
+# filter loci using single spp Fst patterns (hold off for now)
+#
 
 # how does host-para coev affect Fst?
 h_Fst, p_Fst = cf.Fst(dis_sys)
@@ -94,7 +98,16 @@ h, p = dis_sys
 #
 
 # compute
+time_start = time.clock_gettime(0)
 iscaf = cf.discaf(dis_sys)
+time_elapsed = (time.clock_gettime(0) - time_start)
+np.savetxt("ild.csv", iscaf, delimiter=",")
+
+iscaf = np.loadtxt("ild.csv", delimiter=",")
+
+iscaf[sys.h.causL,sys.p.causL]
+
+# THOT: iscaf defines a bipartite network...
 
 # fit a t-distr
 t_stats = []
@@ -217,6 +230,9 @@ for i in np.arange(res**2):
 hpchol = np.linalg.cholesky(np.linalg.inv(hpcov))
 ppchol = np.linalg.cholesky(np.linalg.inv(ppcov))
 
+# make block cov-matrix
+blkcov = np.zeros((2*res,2*res))
+
 # decorrelate
 hp_ucnr = np.zeros((len(h_normies),res**2))
 k = 0
@@ -333,17 +349,18 @@ plt.close()
 # estimate selection coefficients
 #
 
-# first define model parameters (eventually pull from file)
+# first define model parameters (pulled from tree seq file)
+ts = pyslim.load("mam.trees")
 pars = cf.Pars(
-    SI=0.5,         # spatial interspp intxn dist
-    hc = 0.8,       # multiplicative cost on host fitness for each infection
-    pc = 0.6,       # multiplicative cost on parasite fitness for failing to infect
-    pb = 1.3,       # multiplicative benefit on parasite fitness for successful infection
-    minpr = 0.1,    # minimum probability of infection
-    maxpr = 1.0,    # maximum probability of infection
-    lmbda = 0.5,    # width of spatial niche
-    ch = 0.005,     # strength of host competition
-    cp = 0.005)     # strength of para competition
+    SI = ts.metadata["SLiM"]["user_metadata"]["SI"][0],         # spatial interspp intxn dist
+    hc = ts.metadata["SLiM"]["user_metadata"]["hc"][0],       # multiplicative cost on host fitness for each infection
+    pc = ts.metadata["SLiM"]["user_metadata"]["pc"][0],       # multiplicative cost on parasite fitness for failing to infect
+    pb = ts.metadata["SLiM"]["user_metadata"]["pb"][0],       # multiplicative benefit on parasite fitness for successful infection
+    minpr = ts.metadata["SLiM"]["user_metadata"]["minpr"][0],    # minimum probability of infection
+    maxpr = ts.metadata["SLiM"]["user_metadata"]["maxpr"][0],    # maximum probability of infection
+    lmbda = ts.metadata["SLiM"]["user_metadata"]["lmbda"][0],    # width of spatial niche
+    ch = ts.metadata["SLiM"]["user_metadata"]["ch"][0],     # strength of host competition
+    cp = ts.metadata["SLiM"]["user_metadata"]["cp"][0])     # strength of para competition
 
 # compute global selection coefficients
 h_s, p_s = cf.glbl_selCoeffs(sys, pars, h_pr=1.0, p_pr=1.0)

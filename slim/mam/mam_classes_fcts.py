@@ -1,11 +1,9 @@
 import numpy as np
 import allel
 import pandas as pd
-from scipy import stats
 from scipy import spatial
 from scipy.interpolate import griddata
 from scipy.ndimage.filters import gaussian_filter
-from sklearn.neighbors import KernelDensity
 from dataclasses import dataclass
 import matplotlib.pyplot as plt 
 
@@ -30,10 +28,11 @@ class Pars:
 class Species:
     gt: allel.GenotypeArray # genotype array of the species
     pos: np.ndarray         # geo positions of individuals
+    snp: np.ndarray         # genomic positions of snps
     trt: np.ndarray         # trait values of individuals
     causL: int              # genomic position of causal locus
     def __iter__(self):
-        return iter((self.gt, self.pos, self.trt, self.causL))
+        return iter((self.gt, self.pos, self.snp, self.trt, self.causL))
 
 # position and genotype information dataclass for whole system
 @dataclass
@@ -49,11 +48,12 @@ class discSpecies:
     p: np.ndarray       # allele frequencies in each cell
     G: np.ndarray       # genetic variance in each cell
     N: np.ndarray       # abundances in each cell
+    snp: np.ndarray     # genomic positions of snps
     trt: list           # trait values of individuals in each cell
     causL: int          # genomic position of causal locus
     S: int              # number of variant loci being tracked
     def __iter__(self):
-        return iter((self.f_c, self.f_n, self.N, self.trt, self.causL, self.S))
+        return iter((self.f_c, self.f_n, self.N, self.snp, self.trt, self.causL, self.S))
 
 # same as System, but with discretized spatial positions
 @dataclass
@@ -63,23 +63,23 @@ class discSystem:
     def __iter__(self):
         return iter((self.h, self.p))
 
-def loadUp(hmet,pmet,causL,hvcf,pvcf):
+def loadUp(hmet,pmet,causL,hsnp,psnp,hga,pga):
     # read in positions and trait values for each sample
     h_metadat = pd.read_csv(hmet, delimiter = "\t")
     p_metadat = pd.read_csv(pmet, delimiter = "\t")
+
+    # read in positions and trait values for each sample
+    h_snp = np.loadtxt(hsnp, delimiter=",")
+    p_snp = np.loadtxt(psnp, delimiter=",")
 
     # read in genomic positions of causal loci
     causL_dat = pd.read_csv(causL, delimiter = "\t")
     h_causL = causL_dat["h"][0]
     p_causL = causL_dat["p"][0]
 
-    # read in vcf files
-    h_callset = allel.read_vcf(hvcf)
-    p_callset = allel.read_vcf(pvcf)
-
     # pull out genotype arrays
-    h_gt = allel.GenotypeArray(h_callset['calldata/GT'])
-    p_gt = allel.GenotypeArray(p_callset['calldata/GT'])
+    h_gt = allel.GenotypeArray(np.load(hga))
+    p_gt = allel.GenotypeArray(np.load(pga))
 
     # pull out positions and trait values
     h_pos = np.array(h_metadat[['x','y']])
@@ -90,8 +90,8 @@ def loadUp(hmet,pmet,causL,hvcf,pvcf):
     # combine genotype arrays, geo positions,
     # traits and positions of causal loci
     # into one dataclass to rule them all
-    h = Species(gt=h_gt, pos=h_pos, trt=h_trt, causL=h_causL)
-    p = Species(gt=p_gt, pos=p_pos, trt=p_trt, causL=p_causL)
+    h = Species(gt=h_gt, pos=h_pos, snp=h_snp, trt=h_trt, causL=h_causL)
+    p = Species(gt=p_gt, pos=p_pos, snp=p_snp, trt=p_trt, causL=p_causL)
     sys = System(h=h,p=p)
 
     return sys
@@ -102,8 +102,8 @@ def glbl_selCoeffs(sys,pars,h_pr,p_pr):
     # unpack data
     # note: gt & causL are not used
     h, p = sys
-    h_gt, h_pos, h_trt, h_causL = h
-    p_gt, p_pos, p_trt, p_causL = p
+    h_gt, h_pos, h_snp, h_trt, h_causL = h
+    p_gt, p_pos, p_snp, p_trt, p_causL = p
 
     # unpack pars
     SI, hc, pc, pb, minpr, maxpr, lmbda, ch, cp = pars
@@ -197,8 +197,8 @@ def dropSmolFreqs(sys, p_min):
 
     # unpack data
     h, p = sys
-    h_gt, h_pos, h_trt, h_causL = h
-    p_gt, p_pos, p_trt, p_causL = p
+    h_gt, h_pos, h_snp, h_trt, h_causL = h
+    p_gt, p_pos, p_snp, p_trt, p_causL = p
 
     h_glb_ac = h_gt.count_alleles()
     h_ply1 = h_glb_ac[:,0]/(h_glb_ac[:,0]+h_glb_ac[:,1]) > p_min # ancestl allele freq at least f_min
@@ -211,16 +211,22 @@ def dropSmolFreqs(sys, p_min):
     p_ply1 = p_glb_ac[:,0]/(p_glb_ac[:,0]+p_glb_ac[:,1]) > p_min # ancestl allele freq at least f_min
     p_ply2 = p_glb_ac[:,1]/(p_glb_ac[:,0]+p_glb_ac[:,1]) > p_min # derived allele freq at least f_min
     p_poly = [a and b for a, b in zip(p_ply1.tolist(), p_ply2.tolist())]
-    p_poly[p_causL] = False # make sure throw away causal locus
+    p_poly[p_causL] = False # make sure throw away causal locus because we need to splice in later
     p_gt = p_gt[p_poly,:,:]
 
-    # recalculate genomic positions of causal loci
+    # update genomic positions of snps
+    h_poly[h_causL] = True # keep causal loci to save positions
+    p_poly[p_causL] = True
+    h_snp = h_snp[h_poly]
+    p_snp = p_snp[p_poly]
+
+    # recalculate positions of causal loci
     h_causL = sum(h_poly[0:h_causL])
     p_causL = sum(p_poly[0:p_causL])
 
     # pack it up
-    h = Species(gt=h_gt, pos=h_pos, trt=h_trt, causL=h_causL)
-    p = Species(gt=p_gt, pos=p_pos, trt=p_trt, causL=p_causL)
+    h = Species(gt=h_gt, pos=h_pos, snp=h_snp, trt=h_trt, causL=h_causL)
+    p = Species(gt=p_gt, pos=p_pos, snp=p_snp, trt=p_trt, causL=p_causL)
     sys = System(h=h,p=p)
 
     return sys
@@ -229,8 +235,8 @@ def discSpace(sys, width, height, res):
 
     # unpack data
     h, p = sys
-    h_gt, h_pos, h_trt, h_causL = h
-    p_gt, p_pos, p_trt, p_causL = p
+    h_gt, h_pos, h_snp, h_trt, h_causL = h
+    p_gt, p_pos, p_snp, p_trt, p_causL = p
 
     # bin space
     hor_bins = width*np.arange(res)/res
@@ -326,8 +332,8 @@ def discSpace(sys, width, height, res):
     p_G = pbn_p*(1-pbn_p)
 
     # pack it up
-    h = discSpecies(p=hbn_p, G=h_G, N=hbn_N, trt=hbn_trt, causL=h_causL, S=(h_S+1))
-    p = discSpecies(p=pbn_p, G=p_G, N=pbn_N, trt=pbn_trt, causL=p_causL, S=(p_S+1))
+    h = discSpecies(p=hbn_p, G=h_G, N=hbn_N, snp=h_snp, trt=hbn_trt, causL=h_causL, S=(h_S+1))
+    p = discSpecies(p=pbn_p, G=p_G, N=pbn_N, snp=h_snp, trt=pbn_trt, causL=p_causL, S=(p_S+1))
     dis_sys = discSystem(h=h,p=p)
 
     return dis_sys

@@ -1,3 +1,0 @@
-Plot (pheno_distance,N_shared_alleles) 
-
-rachel: try pca on genomes, but color by phenotype

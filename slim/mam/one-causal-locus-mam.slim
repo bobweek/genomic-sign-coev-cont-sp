@@ -4,33 +4,42 @@ initialize() {
 	initializeSLiMOptions(dimensionality="xy",periodicity="xy");
 	initializeTreeSeq();
 	
-	defineConstant("L1", 5000000);
-	defineConstant("L2", 5000000);
-	
 	// will be used from computing harmonic mean of pop size
-//	defineGlobal("h_harm", c());
-//	defineGlobal("p_harm", c());
+	//	defineGlobal("h_harm", c());
+	//	defineGlobal("p_harm", c());	
 	
-	// what is the radius in wright's nbhd size?
-	// is it simply dispersal distance or mate choice distance?
-	// perhaps it's their sum?
-	defineConstant("hSD", 1.0);  			// host dispersal distance	
-	defineConstant("pSD", 1.0);  			// parasite dispersal distance
-	defineConstant("SI", 1.0);  			// spatial interspp interaction distance
+	defaults = Dictionary(
+		"Lh", 500000,
+		"Lp", 500000,
+		"hSD", 1.0,  			// host dispersal distance	
+		"pSD", 1.0,  			// parasite dispersal distance
+		"SI", 1.0,  			// spatial interspp interaction distance
+		"W", 100.0,  			// width and height of the simulated area
+		"ch", 0.02, 			// strength of host competition
+		"cp", 0.02, 			// strength of para competition	
+		"lmbda", 2.0,			// (spatial) niche breadth
+		"h_base", 2.0,		// host base fitness
+		"p_base", 1.1,		// para base fitness
+		"hc", 0.99, 		// multiplicative cost on host fitness for each infection
+		"pc", 0.5, 		// multiplicative cost on parasite fitness for failing to infect
+		"pb", 1.01, 		// multiplicative benefit on parasite fitness for successful infection
+		"minpr", 0.2,		// minimum probability of infection (when genotypes don't match)
+		"maxpr", 9.0		// maximum probability of infection (when genotypes do match)
+		);		
+	catn("-------------\n");
+	for (k in defaults.allKeys) {
+		if (!exists(k)) {
+			defineConstant(k, defaults.getValue(k));
+		} else {
+			defaults.setValue(k, executeLambda(paste(c(k, ";"), sep='')));
+		}
+		catn("  " + k + ": " + defaults.getValue(k));
+	}
+	catn("-------------\n");
+	defineGlobal("params", defaults);
 	defineConstant("hSM", hSD);  			// host mate choice distance
 	defineConstant("pSM", pSD);  			// parasite mate choice distance
-	defineConstant("W", 100.0);  			// width and height of the simulated area
-	defineConstant("ch", 0.02); 			// strength of host competition (pop sizes need to be suff large for signal to become clear)
-	defineConstant("cp", 0.02); 			// strength of para competition	
-	defineConstant("lmbda", 2.0);			// (spatial) niche breadth (~=dispersal distance)
-	defineConstant("h_base", 1.1);		// host base fitness
-	defineConstant("p_base", 1.1);		// para base fitness
 	
-	defineConstant("hc", 0.99); 		// multiplicative cost on host fitness for each infection
-	defineConstant("pc", 0.5); 		// multiplicative cost on parasite fitness for failing to infect
-	defineConstant("pb", 1.01); 		// multiplicative benefit on parasite fitness for successful infection
-	defineConstant("minpr", 0.2);		// minimum probability of infection (when genotypes don't match)
-	defineConstant("maxpr", 9.0);		// maximum probability of infection (when genotypes do match)
 	
 	// we make two sets of loci, one for each species
 	// the first set of loci will be ignored by spp 2
@@ -52,17 +61,17 @@ initialize() {
 	
 	// host chromosome	
 	initializeGenomicElementType("g1", m1, 1.0);
-	initializeGenomicElement(g1, 0, 2*L1);
+	initializeGenomicElement(g1, 0, 2*Lh);
 	
 	// para chromosome
 	initializeGenomicElementType("g2", m2, 1.0);
-	initializeGenomicElement(g2, 2*L1+1, 2*L1+2*L2+1);
+	initializeGenomicElement(g2, 2*Lh+1, 2*Lh+2*Lp+1);
 	
 	// mutation rate of 1e-8 at causal loci
-	initializeMutationRate(c(0,1e-8,0,1e-8,0),c(L1-1,L1,2*L1+L2,2*L1+L2+1,2*L1+2*L2+1));
+	initializeMutationRate(c(0,1e-8,0,1e-8,0),c(Lh-1,Lh,2*Lh+Lp,2*Lh+Lp+1,2*Lh+2*Lp+1));
 	
 	// make host and para loci physically unlinked
-	initializeRecombinationRate(c(1e-7,0.5,1e-7),c(2*L1,2*L1+1,2*L1+2*L2+1));
+	initializeRecombinationRate(1e-7);
 	
 	// host spatial competition
 	initializeInteractionType(1, "xy", reciprocal=T, maxDistance=lmbda);
@@ -92,7 +101,6 @@ reproduction(p1) {
 		nOff = rpois(1, individual.tagF);
 		for(i in seqLen(nOff)) {
 			pos = 0.5*(individual.spatialPosition + mate.spatialPosition) + rnorm(2, 0, hSD); // add dispersal
-			bb = subpop.addCrossed(individual, mate);			
 			bb = subpop.addCrossed(individual, mate);			
 			bb.setSpatialPosition(p1.pointPeriodic(pos));
 		}
@@ -128,11 +136,11 @@ reproduction(p2) {
 	// initiates standing variation at causal loci
 	g = sim.subpopulations.genomes;
 	isPlus = asLogical(rbinom(size(g), 1, 0.5));
-	g[isPlus].addNewMutation(m1, 1.0, L1);
-	g[!isPlus].addNewMutation(m1, 0.0, L1);
+	g[isPlus].addNewMutation(m1, 1.0, Lh);
+	g[!isPlus].addNewMutation(m1, 0.0, Lh);
 	isPlus = asLogical(rbinom(size(g), 1, 0.5));
-	g[isPlus].addNewMutation(m2, 1.0, 2*L1+L2+1);
-	g[!isPlus].addNewMutation(m2, 0.0, 2*L1+L2+1);
+	g[isPlus].addNewMutation(m2, 1.0, 2*Lh+Lp+1);
+	g[!isPlus].addNewMutation(m2, 0.0, 2*Lh+Lp+1);
 	
 }
 
@@ -181,36 +189,16 @@ late() {
 	// compute fx of intraspp compet on host fecun
 	for(h in p1.individuals){
 		h_loc = c(h.x,h.y);
-		
-		// accumulate comp intxns
-		h_nbs = i1.nearestNeighborsOfPoint(p1, h_loc, p1.individualCount);
-//		h_comp = 0;
-//		for(hnb in h_nbs){ // using a gaussian kernel
-//			hnb_l = c(hnb.x,hnb.y);
-//			d = sum((h_loc-hnb_l)^2);
-//			h_comp = h_comp + U*U*exp(-d/2*lmbda)/sqrt(4*PI*lmbda);
-//		}
-//		h_fit = h_fit*exp(-ch*h_comp);
-		h.tagF = h_base*exp(-ch*length(h_nbs)); // using disc
-//		h.tagF = h_fit;
-		
+		h_nbs = i1.interactingNeighborCount(h);
+		h.tagF = h_base*exp(-ch*h_nbs);
 	}	
 	
 	// compute fx of intraspp comp on para fecun
 	// and incorporate fx of interspp intxns on host/para fecun
 	for(p in p2.individuals){
 		p_loc = c(p.x,p.y);
-		
-		// accumulate comp intxns
-		p_nbs = i2.nearestNeighborsOfPoint(p2, p_loc, p2.individualCount);
-//		p_comp = 0;
-//		for(pnb in p_nbs){
-//			pnb_l = c(pnb.x,pnb.y);
-//			d = sum((p_loc-pnb_l)^2);
-//			p_comp = p_comp + U*U*exp(-d/2*lmbda)/sqrt(4*PI*lmbda);
-//		}
-//		p_fit = p_fit*exp(-cp*p_comp);
-		p_fit = p_base*exp(-cp*length(p_nbs));
+		p_nbs = i2.interactingNeighborCount(p);
+		p_fit = p_base*exp(-cp*p_nbs);
 		
 		// if there's any hosts out there
 		if( p1.individualCount > 0 ){
@@ -257,8 +245,8 @@ modifyChild(p2) {
 	return T;
 }
 
-1000 early() {
-	sim.treeSeqOutput("~/mam.trees");
+1000 late() {
+	sim.treeSeqOutput("mam.trees", metadata=params);
 	catn("Done.");
    sim.simulationFinished();
 }
