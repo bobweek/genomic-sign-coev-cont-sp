@@ -134,6 +134,7 @@ reproduction(p2) {
 	p2.individuals.setSpatialPosition(p1.pointUniform(IPS));
 
 	// initiates standing variation at causal loci
+	sim.readFromPopulationFile(msprime_file);
 	g = sim.subpopulations.genomes;
 	isPlus = asLogical(rbinom(size(g), 1, 0.5));
 	g[isPlus].addNewMutation(m1, 1.0, Lh);
