@@ -187,6 +187,15 @@ p_normies = np.where(np.array(p_shaps) < 0.05)[0]
 # so we can apply students t
 #
 
+# things to do with fft:
+#   - comput cov fct for each locus
+#       - compute spatial scale for each locus
+#       - compute distr of sp scales across loci
+#   - compute cross-cov fct between spp for some pairs of loci
+#       - instead of sps = abs(sfft)**2/res**2
+#       - do cps = abs(hfft)*abs(pfft)/res**2
+#       - seems like a useful thing...
+
 # estimate covariance function
 # this assumes allele freq surfs are sampled from same distribution
 # so we can average spatial power spectra across loci to obtain cov
@@ -209,6 +218,18 @@ for l in p_normies:
     k += 1
 ppsd = np.mean(pps,axis=0)
 pcov = np.fft.irfft2(ppsd)
+
+# don't do all combos, this seems like a bad idea
+cps = np.zeros((len(h_normies)*len(p_normies),res,res//2+1))
+k = 0
+for l_h in h_normies:
+    for l_p in p_normies:
+        hfft = np.fft.rfft2(h.p[l_h,:,:]-hpmean)
+        pfft = np.fft.rfft2(p.p[l_p,:,:]-ppmean)
+        cps[k,:,:] = hfft*np.conj(pfft)/res**2
+        k += 1
+cpsd = np.mean(cps,axis=0)
+ccov = np.fft.irfft2(cpsd) # should be zero everywhere
 
 # once the covariance function is obtained need to compute expctd covariance
 # of allele freqs at a single locus w/in a spp between every pair of cells
