@@ -1,8 +1,10 @@
+from os import unlink
 import time # for timing computations
 import allel
 import pyslim # for pulling model parameters from metadata
 import numpy as np
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
+import scipy 
 import mam_classes_fcts as cf
 # from sklearn.neighbors import KernelDensity
 # from sklearn.model_selection import GridSearchCV
@@ -42,6 +44,8 @@ pnlnkd = allel.locate_unlinked(pgt_sqsh)
 # splice in flag to ignore causal loci
 h_unlinked = np.arange(sys.h.gt.n_variants+1)[np.concatenate((hnlnkd[:sys.h.causL],np.full(1,False),hnlnkd[sys.h.causL:]))]
 p_unlinked = np.arange(sys.p.gt.n_variants+1)[np.concatenate((pnlnkd[:sys.p.causL],np.full(1,False),pnlnkd[sys.p.causL:]))]
+
+# NEED TO REMOVE LOCI THAT ARE "TOO CLOSE" TO CAUSAL LOCI
 
 #
 # discretize space into res x res grid of cells
@@ -105,7 +109,10 @@ np.savetxt("ild.csv", iscaf, delimiter=",")
 
 iscaf = np.loadtxt("ild.csv", delimiter=",")
 
-iscaf[sys.h.causL,sys.p.causL]
+# pull out iscaf across unlinked loci
+iscaf_unlinked = iscaf[h_unlinked,:][:,p_unlinked]
+
+iscaf[h.causL,p.causL]
 
 # THOT: iscaf defines a bipartite network...
 
@@ -140,17 +147,8 @@ cf.csl_mnhtn_plts(abs(iscaf),dis_sys)
 # distribution of iscaf across independent (w/in spp) loci
 #
 
-# pull out iscaf across unlinked loci
-iscaf_unlinked = abs(iscaf[h_unlinked,:][:,p_unlinked])
-
-# make histogram of iscaf at unlinked loci and superimpose causal iscaf
-# eventually use cross-val to find best bandwidth
-# grid = GridSearchCV(KernelDensity(),
-#                     {'bandwidth': np.linspace(0.1, 5.0, 30)},
-#                     cv=20) # 20-fold cross-validation
-# grid.fit(np.array(iscaf_unlinked).reshape(-1,1))
-# print grid.best_params_
-cf.iscaf_plts(iscaf,abs(iscaf[h.causL,p.causL]))
+# make histogram of iscaf and superimpose causal iscaf
+cf.iscaf_plts(iscaf_unlinked,iscaf[h.causL,p.causL])
 
 #
 # does student's t-distr apply?
@@ -176,8 +174,10 @@ for l in p_unlinked:
 # just using shapiro-wilks test for now
 h_normies = np.where(np.array(h_shaps) < 0.05)[0]
 p_normies = np.where(np.array(p_shaps) < 0.05)[0]
+h_normies = h_unlinked
+p_normies = p_unlinked
 
-# proportion of loci that are non-normal
+# proportion of loci ignoring
 # worth finding a transform to try and normalize (logit)?
 1-len(h_normies)/len(h_shaps)
 1-len(p_normies)/len(p_shaps)
@@ -191,142 +191,364 @@ p_normies = np.where(np.array(p_shaps) < 0.05)[0]
 #   - comput cov fct for each locus
 #       - compute spatial scale for each locus
 #       - compute distr of sp scales across loci
-#   - compute cross-cov fct between spp for some pairs of loci
-#       - instead of sps = abs(sfft)**2/res**2
-#       - do cps = abs(hfft)*abs(pfft)/res**2
-#       - seems like a useful thing...
 
 # estimate covariance function
 # this assumes allele freq surfs are sampled from same distribution
 # so we can average spatial power spectra across loci to obtain cov
-hpmean = np.mean(h.p.flatten())
-hps = np.zeros((len(h_normies),res,res//2+1))
+
+from scipy import signal, linalg
+
+# should all unlinked neutral loci have same expected allele freq?
+
+dists = np.zeros((res,res)) # dists corresponding cov fct
+for i in np.arange(res):
+    for j in np.arange(res):
+        if i<(res/2) and j<(res/2):
+            dists[i,j] = np.sqrt(i**2+j**2)
+        elif i>=(res/2) and j>=(res/2):
+            ii = res-i
+            jj = res-j
+            dists[i,j] = np.sqrt(ii**2+jj**2)
+        elif i>=(res/2) and j<(res/2):
+            ii = res-i
+            dists[i,j] = np.sqrt(ii**2+j**2)
+        elif i<(res/2) and j>=(res/2):
+            jj = res-j
+            dists[i,j] = np.sqrt(i**2+jj**2)
+d = np.unique(dists)
+freqs = np.zeros((res,res//2+1)) # freqs corresponding 2 psd fct
+for i in np.arange(res):
+    for j in np.arange(res//2+1):
+        if i<(res/2):
+            freqs[i,j] = np.sqrt(i**2+j**2)
+        else:
+            ii = res-i
+            freqs[i,j] = np.sqrt(ii**2+j**2)
+f = np.unique(freqs)
+
+hcov_fcts = np.zeros((len(h_normies),len(d)))
+pcov_fcts = np.zeros((len(p_normies),len(d)))
+hpsd_fcts = np.zeros((len(h_normies),len(f)))
+ppsd_fcts = np.zeros((len(p_normies),len(f)))
+
+hfft = np.zeros((len(h_normies),res,res//2+1), dtype=complex)
+hps = np.zeros((len(h_normies),res,res//2+1)) # ps = power spectrum
+hcovs = np.zeros((len(h_normies),res,res)) # cov fct per locus
+Vhs = np.zeros(len(h_normies))  # marginal variance per locus
+xihs = np.zeros(len(h_normies)) # spatial scale per locus
 k = 0
-for l in h_normies:
-    hfft = np.fft.rfft2(h.p[l,:,:]-hpmean)
-    hps[k,:,:] = abs(hfft)**2/res**2
+for l in h_normies:    
+    hps[k,:,:], hcovs[k,:,:] = cf.fft_cov(h.p[l,:,:],h.p[l,:,:])
+    for dst in np.arange(len(d)):         # est cov fct
+        coords = np.where(dists==d[dst])
+        n = len(coords[0])
+        h_sum = 0
+        for m in np.arange(n):
+            i = coords[0][m]
+            j = coords[1][m]
+            h_sum += hcovs[k,i,j]
+        hcov_fcts[k,dst] = h_sum/n
+    for frq in np.arange(len(f)):
+        coords = np.where(freqs==f[frq])
+        n = len(coords[0])
+        h_sum = 0
+        for m in np.arange(n):
+            i = coords[0][m]
+            j = coords[1][m]
+            h_sum += hps[k,i,j]
+        hpsd_fcts[k,frq] = h_sum/n
+    # tail end of cov fct tends be garbage
+    # so only look up to first negative point
+    # to estimate the spatial scale
+    neg = min(np.where(hcov_fcts[k,:]<0)[0])
+    Vhs[k] = hcovs[k,0,0]
+    y = np.log(hcov_fcts[k,1:neg]/Vhs[k])
+    xihs[k] = -np.mean(d[1:neg]/y)    # fit exponential cov fct
     k += 1
 hpsd = np.mean(hps,axis=0)
 hcov = np.fft.irfft2(hpsd)
 
-ppmean = np.mean(p.p.flatten())
 pps = np.zeros((len(p_normies),res,res//2+1))
+pcovs = np.zeros((len(p_normies),res,res))
+Vps = np.zeros(len(p_normies))  # marginal variance per locus
+xips = np.zeros(len(p_normies)) # spatial scale per locus
 k = 0
 for l in p_normies:
-    pfft = np.fft.rfft2(p.p[l,:,:]-ppmean)
-    pps[k,:,:] = abs(pfft)**2/res**2
+    pps[k,:,:], pcovs[k,:,:] = cf.fft_cov(p.p[l,:,:],p.p[l,:,:])
+    for dst in np.arange(len(d)):         # est cov fct
+        coords = np.where(dists==d[dst])
+        n = len(coords[0])
+        p_sum = 0
+        for m in np.arange(n):
+            i = coords[0][m]
+            j = coords[1][m]
+            p_sum += pcovs[k,i,j]
+        pcov_fcts[k,dst] = p_sum/n
+    for frq in np.arange(len(f)): # replace with a build_fct function
+        coords = np.where(freqs==f[frq])
+        n = len(coords[0])
+        p_sum = 0
+        for m in np.arange(n):
+            i = coords[0][m]
+            j = coords[1][m]
+            p_sum += pps[k,i,j]
+        ppsd_fcts[k,frq] = p_sum/n
+    neg = min(np.where(pcov_fcts[k,:]<0)[0])
+    Vps[k] = pcovs[k,0,0]
+    y = np.log(pcov_fcts[k,1:neg]/Vps[k])
+    xips[k] = -np.mean(d[1:neg]/y)    # fit exponential cov fct
     k += 1
 ppsd = np.mean(pps,axis=0)
 pcov = np.fft.irfft2(ppsd)
 
-# don't do all combos, this seems like a bad idea
-cps = np.zeros((len(h_normies)*len(p_normies),res,res//2+1))
+hcsl_ps, hcsl_cov = cf.fft_cov(h.p[h.causL,:,:],h.p[h.causL,:,:])
+pcsl_ps, pcsl_cov = cf.fft_cov(p.p[p.causL,:,:],p.p[p.causL,:,:])
+hcov_fct = np.zeros(len(d))
+pcov_fct = np.zeros(len(d))
+hpsd_fct = np.zeros(len(f))
+ppsd_fct = np.zeros(len(f))
+hcsl_cov_fct = np.zeros(len(d))
+pcsl_cov_fct = np.zeros(len(d))
+hcsl_psd_fct = np.zeros(len(f))
+pcsl_psd_fct = np.zeros(len(f))
+for dst in np.arange(len(d)):
+    coords = np.where(dists==d[dst])
+    n = len(coords[0])
+    h_sum = 0
+    p_sum = 0
+    hcsl_sum = 0
+    pcsl_sum = 0
+    for m in np.arange(n):
+        i = coords[0][m]
+        j = coords[1][m]
+        h_sum += hcov[i,j]
+        p_sum += pcov[i,j]
+        hcsl_sum += hcsl_cov[i,j]
+        pcsl_sum += pcsl_cov[i,j]
+    hcov_fct[dst] = h_sum/n
+    pcov_fct[dst] = p_sum/n
+    hcsl_cov_fct[dst] = hcsl_sum/n
+    pcsl_cov_fct[dst] = pcsl_sum/n
+for frq in np.arange(len(f)): # replace with a build_fct function
+    coords = np.where(freqs==f[frq])
+    n = len(coords[0])
+    h_sum = 0
+    p_sum = 0
+    hcsl_sum = 0
+    pcsl_sum = 0
+    for m in np.arange(n):
+        i = coords[0][m]
+        j = coords[1][m]
+        h_sum += hpsd[i,j]
+        p_sum += ppsd[i,j]
+        hcsl_sum += hcsl_ps[i,j]
+        pcsl_sum += pcsl_ps[i,j]
+    hpsd_fct[frq] = h_sum/n
+    ppsd_fct[frq] = p_sum/n
+    hcsl_psd_fct[frq] = hcsl_sum/n
+    pcsl_psd_fct[frq] = pcsl_sum/n
+
+neg = min(np.where(hcov_fct<0)[0])
+Vh = hcov[0,0]
+y = np.log(hcov_fct[1:neg]/Vh)
+xih = -np.mean(d[1:neg]/y)      # fit exponential cov fct
+
+neg = min(np.where(pcov_fct<0)[0])
+Vp = hcov[0,0]
+y = np.log(pcov_fct[1:neg]/Vp)
+xip = -np.mean(d[1:neg]/y)      # fit exponential cov fct
+
+neg = min(np.where(hcsl_cov_fct<0)[0])
+Vh_csl = hcsl_cov[0,0]
+y = np.log(hcsl_cov_fct[1:neg]/Vh_csl)
+xih_csl = -np.mean(d[1:neg]/y)      # fit exponential cov fct
+len(np.where(xihs>xih_csl)[0])/len(xihs) # interesting...
+
+neg = min(np.where(pcsl_cov_fct<0)[0])
+Vp_csl = pcsl_cov[0,0]
+y = np.log(pcsl_cov_fct[1:neg]/Vp_csl)
+xip_csl = -np.mean(d[1:neg]/y)      # fit exponential cov fct
+len(np.where(xips>xip_csl)[0])/len(xips) # bummer
+
+# visual inspection of cov fcts suggest nu = 0.5
+# that is, cov fcts are decaying exp fcts
+# and should be fit up to first negative value as tail end is garbage
+plt.figure()
+plt.scatter(x=d,y=hcov_fct)
+plt.savefig('hcov_fct.png')
+plt.close()
+plt.figure()
+plt.scatter(x=d,y=pcov_fct)
+plt.savefig('pcov_fct.png')
+plt.close()
+plt.figure()
+plt.scatter(x=d,y=hcsl_cov_fct)
+plt.savefig('hcsl_cov_fct.png')
+plt.close()
+plt.figure()
+plt.scatter(x=d,y=pcsl_cov_fct)
+plt.savefig('pcsl_cov_fct.png')
+plt.close()
+
+plt.figure()
+plt.scatter(x=d,y=hpsd_fct)
+plt.savefig('hpsd_fct.png')
+plt.close()
+plt.figure()
+plt.scatter(x=d,y=ppsd_fct)
+plt.savefig('ppsd_fct.png')
+plt.close()
+plt.figure()
+plt.scatter(x=d,y=hcsl_psd_fct)
+plt.savefig('hcsl_psd_fct.png')
+plt.close()
+plt.figure()
+plt.scatter(x=d,y=pcsl_psd_fct)
+plt.savefig('pcsl_psd_fct.png')
+plt.close()
+
+# histograms of marg vars
+plt.figure()
+plt.hist(Vhs, bins=30, alpha=0.5, density=True, stacked=True)
+plt.scatter(x=Vh_csl,y=0,c="red")
+plt.savefig('Vh_hist.png')
+plt.close()
+plt.figure()
+plt.hist(Vps, bins=30, alpha=0.5, density=True, stacked=True)
+plt.scatter(x=Vp_csl,y=0,c="red")
+plt.savefig('Vp_hist.png')
+plt.close()
+
+# histograms of char scales
+plt.figure()
+plt.hist(xihs, bins=30, alpha=0.5, density=True, stacked=True)
+plt.scatter(x=xih_csl,y=0,c="red")
+plt.savefig('xih_hist.png')
+plt.close()
+plt.figure()
+plt.hist(xips, bins=30, alpha=0.5, density=True, stacked=True)
+plt.scatter(x=xip_csl,y=0,c="red")
+plt.savefig('xip_hist.png')
+plt.close()
+
+xps = np.zeros((len(h_normies)*len(p_normies),res,res//2+1), dtype=complex)
+xcovs = np.zeros((len(h_normies)*len(p_normies),res,res))
+i = 0
 k = 0
 for l_h in h_normies:
+    j = 0
     for l_p in p_normies:
-        hfft = np.fft.rfft2(h.p[l_h,:,:]-hpmean)
-        pfft = np.fft.rfft2(p.p[l_p,:,:]-ppmean)
-        cps[k,:,:] = hfft*np.conj(pfft)/res**2
+        xps[k,:,:], xcovs[k,:,:] = cf.fft_cov(h.p[i,:,:],p.p[j,:,:])
+        j += 1
         k += 1
-cpsd = np.mean(cps,axis=0)
-ccov = np.fft.irfft2(cpsd) # should be zero everywhere
+    i += 1
+xpsd = np.mean(xps,axis=0)
+xcov = np.fft.irfft2(xpsd)
 
-# once the covariance function is obtained need to compute expctd covariance
-# of allele freqs at a single locus w/in a spp between every pair of cells
-# yielding a res**2 x res**2 matrix of allele freq correlations
-coords = []
-for i in np.arange(res):
-    for j in np.arange(res):
-        coords.append([i,j])
-hpcov = np.zeros((res**2,res**2))
-ppcov = np.zeros((res**2,res**2))
-coords = np.array(coords)
-for i in np.arange(res**2):
-    for j in np.arange(res**2):
-        x = (coords[i]-coords[j])%res
-        hpcov[i,j] = hcov[x[0],x[1]]
-        ppcov[i,j] = pcov[x[0],x[1]]
+csl_xps, csl_xcov = cf.fft_cov(h.p[h_normies[20],:,:],p.p[p_normies[10],:,:])
 
-# compute cholesky of inverse cov matrix
-hpchol = np.linalg.cholesky(np.linalg.inv(hpcov))
-ppchol = np.linalg.cholesky(np.linalg.inv(ppcov))
+xcov_fct = np.zeros(len(d))
+xpsd_fct = np.zeros(len(f))
+csl_xcov_fct = np.zeros(len(d))
+csl_xpsd_fct = np.zeros(len(f))
+for dst in np.arange(len(d)):
+    coords = np.where(dists==d[dst])
+    n = len(coords[0])
+    x_sum = 0
+    csl_sum = 0
+    for m in np.arange(n):
+        i = coords[0][m]
+        j = coords[1][m]
+        x_sum += xcov[i,j]
+        csl_sum += csl_xcov[i,j]
+    xcov_fct[dst] = x_sum/n
+    csl_xcov_fct[dst] = csl_sum/n
+for frq in np.arange(len(f)): # replace with a build_fct function
+    coords = np.where(freqs==f[frq])
+    n = len(coords[0])
+    x_sum = 0
+    csl_sum = 0
+    for m in np.arange(n):
+        i = coords[0][m]
+        j = coords[1][m]
+        x_sum += abs(xpsd[i,j])
+        csl_sum += abs(csl_xps[i,j])
+    xpsd_fct[frq] = x_sum/n
+    csl_xpsd_fct[frq] = csl_sum/n
 
-# make block cov-matrix
-blkcov = np.zeros((2*res,2*res))
+# think this needs to be done before averaging...
+csl_coh_fct = csl_xpsd_fct/np.sqrt(hpsd_fct*ppsd_fct)
 
-# decorrelate
-hp_ucnr = np.zeros((len(h_normies),res**2))
-k = 0
-for l in h_normies:
-    hp_ucnr[k] = np.matmul(np.transpose(hpchol),h.p[l,:,:].flatten())
-    k += 1
-pp_ucnr = np.zeros((len(p_normies),res**2))
-k = 0
-for l in p_normies:
-    pp_ucnr[k] = np.matmul(np.transpose(ppchol),p.p[l,:,:].flatten())
-    k += 1
+plt.figure()
+plt.scatter(x=d,y=csl_coh_fct)
+plt.savefig('csl_coh_fct.png')
+plt.close()
 
-# plot covariance function
-# oh crap they seem to be highly correlated everywhere
+plt.figure()
+plt.scatter(x=d,y=csl_xpsd_fct)
+plt.savefig('csl_xpsd_fct.png')
+plt.close()
+
+plt.figure()
+plt.scatter(x=d,y=xpsd_fct)
+plt.savefig('xpsd_fct.png')
+plt.close()
+
+plt.figure()
+plt.scatter(x=d,y=xcov_fct)
+plt.savefig('xcov_fct.png')
+plt.close()
+
+plt.figure()
+plt.scatter(x=d,y=csl_xcov_fct)
+plt.savefig('csl_xcov_fct.png')
+plt.close()
+
+
+# correlation-adjusted cross-correlation matrix K
+#   - first estimate cov fct C from unlinked neutral loci
+#   - then build cov matrix S for spatial locations
+#   - from S compute correlation matrix P = inv(V^0.5).S.inv(V^0.5)
+#   - where V^0.5 is diag matrix with values sqrt(C(0)) on diag
+#   - for each interspp pair of loci, approx cross-cov fct Chp
+#   - build cross-cov matrix Shp and obtain Php = inv(Vh^0.5).Shp.inv(Vp^0.5)
+#   - with corr matrices Ph, Pp compute K = inv(Ph^0.5).Php.inv(Pp^0.5)
+
 plt.figure()
 matplt = plt.matshow(hcov)
 plt.colorbar(matplt)
 plt.savefig('h_cov.png')
 plt.close()
+
+plt.figure()
+matplt = plt.matshow(hpsd)
+plt.colorbar(matplt)
+plt.savefig('hpsd.png')
+plt.close()
+
 plt.figure()
 matplt = plt.matshow(pcov)
 plt.colorbar(matplt)
 plt.savefig('p_cov.png')
 plt.close()
 
-# compute effective sample sizes
-
-# marginal variances, aka nuggets
-Vh = hcov[0,0]
-Vp = pcov[0,0]
-
-# variance of sample means across loci
-hp_means = []
-for l_h in h_normies:
-    hp_means.append(np.mean(h.p[l_h,:,:]))
-Vh_hat = np.var(np.array(hp_means))
-pp_means = []
-for l_p in p_normies:
-        pp_means.append(np.mean(p.p[l_p,:,:]))
-Vp_hat = np.var(np.array(pp_means))
-
-# effective sample sizes
-neff_h = Vh/Vh_hat
-neff_p = Vp/Vp_hat
-df = neff_h*neff_p-2
-
-# for the loci that are normally distributed
-# compute student t-stat
-t_stats = []
-for l_h in np.arange(len(h_normies)):
-    for l_p in np.arange(len(p_normies)):
-        hp = hp_ucnr[l_h]
-        pp = pp_ucnr[l_p]
-        r = np.corrcoef(hp,pp)[0,1]
-        t_stt = r*np.sqrt((res**2-2)/(1-r**2))
-        t_stats.append(t_stt)
-
-# see if computed t-statistics fit the student t-distr
-# using kolmogorov-smirnov test
-kstest(t_stats,"t",args=(res**2-2,))
-
-# visual check if t is good fit
 plt.figure()
-xrang = np.arange(min(t_stats),max(t_stats),0.001)
-plt.scatter(x=xrang,y=t.pdf(xrang,res**2-2),c="red")
-plt.scatter(x=np.mean(t_stats),y=0,c="black")
-plt.hist(t_stats, bins=100, alpha=0.5, density=True, stacked=True)
-plt.savefig('t_hist.png')
+matplt = plt.matshow(ppsd)
+plt.colorbar(matplt)
+plt.savefig('ppsd.png')
 plt.close()
 
-#
-# when does spatial autocorrelation mask the iLD signature of coevolution?
-#
+plt.figure()
+matplt = plt.matshow(xcov)
+plt.colorbar(matplt)
+plt.savefig('x_cov.png')
+plt.close()
+
+plt.figure()
+matplt = plt.matshow(csl_xcov)
+plt.colorbar(matplt)
+plt.savefig('csl_x_cov.png')
+plt.close()
 
 # repeat iLD analysis for different dispersal distances in each spp
 #   - for each pair of dispersal dists, estimate spatial scale of allele freq turnover
@@ -334,37 +556,6 @@ plt.close()
 #   - estimate p-value of causal locus for each spp from resp beta distr
 #   - plot p-values as function of spatial scale of allele freq turnover separately for ea spp
 #   - repeat this whole thing for each pair of weak, moderate and strong biotic selection
-
-#
-# how does spatial scale for causal locus compare to that of neutral loci?
-# can we use this as a single species filter to reduce number of interspp comparisons?
-# UNDER CONSTRUCTION
-#
-
-# compute distr of spatial scales across loci w/in ea spp separately
-# is spatial scale of causal locus significantly:
-#   - longer? shorter?
-# does this depend on relative dispersal abilities?
-# can this be used as a single spp filter? (Fst might not be so reliable)
-
-
-#
-# PCA (have no idea if this is useful)
-#
-
-h_coords, h_model = allel.pca(hgt_sqsh)
-
-p_coords, p_model = allel.pca(pgt_sqsh)
-
-plt.figure()
-plt.scatter(h_coords[:,0],h_coords[:,1])
-plt.savefig('h_pca.png')
-plt.close()
-
-plt.figure()
-plt.scatter(p_coords[:,0],p_coords[:,1])
-plt.savefig('p_pca.png')
-plt.close()
 
 #
 # estimate selection coefficients

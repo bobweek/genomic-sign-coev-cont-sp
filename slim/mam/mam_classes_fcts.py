@@ -450,7 +450,7 @@ def iscaf_plts(iscaf,csl_iscaf):
 
     # make histogram of iscaf    
     plt.figure()    
-    plt.hist(iscaf.flatten(),bins=100,alpha=0.5)
+    plt.hist(iscaf.flatten(), bins=100, alpha=0.5, density=True, stacked=True)
     plt.scatter(x=csl_iscaf,y=0,c="red")
     plt.savefig('iscaf_hist.png')
     plt.close()
@@ -566,3 +566,12 @@ def plot_p(dis_sys,res):
 
 def is_pos_def(x):
     return np.all(np.linalg.eigvals(x) > 0)
+
+def fft_cov(p1,p2):
+    p1_cntr = p1 - np.mean(p1.flatten())
+    p2_cntr = p2 - np.mean(p2.flatten())
+    fft1 = np.fft.rfft2(p1_cntr)
+    fft2 = np.fft.rfft2(p2_cntr)
+    cps = fft1*np.conj(fft2)
+    cov = np.fft.irfft2(cps)
+    return cps, cov
