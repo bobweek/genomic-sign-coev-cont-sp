@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021) (preloaded format=pdflatex 2022.1.25)  26 JAN 2022 17:03
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021) (preloaded format=pdflatex 2022.1.25)  26 JAN 2022 18:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -672,89 +672,89 @@ LaTeX Warning: Reference `' on page 5 undefined on input line 441.
 
 [5] [6]
 
-LaTeX Warning: Reference `' on page 7 undefined on input line 682.
+LaTeX Warning: Reference `' on page 7 undefined on input line 686.
 
 pdfTeX warning (ext4): destination with the same identifier (name{equation.3.1}
 ) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.690   \begin{equation}
+l.694   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
 fier (name{equation.3.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.690   \begin{equation}
+l.694   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
 fier (name{equation.3.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.690   \begin{equation}
+l.694   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
 fier (name{equation.3.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.690   \begin{equation}
+l.694   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
 fier (name{equation.3.2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.693   \begin{equation}
+l.697   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
 fier (name{equation.3.2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.693   \begin{equation}
+l.697   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
 fier (name{equation.3.2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.693   \begin{equation}
+l.697   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
 fier (name{equation.3.2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.693   \begin{equation}
+l.697   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
 fier (name{equation.3.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.704   \begin{equation}
+l.708   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
 fier (name{equation.3.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.704   \begin{equation}
+l.708   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
 fier (name{equation.3.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.704   \begin{equation}
+l.708   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
 fier (name{equation.3.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.704   \begin{equation}
+l.708   \begin{equation}
+                         [7]pdfTeX warning (ext4): destination with the same id
+entifier (name{equation.3.2}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.711   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
 fier (name{equation.3.2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.707   \begin{equation}
+l.711   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
 fier (name{equation.3.2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.707   \begin{equation}
+l.711   \begin{equation}
                         pdfTeX warning (ext4): destination with the same identi
 fier (name{equation.3.2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.707   \begin{equation}
-                        pdfTeX warning (ext4): destination with the same identi
-fier (name{equation.3.2}) has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.707   \begin{equation}
-                         [7] [8] [9]
+l.711   \begin{equation}
+                         [8] [9]
 <Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution_files/figure-l
 atex/unnamed-chunk-1-1.pdf, id=197, 469.755pt x 433.62pt>
 File: Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution_files/fig
@@ -762,17 +762,17 @@ ure-latex/unnamed-chunk-1-1.pdf Graphic file (type pdf)
 <use Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution_files/figu
 re-latex/unnamed-chunk-1-1.pdf>
 Package pdftex.def Info: Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Co
-evolution_files/figure-latex/unnamed-chunk-1-1.pdf  used on input line 875.
+evolution_files/figure-latex/unnamed-chunk-1-1.pdf  used on input line 876.
 (pdftex.def)             Requested size: 469.75386pt x 433.61894pt.
 [10] [11 <./Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevolution_fil
 es/figure-latex/unnamed-chunk-1-1.pdf>]
-Underfull \hbox (badness 1371) in paragraph at lines 936--939
+Underfull \hbox (badness 1371) in paragraph at lines 937--940
 []\T1/lmr/m/n/10 (+20) The spa-tial co-vari-ance func-tions, equal to the in-ve
 rse Fourier trans-forms of the power spec-tra
  []
 
 LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 9
-60.
+61.
 (/home/bb/.TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) [12] [13] [14] [15] [16] [17] [18] [19] [20] [21] [22] [23] [24]
@@ -794,11 +794,11 @@ arasite-Coevolution.out' has not changed.
 Here is how much of TeX's memory you used:
  13835 strings out of 480247
  223833 string characters out of 5896203
- 571965 words of memory out of 5000000
+ 574965 words of memory out of 5000000
  31219 multiletter control sequences out of 15000+600000
  535202 words of font info for 169 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 70i,12n,76p,1609b,424s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 70i,12n,76p,1609b,426s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/home/bb/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/home/bb/.TinyTeX
 /texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/home/bb/.TinyTeX/texmf-dist/fonts/e
 nc/dvips/lm/lm-mathit.enc}{/home/bb/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-r
@@ -823,7 +823,7 @@ symbols/msbm10.pfb></home/bb/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/sy
 mbols/msbm7.pfb></home/bb/.TinyTeX/texmf-dist/fonts/type1/public/rsfs/rsfs10.pf
 b></home/bb/.TinyTeX/texmf-dist/fonts/type1/public/tipa/tipa10.pfb>
 Output written on Spatial-Scales-of-Local-Adaptation-in-Host-Parasite-Coevoluti
-on.pdf (25 pages, 447953 bytes).
+on.pdf (25 pages, 447668 bytes).
 PDF statistics:
  428 PDF objects out of 1000 (max. 8388607)
  349 compressed objects within 4 object streams

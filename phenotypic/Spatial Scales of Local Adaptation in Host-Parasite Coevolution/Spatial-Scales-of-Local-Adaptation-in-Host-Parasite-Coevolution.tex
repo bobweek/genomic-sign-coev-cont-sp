@@ -552,11 +552,10 @@ cross-covariance function is rather cumbersome. In particular,
 \(C_{HP}(d)\) can be approximated as the difference of two convolutions
 when coevolution is weak, the expression for which is provided in
 Appendix \ref{spde-app}. However, our measure of local adaptation (eqn.
-\ref{la-eq}) requires only the collocated covariance \(C_{HP}(0)\). We
-can therefore sidestep calculating the cross-covariance \(C_{HP}(d)\)
-for \(d>0\). The collocated covariance \(C_{HP}(0)\) can be obtained via
-spectral methods and the calculations for which are provided in Appendix
-\ref{spde-app}. In particular, we find
+\ref{la-eq}) requires only the collocated covariance \(C_{HP}(0)\). The
+collocated covariance \(C_{HP}(0)\) can be obtained via spectral methods
+and the calculations for which are provided in Appendix \ref{spde-app}.
+In particular, we find
 
 \begin{multline}\label{collocated}
   C_{HP}(0)\approx \frac{G_HG_P}{\sigma_H^2\sigma_P^2}\frac{\xi_H^2\xi_P^2}{(\xi_H^2-\xi_P^2)^2}\left[\frac{B_P}{ N_H\sigma_H^2}\Big(\xi_H^4+\xi_H^2\xi_P^2(\ln\xi_P^2-\ln\xi_H^2-1)\Big)\right. \\
@@ -576,6 +575,11 @@ collocated covariance is approximately
   C_{HP}^{(\xi_H\approx\xi_P)}(0)\approx \frac{\xi^4}{2}G_HG_P\left(\frac{B_P}{ N_H\sigma_H^4\sigma_P^2}-\frac{B_H}{ N_P\sigma_H^2\sigma_P^4}\right).
 \end{equation}
 
+In particular, when all else is equal the signage of the collocated
+covariance is determined by \(\sigma_H-\sigma_P\). In particular, this
+implies the species with the shorter dispersal distance tends to be
+locally adapted.
+
 Hence, in this limiting case, we see that increased biotic selection on
 the parasite over the host (\(B_P>B_H\)) tends to increase spatial
 covariance of host and parasite mean traits. We also see spatial
@@ -593,7 +597,7 @@ much less than the scale of phenotypic turnover in the parasite, so that
 respectively, second order Taylor expansion yields
 
 \begin{equation}\label{coll-cov-extreme}
-  C_{HP}^{(\xi_H\ll\xi_P)}(0)\approx-\frac{B_H}{A_H}V_P, \ C_{HP}^{(\xi_P\ll\xi_H)}(0)\approx\frac{B_P}{A_P}V_H.
+  C_{HP}^{(\xi_H\ll\xi_P)}(0)\approx\frac{B_P}{A_PA_HN_H}-\frac{B_H}{A_H}V_P, \ C_{HP}^{(\xi_P\ll\xi_H)}(0)\approx\frac{B_P}{A_P}V_H-\frac{B_H}{A_HA_PN_P}.
 \end{equation}
 
 From these two limiting cases we see the collocated spatial covariance
@@ -831,17 +835,15 @@ spectrum of the random field \(\bar{\pmb z}\) simplifies to
 \(S_{\bar{\pmb z}}=\mathbb E\left(\hat{\pmb z}\hat{\pmb z}^\top\right)\).
 Rearranging the above matrix equation, we find
 
-\[\hat{\pmb z}=\mathscr H^{-1}\widehat{\dot{\pmb W}},\]
-
-\[\hat{\pmb z}^\top=\widehat{\dot{\pmb W}}^\top\left(\mathscr H^\top\right)^{-1}.\]
+\[\hat{\pmb z}^\top=\widehat{\dot{\pmb W}}^\top\mathscr H^{-\top}.\]
 
 Hence, the power spectrum of \(\bar{\pmb z}\) is
 
-\[S_{\bar{\pmb z}}=\mathscr H^{-1}S_{\dot{\pmb W}}\left(\mathscr H^\top\right)^{-1}\]
+\[S_{\bar{\pmb z}}=\mathscr H^{-1}S_{\dot{\pmb W}}\mathscr H^{-\top}\]
 
 where
 
-\[S_{\dot{\pmb W}}=\mathbb E\left(\widehat{\dot{\pmb W}}\widehat{\dot{\pmb W}}^\top\right)=\frac{1}{(2\pi)^2}\left(\begin{matrix}G_H/N_H & 0 \\ 0 & G_P/N_P \end{matrix}\right)\]
+\[S_{\dot{\pmb W}}=\mathbb E\left(\widehat{\dot{\pmb W}}\widehat{\dot{\pmb W}}^\top\right)=\left(\begin{matrix}G_H/N_H & 0 \\ 0 & G_P/N_P \end{matrix}\right)\]
 
 is the power spectrum of the spatial white noise
 \(\dot{\pmb W}=\left(-\sqrt{\tfrac{G_H}{N_H}}{\dot W}_H, -\sqrt{\tfrac{G_P}{N_P}}{\dot W}_P\right)^\top\).
@@ -857,13 +859,12 @@ power spectrum and host-parasite cross-power spectrum we find
 
 Assuming coevolution is weak so that \(B_H^2,B_P^2,B_HB_P\approx0\) and
 that abiotic selection is relatively strong so that
-\(A_HB_H,A_PB_P \ \cancel{\approx} \ 0\), we obtain the approximations
+\(A_HB_H,A_PB_P \ \cancel{\approx} \ 0\) and
+\(A_H-B_H\approx A_H,A_P+B_P\approx A_P\), we obtain the approximations
 
 \[S_H(\pmb k)\approx\frac{G_H/N_H}{\left(G_HA_H+\frac{\sigma_H^2}{2}\|\pmb k\|^2\right)^2}, \ S_P(\pmb k)\approx\frac{G_P/N_P}{\left(G_PA_P+\frac{\sigma_P^2}{2}\|\pmb k\|^2\right)^2}\]
 
-\[S_{HP}(\pmb k)\approx\frac{B_PG_PG_H/N_H}{\left(G_HA_H+\frac{\sigma_H^2}{2}\|\pmb k\|^2\right)^2\left(G_PA_P+\frac{\sigma_P^2}{2}\|\pmb k\|^2\right)}\]
-
-\[-\frac{B_HG_HG_P/N_P}{\left(G_HA_H+\frac{\sigma_H^2}{2}\|\pmb k\|^2\right)\left(G_PA_P+\frac{\sigma_P^2}{2}\|\pmb k\|^2\right)^2}.\]
+\[S_{HP}(\pmb k)\approx\frac{B_PG_PG_H/N_H}{\left(G_HA_H+\frac{\sigma_H^2}{2}\|\pmb k\|^2\right)^2\left(G_PA_P+\frac{\sigma_P^2}{2}\|\pmb k\|^2\right)}-\frac{B_HG_HG_P/N_P}{\left(G_HA_H+\frac{\sigma_H^2}{2}\|\pmb k\|^2\right)\left(G_PA_P+\frac{\sigma_P^2}{2}\|\pmb k\|^2\right)^2}.\]
 
 \[\approx\frac{B_PG_P}{G_PA_P+\frac{1}{2}\sigma_P^2\|\pmb k\|^2}S_H(\pmb k)-\frac{B_HG_H}{G_HA_H+\frac{1}{2}\sigma_H^2\|\pmb k\|^2}S_P(\pmb k)\]
 
