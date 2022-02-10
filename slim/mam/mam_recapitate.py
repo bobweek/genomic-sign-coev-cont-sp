@@ -142,21 +142,21 @@ np.savetxt("p_snps.csv", p_snps, delimiter=",")
 
 # write out site id's of causal loci for ea spp
 with open("causL.mam.txt", "w") as causLfile:
-      causLfile.writelines("\t".join(["h", "p"]) + "\n")
-      causLfile.writelines("\t".join([str(h_causL), str(p_causL)]) + "\n") # (x,y)=coords, z=trait
+      causLfile.writelines(",".join(["h", "p"]) + "\n")
+      causLfile.writelines(",".join([str(h_causL), str(p_causL)]) + "\n") # (x,y)=coords, z=trait
 
 # positions for the host (h)
 indivlist = []
 indivnames = []
 with open("host.mam.txt", "w") as indfile:
-    indfile.writelines("\t".join(["vcf_label"]
+    indfile.writelines(",".join(["vcf_label"]
                                + ["x", "y", "z"]) + "\n") # (x,y)=coords, z=trait
     for i in h_ts.individuals():
         indivlist.append(i.id)
         vcf_label = f"tsk_{i.id}"
         indivnames.append(vcf_label)
         data = [vcf_label, str(i.location[0]), str(i.location[1]), str(i.location[2])]
-        indfile.writelines("\t".join(data) + "\n")
+        indfile.writelines(",".join(data) + "\n")
 gm = h_ts.genotype_matrix()
 gm1 = gm[:,0:h_ts.num_individuals]
 gm2 = gm[:,h_ts.num_individuals:h_ts.num_samples]
@@ -167,14 +167,14 @@ np.save("host.mam",ga)
 indivlist = []
 indivnames = []
 with open("parasite.mam.txt", "w") as indfile:
-    indfile.writelines("\t".join(["vcf_label"]
+    indfile.writelines(",".join(["vcf_label"]
                                + ["x", "y", "z"]) + "\n") # (x,y)=coords, z=trait
     for i in p_ts.individuals():
         indivlist.append(i.id)
         vcf_label = f"tsk_{i.id}"
         indivnames.append(vcf_label)
         data = [vcf_label, str(i.location[0]), str(i.location[1]), str(i.location[2])]
-        indfile.writelines("\t".join(data) + "\n")
+        indfile.writelines(",".join(data) + "\n")
 gm = p_ts.genotype_matrix()
 gm1 = gm[:,0:p_ts.num_individuals]
 gm2 = gm[:,p_ts.num_individuals:p_ts.num_samples]

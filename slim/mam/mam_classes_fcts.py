@@ -1,5 +1,6 @@
 import numpy as np
 import allel
+import pickle as pkl
 import pandas as pd
 from scipy import spatial
 from scipy.interpolate import griddata
@@ -65,15 +66,15 @@ class discSystem:
 
 def loadUp(hmet,pmet,causL,hsnp,psnp,hga,pga):
     # read in positions and trait values for each sample
-    h_metadat = pd.read_csv(hmet, delimiter = "\t")
-    p_metadat = pd.read_csv(pmet, delimiter = "\t")
+    h_metadat = pd.read_csv(hmet, delimiter = ",")
+    p_metadat = pd.read_csv(pmet, delimiter = ",")
 
     # read in positions and trait values for each sample
     h_snp = np.loadtxt(hsnp, delimiter=",")
     p_snp = np.loadtxt(psnp, delimiter=",")
 
     # read in genomic positions of causal loci
-    causL_dat = pd.read_csv(causL, delimiter = "\t")
+    causL_dat = pd.read_csv(causL, delimiter = ",")
     h_causL = causL_dat["h"][0]
     p_causL = causL_dat["p"][0]
 
@@ -334,6 +335,63 @@ def discSpace(sys, width, height, res):
     # pack it up
     h = discSpecies(p=hbn_p, G=h_G, N=hbn_N, snp=h_snp, trt=hbn_trt, causL=h_causL, S=(h_S+1))
     p = discSpecies(p=pbn_p, G=p_G, N=pbn_N, snp=h_snp, trt=pbn_trt, causL=p_causL, S=(p_S+1))
+    dis_sys = discSystem(h=h,p=p)
+
+    return dis_sys
+
+def saveDisSys(dissys,fldr):
+    # spit it out!
+    np.save(fldr+'dis_sys.h.p',dissys.h.p)
+    np.save(fldr+'dis_sys.h.G',dissys.h.G)
+    np.save(fldr+'dis_sys.h.N',dissys.h.N)
+    open_file = open(fldr+'dis_sys.h.trt', "wb")
+    pkl.dump(dissys.h.trt, open_file)
+    open_file.close()
+    np.save(fldr+'dis_sys.h.trt',dissys.h.trt)
+    np.save(fldr+'dis_sys.h.snp',dissys.h.snp)
+    with open(fldr+"dis_sys.h.txt", "w") as indfile:
+        data = [str(dissys.h.S), str(dissys.h.causL)]
+        indfile.writelines(",".join(data))
+    np.save(fldr+'dis_sys.p.p',dissys.p.p)
+    np.save(fldr+'dis_sys.p.G',dissys.p.G)
+    np.save(fldr+'dis_sys.p.N',dissys.p.N)
+    open_file = open(fldr+'dis_sys.p.trt', "wb")
+    pkl.dump(dissys.p.trt, open_file)
+    open_file.close()
+    np.save(fldr+'dis_sys.p.snp',dissys.p.snp)
+    with open(fldr+"dis_sys.p.txt", "w") as indfile:
+        data = [str(dissys.p.S), str(dissys.p.causL)]
+        indfile.writelines(",".join(data))
+
+def loadDisSys(ds_nm):
+
+    # load it in!
+
+    hp = np.load(ds_nm+"h.p")
+    hG = np.load(ds_nm+"h.G")
+    hN = np.load(ds_nm+"h.N")
+    open_file = open(ds_nm+"h.trt", "wb")
+    pkl.dump(dissys.p.trt, open_file)
+    open_file.close()
+    htrt = np.load(ds_nm+"h.trt")
+    hsnp = np.load(ds_nm+"h.snp")
+    hmtadta = pd.read_csv(ds_nm+"h.txt", delimiter = ",")
+    hS = hmtadta[0]
+    hcausL = hmtadta[1]
+
+    pp = np.load(ds_nm+"p.p")
+    pG = np.load(ds_nm+"p.G")
+    pN = np.load(ds_nm+"p.N")
+    ptrt = np.load(ds_nm+"p.trt")
+    psnp = np.load(ds_nm+"p.snp")
+    pmtadta = pd.read_csv(ds_nm+"p.txt", delimiter = ",")
+    pS = pmtadta[0]
+    pcausL = pmtadta[1]
+
+    # pack it up!
+
+    h = discSpecies(p=hp, G=hG, N=hN, snp=hsnp, trt=htrt, causL=hcausL, S=hS)
+    p = discSpecies(p=pp, G=pG, N=pN, snp=hsnp, trt=ptrt, causL=pcausL, S=pS)
     dis_sys = discSystem(h=h,p=p)
 
     return dis_sys

@@ -59,11 +59,13 @@ width = 100 # eventually read in from file
 height = 100 # eventually read in from file
 
 # discretization, yields type(dis_sys) = discSystem
-dis_sys = cf.discSpace(sys, width, height, res)
+# dis_sys = cf.discSpace(sys, width, height, res)
+# cf.saveDisSys(dis_sys,"discr_sp_data")
+dis_sys = cf.loadDisSys("discr_sp_data/dis_sys")
 h, p = dis_sys
 
 # prevent unnecessary use of memory
-# del sys
+del sys
 
 #
 # plot allele freq surfaces of causal loci and three randomly selected neutral loci
