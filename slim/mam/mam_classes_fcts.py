@@ -100,6 +100,8 @@ def loadUp(hmet,pmet,causL,hsnp,psnp,hga,pga):
 # estimates selection coefficients using random samples from each species
 def glbl_selCoeffs(sys,pars,h_pr,p_pr):
 
+    # h_pr and p_pr are the proportions of host and parasite inds used for approx
+
     # unpack data
     # note: gt & causL are not used
     h, p = sys
@@ -109,7 +111,7 @@ def glbl_selCoeffs(sys,pars,h_pr,p_pr):
     # unpack pars
     SI, hc, pc, pb, minpr, maxpr, lmbda, ch, cp = pars
 
-    # do the calc
+    # make kdtrees
     h_N = len(h_trt)
     p_N = len(p_trt)
     h_n = int(np.ceil(h_pr*h_N))
@@ -118,6 +120,8 @@ def glbl_selCoeffs(sys,pars,h_pr,p_pr):
     p_smpl = np.random.choice(np.arange(p_N),p_n,replace=False)
     h_tree = spatial.KDTree(h_pos)
     p_tree = spatial.KDTree(p_pos)
+    
+    # host fitness
     h_fits = []
     for h in h_smpl:
         p_nbrs = p_tree.query_ball_point(h_pos[h],SI)
@@ -154,8 +158,9 @@ def glbl_selCoeffs(sys,pars,h_pr,p_pr):
     h_N2 = len(h_2)
     h_W0 = (2*h_W00*h_N0 + h_W01*h_N1)/(2*h_N0+h_N1) # mean fit of ea allele
     h_W1 = (2*h_W11*h_N2 + h_W01*h_N1)/(2*h_N2+h_N1)
-    h_s = h_W1 - h_W0 # host selection coefficient
+    h_s = 1 - h_W1/h_W0 # host selection coefficient
 
+    # parasite fitness
     p_fits = []
     for p in p_smpl:
         # accumulate interspp intxns
@@ -190,9 +195,73 @@ def glbl_selCoeffs(sys,pars,h_pr,p_pr):
     p_N2 = len(p_2)
     p_W0 = (2*p_W00*p_N0 + p_W01*p_N1)/(2*p_N0+p_N1) # mean fit of ea allele
     p_W1 = (2*p_W11*p_N2 + p_W01*p_N1)/(2*p_N2+p_N1)
-    p_s = p_W1 - p_W0 # parasite selection coefficient
+    p_s = 1 - p_W1/p_W0 # parasite selection coefficient
 
     return h_s, p_s
+
+def locl_selGrad(sys,pars,h_pr,p_pr,res):
+
+    # h_pr and p_pr are the proportions of host and parasite inds used for approx
+
+    # unpack data
+    # note: gt & causL are not used
+    h, p = sys
+    h_gt, h_pos, h_snp, h_trt, h_causL = h
+    p_gt, p_pos, p_snp, p_trt, p_causL = p
+
+    # unpack pars
+    SI, hc, pc, pb, minpr, maxpr, lmbda, ch, cp = pars
+    
+    # make kdtrees
+    h_N = len(h_trt)
+    p_N = len(p_trt)
+    h_n = int(np.ceil(h_pr*h_N))
+    p_n = int(np.ceil(p_pr*p_N))
+    h_smpl = np.random.choice(np.arange(h_N),h_n,replace=False)
+    p_smpl = np.random.choice(np.arange(p_N),p_n,replace=False)
+    h_tree = spatial.KDTree(h_pos)
+    p_tree = spatial.KDTree(p_pos)
+    
+    # host fitness
+    h_fits = []
+    for h in h_smpl:
+        p_nbrs = p_tree.query_ball_point(h_pos[h],SI)
+        h_fit = []
+        # accumulate interspp intxns
+        for p in p_nbrs:        
+            h_inf = h_tree.query_ball_point(p_pos[p],SI)
+            p_prb = 1/len(h_inf)        # pr that p attempts to infect focal host ind
+            if h_trt[h] == p_trt[p]:    # case of matching genotype
+                h_fit.append(hc*maxpr*p_prb+(1-maxpr*p_prb)) # avg of hc and no effect
+            else:                       # case of mis-matched genotype
+                h_fit.append(hc*minpr*p_prb+(1-minpr*p_prb))
+        if len(p_nbrs) == 0:
+            h_fit = 1.0                 # if no parasites around, no effect
+        h_fit = np.mean(h_fit)
+        # accumulate intraspp intxns
+        h_nbrs = h_tree.query_ball_point(h_pos[h],3*2*lmbda)
+        h_comp = len(h_nbrs)
+        # h_comp = 0
+        # for hnb in h_nbrs:
+        #     d = spatial.distance.euclidean(h_pos[h],h_pos[hnb])
+        #     h_comp += U*U*stats.norm.pdf(d,0,np.sqrt(2*lmbda))    # spatial niche overlap..... (eqn SM.80)
+        h_fit *= np.exp(-ch*h_comp)                                 # spatial competition effect (eqn SM.82)
+        h_fits.append(h_fit)
+    h_fits = np.array(h_fits)
+    h_0 = np.where(h_trt[h_smpl]==0)[0] # indices of genotypes
+    h_1 = np.where(h_trt[h_smpl]==1)[0]
+    h_2 = np.where(h_trt[h_smpl]==2)[0]
+    h_W00 = np.mean(h_fits[h_0]) # mean fit of ea genotype
+    h_W01 = np.mean(h_fits[h_1])
+    h_W11 = np.mean(h_fits[h_2])
+    h_N0 = len(h_0) # allele counts
+    h_N1 = len(h_1)
+    h_N2 = len(h_2)
+    h_W0 = (2*h_W00*h_N0 + h_W01*h_N1)/(2*h_N0+h_N1) # mean fit of ea allele
+    h_W1 = (2*h_W11*h_N2 + h_W01*h_N1)/(2*h_N2+h_N1)
+    h_s = 1 + h_W1/h_W0 # host selection coefficient
+    
+    return 0
 
 def dropSmolFreqs(sys, p_min):
 
@@ -341,25 +410,25 @@ def discSpace(sys, width, height, res):
 
 def saveDisSys(dissys,fldr):
     # spit it out!
-    np.save(fldr+'dis_sys.h.p',dissys.h.p)
-    np.save(fldr+'dis_sys.h.G',dissys.h.G)
-    np.save(fldr+'dis_sys.h.N',dissys.h.N)
-    open_file = open(fldr+'dis_sys.h.trt', "wb")
+    np.save(fldr+'/dis_sys.h.p',dissys.h.p)
+    np.save(fldr+'/dis_sys.h.G',dissys.h.G)
+    np.save(fldr+'/dis_sys.h.N',dissys.h.N)
+    np.save(fldr+'/dis_sys.h.snp',dissys.h.snp)
+    open_file = open(fldr+'/dis_sys.h.trt', "wb")
     pkl.dump(dissys.h.trt, open_file)
-    open_file.close()
-    np.save(fldr+'dis_sys.h.trt',dissys.h.trt)
-    np.save(fldr+'dis_sys.h.snp',dissys.h.snp)
-    with open(fldr+"dis_sys.h.txt", "w") as indfile:
+    open_file.close()    
+    with open(fldr+"/dis_sys.h.txt", "w") as indfile:
         data = [str(dissys.h.S), str(dissys.h.causL)]
         indfile.writelines(",".join(data))
-    np.save(fldr+'dis_sys.p.p',dissys.p.p)
-    np.save(fldr+'dis_sys.p.G',dissys.p.G)
-    np.save(fldr+'dis_sys.p.N',dissys.p.N)
-    open_file = open(fldr+'dis_sys.p.trt', "wb")
+
+    np.save(fldr+'/dis_sys.p.p',dissys.p.p)
+    np.save(fldr+'/dis_sys.p.G',dissys.p.G)
+    np.save(fldr+'/dis_sys.p.N',dissys.p.N)
+    np.save(fldr+'/dis_sys.p.snp',dissys.p.snp)
+    open_file = open(fldr+'/dis_sys.p.trt', "wb")
     pkl.dump(dissys.p.trt, open_file)
-    open_file.close()
-    np.save(fldr+'dis_sys.p.snp',dissys.p.snp)
-    with open(fldr+"dis_sys.p.txt", "w") as indfile:
+    open_file.close()    
+    with open(fldr+"/dis_sys.p.txt", "w") as indfile:
         data = [str(dissys.p.S), str(dissys.p.causL)]
         indfile.writelines(",".join(data))
 
@@ -367,31 +436,32 @@ def loadDisSys(ds_nm):
 
     # load it in!
 
-    hp = np.load(ds_nm+"h.p")
-    hG = np.load(ds_nm+"h.G")
-    hN = np.load(ds_nm+"h.N")
-    open_file = open(ds_nm+"h.trt", "wb")
-    pkl.dump(dissys.p.trt, open_file)
+    hp = np.load(ds_nm+".h.p.npy")
+    hG = np.load(ds_nm+".h.G.npy")
+    hN = np.load(ds_nm+".h.N.npy")
+    hsnp = np.load(ds_nm+".h.snp.npy")
+    open_file = open(ds_nm+".h.trt", "rb")
+    htrt = pkl.load(open_file)
     open_file.close()
-    htrt = np.load(ds_nm+"h.trt")
-    hsnp = np.load(ds_nm+"h.snp")
-    hmtadta = pd.read_csv(ds_nm+"h.txt", delimiter = ",")
-    hS = hmtadta[0]
-    hcausL = hmtadta[1]
+    hmtadta = pd.read_csv(ds_nm+".h.txt", delimiter = ",", header=None)
+    hS = hmtadta[0][0]
+    hcausL = hmtadta[1][0]
 
-    pp = np.load(ds_nm+"p.p")
-    pG = np.load(ds_nm+"p.G")
-    pN = np.load(ds_nm+"p.N")
-    ptrt = np.load(ds_nm+"p.trt")
-    psnp = np.load(ds_nm+"p.snp")
-    pmtadta = pd.read_csv(ds_nm+"p.txt", delimiter = ",")
-    pS = pmtadta[0]
-    pcausL = pmtadta[1]
+    pp = np.load(ds_nm+".p.p.npy")
+    pG = np.load(ds_nm+".p.G.npy")
+    pN = np.load(ds_nm+".p.N.npy")
+    psnp = np.load(ds_nm+".p.snp.npy")
+    open_file = open(ds_nm+".p.trt", "rb")
+    ptrt = pkl.load(open_file)
+    open_file.close()
+    pmtadta = pd.read_csv(ds_nm+".p.txt", delimiter = ",", header=None)
+    pS = pmtadta[0][0]
+    pcausL = pmtadta[1][0]
 
     # pack it up!
 
     h = discSpecies(p=hp, G=hG, N=hN, snp=hsnp, trt=htrt, causL=hcausL, S=hS)
-    p = discSpecies(p=pp, G=pG, N=pN, snp=hsnp, trt=ptrt, causL=pcausL, S=pS)
+    p = discSpecies(p=pp, G=pG, N=pN, snp=psnp, trt=ptrt, causL=pcausL, S=pS)
     dis_sys = discSystem(h=h,p=p)
 
     return dis_sys
@@ -633,3 +703,32 @@ def fft_cov(p1,p2):
     cps = fft1*np.conj(fft2)
     cov = np.fft.irfft2(cps)
     return cps, cov
+
+def makeDistMat(res):
+    dists = np.zeros((res,res)) # dists corresponding cov fct
+    for i in np.arange(res):
+        for j in np.arange(res):
+            if i<(res/2) and j<(res/2):
+                dists[i,j] = np.sqrt(i**2+j**2)
+            elif i>=(res/2) and j>=(res/2):
+                ii = res-i
+                jj = res-j
+                dists[i,j] = np.sqrt(ii**2+jj**2)
+            elif i>=(res/2) and j<(res/2):
+                ii = res-i
+                dists[i,j] = np.sqrt(ii**2+j**2)
+            elif i<(res/2) and j>=(res/2):
+                jj = res-j
+                dists[i,j] = np.sqrt(i**2+jj**2)
+    return dists
+        
+def makeFreqMat(res):
+    freqs = np.zeros((res,res//2+1)) # freqs corresponding 2 psd fct
+    for i in np.arange(res):
+        for j in np.arange(res//2+1):
+            if i<(res/2):
+                freqs[i,j] = np.sqrt(i**2+j**2)
+            else:
+                ii = res-i
+                freqs[i,j] = np.sqrt(ii**2+j**2)
+    return freqs

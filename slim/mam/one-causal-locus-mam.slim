@@ -21,10 +21,10 @@ initialize() {
 		"h_base", 2.0,		// host base fitness
 		"p_base", 1.1,		// para base fitness
 		"hc", 0.99, 		// multiplicative cost on host fitness for each infection
-		"pc", 0.5, 		// multiplicative cost on parasite fitness for failing to infect
+		"pc", 0.99, 		// multiplicative cost on parasite fitness for failing to infect
 		"pb", 1.01, 		// multiplicative benefit on parasite fitness for successful infection
 		"minpr", 0.2,		// minimum probability of infection (when genotypes don't match)
-		"maxpr", 9.0		// maximum probability of infection (when genotypes do match)
+		"maxpr", 0.9		// maximum probability of infection (when genotypes do match)
 		);		
 	catn("-------------\n");
 	for (k in defaults.allKeys) {
@@ -218,7 +218,7 @@ late() {
 				inf_pr = maxpr;
 			}else inf_pr= minpr;
 			
-			// deterministic option is faster and easier to analyze
+			// deterministic fitness outcome is faster and easier to analyze
 			p_fit = (pb*inf_pr+pc*(1-inf_pr))*p_fit;
 			hnb.tagF = (hc*inf_pr+(1-inf_pr))*hnb.tagF;
 			
