@@ -1,0 +1,30 @@
+---
+title: "mam in slim"
+author: "Bob Week"
+date: "4/16/2022"
+output: pdf_document
+---
+
+# classical coevolutionary models (reviewed in scotts book)
+
+- mam
+
+- gfg
+
+- generalized mam/gfg
+
+- multilocus
+
+# slim
+
+- effectively infinite sites model
+
+- nucleotide model
+
+# things
+
+- classical coevol models often have equilibria that can be studied to get simple results
+
+- an infinite sites model seems like it would lack equilibrium unless
+
+  - there's a balance between rate of fixation and rate of mutation
