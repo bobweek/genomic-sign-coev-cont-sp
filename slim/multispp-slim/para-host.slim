@@ -1,6 +1,6 @@
 species host initialize() {
 	initializeSLiMModelType("nonWF");
-	initializeSLiMOptions(dimensionality="xy",periodicity="xy"); // change to absorbing
+	initializeSLiMOptions(dimensionality="xy");
 	initializeSpecies(tickModulo=1, tickPhase=1, avatar="🦌");
 	initializeTreeSeq();
 	
@@ -17,8 +17,8 @@ species host initialize() {
 		"ch", 0.02, 			// strength of host competition
 		"cp", 0.02, 			// strength of para competition	
 		"lmbda", 2.0,			// (spatial) niche breadth
-		"h_base", 1.1,		// host base fitness
-		"p_base", 1.1,		// para base fitness
+		"h_base", 1.2,		// host base fitness
+		"p_base", 1.2,		// para base fitness
 		"hc", 0.98, 		// multiplicative cost on host fitness for each infection
 		"pc", 0.99, 		// multiplicative cost on parasite fitness for failing to infect
 		"pb", 1.01, 		// multiplicative benefit on parasite fitness for successful infection
@@ -36,7 +36,7 @@ species host initialize() {
 	defineGlobal("params", defaults);
 	defineConstant("hSM", hSD);  			// host mate choice distance
 	defineConstant("pSM", pSD);  			// parasite mate choice distance
-
+	
 	
 	// host genomics
 	initializeMutationRate(1e-7);
@@ -72,7 +72,7 @@ species para initialize() {
 	initializeInteractionType(2, "xy", reciprocal=T, maxDistance=lmbda);
 	
 	// parasite mate choice
-	initializeInteractionType(4, "xy", reciprocal=T, maxDistance=pSM);	
+	initializeInteractionType(4, "xy", reciprocal=T, maxDistance=pSM);
 }
 
 // make causal mutions neutral :B
@@ -85,9 +85,7 @@ species host reproduction(p1) {
 	if(mate.size()) {
 		nOff = rpois(1, individual.tagF);
 		for(i in seqLen(nOff)) {
-			pos = individual.spatialPosition + rnorm(2, 0, hSD); // add dispersal
-			bb = subpop.addCrossed(individual, mate);			
-			bb.setSpatialPosition(p1.pointPeriodic(pos));
+			subpop.addCrossed(individual, mate);
 		}
 	}
 	return;
@@ -99,12 +97,28 @@ species para reproduction(p2) {
 	if(mate.size()) {
 		nOff = rpois(1, individual.tagF);
 		for(i in seqLen(nOff)) {
-			pos = individual.spatialPosition + rnorm(2, 0, pSD); // add dispersal
-			bb = subpop.addCrossed(individual, mate);			
-			bb.setSpatialPosition(p2.pointPeriodic(pos));
+			subpop.addCrossed(individual, mate);
 		}
 	}
 	return;
+}
+
+species host modifyChild() {
+	// Absorbing boundary conditions
+	pos = parent1.spatialPosition + rnorm(2, 0, hSD);
+	if (!p1.pointInBounds(pos))
+		return F;
+	child.setSpatialPosition(pos);
+	return T;
+}
+
+species para modifyChild() {
+	// Absorbing boundary conditions
+	pos = parent1.spatialPosition + rnorm(2, 0, pSD);
+	if (!p1.pointInBounds(pos))
+		return F;
+	child.setSpatialPosition(pos);
+	return T;
 }
 
 ticks all 1 early() {
@@ -120,7 +134,7 @@ ticks all 1 early() {
 ticks all late(){
 	i1.evaluate(p1);
 	i2.evaluate(p2);
-	i3.evaluate(p1);	
+	i3.evaluate(p1);
 	i4.evaluate(p2);
 	i5.evaluate(p1);
 	
@@ -148,7 +162,7 @@ ticks all late(){
 		h_nbs = i1.interactingNeighborCount(h);
 		h.tagF = h_base*exp(-ch*h_nbs);
 	}
-			
+	
 	// compute fx of intraspp comp on para fecun
 	// and incorporate fx of interspp intxns on host/para fecun
 	for(p in p2.individuals){
@@ -160,7 +174,7 @@ ticks all late(){
 		if( p1.individualCount > 0 ){
 			// draw hosts within radius SI of focal parasite
 			h_nbrs= i5.nearestNeighborsOfPoint(p1, p_loc, count=p1.individualCount);
-		} else h_nbrs = c();	
+		} else h_nbrs = c();
 		
 		// if there's hosts nearby
 		if(length(h_nbrs) > 0){
@@ -174,7 +188,7 @@ ticks all late(){
 			// deterministic fitness outcome is faster and easier to analyze
 			p_fit = (pb*inf_pr+pc*(1-inf_pr))*p_fit;
 			hnb.tagF = (hc*inf_pr+(1-inf_pr))*hnb.tagF;
-			
+		
 		}else p_fit = pc*p_fit;	// cost of not having anyone to infect
 		// note: each parasite infects at most one host, but each host can be infected by multiple parasites
 		//			hence, if a host is infected by three parasites it will incur the fitness cost of hc^3
@@ -190,6 +204,6 @@ ticks all 2000 late() {
 	host.treeSeqOutput("host.trees", metadata=params);
 	para.treeSeqOutput("para.trees", metadata=params);
 	catn("Done.");
-   host.simulationFinished();
-   para.simulationFinished();
+	host.simulationFinished();
+	para.simulationFinished();
 }
