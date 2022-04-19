@@ -1,13 +1,15 @@
 species host initialize() {
 	initializeSLiMModelType("nonWF");
 	initializeSLiMOptions(dimensionality="xy",periodicity="xy"); // change to absorbing
-	initializeSpecies(tickModulo=1, tickPhase=1, avatar="H");
+	initializeSpecies(tickModulo=1, tickPhase=1, avatar="🦌");
 	initializeTreeSeq();
 	
 	// model parameters
 	defaults = Dictionary(
 		"Lh", 500000,
 		"Lp", 500000,
+		"hFX", 0.5,  			// host mutation effect size
+		"pFX", 0.5,  			// parasite mutation effect size
 		"hSD", 2.0,  			// host dispersal distance	
 		"pSD", 2.0,  			// parasite dispersal distance
 		"SI", 1.0,  			// spatial interspp interaction distance
@@ -21,7 +23,8 @@ species host initialize() {
 		"pc", 0.99, 		// multiplicative cost on parasite fitness for failing to infect
 		"pb", 1.01, 		// multiplicative benefit on parasite fitness for successful infection
 		"minpr", 0.2,		// minimum probability of infection (when genotypes don't match)
-		"maxpr", 1.0		// maximum probability of infection (when genotypes do match)
+		"maxpr", 1.0,		// maximum probability of infection (when genotypes do match)
+		"γ", 0.1				// sensitivity of inf pr to trait differences
 		);
 	for (k in defaults.allKeys) {
 		if (!exists(k)) {
@@ -37,7 +40,7 @@ species host initialize() {
 	
 	// host genomics
 	initializeMutationRate(1e-7);
-	initializeMutationType("m1", 0.5, "f", 0.0);
+	initializeMutationType("m1", 0.5, "n", 0.0, hFX);
 	initializeGenomicElementType("g1", m1, 1.0);
 	initializeGenomicElement(g1, 0, 1e8-1);
 	initializeRecombinationRate(1e-8);
@@ -55,12 +58,12 @@ species host initialize() {
 species para initialize() {
 	initializeSLiMModelType("nonWF");
 	initializeSLiMOptions(dimensionality="xy",periodicity="xy");
-	initializeSpecies(tickModulo=1, tickPhase=1, avatar="P");
+	initializeSpecies(tickModulo=1, tickPhase=1, avatar="🪱");
 	initializeTreeSeq();
 	
 	// parasite genomics
 	initializeMutationRate(1e-7);
-	initializeMutationType("m2", 0.5, "f", 0.0);
+	initializeMutationType("m2", 0.5, "n", 0.0, pFX);
 	initializeGenomicElementType("g2", m2, 1.0);
 	initializeGenomicElement(g2, 0, 1e8-1);
 	initializeRecombinationRate(1e-8);
@@ -131,15 +134,15 @@ ticks all late(){
 	
 	// identify genotypes by brightness
 	for(ind in p1.individuals){
-		val = 0.25+0.75*ind.z/2;
-		ind.color = rgb2color(hsv2rgb(c(1.0, 0.0, val)));
+		val = (ind.z%100)/100;
+		ind.color = rgb2color(hsv2rgb(c(val, 0.75, 0.75)));
 	}
 	for(ind in p2.individuals){
-		val = 0.25+0.75*ind.z/2;
-		ind.color = rgb2color(hsv2rgb(c(1.0, 0.0, val)));
+		val = (ind.z%100)/100;
+		ind.color = rgb2color(hsv2rgb(c(val, 0.75, 0.75)));
 	}
 	
-	// compute fx of intraspp compet on host fecun
+	// compute fx of intraspp comp on host fecun
 	for(h in p1.individuals){
 		h_loc = c(h.x,h.y);
 		h_nbs = i1.interactingNeighborCount(h);
@@ -165,10 +168,8 @@ ticks all late(){
 			// choose one living host at random for parasite to interact with
 			hnb = h_nbrs[rdunif(1, 0, length(h_nbrs)-1)];
 			
-			// mam-model
-			if(p_trt[p.index] == h_trt[hnb.index]){
-				inf_pr = maxpr;
-			}else inf_pr= minpr;
+			// trait-matching-model
+			inf_pr = maxpr*exp(-γ*(h_trt[hnb.index]-p_trt[p.index])^2);
 			
 			// deterministic fitness outcome is faster and easier to analyze
 			p_fit = (pb*inf_pr+pc*(1-inf_pr))*p_fit;
