@@ -6,24 +6,19 @@ species host initialize() {
 	
 	// model parameters
 	defaults = Dictionary(
-		"Lh", 500000,
-		"Lp", 500000,
-		"hFX", 0.5,  			// host mutation effect size
-		"pFX", 0.5,  			// parasite mutation effect size
-		"hSD", 2.0,  			// host dispersal distance	
-		"pSD", 2.0,  			// parasite dispersal distance
-		"SI", 1.0,  			// spatial interspp interaction distance
-		"W", 100.0,  			// width and height of the simulated area
-		"ch", 0.02, 			// strength of host competition
-		"cp", 0.02, 			// strength of para competition	
-		"lmbda", 2.0,			// (spatial) niche breadth
-		"h_base", 1.2,		// host base fitness
-		"p_base", 1.2,		// para base fitness
-		"hc", 0.98, 		// multiplicative cost on host fitness for each infection
-		"pc", 0.99, 		// multiplicative cost on parasite fitness for failing to infect
-		"pb", 1.01, 		// multiplicative benefit on parasite fitness for successful infection
-		"minpr", 0.2,		// minimum probability of infection (when genotypes don't match)
-		"maxpr", 1.0,		// maximum probability of infection (when genotypes do match)
+		"µₕ", 0.5,  		// host mutation effect size
+		"µₚ", 0.5,  		// parasite mutation effect size
+		"σₕ", 2.0,  		// host dispersal distance	
+		"σₚ", 2.0,  		// parasite dispersal distance
+		"ι", 1.0,  			// spatial interspp interaction distance
+		"cₕ", 0.02, 		// strength of host competition
+		"cₚ", 0.02, 		// strength of para competition	
+		"ξ", 2.0,			// (spatial) niche breadth
+		"W₀ₕ", 1.2,			// host base fitness
+		"W₀ₚ", 1.2,			// para base fitness
+		"sₕ", 0.98, 		// multiplicative cost on host fitness for each infection
+		"sₚ", 1.01, 		// multiplicative benefit on parasite fitness for successful infection
+		"πₘ", 1.0,			// maximum probability of infection
 		"γ", 0.1				// sensitivity of inf pr to trait differences
 		);
 	for (k in defaults.allKeys) {
@@ -34,42 +29,42 @@ species host initialize() {
 		}
 	}
 	defineGlobal("params", defaults);
-	defineConstant("hSM", hSD);  			// host mate choice distance
-	defineConstant("pSM", pSD);  			// parasite mate choice distance
+	defineConstant("hSM", σₕ);  			// host mate choice distance
+	defineConstant("pSM", σₚ);  			// parasite mate choice distance
 	
 	
 	// host genomics
 	initializeMutationRate(1e-7);
-	initializeMutationType("m1", 0.5, "n", 0.0, hFX);
+	initializeMutationType("m1", 0.5, "n", 0.0, µₕ);
 	initializeGenomicElementType("g1", m1, 1.0);
 	initializeGenomicElement(g1, 0, 1e8-1);
 	initializeRecombinationRate(1e-8);
 	
 	// host spatial competition
-	initializeInteractionType(1, "xy", reciprocal=T, maxDistance=lmbda);
+	initializeInteractionType(1, "xy", reciprocal=T, maxDistance=ξ);
 	
 	// host mate choice
 	initializeInteractionType(3, "xy", reciprocal=T, maxDistance=hSM);
 	
 	// parasitism
-	initializeInteractionType(5, "xy", reciprocal=T, maxDistance=SI);
+	initializeInteractionType(5, "xy", reciprocal=T, maxDistance=ι);
 }
 
 species para initialize() {
 	initializeSLiMModelType("nonWF");
-	initializeSLiMOptions(dimensionality="xy",periodicity="xy");
+	initializeSLiMOptions(dimensionality="xy");
 	initializeSpecies(tickModulo=1, tickPhase=1, avatar="🪱");
 	initializeTreeSeq();
 	
 	// parasite genomics
 	initializeMutationRate(1e-7);
-	initializeMutationType("m2", 0.5, "n", 0.0, pFX);
+	initializeMutationType("m2", 0.5, "n", 0.0, µₚ);
 	initializeGenomicElementType("g2", m2, 1.0);
 	initializeGenomicElement(g2, 0, 1e8-1);
 	initializeRecombinationRate(1e-8);
 	
 	// parasite spatial competition
-	initializeInteractionType(2, "xy", reciprocal=T, maxDistance=lmbda);
+	initializeInteractionType(2, "xy", reciprocal=T, maxDistance=ξ);
 	
 	// parasite mate choice
 	initializeInteractionType(4, "xy", reciprocal=T, maxDistance=pSM);
@@ -105,7 +100,7 @@ species para reproduction(p2) {
 
 species host modifyChild() {
 	// Absorbing boundary conditions
-	pos = parent1.spatialPosition + rnorm(2, 0, hSD);
+	pos = parent1.spatialPosition + rnorm(2, 0, σₕ);
 	if (!p1.pointInBounds(pos))
 		return F;
 	child.setSpatialPosition(pos);
@@ -114,7 +109,7 @@ species host modifyChild() {
 
 species para modifyChild() {
 	// Absorbing boundary conditions
-	pos = parent1.spatialPosition + rnorm(2, 0, pSD);
+	pos = parent1.spatialPosition + rnorm(2, 0, σₚ);
 	if (!p1.pointInBounds(pos))
 		return F;
 	child.setSpatialPosition(pos);
@@ -122,11 +117,11 @@ species para modifyChild() {
 }
 
 ticks all 1 early() {
-	IPS = asInteger(1 * W * W); // Initial Population Size
+	IPS = asInteger(1 * 100 * 100); // Initial Population Size (one ind per unit area)
 	host.addSubpop("p1", IPS);
 	para.addSubpop("p2", IPS);
-	p1.setSpatialBounds(c(0, 0, W, W));
-	p2.setSpatialBounds(c(0, 0, W, W));
+	p1.setSpatialBounds(c(0, 0, 100, 100));
+	p2.setSpatialBounds(c(0, 0, 100, 100));
 	p1.individuals.setSpatialPosition(p1.pointUniform(IPS));
 	p2.individuals.setSpatialPosition(p1.pointUniform(IPS));
 }
@@ -139,12 +134,12 @@ ticks all late(){
 	i5.evaluate(p1);
 	
 	// caculating the phenotype as sum of loci with mutation
-	h_trt = p1.individuals.sumOfMutationsOfType(m1);
-	p_trt = p2.individuals.sumOfMutationsOfType(m2);
+	zₕ = p1.individuals.sumOfMutationsOfType(m1);
+	zₚ = p2.individuals.sumOfMutationsOfType(m2);
 	
 	// save trait values
-	p1.individuals.z = h_trt;
-	p2.individuals.z = p_trt;
+	p1.individuals.z = zₕ;
+	p2.individuals.z = zₚ;
 	
 	// identify genotypes by brightness
 	for(ind in p1.individuals){
@@ -160,7 +155,7 @@ ticks all late(){
 	for(h in p1.individuals){
 		h_loc = c(h.x,h.y);
 		h_nbs = i1.interactingNeighborCount(h);
-		h.tagF = h_base*exp(-ch*h_nbs);
+		h.tagF = W₀ₕ*exp(-cₕ*h_nbs);
 	}
 	
 	// compute fx of intraspp comp on para fecun
@@ -168,11 +163,11 @@ ticks all late(){
 	for(p in p2.individuals){
 		p_loc = c(p.x,p.y);
 		p_nbs = i2.interactingNeighborCount(p);
-		p_fit = p_base*exp(-cp*p_nbs);
+		Wₚ = W₀ₚ*exp(-cₚ*p_nbs);
 		
 		// if there's any hosts out there
 		if( p1.individualCount > 0 ){
-			// draw hosts within radius SI of focal parasite
+			// draw hosts within radius ι of focal parasite
 			h_nbrs= i5.nearestNeighborsOfPoint(p1, p_loc, count=p1.individualCount);
 		} else h_nbrs = c();
 		
@@ -183,16 +178,16 @@ ticks all late(){
 			hnb = h_nbrs[rdunif(1, 0, length(h_nbrs)-1)];
 			
 			// trait-matching-model
-			inf_pr = maxpr*exp(-γ*(h_trt[hnb.index]-p_trt[p.index])^2);
+			π = πₘ*exp(-γ*(zₕ[hnb.index]-zₚ[p.index])^2/2);
 			
 			// deterministic fitness outcome is faster and easier to analyze
-			p_fit = (pb*inf_pr+pc*(1-inf_pr))*p_fit;
-			hnb.tagF = (hc*inf_pr+(1-inf_pr))*hnb.tagF;
+			Wₚ = (sₚ*π + (1-π)) * Wₚ;
+			hnb.tagF = (sₕ*π + (1-π)) * hnb.tagF;
 		
-		}else p_fit = pc*p_fit;	// cost of not having anyone to infect
+		}
 		// note: each parasite infects at most one host, but each host can be infected by multiple parasites
-		//			hence, if a host is infected by three parasites it will incur the fitness cost of hc^3
-		p.tagF = p_fit;
+		//			hence, if a host is infected by three parasites it will incur the fitness cost of sₕ^3
+		p.tagF = Wₚ;
 	}
 	
 	// forces non-overlapping generations	
