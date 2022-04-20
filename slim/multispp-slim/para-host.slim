@@ -6,20 +6,22 @@ species host initialize() {
 	
 	// model parameters
 	defaults = Dictionary(
-		"µₕ", 0.5,  		// host mutation effect size
-		"µₚ", 0.5,  		// parasite mutation effect size
-		"σₕ", 2.0,  		// host dispersal distance	
-		"σₚ", 2.0,  		// parasite dispersal distance
-		"ι", 1.0,  			// spatial interspp interaction distance
-		"cₕ", 0.02, 		// strength of host competition
-		"cₚ", 0.02, 		// strength of para competition	
-		"ξ", 2.0,			// (spatial) niche breadth
-		"W₀ₕ", 1.2,			// host base fitness
-		"W₀ₚ", 1.2,			// para base fitness
-		"sₕ", 0.98, 		// multiplicative cost on host fitness for each infection
-		"sₚ", 1.01, 		// multiplicative benefit on parasite fitness for successful infection
-		"πₘ", 1.0,			// maximum probability of infection
-		"γ", 0.1				// sensitivity of inf pr to trait differences
+		"µₕ",  0.5,  		// host mutation effect size (greek letter 'mu' for 'mutation')
+		"µₚ",  0.5,  		// parasite mutation effect size
+		"σₕ",  5.0,  		// host dispersal distance	('sigma' is trad notation for disp dist)
+		"σₚ",  5.0,  		// parasite dispersal distance
+		"ι",   5.0,			// spatial interspp interaction distance ('iota' for 'interaction')
+		"cₕ",  0.001, 		// strength of host competition
+		"cₚ",  0.001, 		// strength of para competition
+		"ωₕ",  7.0,			// (spatial) host niche breadth ('omega' looks like w for 'width', trad quant gen notation)
+		"ωₚ",  7.0,			// (spatial) parasite niche breadth
+		"W₀ₕ", 1.1,			// host base fitness ('W' trad notation for expected liftme repr output)
+		"W₀ₚ", 1.1,			// para base fitness
+		"sₕ", -0.001, 		// multiplicative cost on host fitness for each infection ('s' as in selection)
+		"sₚ",  0.001, 		// multiplicative benefit on parasite fitness for successful infection
+		"πₘ",  1.0,			// maximum probability of infection ('pi' for 'prob' sub 'm' for 'max')
+		"γ",   0.1,			// sensitivity of inf pr to trait differences ('gamma' trad nuimser notation for this par)
+		"ρ₀",  0.2			// initial population density ('rho' is trad for densities)
 		);
 	for (k in defaults.allKeys) {
 		if (!exists(k)) {
@@ -29,8 +31,8 @@ species host initialize() {
 		}
 	}
 	defineGlobal("params", defaults);
-	defineConstant("hSM", σₕ);  			// host mate choice distance
-	defineConstant("pSM", σₚ);  			// parasite mate choice distance
+	defineConstant("Ψₕ", σₕ);  			// host mate choice distance
+	defineConstant("Ψₚ", σₚ);  			// parasite mate choice distance
 	
 	
 	// host genomics
@@ -41,10 +43,10 @@ species host initialize() {
 	initializeRecombinationRate(1e-8);
 	
 	// host spatial competition
-	initializeInteractionType(1, "xy", reciprocal=T, maxDistance=ξ);
+	initializeInteractionType(1, "xy", reciprocal=T, maxDistance=ωₕ);
 	
 	// host mate choice
-	initializeInteractionType(3, "xy", reciprocal=T, maxDistance=hSM);
+	initializeInteractionType(3, "xy", reciprocal=T, maxDistance=Ψₕ);
 	
 	// parasitism
 	initializeInteractionType(5, "xy", reciprocal=T, maxDistance=ι);
@@ -64,10 +66,10 @@ species para initialize() {
 	initializeRecombinationRate(1e-8);
 	
 	// parasite spatial competition
-	initializeInteractionType(2, "xy", reciprocal=T, maxDistance=ξ);
+	initializeInteractionType(2, "xy", reciprocal=T, maxDistance=ωₚ);
 	
 	// parasite mate choice
-	initializeInteractionType(4, "xy", reciprocal=T, maxDistance=pSM);
+	initializeInteractionType(4, "xy", reciprocal=T, maxDistance=Ψₚ);
 }
 
 // make causal mutions neutral :B
@@ -85,6 +87,15 @@ species host reproduction(p1) {
 	}
 	return;
 }
+species host modifyChild() {
+	// Absorbing boundary conditions
+	pos = parent1.spatialPosition + rnorm(2, 0, σₕ);
+	if (!p1.pointInBounds(pos))
+		return F;
+	child.setSpatialPosition(pos);
+	return T;
+}
+
 
 // parasite mating
 species para reproduction(p2) {
@@ -97,16 +108,6 @@ species para reproduction(p2) {
 	}
 	return;
 }
-
-species host modifyChild() {
-	// Absorbing boundary conditions
-	pos = parent1.spatialPosition + rnorm(2, 0, σₕ);
-	if (!p1.pointInBounds(pos))
-		return F;
-	child.setSpatialPosition(pos);
-	return T;
-}
-
 species para modifyChild() {
 	// Absorbing boundary conditions
 	pos = parent1.spatialPosition + rnorm(2, 0, σₚ);
@@ -117,7 +118,7 @@ species para modifyChild() {
 }
 
 ticks all 1 early() {
-	IPS = asInteger(1 * 100 * 100); // Initial Population Size (one ind per unit area)
+	IPS = asInteger(ρ₀ * 100 * 100); // Initial Population Size (ρ₀ ind's per unit area)
 	host.addSubpop("p1", IPS);
 	para.addSubpop("p2", IPS);
 	p1.setSpatialBounds(c(0, 0, 100, 100));
@@ -153,7 +154,6 @@ ticks all late(){
 	
 	// compute fx of intraspp comp on host fecun
 	for(h in p1.individuals){
-		h_loc = c(h.x,h.y);
 		h_nbs = i1.interactingNeighborCount(h);
 		h.tagF = W₀ₕ*exp(-cₕ*h_nbs);
 	}
@@ -161,14 +161,13 @@ ticks all late(){
 	// compute fx of intraspp comp on para fecun
 	// and incorporate fx of interspp intxns on host/para fecun
 	for(p in p2.individuals){
-		p_loc = c(p.x,p.y);
 		p_nbs = i2.interactingNeighborCount(p);
 		Wₚ = W₀ₚ*exp(-cₚ*p_nbs);
 		
 		// if there's any hosts out there
 		if( p1.individualCount > 0 ){
 			// draw hosts within radius ι of focal parasite
-			h_nbrs= i5.nearestNeighborsOfPoint(p1, p_loc, count=p1.individualCount);
+			h_nbrs= i5.nearestNeighborsOfPoint(p1, c(p.x,p.y), count=p1.individualCount); // not using p.spatialPosition because im scared it'll create dependency on z
 		} else h_nbrs = c();
 		
 		// if there's hosts nearby
@@ -177,12 +176,15 @@ ticks all late(){
 			// choose one living host at random for parasite to interact with
 			hnb = h_nbrs[rdunif(1, 0, length(h_nbrs)-1)];
 			
+			// move parasite to that host
+			p.setSpatialPosition(c(hnb.x,hnb.y)); // not using hnb.spatialPosition because im scared it'll copy z
+			
 			// trait-matching-model
 			π = πₘ*exp(-γ*(zₕ[hnb.index]-zₚ[p.index])^2/2);
 			
 			// deterministic fitness outcome is faster and easier to analyze
-			Wₚ = (sₚ*π + (1-π)) * Wₚ;
-			hnb.tagF = (sₕ*π + (1-π)) * hnb.tagF;
+			Wₚ = (exp(sₚ)*π + (1-π)) * Wₚ;
+			hnb.tagF = (exp(sₕ)*π + (1-π)) * hnb.tagF;
 		
 		}
 		// note: each parasite infects at most one host, but each host can be infected by multiple parasites
