@@ -19,7 +19,6 @@ species host initialize() {
 		"W₀ₚ", 1.1,			// para base fitness
 		"sₕ", -0.001, 		// multiplicative cost on host fitness for each infection ('s' as in selection)
 		"sₚ",  0.001, 		// multiplicative benefit on parasite fitness for successful infection
-		"πₘ",  1.0,			// maximum probability of infection ('pi' for 'prob' sub 'm' for 'max')
 		"γ",   0.1,			// sensitivity of inf pr to trait differences ('gamma' trad nuimser notation for this par)
 		"ρ₀",  0.2			// initial population density ('rho' is trad for densities)
 		);
@@ -31,8 +30,8 @@ species host initialize() {
 		}
 	}
 	defineGlobal("params", defaults);
-	defineConstant("Ψₕ", σₕ);  			// host mate choice distance
-	defineConstant("Ψₚ", σₚ);  			// parasite mate choice distance
+	defineConstant("Ψₕ", σₕ);	// host mate choice distance
+	defineConstant("Ψₚ", σₚ);  // parasite mate choice distance
 	
 	
 	// host genomics
@@ -154,37 +153,39 @@ ticks all late(){
 	
 	// compute fx of intraspp comp on host fecun
 	for(h in p1.individuals){
-		h_nbs = i1.interactingNeighborCount(h);
-		h.tagF = W₀ₕ*exp(-cₕ*h_nbs);
+		Nₕ = i1.interactingNeighborCount(h);
+		h.tagF = W₀ₕ*exp(-cₕ*Nₕ);
 	}
 	
 	// compute fx of intraspp comp on para fecun
 	// and incorporate fx of interspp intxns on host/para fecun
 	for(p in p2.individuals){
-		p_nbs = i2.interactingNeighborCount(p);
-		Wₚ = W₀ₚ*exp(-cₚ*p_nbs);
+		Nₚ = i2.interactingNeighborCount(p);
+		Wₚ = W₀ₚ*exp(-cₚ*Nₚ);
 		
 		// if there's any hosts out there
 		if( p1.individualCount > 0 ){
 			// draw hosts within radius ι of focal parasite
-			h_nbrs= i5.nearestNeighborsOfPoint(p1, c(p.x,p.y), count=p1.individualCount); // not using p.spatialPosition because im scared it'll create dependency on z
+			h_nbrs= i5.nearestNeighborsOfPoint(p1, c(p.x,p.y), count=p1.individualCount);
+			// not using p.spatialPosition because im scared it'll create dependency on z
 		} else h_nbrs = c();
 		
 		// if there's hosts nearby
 		if(length(h_nbrs) > 0){
 			
 			// choose one living host at random for parasite to interact with
-			hnb = h_nbrs[rdunif(1, 0, length(h_nbrs)-1)];
+			h= h_nbrs[rdunif(1, 0, length(h_nbrs)-1)];
 			
 			// move parasite to that host
-			p.setSpatialPosition(c(hnb.x,hnb.y)); // not using hnb.spatialPosition because im scared it'll copy z
+			p.setSpatialPosition(c(h.x,h.y));
+			// not using h.spatialPosition because im scared it'll copy z
 			
 			// trait-matching-model
-			π = πₘ*exp(-γ*(zₕ[hnb.index]-zₚ[p.index])^2/2);
+			π = exp(-γ*(zₕ[h.index]-zₚ[p.index])^2/2);
 			
 			// deterministic fitness outcome is faster and easier to analyze
 			Wₚ = (exp(sₚ)*π + (1-π)) * Wₚ;
-			hnb.tagF = (exp(sₕ)*π + (1-π)) * hnb.tagF;
+			h.tagF = (exp(sₕ)*π + (1-π)) * h.tagF;
 		
 		}
 		// note: each parasite infects at most one host, but each host can be infected by multiple parasites
