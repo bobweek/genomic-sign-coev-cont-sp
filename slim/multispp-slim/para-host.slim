@@ -79,8 +79,8 @@ species para fitness(m2) { return 1.0; }
 species host reproduction(p1) {
 	mate = i3.drawByStrength(individual, 1); // find a single partner to mate with
 	if(mate.size()) {
-		nOff = rpois(1, individual.tagF);
-		for(i in seqLen(nOff)) {
+		Wₕ= rpois(1, individual.tagF);
+		for(i in seqLen(Wₕ)) {
 			subpop.addCrossed(individual, mate);
 		}
 	}
@@ -100,8 +100,8 @@ species host modifyChild() {
 species para reproduction(p2) {
 	mate = i4.drawByStrength(individual, 1);
 	if(mate.size()) {
-		nOff = rpois(1, individual.tagF);
-		for(i in seqLen(nOff)) {
+		Wₚ = rpois(1, individual.tagF);
+		for(i in seqLen(Wₚ)) {
 			subpop.addCrossed(individual, mate);
 		}
 	}
@@ -117,13 +117,13 @@ species para modifyChild() {
 }
 
 ticks all 1 early() {
-	IPS = asInteger(ρ₀ * 100 * 100); // Initial Population Size (ρ₀ ind's per unit area)
-	host.addSubpop("p1", IPS);
-	para.addSubpop("p2", IPS);
+	N₀ = asInteger(ρ₀ * 100 * 100); // Initial Population Size (ρ₀ ind's per unit area)
+	host.addSubpop("p1", N₀);
+	para.addSubpop("p2", N₀);
 	p1.setSpatialBounds(c(0, 0, 100, 100));
 	p2.setSpatialBounds(c(0, 0, 100, 100));
-	p1.individuals.setSpatialPosition(p1.pointUniform(IPS));
-	p2.individuals.setSpatialPosition(p1.pointUniform(IPS));
+	p1.individuals.setSpatialPosition(p1.pointUniform(N₀));
+	p2.individuals.setSpatialPosition(p1.pointUniform(N₀));
 }
 
 ticks all late(){
@@ -166,7 +166,7 @@ ticks all late(){
 		// if there's any hosts out there
 		if( p1.individualCount > 0 ){
 			// draw hosts within radius ι of focal parasite
-			h_nbrs= i5.nearestNeighborsOfPoint(p1, c(p.x,p.y), count=p1.individualCount);
+			h_nbrs = i5.nearestNeighborsOfPoint(p1, c(p.x,p.y), count=p1.individualCount);
 			// not using p.spatialPosition because im scared it'll create dependency on z
 		} else h_nbrs = c();
 		
@@ -174,18 +174,18 @@ ticks all late(){
 		if(length(h_nbrs) > 0){
 			
 			// choose one living host at random for parasite to interact with
-			h= h_nbrs[rdunif(1, 0, length(h_nbrs)-1)];
+			h = h_nbrs[rdunif(1, 0, length(h_nbrs)-1)];
 			
 			// move parasite to that host
 			p.setSpatialPosition(c(h.x,h.y));
 			// not using h.spatialPosition because im scared it'll copy z
 			
 			// trait-matching-model
-			π = exp(-γ*(zₕ[h.index]-zₚ[p.index])^2/2);
+			α = exp(-γ*(zₕ[h.index]-zₚ[p.index])^2/2);
 			
 			// deterministic fitness outcome is faster and easier to analyze
-			Wₚ = (exp(sₚ)*π + (1-π)) * Wₚ;
-			h.tagF = (exp(sₕ)*π + (1-π)) * h.tagF;
+			Wₚ = (exp(sₚ)*α + (1-α)) * Wₚ;
+			h.tagF = (exp(sₕ)*α + (1-α)) * h.tagF;
 		
 		}
 		// note: each parasite infects at most one host, but each host can be infected by multiple parasites
