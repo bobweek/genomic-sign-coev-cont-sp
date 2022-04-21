@@ -1,0 +1,66 @@
+---
+output: pdf_document
+---
+
+# SLiM Projects
+
+- think about mutation rates
+
+- plot pairwise dist to pairwise pi and make sure divergence occurs and ibd emerges
+
+- check to see how many bp's a flagged locus is from causal loci
+
+- spatial distribution of loci across genome
+
+  - evenly distribute n loci, as n -> L most of genome will be affected
+  
+    - if we make causal loci far enough they wont be phys linked, but slim will take longer
+    
+    - phys & stat linkage could be a nuisance, but could also carry the signal of coev
+  
+  - randomly distribute n loci, as n -> L clumps of genome will be affected
+  
+  - oligogenic < 50
+  
+  - polygenic ~ 100
+  
+    - check industry standards on what is oligogenic/polygenic (in terms of number of loci)
+    
+- distribution of affects on trait
+
+  - 
+
+## _Houston, we have a problem_ subproject
+
+
+## _Genomic signal of coevolution in continuous space_ subproject
+
+Find statistics with high power and low false-positive rates:
+
+  - Do community detection algorithms detect larger communities for the causal loci than for spuriously correlated neutral loci?
+  
+  - Does analyzing the ild matrix at different resolutions of spatial discretization tell us anything?
+  
+  - If we make parasites move to host locations for infection, can this spatial paring be used to obtain a "cleaner" signal than spatial discretization methods?
+  
+  - Do the cca-spatial whitening stuff and see what pops out.
+  
+## Potential third subproject _Method to identify coev loci_
+
+## Other idea
+
+- spatiotemporal correlations of host-parasite pop densities
+
+## Friendly reviewers
+
+- louis zaman
+
+- anurag agrawral (for intro at least)
+
+- scott
+
+- fields? (maybe better as non-friendly reviewer)
+
+- debarre?
+
+- send intro to coev gp and check if they want to coauthor (send slack message to gideon to review)

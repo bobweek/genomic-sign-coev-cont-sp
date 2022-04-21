@@ -79,8 +79,8 @@ species para fitness(m2) { return 1.0; }
 species host reproduction(p1) {
 	mate = i3.drawByStrength(individual, 1); // find a single partner to mate with
 	if(mate.size()) {
-		Wₕ= rpois(1, individual.tagF);
-		for(i in seqLen(Wₕ)) {
+		𝓦ₕ= rpois(1, individual.tagF);
+		for(i in seqLen(𝓦ₕ)) {
 			subpop.addCrossed(individual, mate);
 		}
 	}
@@ -100,8 +100,8 @@ species host modifyChild() {
 species para reproduction(p2) {
 	mate = i4.drawByStrength(individual, 1);
 	if(mate.size()) {
-		Wₚ = rpois(1, individual.tagF);
-		for(i in seqLen(Wₚ)) {
+		𝓦ₚ = rpois(1, individual.tagF);
+		for(i in seqLen(𝓦ₚ)) {
 			subpop.addCrossed(individual, mate);
 		}
 	}
