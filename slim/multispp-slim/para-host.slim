@@ -1,9 +1,5 @@
-species host initialize() {
+species all initialize(){
 	initializeSLiMModelType("nonWF");
-	initializeSLiMOptions(dimensionality="xy");
-	initializeSpecies(tickModulo=1, tickPhase=1, avatar="🦌");
-	initializeTreeSeq();
-	
 	// model parameters
 	defaults = Dictionary(
 		"µₕ",  0.5,  		// host mutation effect size (greek letter 'mu' for 'mutation')
@@ -17,8 +13,8 @@ species host initialize() {
 		"ωₚ",  7.0,			// (spatial) parasite niche breadth
 		"W₀ₕ", 1.1,			// host base fitness ('W' trad notation for expected liftme repr output)
 		"W₀ₚ", 1.1,			// para base fitness
-		"sₕ", -0.001, 		// multiplicative cost on host fitness for each infection ('s' as in selection)
-		"sₚ",  0.001, 		// multiplicative benefit on parasite fitness for successful infection
+		"sₕ",  0.0, 		// cost on host fitness for each infection ('s' as in selection)
+		"sₚ",  0.01, 		// benefit on parasite fitness for successful infection
 		"γ",   0.1,			// sensitivity of inf pr to trait differences ('gamma' trad nuimser notation for this par)
 		"ρ₀",  0.2			// initial population density ('rho' is trad for densities)
 		);
@@ -31,8 +27,29 @@ species host initialize() {
 	}
 	defineGlobal("params", defaults);
 	defineConstant("Ψₕ", σₕ);	// host mate choice distance
-	defineConstant("Ψₚ", σₚ);  // parasite mate choice distance
+	defineConstant("Ψₚ", σₚ);  // parasite mate choice distance	
 	
+	// host spatial competition
+	initializeInteractionType(1, "xy", reciprocal=T, maxDistance=ωₕ);
+	
+	// parasite spatial competition
+	initializeInteractionType(2, "xy", reciprocal=T, maxDistance=ωₚ);
+	
+	// host mate choice
+	initializeInteractionType(3, "xy", reciprocal=T, maxDistance=Ψₕ);
+	
+	// parasite mate choice
+	initializeInteractionType(4, "xy", reciprocal=T, maxDistance=Ψₚ);
+	
+	// parasitism
+	initializeInteractionType(5, "xy", reciprocal=F, maxDistance=ι);
+
+}
+
+species host initialize() {
+	initializeSLiMOptions(dimensionality="xy");
+	initializeSpecies(tickModulo=1, tickPhase=1, avatar="🦌");
+	initializeTreeSeq();
 	
 	// host genomics
 	initializeMutationRate(1e-7);
@@ -40,19 +57,10 @@ species host initialize() {
 	initializeGenomicElementType("g1", m1, 1.0);
 	initializeGenomicElement(g1, 0, 1e8-1);
 	initializeRecombinationRate(1e-8);
-	
-	// host spatial competition
-	initializeInteractionType(1, "xy", reciprocal=T, maxDistance=ωₕ);
-	
-	// host mate choice
-	initializeInteractionType(3, "xy", reciprocal=T, maxDistance=Ψₕ);
-	
-	// parasitism
-	initializeInteractionType(5, "xy", reciprocal=T, maxDistance=ι);
+
 }
 
 species para initialize() {
-	initializeSLiMModelType("nonWF");
 	initializeSLiMOptions(dimensionality="xy");
 	initializeSpecies(tickModulo=1, tickPhase=1, avatar="🪱");
 	initializeTreeSeq();
@@ -63,12 +71,6 @@ species para initialize() {
 	initializeGenomicElementType("g2", m2, 1.0);
 	initializeGenomicElement(g2, 0, 1e8-1);
 	initializeRecombinationRate(1e-8);
-	
-	// parasite spatial competition
-	initializeInteractionType(2, "xy", reciprocal=T, maxDistance=ωₚ);
-	
-	// parasite mate choice
-	initializeInteractionType(4, "xy", reciprocal=T, maxDistance=Ψₚ);
 }
 
 // make causal mutions neutral :B
@@ -123,7 +125,7 @@ ticks all 1 early() {
 	p1.setSpatialBounds(c(0, 0, 100, 100));
 	p2.setSpatialBounds(c(0, 0, 100, 100));
 	p1.individuals.setSpatialPosition(p1.pointUniform(N₀));
-	p2.individuals.setSpatialPosition(p1.pointUniform(N₀));
+	p2.individuals.setSpatialPosition(p2.pointUniform(N₀));
 }
 
 ticks all late(){
@@ -141,7 +143,7 @@ ticks all late(){
 	p1.individuals.z = zₕ;
 	p2.individuals.z = zₚ;
 	
-	// identify genotypes by brightness
+	// identify phenotypes by hue
 	for(ind in p1.individuals){
 		val = (ind.z%100)/100;
 		ind.color = rgb2color(hsv2rgb(c(val, 0.75, 0.75)));
@@ -166,7 +168,7 @@ ticks all late(){
 		// if there's any hosts out there
 		if( p1.individualCount > 0 ){
 			// draw hosts within radius ι of focal parasite
-			h_nbrs = i5.nearestNeighborsOfPoint(p1, c(p.x,p.y), count=p1.individualCount);
+			h_nbrs = i5.nearestNeighborsOfPoint(c(p.x,p.y), p1, count=p1.individualCount);
 			// not using p.spatialPosition because im scared it'll create dependency on z
 		} else h_nbrs = c();
 		
@@ -196,12 +198,24 @@ ticks all late(){
 	// forces non-overlapping generations	
 	p2.individuals.fitnessScaling = 0;
 	p1.individuals.fitnessScaling = 0;
+	
+	// logging position, trait value, fitness and species id for each individual
+	if(community.tick%10==1){
+		fn = paste0("~/indData",format("%04i",community.tick),".csv");
+		writeFile(fn,paste("x","y","zh","W","spp",sep=","),append=F);
+		for(h in p1.individuals){
+			writeFile(fn,paste(h.x,h.y,zₕ[h.index],h.tagF,1,sep=","),append=T);
+		}
+		for(p in p2.individuals){
+			writeFile(fn,paste(p.x,p.y,zₚ[p.index],p.tagF,2,sep=","),append=T);
+		}
+	}
+
 }
 
-ticks all 2000 late() {
+ticks all 1000 late() {
 	host.treeSeqOutput("host.trees", metadata=params);
 	para.treeSeqOutput("para.trees", metadata=params);
+	community.simulationFinished();
 	catn("Done.");
-	host.simulationFinished();
-	para.simulationFinished();
 }
