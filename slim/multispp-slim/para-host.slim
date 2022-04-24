@@ -202,7 +202,7 @@ ticks all late(){
 	// logging position, trait value, fitness and species id for each individual
 	if(community.tick%10==1){
 		fn = paste0("~/indData",format("%04i",community.tick),".csv");
-		writeFile(fn,paste("x","y","zh","W","spp",sep=","),append=F);
+		writeFile(fn,paste("x","y","z","W","spp",sep=","),append=F);
 		for(h in p1.individuals){
 			writeFile(fn,paste(h.x,h.y,zₕ[h.index],h.tagF,1,sep=","),append=T);
 		}
