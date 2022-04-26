@@ -2,7 +2,7 @@ require(ggplot2)
 require(gridExtra)
 
 tsdf = read.csv("time-series.csv")
-tsdf$X = seq(1,1000,by=10)
+tsdf$X = seq(1,10*length(tsdf$X),by=10)
 colnames(tsdf)[1]="t"
 
 glb_abun_p = ggplot(tsdf) + 

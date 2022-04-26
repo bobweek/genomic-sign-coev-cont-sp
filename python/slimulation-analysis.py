@@ -15,7 +15,7 @@ time_series = pd.DataFrame(columns=[
             "DBzh_m","DBzp_m","DBzh_stdv","DBzp_stdv","DBzh_DBzp","Nh_DBzp"])
 
 txt = "{time:d}"
-time_pts = np.arange(1000,step=10)+1
+time_pts = np.arange(4550,step=10)+1
 for t in time_pts:    
 
     fname = "python/ind-data/indData"+txt.format(time = t).zfill(4)+".csv"
@@ -118,7 +118,7 @@ for t in time_pts:
                 zh_binned[x,y] = np.mean(inds.z[hs])            
                 rh_binned[x,y] = np.mean(np.log(inds.W[hs]))            
             if Nh_binned[x,y] > 1:
-                hmat = np.cov(np.transpose(inds[hs][["zh","W"]]))
+                hmat = np.cov(np.transpose(inds[hs][["z","W"]]))
                 Dzh_binned[x,y] = hmat[1,0]
                 hBmat = np.cov([np.asarray(zₕ[hs]),Bₕ[hs]])            
                 DBzh_binned[x,y] = hBmat[1,0]
@@ -129,7 +129,7 @@ for t in time_pts:
                 zp_binned[x,y] = np.mean(inds.z[ps])        
                 rp_binned[x,y] = np.mean(np.log(inds.W[ps]))
             if Np_binned[x,y] > 1:
-                pmat = np.cov(np.transpose(inds[ps][["zh","W"]]))
+                pmat = np.cov(np.transpose(inds[ps][["z","W"]]))
                 Dzp_binned[x,y] = pmat[1,0]
                 pBmat = np.cov([np.asarray(zₚ[ps]),Bₚ[ps]])
                 DBzp_binned[x,y] = pBmat[1,0]            
