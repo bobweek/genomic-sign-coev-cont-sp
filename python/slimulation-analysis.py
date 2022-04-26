@@ -11,6 +11,7 @@ time_series = pd.DataFrame(columns=[
             "pntcorr","dsccorr","unocc_h","unocc_p","Nh_m","Np_m","Nh_stdv","Np_stdv",
             "Nh_cv","Np_cv","Ncorr","rh_m","rp_m","rh_stdv","rp_stdv","rh_rp",
             "zh_m", "zh_stdv", "zp_m", "zp_stdv", "zcorr",
+            "vh_m", "vh_stdv", "vp_m", "vp_stdv", "vcorr",
             "Dzh_m","Dzp_m","Dzh_stdv","Dzp_stdv","Dzh_Dzp",
             "DBzh_m","DBzp_m","DBzh_stdv","DBzp_stdv","DBzh_DBzp","Nh_DBzp"])
 
@@ -167,7 +168,14 @@ for t in time_pts:
     zp_m = np.mean(zp_binned.flatten()[pocc])
     zh_stdv = np.sqrt(np.var(zh_binned.flatten()[hocc],ddof=1))
     zp_stdv = np.sqrt(np.var(zp_binned.flatten()[pocc],ddof=1))
-    zcorr = np.corrcoef([Nh_binned.flatten()[hocc & pocc], Np_binned.flatten()[hocc & pocc]])[0,1]
+    zcorr = np.corrcoef([zh_binned.flatten()[hocc & pocc], zp_binned.flatten()[hocc & pocc]])[0,1]
+
+    # mean and var of local trait var per square for each spp
+    vh_m = np.mean(vh_binned.flatten()[hocc])
+    vp_m = np.mean(vp_binned.flatten()[pocc])
+    vh_stdv = np.sqrt(np.var(vh_binned.flatten()[hocc],ddof=1))
+    vp_stdv = np.sqrt(np.var(vp_binned.flatten()[pocc],ddof=1))
+    vcorr = np.corrcoef([vh_binned.flatten()[hocc & pocc], vp_binned.flatten()[hocc & pocc]])[0,1]
 
     # mean, stdv and corr of growth rates
     rh_hocc = rh_binned.flatten()[hocc]
@@ -181,14 +189,14 @@ for t in time_pts:
     rh_rp = np.corrcoef([rh_hpocc, rp_hpocc])[0,1]
 
     # mean, var and corr of expected phenotypic change in resp to sel
-    Dzh_hocc = Dzh_binned.flatten()[hsev]
-    Dzp_pocc = Dzp_binned.flatten()[psev]
+    Dzh_hsev = Dzh_binned.flatten()[hsev]
+    Dzp_psev = Dzp_binned.flatten()[psev]
     Dzh_hpsev = Dzh_binned.flatten()[hsev & psev]
     Dzp_hpsev = Dzp_binned.flatten()[hsev & psev]
-    Dzh_m = np.mean(Dzh_hocc)
-    Dzp_m = np.mean(Dzp_pocc)
-    Dzh_stdv = np.sqrt(np.var(Dzh_hocc,ddof=1))
-    Dzp_stdv = np.sqrt(np.var(Dzp_pocc,ddof=1))
+    Dzh_m = np.mean(Dzh_hsev)
+    Dzp_m = np.mean(Dzp_psev)
+    Dzh_stdv = np.sqrt(np.var(Dzh_hsev,ddof=1))
+    Dzp_stdv = np.sqrt(np.var(Dzp_psev,ddof=1))
     Dzh_Dzp = np.corrcoef([Dzh_hpsev,Dzp_hpsev])[0,1]
 
     # mean, var and corr of expected phenotypic change in resp to bio sel
@@ -232,6 +240,7 @@ for t in time_pts:
         pntcorr,dsccorr,unocc_h,unocc_p,Nh_m,Np_m,Nh_stdv,Np_stdv,
         Nh_cv,Np_cv,Ncorr,rh_m,rp_m,rh_stdv,rp_stdv,rh_rp,
         zh_m, zh_stdv, zp_m, zp_stdv, zcorr,
+        vh_m, vh_stdv, vp_m, vp_stdv, vcorr,
         Dzh_m,Dzp_m,Dzh_stdv,Dzp_stdv,Dzh_Dzp,
         DBzh_m,DBzp_m,DBzh_stdv,DBzp_stdv,DBzh_DBzp,Nh_DBzp]], 
         columns=[
@@ -239,6 +248,7 @@ for t in time_pts:
             "pntcorr","dsccorr","unocc_h","unocc_p","Nh_m","Np_m","Nh_stdv","Np_stdv",
             "Nh_cv","Np_cv","Ncorr","rh_m","rp_m","rh_stdv","rp_stdv","rh_rp",
             "zh_m", "zh_stdv", "zp_m", "zp_stdv", "zcorr",
+            "vh_m", "vh_stdv", "vp_m", "vp_stdv", "vcorr",
             "Dzh_m","Dzp_m","Dzh_stdv","Dzp_stdv","Dzh_Dzp",
             "DBzh_m","DBzp_m","DBzh_stdv","DBzp_stdv","DBzh_DBzp","Nh_DBzp"])
     time_series = time_series.append(thg)
