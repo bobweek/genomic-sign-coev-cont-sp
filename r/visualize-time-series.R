@@ -29,7 +29,7 @@ Ncorr_p = ggplot(tsdf) +
   ylim(c(0,1)) +
   theme_minimal()
 
-lcl_trt_p = ggplot(tsdf) + 
+lcl_m_trt_m_p = ggplot(tsdf) + 
   geom_line(aes(x=t,y=zh_m),col="orange") +
   geom_line(aes(x=t,y=zp_m),col="purple") +
   # xlim(c(100,1000)) +
@@ -37,7 +37,7 @@ lcl_trt_p = ggplot(tsdf) +
   ylab("Spatial Avg Local Mean Trait") +
   theme_minimal()
 
-lcl_trt_var_p = ggplot(tsdf) + 
+lcl_m_trt_v_p = ggplot(tsdf) + 
   geom_line(aes(x=t,y=zh_stdv),col="orange") +
   geom_line(aes(x=t,y=zp_stdv),col="purple") +
   # xlim(c(100,1000)) +
@@ -49,7 +49,31 @@ zcorr_p = ggplot(tsdf) +
   geom_line(aes(x=t,y=zcorr)) +
   # xlim(c(100,1000)) +
   xlab("Time") +
-  ylab("Spatial Correlation of Traits") +
+  ylab("Spatial Correlation of Mean Traits") +
+  ylim(c(-1,1)) +
+  theme_minimal()
+
+lcl_trt_v_m_p = ggplot(tsdf) + 
+  geom_line(aes(x=t,y=vh_m),col="orange") +
+  geom_line(aes(x=t,y=vp_m),col="purple") +
+  # xlim(c(100,1000)) +
+  xlab("Time") +
+  ylab("Spatial Avg Local Trait Variance") +
+  theme_minimal()
+
+lcl_m_trt_v_p = ggplot(tsdf) + 
+  geom_line(aes(x=t,y=vh_stdv),col="orange") +
+  geom_line(aes(x=t,y=vp_stdv),col="purple") +
+  # xlim(c(100,1000)) +
+  xlab("Time") +
+  ylab("Stdev of Local Trait Variance") +
+  theme_minimal()
+
+vcorr_p = ggplot(tsdf) + 
+  geom_line(aes(x=t,y=vcorr)) +
+  # xlim(c(100,1000)) +
+  xlab("Time") +
+  ylab("Spatial Correlation of Trait Variances") +
   ylim(c(-1,1)) +
   theme_minimal()
 
