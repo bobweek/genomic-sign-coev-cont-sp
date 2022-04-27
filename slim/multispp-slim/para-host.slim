@@ -2,8 +2,8 @@ species all initialize(){
 	initializeSLiMModelType("nonWF");
 	// model parameters
 	defaults = Dictionary(
-		"µₕ",  0.5,  		// host mutation effect size (greek letter 'mu' for 'mutation')
-		"µₚ",  0.5,  		// parasite mutation effect size
+		"µₕ",  0.01,  		// host mutation effect size (greek letter 'mu' for 'mutation')
+		"µₚ",  0.01,  		// parasite mutation effect size
 		"σₕ",  5.0,  		// host dispersal distance	('sigma' is trad notation for disp dist)
 		"σₚ",  5.0,  		// parasite dispersal distance
 		"ι",   5.0,			// spatial interspp interaction distance ('iota' for 'interaction')
@@ -31,6 +31,7 @@ species all initialize(){
 	
 	// host spatial competition
 	initializeInteractionType(1, "xy", reciprocal=T, maxDistance=ωₕ);
+	i1.setInteractionFunction("n", 1.0, ωₕ/3);
 	
 	// parasite spatial competition
 	initializeInteractionType(2, "xy", reciprocal=T, maxDistance=ωₚ);
@@ -49,10 +50,10 @@ species all initialize(){
 species host initialize() {
 	initializeSLiMOptions(dimensionality="xy");
 	initializeSpecies(tickModulo=1, tickPhase=1, avatar="🦌");
-	initializeTreeSeq();
+	//initializeTreeSeq();
 	
 	// host genomics
-	initializeMutationRate(1e-7);
+	initializeMutationRate(1e-11);
 	initializeMutationType("m1", 0.5, "n", 0.0, µₕ);
 	initializeGenomicElementType("g1", m1, 1.0);
 	initializeGenomicElement(g1, 0, 1e8-1);
@@ -63,10 +64,10 @@ species host initialize() {
 species para initialize() {
 	initializeSLiMOptions(dimensionality="xy");
 	initializeSpecies(tickModulo=1, tickPhase=1, avatar="🪱");
-	initializeTreeSeq();
+	//initializeTreeSeq();
 	
 	// parasite genomics
-	initializeMutationRate(1e-7);
+	initializeMutationRate(1e-11);
 	initializeMutationType("m2", 0.5, "n", 0.0, µₚ);
 	initializeGenomicElementType("g2", m2, 1.0);
 	initializeGenomicElement(g2, 0, 1e8-1);
@@ -154,8 +155,13 @@ ticks all late(){
 	}
 	
 	// compute fx of intraspp comp on host fecun
-	Nₕ = i1.localPopulationDensity(p1.individuals); // be sure to set the intxn kernel to a gaussian
-	p1.individuals.tagF = W₀ₕ*exp(-cₕ*Nₕ);
+	for(h in p1.individuals){
+		Nₕ = i1.interactingNeighborCount(h);
+		p1.individuals.tagF = W₀ₕ*exp(-cₕ*Nₕ);
+	}
+//	Nₕ = i1.localPopulationDensity(p1.individuals); // be sure to set the intxn kernel to a gaussian
+//	catn(Nₕ);
+	
 	
 	// compute fx of intraspp comp on para fecun
 	// and incorporate fx of interspp intxns on host/para fecun
@@ -199,7 +205,7 @@ ticks all late(){
 	
 	// logging position, trait value, fitness and species id for each individual
 	if(community.tick%10==1){
-		fn = paste0("~/indData",format("%04i",community.tick),".csv");
+		fn = paste0("~/gsccs-data/ind-data/indData",format("%04i",community.tick),".csv");
 		writeFile(fn,paste("x","y","z","W","spp",sep=","),append=F);
 		for(h in p1.individuals){
 			writeFile(fn,paste(h.x,h.y,zₕ[h.index],h.tagF,1,sep=","),append=T);

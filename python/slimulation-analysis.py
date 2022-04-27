@@ -15,11 +15,13 @@ time_series = pd.DataFrame(columns=[
             "Dzh_m","Dzp_m","Dzh_stdv","Dzp_stdv","Dzh_Dzp",
             "DBzh_m","DBzp_m","DBzh_stdv","DBzp_stdv","DBzh_DBzp","Nh_DBzp"])
 
+# build another data frame filled with ibd plots
+
 txt = "{time:d}"
 time_pts = np.arange(4550,step=10)+1
 for t in time_pts:    
 
-    fname = "python/ind-data/indData"+txt.format(time = t).zfill(4)+".csv"
+    fname = "~/gsccs-data/ind-data/indData"+txt.format(time = t).zfill(4)+".csv"
     inds = pd.read_csv(fname)
 
     hosts = inds.index[inds.spp==1]
@@ -253,4 +255,9 @@ for t in time_pts:
             "DBzh_m","DBzp_m","DBzh_stdv","DBzp_stdv","DBzh_DBzp","Nh_DBzp"])
     time_series = time_series.append(thg)
 
-time_series.to_csv("r/time-series.csv")
+time_series.to_csv("~/gsccs-data/time-series.csv")
+
+import os
+duration = 1  # seconds
+freq = 440  # Hz
+os.system('play -nq -t alsa synth {} sine {}'.format(duration, freq))
