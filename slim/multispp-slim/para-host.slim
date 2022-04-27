@@ -220,8 +220,8 @@ ticks all late(){
 }
 
 ticks all 5000 late() {
-	host.treeSeqOutput("host.trees", metadata=params);
-	para.treeSeqOutput("para.trees", metadata=params);
+	host.treeSeqOutput("~/gsccs-data/host.trees", metadata=params);
+	para.treeSeqOutput("~/gsccs-data/para.trees", metadata=params);
 	community.simulationFinished();
 	catn("Done.");
 }
