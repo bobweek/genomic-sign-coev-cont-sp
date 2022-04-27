@@ -154,10 +154,8 @@ ticks all late(){
 	}
 	
 	// compute fx of intraspp comp on host fecun
-	for(h in p1.individuals){
-		Nₕ = i1.interactingNeighborCount(h);
-		h.tagF = W₀ₕ*exp(-cₕ*Nₕ);
-	}
+	Nₕ = i1.localPopulationDensity(p1.individuals); // be sure to set the intxn kernel to a gaussian
+	p1.individuals.tagF = W₀ₕ*exp(-cₕ*Nₕ);
 	
 	// compute fx of intraspp comp on para fecun
 	// and incorporate fx of interspp intxns on host/para fecun
@@ -170,13 +168,13 @@ ticks all late(){
 			// draw hosts within radius ι of focal parasite
 			h_nbrs = i5.nearestNeighborsOfPoint(c(p.x,p.y), p1, count=p1.individualCount);
 			// not using p.spatialPosition because im scared it'll create dependency on z
-		} else h_nbrs = c();
+		} //else h_nbrs = c();
 		
 		// if there's hosts nearby
 		if(length(h_nbrs) > 0){
 			
 			// choose one living host at random for parasite to interact with
-			h = h_nbrs[rdunif(1, 0, length(h_nbrs)-1)];
+			h = h_nbrs[rdunif(1, 0, length(h_nbrs)-1)]; // replace with gauss weighting (there may be a fct for this)
 			
 			// move parasite to that host
 			p.setSpatialPosition(c(h.x,h.y));
