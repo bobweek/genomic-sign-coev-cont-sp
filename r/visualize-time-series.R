@@ -44,7 +44,7 @@ lcl_m_trt_m_p = ggplot(tsdf) +
   scale_color_manual(values = colors) +
   theme_minimal()
 
-lcl_m_trt_v_p = ggplot(tsdf) + 
+lcl_m_trt_stddv_p = ggplot(tsdf) + 
   geom_line(aes(x=t,y=zh_stdv,color="Host")) +
   geom_line(aes(x=t,y=zp_stdv,color="Parasite")) +
   labs(x = "Time",        
@@ -62,7 +62,7 @@ zcorr_p = ggplot(tsdf) +
   ylim(c(-1,1)) +
   theme_minimal()
 
-lcl_trt_v_m_p = ggplot(tsdf) + 
+lcl_trt_stdv_m_p = ggplot(tsdf) + 
   geom_line(aes(x=t,y=sqrt(vh_m),color="Host")) +
   geom_line(aes(x=t,y=sqrt(vp_m),color="Parasite")) +
   labs(x = "Time",        

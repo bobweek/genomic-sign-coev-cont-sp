@@ -4,8 +4,8 @@ species all initialize(){
 	defaults = Dictionary(	
 		"µₕ",  1e-11,  	// host mutation rate
 		"µₚ",  1e-11,  	// parasite mutation rate
-		"ξₕ",  0.01,  		// host mutation effect size (greek letter 'mu' for 'mutation')
-		"ξₚ",  0.01,  		// parasite mutation effect size		
+		"ξₕ",  1,  			// host mutation effect size (greek letter 'mu' for 'mutation')
+		"ξₚ",  1,  			// parasite mutation effect size		
 		"σₕ",  5.0,  		// host dispersal distance	('sigma' is trad notation for disp dist)
 		"σₚ",  5.0,  		// parasite dispersal distance
 		"ι",   5.0,			// spatial interspp interaction distance ('iota' for 'interaction')
@@ -14,9 +14,9 @@ species all initialize(){
 		"ωₕ",  7.0,			// (spatial) host niche breadth ('omega' looks like w for 'width', trad quant gen notation)
 		"ωₚ",  7.0,			// (spatial) parasite niche breadth
 		"W₀ₕ", 1.1,			// host base fitness ('W' trad notation for expected liftme repr output)
-		"W₀ₚ", 1.1,			// para base fitness
+		"W₀ₚ", 1.01,		// para base fitness
 		"sₕ",  0.0, 		// cost on host fitness for each infection ('s' as in selection)
-		"sₚ",  0.01, 		// benefit on parasite fitness for successful infection
+		"sₚ",  0.1, 		// benefit on parasite fitness for successful infection
 		"γ",   0.1,			// sensitivity of inf pr to trait differences ('gamma' trad nuimser notation for this par)
 		"ρ₀",  0.2			// initial population density ('rho' is trad for densities)
 		);
@@ -33,7 +33,7 @@ species all initialize(){
 	
 	// host spatial competition
 	initializeInteractionType(1, "xy", reciprocal=T, maxDistance=ωₕ);
-	i1.setInteractionFunction("n", 1.0, ωₕ/3);
+	//i1.setInteractionFunction("n", 1.0, ωₕ/3);
 	
 	// parasite spatial competition
 	initializeInteractionType(2, "xy", reciprocal=T, maxDistance=ωₚ);
@@ -148,11 +148,11 @@ ticks all late(){
 	
 	// identify phenotypes by hue
 	for(ind in p1.individuals){
-		val = (ind.z%100)/100;
+		val = (ind.z%10)/10;
 		ind.color = rgb2color(hsv2rgb(c(val, 0.75, 0.75)));
 	}
 	for(ind in p2.individuals){
-		val = (ind.z%100)/100;
+		val = (ind.z%10)/10;
 		ind.color = rgb2color(hsv2rgb(c(val, 0.75, 0.75)));
 	}
 	
