@@ -1,9 +1,11 @@
 species all initialize(){
 	initializeSLiMModelType("nonWF");
 	// model parameters
-	defaults = Dictionary(
-		"µₕ",  0.01,  		// host mutation effect size (greek letter 'mu' for 'mutation')
-		"µₚ",  0.01,  		// parasite mutation effect size
+	defaults = Dictionary(	
+		"µₕ",  1e-11,  	// host mutation rate
+		"µₚ",  1e-11,  	// parasite mutation rate
+		"ξₕ",  0.01,  		// host mutation effect size (greek letter 'mu' for 'mutation')
+		"ξₚ",  0.01,  		// parasite mutation effect size		
 		"σₕ",  5.0,  		// host dispersal distance	('sigma' is trad notation for disp dist)
 		"σₚ",  5.0,  		// parasite dispersal distance
 		"ι",   5.0,			// spatial interspp interaction distance ('iota' for 'interaction')
@@ -53,8 +55,8 @@ species host initialize() {
 	//initializeTreeSeq();
 	
 	// host genomics
-	initializeMutationRate(1e-11);
-	initializeMutationType("m1", 0.5, "n", 0.0, µₕ);
+	initializeMutationRate(µₕ);
+	initializeMutationType("m1", 0.5, "n", 0.0, ξₕ);
 	initializeGenomicElementType("g1", m1, 1.0);
 	initializeGenomicElement(g1, 0, 1e8-1);
 	initializeRecombinationRate(1e-8);
@@ -67,8 +69,8 @@ species para initialize() {
 	//initializeTreeSeq();
 	
 	// parasite genomics
-	initializeMutationRate(1e-11);
-	initializeMutationType("m2", 0.5, "n", 0.0, µₚ);
+	initializeMutationRate(µₚ);
+	initializeMutationType("m2", 0.5, "n", 0.0, ξₚ);
 	initializeGenomicElementType("g2", m2, 1.0);
 	initializeGenomicElement(g2, 0, 1e8-1);
 	initializeRecombinationRate(1e-8);
