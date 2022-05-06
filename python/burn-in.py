@@ -2,6 +2,7 @@ from statistics import mean
 import msprime
 import pyslim
 import numpy as np
+import os
 
 N = 10000
 n = 100
@@ -91,7 +92,7 @@ for p in hts.populations():
     pm['bounds_y1'] = 100
     htables.populations.add_row(metadata=pm)
 hts = htables.tree_sequence()
-hts.dump("/home/bb/gsccs-data/hinit.trees")
+hts.dump(os.path.expanduser('~/gsccs-data/hinit.trees'))
 ts_metadata = ptables.metadata
 ts_metadata["SLiM"]["spatial_dimensionality"] = "xy"
 ptables.metadata = ts_metadata
@@ -104,7 +105,7 @@ for p in pts.populations(): # make empty pop in pop[0]
     pm['bounds_y1'] = 100
     ptables.populations.add_row(metadata=pm)
 pts = ptables.tree_sequence()
-pts.dump("/home/bb/gsccs-data/pinit.trees")
+pts.dump(os.path.expanduser('~/gsccs-data/pinit.trees'))
 
 # trait values
 Zh = np.zeros(n)

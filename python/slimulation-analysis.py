@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import os
 
 # selection parameters
 g  = 0.1
@@ -299,7 +300,6 @@ minmaxdata = {
 minmaxdf = pd.DataFrame(minmaxdata)
 minmaxdf.to_csv("~/gsccs-data/rast-data/minmax.csv")
 
-import os
 duration = 1  # seconds
 freq = 440  # Hz
 os.system('play -nq -t alsa synth {} sine {}'.format(duration, freq))
