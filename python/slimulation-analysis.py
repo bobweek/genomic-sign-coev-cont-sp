@@ -6,7 +6,7 @@ g  = 0.1
 sₕ = 0.0
 sₚ = 0.01
 
-time_series = pd.DataFrame(columns=[
+summary_time_series = pd.DataFrame(columns=[
             "pretained","Nh","Np","pr_unhosted","pr_unparasitized","pprh_m","pprh_v",
             "pntcorr","dsccorr","unocc_h","unocc_p","Nh_m","Np_m","Nh_stdv","Np_stdv",
             "Nh_cv","Np_cv","Ncorr","rh_m","rp_m","rh_stdv","rp_stdv","rh_rp",
@@ -16,6 +16,13 @@ time_series = pd.DataFrame(columns=[
             "DBzh_m","DBzp_m","DBzh_stdv","DBzp_stdv","DBzh_DBzp","Nh_DBzp"])
 
 # build another data frame filled with ibd plots
+
+minN = 10.0
+maxN = 0.0
+minz = 0.0
+maxz = 0.0
+minv = 10.0
+maxv = 0.0
 
 txt = "{time:d}"
 time_pts = np.arange(4550,step=10)+1
@@ -108,8 +115,14 @@ for t in time_pts:
     bh_binned = np.zeros((int(size/iota)-6,int(size/iota)-6))-10
     bp_binned = np.zeros((int(size/iota)-6,int(size/iota)-6))-10
 
+    xs = np.zeros((int(size/iota)-6,int(size/iota)-6))
+    ys = np.zeros((int(size/iota)-6,int(size/iota)-6))
+
     for x in range(len(bins)-6):
         for y in range(len(bins)-6):
+
+            xs[x,y] = x
+            ys[x,y] = y
 
             hs = (inds.spp==1) & (inds.xbin==x+3) & (inds.ybin==y+3)
             ps = (inds.spp==2) & (inds.xbin==x+3) & (inds.ybin==y+3)
@@ -253,9 +266,38 @@ for t in time_pts:
             "vh_m", "vh_stdv", "vp_m", "vp_stdv", "vcorr",
             "Dzh_m","Dzp_m","Dzh_stdv","Dzp_stdv","Dzh_Dzp",
             "DBzh_m","DBzp_m","DBzh_stdv","DBzp_stdv","DBzh_DBzp","Nh_DBzp"])
-    time_series = time_series.append(thg)
+    summary_time_series = summary_time_series.append(thg)
 
-time_series.to_csv("~/gsccs-data/time-series.csv")
+    rastdata = {
+        'N':np.concatenate((Nh_binned.flatten(), Np_binned.flatten())),
+        'z':np.concatenate((zh_binned.flatten(), zp_binned.flatten())),
+        'v':np.concatenate((vh_binned.flatten(), vp_binned.flatten())),
+        'x':np.concatenate((3.5*iota+iota*xs.flatten(),3.5*iota+iota*xs.flatten())),
+        'y':np.concatenate((3.5*iota+iota*ys.flatten(),3.5*iota+iota*ys.flatten()))}
+    rastdf = pd.DataFrame(rastdata)
+    
+    minN = min(minN,min(rastdf.N))
+    maxN = max(maxN,max(rastdf.N))
+    minz = min(minz,min(rastdf.z))
+    maxz = max(maxz,max(rastdf.z))
+    minv = min(minv,min(rastdf.v))
+    maxv = max(maxv,max(rastdf.v))
+
+    rname = "~/gsccs-data/rast-data/rast"+txt.format(time = t).zfill(4)+".csv"
+    rastdf.to_csv(rname)
+
+summary_time_series.to_csv("~/gsccs-data/time-series.csv")
+
+minmaxdata = {
+    'minN':np.asarray([minN]),
+    'maxN':np.asarray([maxN]),
+    'minz':np.asarray([minz]),
+    'maxz':np.asarray([maxz]),
+    'minv':np.asarray([minv]),
+    'maxv':np.asarray([maxv])
+}
+minmaxdf = pd.DataFrame(minmaxdata)
+minmaxdf.to_csv("~/gsccs-data/rast-data/minmax.csv")
 
 import os
 duration = 1  # seconds

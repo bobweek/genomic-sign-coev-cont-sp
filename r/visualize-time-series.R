@@ -95,7 +95,7 @@ rhrp_p = ggplot(tsdf) +
        y = "Interspecific Spatial Correlation of Growth Rates",        
        color = "Legend") +   
   scale_color_manual(values = colors) +
-  ylim(c(0,1)) +
+  ylim(c(-1,1)) +
   theme_minimal()
 
 DBzp_p = ggplot(tsdf) + 
@@ -126,6 +126,26 @@ NhDBzp_p = ggplot(tsdf) +
   ylim(c(-1,1)) +
   theme_minimal()
 
+mean(tsdf$Nh_DBzp)
+
+R = log(1.1)
+c = 0.001
+w = 7
+i = 5
+L = 1e8
+mu = 1e-11
+xi = 1
+
+Nhat = (w*R)/(2*pi*c) # supposed density
+
+Nhat*2*pi*i^2
+
+(w*R)/(7*2*pi*c) # magic number seven
+(i*R)/(5*2*pi*c) # magic number five
+
+vhat = 2*Nhat*L*mu*xi^2
+
+mean(tsdf$Nh_m)
 #
 #
 #
