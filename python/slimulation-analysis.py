@@ -1,5 +1,7 @@
+from random import gauss
 import pandas as pd
 import numpy as np
+from scipy.ndimage import gaussian_filter
 import os
 
 # selection parameters
@@ -26,7 +28,7 @@ minv = 10.0
 maxv = 0.0
 
 txt = "{time:d}"
-time_pts = np.arange(4990,step=10)+1
+time_pts = np.arange(4991,step=10)+1
 for t in time_pts:    
 
     fname = "~/gsccs-data/ind-data/indData"+txt.format(time = t).zfill(4)+".csv"
@@ -269,12 +271,43 @@ for t in time_pts:
             "DBzh_m","DBzp_m","DBzh_stdv","DBzp_stdv","DBzh_DBzp","Nh_DBzp"])
     summary_time_series = summary_time_series.append(thg)
 
+    xs_blurred = np.zeros((2*len(bins)-12,2*len(bins)-12))
+    ys_blurred = np.zeros((2*len(bins)-12,2*len(bins)-12))
+    Nh_blurred = np.zeros((2*len(bins)-12,2*len(bins)-12))
+    zh_blurred = np.zeros((2*len(bins)-12,2*len(bins)-12))
+    vh_blurred = np.zeros((2*len(bins)-12,2*len(bins)-12))
+    Np_blurred = np.zeros((2*len(bins)-12,2*len(bins)-12))
+    zp_blurred = np.zeros((2*len(bins)-12,2*len(bins)-12))
+    vp_blurred = np.zeros((2*len(bins)-12,2*len(bins)-12))
+    for x in range(2*len(bins)-12):
+        for y in range(2*len(bins)-12):
+
+            xc = int(np.floor(x/2))
+            yc = int(np.floor(y/2))
+            xs_blurred[x,y] = x
+            ys_blurred[x,y] = y
+
+            Nh_blurred[x,y] = Nh_binned[xc,yc]
+            zh_blurred[x,y] = zh_binned[xc,yc]
+            vh_blurred[x,y] = vh_binned[xc,yc]
+            
+            Np_blurred[x,y] = Np_binned[xc,yc]
+            zp_blurred[x,y] = zp_binned[xc,yc]
+            vp_blurred[x,y] = vp_binned[xc,yc]
+    
+    Nh_blurred = gaussian_filter(Nh_blurred,sigma=1)
+    zh_blurred = gaussian_filter(zh_blurred,sigma=1)
+    vh_blurred = gaussian_filter(vh_blurred,sigma=1)
+    Np_blurred = gaussian_filter(Np_blurred,sigma=1)
+    zp_blurred = gaussian_filter(zp_blurred,sigma=1)
+    vp_blurred = gaussian_filter(vp_blurred,sigma=1)
+
     rastdata = {
-        'N':np.concatenate((Nh_binned.flatten(), Np_binned.flatten())),
-        'z':np.concatenate((zh_binned.flatten(), zp_binned.flatten())),
-        'v':np.concatenate((vh_binned.flatten(), vp_binned.flatten())),
-        'x':np.concatenate((3.5*iota+iota*xs.flatten(),3.5*iota+iota*xs.flatten())),
-        'y':np.concatenate((3.5*iota+iota*ys.flatten(),3.5*iota+iota*ys.flatten()))}
+        'N':np.concatenate((Nh_blurred.flatten(), Np_blurred.flatten())),
+        'z':np.concatenate((zh_blurred.flatten(), zp_blurred.flatten())),
+        'v':np.concatenate((vh_blurred.flatten(), vp_blurred.flatten())),
+        'x':np.concatenate((3.5*iota+iota*xs_blurred.flatten()/2,3.5*iota+iota*xs_blurred.flatten()/2)),
+        'y':np.concatenate((3.5*iota+iota*ys_blurred.flatten()/2,3.5*iota+iota*ys_blurred.flatten()/2))}
     rastdf = pd.DataFrame(rastdata)
     
     minN = min(minN,min(rastdf.N))

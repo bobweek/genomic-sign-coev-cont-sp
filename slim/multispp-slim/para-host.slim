@@ -28,6 +28,7 @@ species all initialize(){
 		}
 	}
 	defineGlobal("params", defaults);
+	defineGlobal("j", 0);	
 	defineConstant("Ψₕ", σₕ);	// host mate choice distance
 	defineConstant("Ψₚ", σₚ);  // parasite mate choice distance	
 	
@@ -208,8 +209,9 @@ ticks all late(){
 	p0.individuals.fitnessScaling = 0;
 	
 	// logging position, trait value, fitness and species id for each individual
-	if(community.tick%10==1){
-		fn = paste0("~/gsccs-data/ind-data/indData",format("%04i",community.tick),".csv");
+	if(community.tick>3999){
+		fn = paste0("~/gsccs-data/ind-data/indData",format("%04i",j),".csv");
+		j = j+1;
 		writeFile(fn,paste("x","y","z","W","spp",sep=","),append=F);
 		for(h in p0.individuals){
 			writeFile(fn,paste(h.x,h.y,zₕ[h.index],h.tagF,1,sep=","),append=T);

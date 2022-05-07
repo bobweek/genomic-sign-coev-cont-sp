@@ -1,0 +1,38 @@
+species all initialize(){
+}
+
+species host initialize() {
+	initializeSpecies(tickModulo=1, tickPhase=1, avatar="🦌");
+	initializeMutationRate(1e-11);
+	initializeMutationType("m1", 0.5, "n", 0.0, 0.1);
+	initializeGenomicElementType("g1", m1, 1.0);
+	initializeGenomicElement(g1, 0, 1e8-1);
+	initializeRecombinationRate(1e-8);
+
+}
+
+species para initialize() {
+	initializeSpecies(tickModulo=1, tickPhase=1, avatar="🪱");
+	initializeMutationRate(1e-11);
+	initializeMutationType("m2", 0.5, "n", 0.0, 0.1);
+	initializeGenomicElementType("g2", m2, 1.0);
+	initializeGenomicElement(g2, 0, 1e8-1);
+	initializeRecombinationRate(1e-8);
+}
+
+ticks all 1 early() {
+	host.readFromPopulationFile("path/to/hinit.trees");
+	para.readFromPopulationFile("path/to/pinit.trees");
+}
+
+ticks all late(){
+	
+	p0.individuals;
+	p1.individuals;
+	
+}
+
+ticks all 2 late() {
+	community.simulationFinished();
+	catn("Done.");
+}

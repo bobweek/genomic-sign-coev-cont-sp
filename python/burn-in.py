@@ -84,6 +84,21 @@ ptables.populations[0]
 ts_metadata = htables.metadata
 ts_metadata["SLiM"]["spatial_dimensionality"] = "xy"
 htables.metadata = ts_metadata
+
+hindividual_metadata = [ind.metadata for ind in htables.individuals]
+for md in hindividual_metadata:
+   md["subpopulation"] = 0
+   ims = htables.individuals.metadata_schema
+   htables.individuals.packset_metadata(
+      [ims.validate_and_encode_row(md) for md in hindividual_metadata])
+
+hmut_metadata = [mut.metadata for mut in htables.mutations]
+for md in hmut_metadata:
+   md["mutation_list"][0]["subpopulation"] = 0
+   ims = htables.mutations.metadata_schema
+   htables.mutations.packset_metadata(
+      [ims.validate_and_encode_row(md) for md in hmut_metadata])
+
 htables.populations.clear()
 for p in hts.populations():
     pm = p.metadata
