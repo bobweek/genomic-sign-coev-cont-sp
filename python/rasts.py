@@ -140,7 +140,7 @@ for t in time_pts:
                 # DBzp_binned[x,y] = pBmat[1,0]            
                 vp_binned[x,y] = pmat[0,0]
 
-    ref_res = 4*len(bins)-24
+    ref_res = 8*len(bins)-48
     xs_blurred = np.zeros((ref_res,ref_res))
     ys_blurred = np.zeros((ref_res,ref_res))
     Nh_blurred = np.zeros((ref_res,ref_res))
@@ -152,8 +152,8 @@ for t in time_pts:
     for x in range(ref_res):
         for y in range(ref_res):
 
-            xc = int(np.floor(x/4))
-            yc = int(np.floor(y/4))
+            xc = int(np.floor(x/8))
+            yc = int(np.floor(y/8))
             xs_blurred[x,y] = x
             ys_blurred[x,y] = y
 
@@ -165,19 +165,19 @@ for t in time_pts:
             zp_blurred[x,y] = zp_binned[xc,yc]
             vp_blurred[x,y] = vp_binned[xc,yc]
     
-    Nh_blurred = gaussian_filter(Nh_blurred,sigma=1)
-    zh_blurred = gaussian_filter(zh_blurred,sigma=1)
-    vh_blurred = gaussian_filter(vh_blurred,sigma=1)
-    Np_blurred = gaussian_filter(Np_blurred,sigma=1)
-    zp_blurred = gaussian_filter(zp_blurred,sigma=1)
-    vp_blurred = gaussian_filter(vp_blurred,sigma=1)
+    Nh_blurred = gaussian_filter(Nh_blurred,sigma=4)
+    zh_blurred = gaussian_filter(zh_blurred,sigma=4)
+    vh_blurred = gaussian_filter(vh_blurred,sigma=4)
+    Np_blurred = gaussian_filter(Np_blurred,sigma=4)
+    zp_blurred = gaussian_filter(zp_blurred,sigma=4)
+    vp_blurred = gaussian_filter(vp_blurred,sigma=4)
 
     rastdata = {
         'N':np.concatenate((Nh_blurred.flatten(), Np_blurred.flatten())),
         'z':np.concatenate((zh_blurred.flatten(), zp_blurred.flatten())),
         'v':np.concatenate((vh_blurred.flatten(), vp_blurred.flatten())),
-        'x':np.concatenate((3.5*iota+iota*xs_blurred.flatten()/4,3.5*iota+iota*xs_blurred.flatten()/4)),
-        'y':np.concatenate((3.5*iota+iota*ys_blurred.flatten()/4,3.5*iota+iota*ys_blurred.flatten()/4))}
+        'x':np.concatenate((3.5*iota+iota*xs_blurred.flatten()/8,3.5*iota+iota*xs_blurred.flatten()/8)),
+        'y':np.concatenate((3.5*iota+iota*ys_blurred.flatten()/8,3.5*iota+iota*ys_blurred.flatten()/8))}
     rastdf = pd.DataFrame(rastdata)
     
     minN = min(minN,min(rastdf.N))

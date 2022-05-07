@@ -2,6 +2,8 @@
 # ffmpeg -r 30 -i z%04d.png -vcodec libx264 -crf 25  -pix_fmt yuv420p z.mp4
 # ffmpeg -r 30 -i v%04d.png -vcodec libx264 -crf 25  -pix_fmt yuv420p v.mp4
 
+# check if kennel needs vax's
+
 require(ggplot2)
 require(gridExtra)
 require(viridis)
@@ -34,6 +36,10 @@ for(i in 1:1000){
   
   pzf = paste("~/gsccs-data/rast-data/z",pnum,".png",sep="")
   ggsave(pzf,pz,width=8,height=4,bg="white")
+  
+  pNz = grid.arrange(pN,pz)
+  pNzf = paste("~/gsccs-data/rast-data/Nz",pnum,".png",sep="")
+  ggsave(pNzf,pNz,width=8,height=8,bg="white")
   
   pv = ggplot(rastdf) +
     geom_raster(aes(fill=v,x=x,y=y)) +
