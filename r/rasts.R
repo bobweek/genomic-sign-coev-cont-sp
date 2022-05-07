@@ -8,10 +8,8 @@ require(viridis)
 
 mmdf = read.csv("~/gsccs-data/rast-data/minmax.csv")
 
-nums = seq(1,4551,by=10)
-
-for(i in 1:length(nums)){
-  num = sprintf("%04d", nums[i])
+for(i in 1:1000){
+  num = sprintf("%04d", i)
   datfile = paste("~/gsccs-data/rast-data/rast",num,".csv",sep="")
   rastdf = read.csv(datfile)
   nlocs = length(rastdf$x)/2
