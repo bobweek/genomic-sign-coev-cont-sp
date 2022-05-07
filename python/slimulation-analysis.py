@@ -26,7 +26,7 @@ minv = 10.0
 maxv = 0.0
 
 txt = "{time:d}"
-time_pts = np.arange(4550,step=10)+1
+time_pts = np.arange(4990,step=10)+1
 for t in time_pts:    
 
     fname = "~/gsccs-data/ind-data/indData"+txt.format(time = t).zfill(4)+".csv"
@@ -299,6 +299,8 @@ minmaxdata = {
 }
 minmaxdf = pd.DataFrame(minmaxdata)
 minmaxdf.to_csv("~/gsccs-data/rast-data/minmax.csv")
+
+print("DONE!")
 
 duration = 1  # seconds
 freq = 440  # Hz

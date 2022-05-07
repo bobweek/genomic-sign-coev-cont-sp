@@ -125,12 +125,12 @@ ticks all 1 early() {
 	N₀ = asInteger(ρ₀ * 100 * 100); // Initial Population Size (ρ₀ ind's per unit area)
 	host.addSubpop("p0", N₀);
 	para.addSubpop("p1", N₀);
-	//host.readFromPopulationFile("~/gsccs-data/hinit.trees");
-	//para.readFromPopulationFile("~/gsccs-data/pinit.trees");
 	p0.setSpatialBounds(c(0, 0, 100, 100));
 	p1.setSpatialBounds(c(0, 0, 100, 100));
 	p0.individuals.setSpatialPosition(p0.pointUniform(N₀));
 	p1.individuals.setSpatialPosition(p1.pointUniform(N₀));
+	host.readFromPopulationFile("~/gsccs-data/hinit.trees");
+	para.readFromPopulationFile("~/gsccs-data/pinit.trees");
 }
 
 ticks all late(){
