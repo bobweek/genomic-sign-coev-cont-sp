@@ -20,13 +20,6 @@ summary_time_series = pd.DataFrame(columns=[
 
 # build another data frame filled with ibd plots
 
-minN = 10.0
-maxN = 0.0
-minz = 0.0
-maxz = 0.0
-minv = 10.0
-maxv = 0.0
-
 txt = "{time:d}"
 time_pts = np.arange(1001)
 for t in time_pts:    
@@ -271,67 +264,7 @@ for t in time_pts:
             "DBzh_m","DBzp_m","DBzh_stdv","DBzp_stdv","DBzh_DBzp","Nh_DBzp"])
     summary_time_series = summary_time_series.append(thg)
 
-    xs_blurred = np.zeros((2*len(bins)-12,2*len(bins)-12))
-    ys_blurred = np.zeros((2*len(bins)-12,2*len(bins)-12))
-    Nh_blurred = np.zeros((2*len(bins)-12,2*len(bins)-12))
-    zh_blurred = np.zeros((2*len(bins)-12,2*len(bins)-12))
-    vh_blurred = np.zeros((2*len(bins)-12,2*len(bins)-12))
-    Np_blurred = np.zeros((2*len(bins)-12,2*len(bins)-12))
-    zp_blurred = np.zeros((2*len(bins)-12,2*len(bins)-12))
-    vp_blurred = np.zeros((2*len(bins)-12,2*len(bins)-12))
-    for x in range(2*len(bins)-12):
-        for y in range(2*len(bins)-12):
-
-            xc = int(np.floor(x/2))
-            yc = int(np.floor(y/2))
-            xs_blurred[x,y] = x
-            ys_blurred[x,y] = y
-
-            Nh_blurred[x,y] = Nh_binned[xc,yc]
-            zh_blurred[x,y] = zh_binned[xc,yc]
-            vh_blurred[x,y] = vh_binned[xc,yc]
-            
-            Np_blurred[x,y] = Np_binned[xc,yc]
-            zp_blurred[x,y] = zp_binned[xc,yc]
-            vp_blurred[x,y] = vp_binned[xc,yc]
-    
-    Nh_blurred = gaussian_filter(Nh_blurred,sigma=1)
-    zh_blurred = gaussian_filter(zh_blurred,sigma=1)
-    vh_blurred = gaussian_filter(vh_blurred,sigma=1)
-    Np_blurred = gaussian_filter(Np_blurred,sigma=1)
-    zp_blurred = gaussian_filter(zp_blurred,sigma=1)
-    vp_blurred = gaussian_filter(vp_blurred,sigma=1)
-
-    rastdata = {
-        'N':np.concatenate((Nh_blurred.flatten(), Np_blurred.flatten())),
-        'z':np.concatenate((zh_blurred.flatten(), zp_blurred.flatten())),
-        'v':np.concatenate((vh_blurred.flatten(), vp_blurred.flatten())),
-        'x':np.concatenate((3.5*iota+iota*xs_blurred.flatten()/2,3.5*iota+iota*xs_blurred.flatten()/2)),
-        'y':np.concatenate((3.5*iota+iota*ys_blurred.flatten()/2,3.5*iota+iota*ys_blurred.flatten()/2))}
-    rastdf = pd.DataFrame(rastdata)
-    
-    minN = min(minN,min(rastdf.N))
-    maxN = max(maxN,max(rastdf.N))
-    minz = min(minz,min(rastdf.z))
-    maxz = max(maxz,max(rastdf.z))
-    minv = min(minv,min(rastdf.v))
-    maxv = max(maxv,max(rastdf.v))
-
-    rname = "~/gsccs-data/rast-data/rast"+txt.format(time = t).zfill(4)+".csv"
-    rastdf.to_csv(rname)
-
 summary_time_series.to_csv("~/gsccs-data/time-series.csv")
-
-minmaxdata = {
-    'minN':np.asarray([minN]),
-    'maxN':np.asarray([maxN]),
-    'minz':np.asarray([minz]),
-    'maxz':np.asarray([maxz]),
-    'minv':np.asarray([minv]),
-    'maxv':np.asarray([maxv])
-}
-minmaxdf = pd.DataFrame(minmaxdata)
-minmaxdf.to_csv("~/gsccs-data/rast-data/minmax.csv")
 
 print("DONE!")
 
