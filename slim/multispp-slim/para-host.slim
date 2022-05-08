@@ -2,17 +2,17 @@ species all initialize(){
 	initializeSLiMModelType("nonWF");
 	// model parameters
 	defaults = Dictionary(	
-		"µₕ",  1e-12,  	// host mutation rate
-		"µₚ",  1e-12,  	// parasite mutation rate
-		"κₕ",  1,  			// host mutation effect size (greek letter 'mu' for 'mutation')
-		"κₚ",  1,  			// parasite mutation effect size		
+		"µₕ",  1e-7,  		// host mutation rate
+		"µₚ",  1e-7,  		// parasite mutation rate
+		"κₕ",  0.01,  		// host mutation effect size (greek letter 'mu' for 'mutation')
+		"κₚ",  0.01,  		// parasite mutation effect size		
 		"σₕ",  2.5,  		// host dispersal distance	('sigma' is trad notation for disp dist)
 		"σₚ",  2.5,  		// parasite dispersal distance
 		"ι",   2.5,			// spatial interspp interaction distance ('iota' for 'interaction')
 		"cₕ",  0.001, 		// strength of host competition
 		"cₚ",  0.001, 		// strength of para competition
-		"ωₕ",  7.0,			// (spatial) host niche breadth ('omega' looks like w for 'width', trad quant gen notation)
-		"ωₚ",  7.0,			// (spatial) parasite niche breadth
+		"ωₕ",  3.0,			// (spatial) host niche breadth ('omega' looks like w for 'width', trad quant gen notation)
+		"ωₚ",  3.0,			// (spatial) parasite niche breadth
 		"W₀ₕ", 1.1,			// host base fitness ('W' trad notation for expected liftme repr output)
 		"W₀ₚ", 1.01,		// para base fitness
 		"sₕ",  0.01, 		// cost on host fitness for each infection ('s' as in selection)
