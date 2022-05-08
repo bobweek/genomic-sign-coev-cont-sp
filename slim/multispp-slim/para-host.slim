@@ -6,17 +6,17 @@ species all initialize(){
 		"µₚ",  1e-12,  	// parasite mutation rate
 		"κₕ",  1,  			// host mutation effect size (greek letter 'mu' for 'mutation')
 		"κₚ",  1,  			// parasite mutation effect size		
-		"σₕ",  5.0,  		// host dispersal distance	('sigma' is trad notation for disp dist)
-		"σₚ",  5.0,  		// parasite dispersal distance
-		"ι",   5.0,			// spatial interspp interaction distance ('iota' for 'interaction')
+		"σₕ",  2.5,  		// host dispersal distance	('sigma' is trad notation for disp dist)
+		"σₚ",  2.5,  		// parasite dispersal distance
+		"ι",   2.5,			// spatial interspp interaction distance ('iota' for 'interaction')
 		"cₕ",  0.001, 		// strength of host competition
 		"cₚ",  0.001, 		// strength of para competition
 		"ωₕ",  7.0,			// (spatial) host niche breadth ('omega' looks like w for 'width', trad quant gen notation)
 		"ωₚ",  7.0,			// (spatial) parasite niche breadth
 		"W₀ₕ", 1.1,			// host base fitness ('W' trad notation for expected liftme repr output)
 		"W₀ₚ", 1.01,		// para base fitness
-		"sₕ",  0.0, 		// cost on host fitness for each infection ('s' as in selection)
-		"sₚ",  0.1, 		// benefit on parasite fitness for successful infection
+		"sₕ",  0.01, 		// cost on host fitness for each infection ('s' as in selection)
+		"sₚ",  0.5, 		// benefit on parasite fitness for successful infection
 		"γ",   0.1,			// sensitivity of inf pr to trait differences ('gamma' trad nuimser notation for this par)
 		"ρ₀",  0.2			// initial population density ('rho' is trad for densities)
 		);
@@ -149,6 +149,9 @@ ticks all late(){
 	p0.individuals.z = zₕ;
 	p1.individuals.z = zₚ;
 	
+	// containers for dist's parasites move to hosts
+	pd = rep(0.0,p1.individualCount);
+	
 	// identify phenotypes by hue
 	for(ind in p0.individuals){
 		val = (ind.z%10)/10;
@@ -187,9 +190,13 @@ ticks all late(){
 			// choose one living host at random for parasite to interact with
 			h = h_nbrs[rdunif(1, 0, length(h_nbrs)-1)]; // replace with gauss weighting (there may be a fct for this)
 			
+			pp = c(p.x,p.y);
+			
 			// move parasite to that host
 			p.setSpatialPosition(c(h.x,h.y));
 			// not using h.spatialPosition because im scared it'll copy z
+			
+			pd[p.index] = sqrt(sum((c(p.x,p.y)-pp)^2));
 			
 			// trait-matching-model
 			α = exp(-γ*(zₕ[h.index]-zₚ[p.index])^2/2);
@@ -212,12 +219,12 @@ ticks all late(){
 	if(community.tick>3999){
 		fn = paste0("~/gsccs-data/ind-data/indData",format("%04i",j),".csv");
 		j = j+1;
-		writeFile(fn,paste("x","y","z","W","spp",sep=","),append=F);
+		writeFile(fn,paste("x","y","z","W","pd","spp",sep=","),append=F); // pd = distance parasite moves to host
 		for(h in p0.individuals){
-			writeFile(fn,paste(h.x,h.y,zₕ[h.index],h.tagF,1,sep=","),append=T);
+			writeFile(fn,paste(h.x,h.y,zₕ[h.index],h.tagF,0,1,sep=","),append=T); // pd = 0 for hosts
 		}
 		for(p in p1.individuals){
-			writeFile(fn,paste(p.x,p.y,zₚ[p.index],p.tagF,2,sep=","),append=T);
+			writeFile(fn,paste(p.x,p.y,zₚ[p.index],p.tagF,pd[p.index],2,sep=","),append=T);
 		}
 	}
 
