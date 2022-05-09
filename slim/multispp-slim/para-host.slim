@@ -2,21 +2,21 @@ species all initialize(){
 	initializeSLiMModelType("nonWF");
 	// model parameters
 	defaults = Dictionary(	
-		"µₕ",  1e-5,  		// host mutation rate
-		"µₚ",  1e-5,  		// parasite mutation rate
+		"µₕ",  1e-8,  		// host mutation rate
+		"µₚ",  1e-8,  		// parasite mutation rate
 		"κₕ",  0.01,  		// host mutation effect size (greek letter 'mu' for 'mutation')
 		"κₚ",  0.01,  		// parasite mutation effect size		
 		"σₕ",  2.5,  		// host dispersal distance	('sigma' is trad notation for disp dist)
 		"σₚ",  2.5,  		// parasite dispersal distance
 		"ι",   2.5,			// spatial interspp interaction distance ('iota' for 'interaction')
-		"cₕ",  0.001, 		// strength of host competition
-		"cₚ",  0.001, 		// strength of para competition
+		"cₕ",  0.002, 		// strength of host competition
+		"cₚ",  0.002, 		// strength of para competition
 		"ωₕ",  3.0,			// (spatial) host niche breadth ('omega' looks like w for 'width', trad quant gen notation)
 		"ωₚ",  3.0,			// (spatial) parasite niche breadth
 		"W₀ₕ", 1.1,			// host base fitness ('W' trad notation for expected liftme repr output)
-		"W₀ₚ", 1.0,		// para base fitness
+		"W₀ₚ", 1.05,		// para base fitness
 		"sₕ",  0.01, 		// cost on host fitness for each infection ('s' as in selection)
-		"sₚ",  0.5, 		// benefit on parasite fitness for successful infection
+		"sₚ",  0.01, 		// benefit on parasite fitness for successful infection
 		"γ",   1.0,			// sensitivity of inf pr to trait differences ('gamma' trad nuimser notation for this par)
 		"ρ₀",  0.2			// initial population density ('rho' is trad for densities)
 		);
@@ -51,7 +51,7 @@ species all initialize(){
 }
 
 species host initialize() {
-	initializeSLiMOptions(dimensionality="xy");
+	initializeSLiMOptions(dimensionality="xy",periodicity="xy");
 	initializeSpecies(tickModulo=1, tickPhase=1, avatar="🦌");
 	//initializeTreeSeq();
 	
@@ -65,7 +65,7 @@ species host initialize() {
 }
 
 species para initialize() {
-	initializeSLiMOptions(dimensionality="xy");
+	initializeSLiMOptions(dimensionality="xy",periodicity="xy");
 	initializeSpecies(tickModulo=1, tickPhase=1, avatar="🪱");
 	//initializeTreeSeq();
 	
@@ -87,19 +87,21 @@ species host reproduction(p0) {
 	if(mate.size()) {
 		𝓦ₕ= rpois(1, individual.tagF);
 		for(i in seqLen(𝓦ₕ)) {
-			subpop.addCrossed(individual, mate);
+			pos = individual.spatialPosition + rnorm(2, 0, σₕ);
+			bb = subpop.addCrossed(individual, mate);
+			bb.setSpatialPosition(p0.pointPeriodic(pos));
 		}
 	}
 	return;
 }
-species host modifyChild() {
-	// Absorbing boundary conditions
-	pos = parent1.spatialPosition + rnorm(2, 0, σₕ);
-	if (!p0.pointInBounds(pos))
-		return F;
-	child.setSpatialPosition(pos);
-	return T;
-}
+//species host modifyChild() {
+//	// Absorbing boundary conditions
+//	pos = parent1.spatialPosition + rnorm(2, 0, σₕ);
+//	if (!p0.pointInBounds(pos))
+//		return F;
+//	child.setSpatialPosition(pos);
+//	return T;
+//}
 
 
 // parasite mating
@@ -108,19 +110,21 @@ species para reproduction(p1) {
 	if(mate.size()) {
 		𝓦ₚ = rpois(1, individual.tagF);
 		for(i in seqLen(𝓦ₚ)) {
-			subpop.addCrossed(individual, mate);
+			pos = individual.spatialPosition + rnorm(2, 0, σₚ);
+			bb = subpop.addCrossed(individual, mate);
+			bb.setSpatialPosition(p1.pointPeriodic(pos));
 		}
 	}
 	return;
 }
-species para modifyChild() {
-	// Absorbing boundary conditions
-	pos = parent1.spatialPosition + rnorm(2, 0, σₚ);
-	if (!p0.pointInBounds(pos))
-		return F;
-	child.setSpatialPosition(pos);
-	return T;
-}
+//species para modifyChild() {
+//	// Absorbing boundary conditions
+//	pos = parent1.spatialPosition + rnorm(2, 0, σₚ);
+//	if (!p0.pointInBounds(pos))
+//		return F;
+//	child.setSpatialPosition(pos);
+//	return T;
+//}
 
 ticks all 1 early() {
 	N₀ = asInteger(ρ₀ * 100 * 100); // Initial Population Size (ρ₀ ind's per unit area)
@@ -182,7 +186,7 @@ ticks all late(){
 			// draw hosts within radius ι of focal parasite
 			h_nbrs = i5.nearestNeighborsOfPoint(c(p.x,p.y), p0, count=p0.individualCount);
 			// not using p.spatialPosition because im scared it'll create dependency on z
-		} //else h_nbrs = c();
+		} else h_nbrs = c();
 		
 		// if there's hosts nearby
 		if(length(h_nbrs) > 0){
@@ -199,11 +203,11 @@ ticks all late(){
 			pd[p.index] = sqrt(sum((c(p.x,p.y)-pp)^2));
 			
 			// trait-matching-model
-			α = exp(-γ*(zₕ[h.index]-zₚ[p.index])^2/2);
+			α = exp(-γ*abs(zₕ[h.index]-zₚ[p.index])/2);
 			
 			// deterministic fitness outcome is faster and easier to analyze
 			Wₚ = (exp(sₚ)*α + (1-α)) * Wₚ;
-			h.tagF = (exp(sₕ)*α + (1-α)) * h.tagF;
+			h.tagF = (exp(-sₕ)*α + (1-α)) * h.tagF;
 		
 		}
 		// note: each parasite infects at most one host, but each host can be infected by multiple parasites
