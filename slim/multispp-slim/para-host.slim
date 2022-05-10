@@ -6,9 +6,9 @@ species all initialize(){
 		"µₚ",  1e-6,  		// parasite mutation rate
 		"κₕ",  0.001,  	// host mutation effect size (greek letter 'mu' for 'mutation')
 		"κₚ",  0.001,  	// parasite mutation effect size		
-		"σₕ",  1,  			// host dispersal distance	('sigma' is trad notation for disp dist)
-		"σₚ",  1,  			// parasite dispersal distance
-		"ι",   3,			// spatial interspp interaction distance ('iota' for 'interaction')
+		"σₕ",  1.0,  		// host dispersal distance	('sigma' is trad notation for disp dist)
+		"σₚ",  1.0,  		// parasite dispersal distance
+		"ι",   3.0,			// spatial interspp interaction distance ('iota' for 'interaction')
 		"cₕ",  0.002, 		// strength of host competition
 		"cₚ",  0.002, 		// strength of para competition
 		"ωₕ",  3.0,			// (spatial) host niche breadth ('omega' looks like w for 'width', trad quant gen notation)
@@ -222,7 +222,7 @@ ticks all late(){
 
 	
 	// logging position, trait value, fitness and species id for each individual
-	if(community.tick>3999){
+	if(community.tick>1){
 		fn = paste0("~/gsccs-data/ind-data/indData",format("%04i",j),".csv");
 		j = j+1;
 		writeFile(fn,paste("x","y","z","W","pd","spp",sep=","),append=F); // pd = distance parasite moves to host
@@ -240,5 +240,7 @@ ticks all 5000 late() {
 	//host.treeSeqOutput("~/gsccs-data/host.trees", metadata=params);
 	//para.treeSeqOutput("~/gsccs-data/para.trees", metadata=params);
 	community.simulationFinished();
+	catn(c("Number of parasites",p0.individualCount));
+	catn(c("Number of parasites",p1.individualCount));
 	catn("Done.");
 }

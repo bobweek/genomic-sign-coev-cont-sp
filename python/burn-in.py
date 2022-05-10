@@ -81,6 +81,8 @@ ptables.metadata
 # gotta change a few things
 ts_metadata = htables.metadata
 ts_metadata["SLiM"]["spatial_dimensionality"] = "xy"
+ts_metadata['SLiM']['cycle'] = 1
+ts_metadata['SLiM']['tick'] = 1
 htables.metadata = ts_metadata
 
 # hindividual_metadata = [ind.metadata for ind in htables.individuals]
@@ -109,6 +111,8 @@ hts.dump(os.path.expanduser('~/gsccs-data/hinit.trees'))
 
 ts_metadata = ptables.metadata
 ts_metadata["SLiM"]["spatial_dimensionality"] = "xy"
+ts_metadata['SLiM']['cycle'] = 1
+ts_metadata['SLiM']['tick'] = 1
 ptables.metadata = ts_metadata
 
 # pindividual_metadata = [ind.metadata for ind in ptables.individuals]
