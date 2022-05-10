@@ -78,26 +78,24 @@ print(f"The para trait effects range from {min(pmut.values()):0.2e}"f" to {max(p
 htables.metadata
 ptables.metadata
 
-ptables.populations[0]
-
 # gotta change a few things
 ts_metadata = htables.metadata
 ts_metadata["SLiM"]["spatial_dimensionality"] = "xy"
 htables.metadata = ts_metadata
 
-hindividual_metadata = [ind.metadata for ind in htables.individuals]
-for md in hindividual_metadata:
-   md["subpopulation"] = 0
-   ims = htables.individuals.metadata_schema
-   htables.individuals.packset_metadata(
-      [ims.validate_and_encode_row(md) for md in hindividual_metadata])
+# hindividual_metadata = [ind.metadata for ind in htables.individuals]
+# for md in hindividual_metadata:
+#    md["subpopulation"] = 0
+#    ims = htables.individuals.metadata_schema
+#    htables.individuals.packset_metadata(
+#       [ims.validate_and_encode_row(md) for md in hindividual_metadata])
 
-hmut_metadata = [mut.metadata for mut in htables.mutations]
-for md in hmut_metadata:
-   md["mutation_list"][0]["subpopulation"] = 0
-   ims = htables.mutations.metadata_schema
-   htables.mutations.packset_metadata(
-      [ims.validate_and_encode_row(md) for md in hmut_metadata])
+# hmut_metadata = [mut.metadata for mut in htables.mutations]
+# for md in hmut_metadata:
+#    md["mutation_list"][0]["subpopulation"] = 0
+#    ims = htables.mutations.metadata_schema
+#    htables.mutations.packset_metadata(
+#       [ims.validate_and_encode_row(md) for md in hmut_metadata])
 
 htables.populations.clear()
 for p in hts.populations():
@@ -113,22 +111,22 @@ ts_metadata = ptables.metadata
 ts_metadata["SLiM"]["spatial_dimensionality"] = "xy"
 ptables.metadata = ts_metadata
 
-pindividual_metadata = [ind.metadata for ind in ptables.individuals]
-for md in pindividual_metadata:
-   md["subpopulation"] = 1
-   ims = ptables.individuals.metadata_schema
-   ptables.individuals.packset_metadata(
-      [ims.validate_and_encode_row(md) for md in pindividual_metadata])
+# pindividual_metadata = [ind.metadata for ind in ptables.individuals]
+# for md in pindividual_metadata:
+#    md["subpopulation"] = 1
+#    ims = ptables.individuals.metadata_schema
+#    ptables.individuals.packset_metadata(
+#       [ims.validate_and_encode_row(md) for md in pindividual_metadata])
 
-pmut_metadata = [mut.metadata for mut in ptables.mutations]
-for md in pmut_metadata:
-   md["mutation_list"][0]["subpopulation"] = 1
-   ims = ptables.mutations.metadata_schema
-   ptables.mutations.packset_metadata(
-      [ims.validate_and_encode_row(md) for md in pmut_metadata])
+# pmut_metadata = [mut.metadata for mut in ptables.mutations]
+# for md in pmut_metadata:
+#    md["mutation_list"][0]["subpopulation"] = 1
+#    ims = ptables.mutations.metadata_schema
+#    ptables.mutations.packset_metadata(
+#       [ims.validate_and_encode_row(md) for md in pmut_metadata])
 
 ptables.populations.clear()
-# ptables.populations.add_row()
+ptables.populations.add_row()
 for p in pts.populations(): # make empty pop in pop[0]
     pm = p.metadata
     pm['slim_id'] = 1
@@ -149,3 +147,5 @@ for i in 2*np.arange(n):
 
 np.var(Zh,ddof=1)
 np.var(Zp,ddof=1)
+
+pyslim.get_provenance(hts)

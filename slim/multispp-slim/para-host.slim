@@ -2,22 +2,22 @@ species all initialize(){
 	initializeSLiMModelType("nonWF");
 	// model parameters
 	defaults = Dictionary(	
-		"µₕ",  1e-8,  		// host mutation rate
-		"µₚ",  1e-8,  		// parasite mutation rate
-		"κₕ",  0.01,  		// host mutation effect size (greek letter 'mu' for 'mutation')
-		"κₚ",  0.01,  		// parasite mutation effect size		
-		"σₕ",  2.5,  		// host dispersal distance	('sigma' is trad notation for disp dist)
-		"σₚ",  2.5,  		// parasite dispersal distance
-		"ι",   2.5,			// spatial interspp interaction distance ('iota' for 'interaction')
+		"µₕ",  1e-6,  		// host mutation rate
+		"µₚ",  1e-6,  		// parasite mutation rate
+		"κₕ",  0.001,  	// host mutation effect size (greek letter 'mu' for 'mutation')
+		"κₚ",  0.001,  	// parasite mutation effect size		
+		"σₕ",  1,  			// host dispersal distance	('sigma' is trad notation for disp dist)
+		"σₚ",  1,  			// parasite dispersal distance
+		"ι",   3,			// spatial interspp interaction distance ('iota' for 'interaction')
 		"cₕ",  0.002, 		// strength of host competition
 		"cₚ",  0.002, 		// strength of para competition
 		"ωₕ",  3.0,			// (spatial) host niche breadth ('omega' looks like w for 'width', trad quant gen notation)
 		"ωₚ",  3.0,			// (spatial) parasite niche breadth
 		"W₀ₕ", 1.1,			// host base fitness ('W' trad notation for expected liftme repr output)
 		"W₀ₚ", 1.05,		// para base fitness
-		"sₕ",  0.01, 		// cost on host fitness for each infection ('s' as in selection)
-		"sₚ",  0.01, 		// benefit on parasite fitness for successful infection
-		"γ",   1.0,			// sensitivity of inf pr to trait differences ('gamma' trad nuimser notation for this par)
+		"sₕ",  0.02, 		// cost on host fitness for each infection ('s' as in selection)
+		"sₚ",  0.02, 		// benefit on parasite fitness for successful infection
+		"γ",   0.1,			// sensitivity of inf pr to trait differences ('gamma' trad nuimser notation for this par)
 		"ρ₀",  0.2			// initial population density ('rho' is trad for densities)
 		);
 	for (k in defaults.allKeys) {
@@ -29,8 +29,8 @@ species all initialize(){
 	}
 	defineGlobal("params", defaults);
 	defineGlobal("j", 0);	
-	defineConstant("Ψₕ", σₕ);	// host mate choice distance
-	defineConstant("Ψₚ", σₚ);  // parasite mate choice distance	
+	defineConstant("Ψₕ", ι);	// host mate choice distance
+	defineConstant("Ψₚ", ι);  // parasite mate choice distance	
 	
 	// host spatial competition
 	initializeInteractionType(1, "xy", reciprocal=T, maxDistance=ωₕ);
@@ -51,7 +51,7 @@ species all initialize(){
 }
 
 species host initialize() {
-	initializeSLiMOptions(dimensionality="xy",periodicity="xy");
+	initializeSLiMOptions(dimensionality="xy");
 	initializeSpecies(tickModulo=1, tickPhase=1, avatar="🦌");
 	//initializeTreeSeq();
 	
@@ -65,7 +65,7 @@ species host initialize() {
 }
 
 species para initialize() {
-	initializeSLiMOptions(dimensionality="xy",periodicity="xy");
+	initializeSLiMOptions(dimensionality="xy");
 	initializeSpecies(tickModulo=1, tickPhase=1, avatar="🪱");
 	//initializeTreeSeq();
 	
@@ -86,22 +86,22 @@ species host reproduction(p0) {
 	mate = i3.drawByStrength(individual, 1); // find a single partner to mate with
 	if(mate.size()) {
 		𝓦ₕ= rpois(1, individual.tagF);
-		for(i in seqLen(𝓦ₕ)) {
-			pos = individual.spatialPosition + rnorm(2, 0, σₕ);
+		for(i in seqLen(𝓦ₕ)) {			
 			bb = subpop.addCrossed(individual, mate);
-			bb.setSpatialPosition(p0.pointPeriodic(pos));
+//			pos = individual.spatialPosition + rnorm(2, 0, σₕ);
+//			bb.setSpatialPosition(p0.pointPeriodic(pos));
 		}
 	}
 	return;
 }
-//species host modifyChild() {
-//	// Absorbing boundary conditions
-//	pos = parent1.spatialPosition + rnorm(2, 0, σₕ);
-//	if (!p0.pointInBounds(pos))
-//		return F;
-//	child.setSpatialPosition(pos);
-//	return T;
-//}
+species host modifyChild() {
+	// Absorbing boundary conditions
+	pos = parent1.spatialPosition + rnorm(2, 0, σₕ);
+	if (!p0.pointInBounds(pos))
+		return F;
+	child.setSpatialPosition(pos);
+	return T;
+}
 
 
 // parasite mating
@@ -110,21 +110,21 @@ species para reproduction(p1) {
 	if(mate.size()) {
 		𝓦ₚ = rpois(1, individual.tagF);
 		for(i in seqLen(𝓦ₚ)) {
-			pos = individual.spatialPosition + rnorm(2, 0, σₚ);
 			bb = subpop.addCrossed(individual, mate);
-			bb.setSpatialPosition(p1.pointPeriodic(pos));
+//			pos = individual.spatialPosition + rnorm(2, 0, σₚ);
+//			bb.setSpatialPosition(p1.pointPeriodic(pos));
 		}
 	}
 	return;
 }
-//species para modifyChild() {
-//	// Absorbing boundary conditions
-//	pos = parent1.spatialPosition + rnorm(2, 0, σₚ);
-//	if (!p0.pointInBounds(pos))
-//		return F;
-//	child.setSpatialPosition(pos);
-//	return T;
-//}
+species para modifyChild() {
+	// Absorbing boundary conditions
+	pos = parent1.spatialPosition + rnorm(2, 0, σₚ);
+	if (!p0.pointInBounds(pos))
+		return F;
+	child.setSpatialPosition(pos);
+	return T;
+}
 
 ticks all 1 early() {
 	N₀ = asInteger(ρ₀ * 100 * 100); // Initial Population Size (ρ₀ ind's per unit area)
@@ -134,8 +134,8 @@ ticks all 1 early() {
 	p1.setSpatialBounds(c(0, 0, 100, 100));
 	p0.individuals.setSpatialPosition(p0.pointUniform(N₀));
 	p1.individuals.setSpatialPosition(p1.pointUniform(N₀));
-	//host.readFromPopulationFile("~/gsccs-data/hinit.trees");
-	//para.readFromPopulationFile("~/gsccs-data/pinit.trees");
+//	host.readFromPopulationFile("~/gsccs-data/hinit.trees");
+//	para.readFromPopulationFile("~/gsccs-data/pinit.trees");
 }
 
 ticks all late(){
@@ -167,19 +167,21 @@ ticks all late(){
 	}
 	
 	// compute fx of intraspp comp on host fecun
-	for(h in p0.individuals){
-		Nₕ = i1.interactingNeighborCount(h);
-		p0.individuals.tagF = W₀ₕ*exp(-cₕ*Nₕ);
-	}
-//	Nₕ = i1.localPopulationDensity(p0.individuals); // be sure to set the intxn kernel to a gaussian
-//	catn(Nₕ);
+//	for(h in p0.individuals){
+//		Nₕ = i1.interactingNeighborCount(h);
+//		h.tagF = W₀ₕ*exp(-cₕ*Nₕ);
+//	}
+	Nₕ = i1.interactingNeighborCount(p0.individuals); // be sure to set the intxn kernel to a gaussian
+	p0.individuals.tagF = W₀ₕ*exp(-cₕ*Nₕ);
+	
+	Nₚ = i2.interactingNeighborCount(p1.individuals);
+	p1.individuals.tagF = W₀ₚ*exp(-cₚ*Nₚ);
 	
 	
 	// compute fx of intraspp comp on para fecun
 	// and incorporate fx of interspp intxns on host/para fecun
 	for(p in p1.individuals){
-		Nₚ = i2.interactingNeighborCount(p);
-		Wₚ = W₀ₚ*exp(-cₚ*Nₚ);
+		
 		
 		// if there's any hosts out there
 		if( p0.individualCount > 0 ){
@@ -206,18 +208,18 @@ ticks all late(){
 			α = exp(-γ*abs(zₕ[h.index]-zₚ[p.index])/2);
 			
 			// deterministic fitness outcome is faster and easier to analyze
-			Wₚ = (exp(sₚ)*α + (1-α)) * Wₚ;
+			p.tagF = (exp(sₚ)*α + (1-α)) * p.tagF;
 			h.tagF = (exp(-sₕ)*α + (1-α)) * h.tagF;
 		
 		}
 		// note: each parasite infects at most one host, but each host can be infected by multiple parasites
 		//			hence, if a host is infected by three parasites it will incur the fitness cost of sₕ^3
-		p.tagF = Wₚ;
 	}
 	
 	// forces non-overlapping generations	
-	p1.individuals.fitnessScaling = 0;
 	p0.individuals.fitnessScaling = 0;
+	p1.individuals.fitnessScaling = 0;
+
 	
 	// logging position, trait value, fitness and species id for each individual
 	if(community.tick>3999){
