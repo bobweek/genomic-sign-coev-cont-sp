@@ -126,7 +126,7 @@ ticks all 1 early() {
 //	para.readFromPopulationFile("~/gsccs-data/pinit.trees"); // and also if later dynamics change depending
 }
 
-ticks all 2:999 first(){
+ticks all 2:1999 first(){
 	i1.evaluate(p0);
 	i2.evaluate(p1);
 	i3.evaluate(p0);
@@ -172,7 +172,7 @@ ticks all 2:999 first(){
 
 }
 
-ticks all 1000: first(){
+ticks all 2000: first(){
 	i1.evaluate(p0);
 	i2.evaluate(p1);
 	i3.evaluate(p0);
@@ -256,7 +256,7 @@ ticks all 1000: first(){
 //	}
 //}
 
-ticks all 5000 late() {
+ticks all 6000 late() {
 	//host.treeSeqOutput("~/gsccs-data/host.trees", metadata=params);
 	//para.treeSeqOutput("~/gsccs-data/para.trees", metadata=params);
 	community.simulationFinished();

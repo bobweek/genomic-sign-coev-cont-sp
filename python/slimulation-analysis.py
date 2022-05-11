@@ -21,7 +21,7 @@ summary_time_series = pd.DataFrame(columns=[
 # build another data frame filled with ibd plots
 
 txt = "{time:d}"
-time_pts = np.arange(3699)
+time_pts = np.arange(600)
 for t in time_pts:    
 
     fname = "~/gsccs-data/ind-data/indData"+txt.format(time = t).zfill(4)+".csv"
