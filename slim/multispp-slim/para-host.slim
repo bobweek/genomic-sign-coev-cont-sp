@@ -4,16 +4,16 @@ species all initialize(){
 	defaults = Dictionary(	
 		"µₕ",  1e-8,  		// host mutation rate
 		"µₚ",  1e-8,  		// parasite mutation rate
-		"κₕ",  0.0001,  	// host mutation effect size (greek letter 'mu' for 'mutation')
+		"κₕ",  0.0001,  	// host mutation effect size
 		"κₚ",  0.0001,  	// parasite mutation effect size		
-		"σₕ",  5.0,  		// host dispersal distance	('sigma' is trad notation for disp dist)
+		"σₕ",  5.0,  		// host dispersal distance
 		"σₚ",  1.0,  		// parasite dispersal distance
-		"ι",   3.0,			// spatial interspp interaction distance ('iota' for 'interaction')
+		"ι",   3.0,			// spatial interspp interaction distance
 		"cₕ",  0.05, 		// strength of host competition
 		"cₚ",  0.03, 		// strength of para competition
-		"ωₕ",  3.0,			// (spatial) host niche breadth ('omega' looks like w for 'width', trad quant gen notation)
+		"ωₕ",  3.0,			// (spatial) host niche breadth 
 		"ωₚ",  3.0,			// (spatial) parasite niche breadth
-		"W₀ₕ", 1.05,		// host base fitness ('W' trad notation for expected liftme repr output)
+		"W₀ₕ", 1.05,		// host base fitness
 		"W₀ₚ", 1.02,		// para base fitness
 		"sₕ",  0.02, 		// cost on host fitness for each infection ('s' as in selection)
 		"sₚ",  0.02, 		// benefit on parasite fitness for successful infection
@@ -233,7 +233,7 @@ ticks all 1000: first(){
 	p1.individuals.fitnessScaling = 0;
 
 	// logging position, trait value, fitness, parasite movement and species id for each individual
-	if(community.tick%10){
+	if(community.tick%10==0){
 		fn = paste0("~/gsccs-data/ind-data/indData",format("%04i",j),".csv");
 		j = j+1;
 		writeFile(fn,paste("x","y","z","W","pd","spp",sep=","),append=F); // pd = distance parasite moves to host
@@ -248,14 +248,12 @@ ticks all 1000: first(){
 }
 
 //ticks all 3: late(){
-//	val = cbind(((0.5+p0.individuals.z)%0.02)/0.02,
-//		rep(0.75,p0.individualCount), 
-//		rep(0.75,p0.individualCount));
-//	p0.individuals.color = rgb2color(hsv2rgb(val));
-//	val = cbind(((0.5+p1.individuals.z)%0.02)/0.02,
-//		rep(0.75,p1.individualCount), 
-//		rep(0.75,p1.individualCount));
-//	p1.individuals.color = rgb2color(hsv2rgb(val));	
+//	for(subpop in c(p0,p1)){
+//		val = cbind(((0.5+subpop.individuals.z)%0.02)/0.02,
+//		rep(0.75,subpop.individualCount), 
+//		rep(0.75,subpop.individualCount));
+//		subpop.individuals.color = rgb2color(hsv2rgb(val));
+//	}
 //}
 
 ticks all 5000 late() {

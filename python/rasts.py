@@ -19,7 +19,7 @@ minv = 10.0
 maxv = 0.0
 
 txt = "{time:d}"
-time_pts = np.arange(1001)
+time_pts = np.arange(3699)
 for t in time_pts:    
 
     fname = "~/gsccs-data/ind-data/indData"+txt.format(time = t).zfill(4)+".csv"
