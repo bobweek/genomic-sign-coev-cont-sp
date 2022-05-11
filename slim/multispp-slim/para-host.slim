@@ -9,15 +9,15 @@ species all initialize(){
 		"σₕ",  5.0,  		// host dispersal distance	('sigma' is trad notation for disp dist)
 		"σₚ",  1.0,  		// parasite dispersal distance
 		"ι",   3.0,			// spatial interspp interaction distance ('iota' for 'interaction')
-		"cₕ",  0.05, 	// strength of host competition
-		"cₚ",  0.05, 	// strength of para competition
+		"cₕ",  0.05, 		// strength of host competition
+		"cₚ",  0.05, 		// strength of para competition
 		"ωₕ",  3.0,			// (spatial) host niche breadth ('omega' looks like w for 'width', trad quant gen notation)
 		"ωₚ",  3.0,			// (spatial) parasite niche breadth
 		"W₀ₕ", 1.05,		// host base fitness ('W' trad notation for expected liftme repr output)
 		"W₀ₚ", 1.01,		// para base fitness
 		"sₕ",  0.02, 		// cost on host fitness for each infection ('s' as in selection)
 		"sₚ",  0.02, 		// benefit on parasite fitness for successful infection
-		"γ",   0.1,			// sensitivity of inf pr to trait differences ('gamma' trad nuimser notation for this par)
+		"γ",   1.0,			// sensitivity of inf pr to trait differences ('gamma' trad nuimser notation for this par)
 		"ρ₀",  0.5			// initial population density ('rho' is trad for densities)
 		);
 	for (k in defaults.allKeys) {
@@ -186,7 +186,7 @@ ticks all late(){
 		pd[p.index] = sqrt(sum((c(p.x,p.y)-pp)^2));		
 		
 		// trait-matching-model
-		α = exp(-γ*abs(zₕ[h.index]-zₚ[p.index])/2);
+		α = exp(-γ*abs(zₕ[h.index]-zₚ[p.index]));
 			
 		// deterministic fitness outcome is faster and easier to analyze
 		p.tagF = (exp(sₚ)*α + (1-α)) * p.tagF;
