@@ -247,16 +247,16 @@ ticks all 1000: first(){
 
 }
 
-ticks all 3: late(){
-	val = cbind(((0.5+p0.individuals.z)%0.02)/0.02,
-		rep(0.75,p0.individualCount), 
-		rep(0.75,p0.individualCount));
-	p0.individuals.color = rgb2color(hsv2rgb(val));
-	val = cbind(((0.5+p1.individuals.z)%0.02)/0.02,
-		rep(0.75,p1.individualCount), 
-		rep(0.75,p1.individualCount));
-	p1.individuals.color = rgb2color(hsv2rgb(val));	
-}
+//ticks all 3: late(){
+//	val = cbind(((0.5+p0.individuals.z)%0.02)/0.02,
+//		rep(0.75,p0.individualCount), 
+//		rep(0.75,p0.individualCount));
+//	p0.individuals.color = rgb2color(hsv2rgb(val));
+//	val = cbind(((0.5+p1.individuals.z)%0.02)/0.02,
+//		rep(0.75,p1.individualCount), 
+//		rep(0.75,p1.individualCount));
+//	p1.individuals.color = rgb2color(hsv2rgb(val));	
+//}
 
 ticks all 5000 late() {
 	//host.treeSeqOutput("~/gsccs-data/host.trees", metadata=params);
