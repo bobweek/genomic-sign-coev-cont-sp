@@ -69,19 +69,19 @@ ts_metadata['SLiM']['cycle'] = 1
 ts_metadata['SLiM']['tick'] = 1
 htables.metadata = ts_metadata
 
-# hindividual_metadata = [ind.metadata for ind in htables.individuals]
-# for md in hindividual_metadata:
-#    md["subpopulation"] = 0
-#    ims = htables.individuals.metadata_schema
-#    htables.individuals.packset_metadata(
-#       [ims.validate_and_encode_row(md) for md in hindividual_metadata])
+hindividual_metadata = [ind.metadata for ind in htables.individuals]
+for md in hindividual_metadata:
+   md["subpopulation"] = 0
+   ims = htables.individuals.metadata_schema
+   htables.individuals.packset_metadata(
+      [ims.validate_and_encode_row(md) for md in hindividual_metadata])
 
-# hmut_metadata = [mut.metadata for mut in htables.mutations]
-# for md in hmut_metadata:
-#    md["mutation_list"][0]["subpopulation"] = 0
-#    ims = htables.mutations.metadata_schema
-#    htables.mutations.packset_metadata(
-#       [ims.validate_and_encode_row(md) for md in hmut_metadata])
+hmut_metadata = [mut.metadata for mut in htables.mutations]
+for md in hmut_metadata:
+   md["mutation_list"][0]["subpopulation"] = 0
+   ims = htables.mutations.metadata_schema
+   htables.mutations.packset_metadata(
+      [ims.validate_and_encode_row(md) for md in hmut_metadata])
 
 htables.populations.clear()
 for p in hts.populations():
@@ -98,24 +98,24 @@ hts.dump(os.path.expanduser('~/gsccs-data/hinit.trees'))
 #
 
 ts_metadata = ptables.metadata
-ts_metadata["SLiM"]["spatial_dimensionality"] = "xy"
-# ts_metadata['SLiM']['cycle'] = 1
-# ts_metadata['SLiM']['tick'] = 1
+ts_metadata["SLiM"]["spatial_dimensionality"] = "xy" 
+ts_metadata['SLiM']['cycle'] = 1
+ts_metadata['SLiM']['tick'] = 1
 ptables.metadata = ts_metadata
 
-# pindividual_metadata = [ind.metadata for ind in ptables.individuals]
-# for md in pindividual_metadata:
-#    md["subpopulation"] = 1
-#    ims = ptables.individuals.metadata_schema
-#    ptables.individuals.packset_metadata(
-#       [ims.validate_and_encode_row(md) for md in pindividual_metadata])
+pindividual_metadata = [ind.metadata for ind in ptables.individuals]
+for md in pindividual_metadata:
+   md["subpopulation"] = 1
+   ims = ptables.individuals.metadata_schema
+   ptables.individuals.packset_metadata(
+      [ims.validate_and_encode_row(md) for md in pindividual_metadata])
 
-# pmut_metadata = [mut.metadata for mut in ptables.mutations]
-# for md in pmut_metadata:
-#    md["mutation_list"][0]["subpopulation"] = 1
-#    ims = ptables.mutations.metadata_schema
-#    ptables.mutations.packset_metadata(
-#       [ims.validate_and_encode_row(md) for md in pmut_metadata])
+pmut_metadata = [mut.metadata for mut in ptables.mutations]
+for md in pmut_metadata:
+   md["mutation_list"][0]["subpopulation"] = 1
+   ims = ptables.mutations.metadata_schema
+   ptables.mutations.packset_metadata(
+      [ims.validate_and_encode_row(md) for md in pmut_metadata])
 
 ptables.populations.clear()
 ptables.populations.add_row()
