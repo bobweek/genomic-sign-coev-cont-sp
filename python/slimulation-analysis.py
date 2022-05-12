@@ -5,9 +5,11 @@ from scipy.ndimage import gaussian_filter
 import os
 
 # selection parameters
-g  = 0.1
-sₕ = 0.0
-sₚ = 0.01
+pfname = "~/gsccs-data/params.csv"
+pars = pd.read_csv(pfname)
+γ  = pars["γ"]
+sₕ = pars["sₕ"]
+sₚ = pars["sₚ"]
 
 summary_time_series = pd.DataFrame(columns=[
             "pretained","Nh","Np","pr_unhosted","pr_unparasitized","pprh_m","pprh_v",
@@ -43,7 +45,7 @@ for t in time_pts:
         for p in inds.index[paraon]:
             hostedparas[p] = 1
             traitpairs.append([zₕ[h],zₚ[p]])
-            a = np.exp(-g*(zₕ[h]-zₚ[p])**2/2)
+            a = np.exp(-γ*abs(zₕ[h]-zₚ[p]))
             Bₚ[p] = np.exp(sₚ)*a + (1-a)
             BH *= np.exp(sₕ)*a + (1-a)
         Bₕ[h] = BH

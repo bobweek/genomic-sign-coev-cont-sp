@@ -4,11 +4,6 @@ import numpy as np
 from scipy.ndimage import gaussian_filter
 import os
 
-# selection parameters
-g  = 0.1
-sₕ = 0.0
-sₚ = 0.01
-
 # build another data frame filled with ibd plots
 
 minN = 10.0
