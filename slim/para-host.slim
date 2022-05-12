@@ -10,7 +10,7 @@ species all initialize(){
 		"σₚ",  1.0,  		// parasite dispersal distance
 		"ι",   3.0,			// spatial interspp interaction distance
 		"cₕ",  0.05, 		// strength of host competition
-		"cₚ",  0.03, 		// strength of para competition
+		"cₚ",  0.02, 		// strength of para competition
 		"ωₕ",  3.0,			// (spatial) host niche breadth 
 		"ωₚ",  3.0,			// (spatial) parasite niche breadth
 		"W₀ₕ", 1.05,		// host base fitness
@@ -18,7 +18,9 @@ species all initialize(){
 		"sₕ",  0.01, 		// cost on host fitness for each infection ('s' as in selection)
 		"sₚ",  0.01, 		// benefit on parasite fitness for successful infection
 		"γ",   1.0,			// sensitivity of inf pr to trait differences ('gamma' trad nuimser notation for this par)
-		"ρ₀",  0.5			// initial population density ('rho' is trad for densities)
+		"ρ₀",  0.5,			// initial population density ('rho' is trad for densities)
+		"ntlbrnn", 1000,	// number of cycles in neutral burnin period
+		"ixnbrnn", 2000	// number of cycles in interacting burnin period
 		);
 	for (k in defaults.allKeys) {
 		if (!exists(k)) {
@@ -33,6 +35,8 @@ species all initialize(){
 		"W₀ₕ","W₀ₚ","sₕ","sₚ","γ","ρ₀",sep=","),append=F);
 	writeFile(pfn,paste(µₕ,µₚ,κₕ,κₚ,σₕ,σₚ,ι,cₕ,cₚ,ωₕ,ωₚ,W₀ₕ,W₀ₚ,sₕ,sₚ,γ,ρ₀,sep=","),append=T);	
 	defineGlobal("j", 0);	
+	defineGlobal("maxZ", 0);	
+	defineGlobal("minZ", 0);			
 	defineConstant("Ψₕ", ι);	// host mate choice distance
 	defineConstant("Ψₚ", ι);  // parasite mate choice distance	
 	
@@ -130,7 +134,7 @@ ticks all 1 early() {
 //	para.readFromPopulationFile("~/gsccs-data/pinit.trees"); // and also if later dynamics change depending
 }
 
-ticks all 2:1999 first(){
+ticks all 2:999 first(){
 	i1.evaluate(p0);
 	i2.evaluate(p1);
 	i3.evaluate(p0);
@@ -161,8 +165,11 @@ ticks all 2:1999 first(){
 	p0.individuals.fitnessScaling = 0;
 	p1.individuals.fitnessScaling = 0;
 
+	maxZ = max(c(zₕ,zₚ,maxZ));
+	minZ = min(c(zₕ,zₚ,minZ));
+
 	// logging position, trait value, fitness, parasite movement and species id for each individual
-	if(community.tick%10==0){
+	if(community.tick%50==0){
 		fn = paste0("~/gsccs-data/ind-data/indData",format("%04i",j),".csv");
 		j = j+1;
 		writeFile(fn,paste("x","y","z","W","pd","spp",sep=","),append=F); // pd = distance parasite moves to host
@@ -176,7 +183,7 @@ ticks all 2:1999 first(){
 
 }
 
-ticks all 2000: first(){
+ticks all 1000: first(){
 	i1.evaluate(p0);
 	i2.evaluate(p1);
 	i3.evaluate(p0);
@@ -235,9 +242,12 @@ ticks all 2000: first(){
 	// forces non-overlapping generations	
 	p0.individuals.fitnessScaling = 0;
 	p1.individuals.fitnessScaling = 0;
+	
+	maxZ = max(c(zₕ,zₚ,maxZ));
+	minZ = min(c(zₕ,zₚ,minZ));	
 
 	// logging position, trait value, fitness, parasite movement and species id for each individual
-	if(community.tick%10==0){
+	if(community.tick%50==0){
 		fn = paste0("~/gsccs-data/ind-data/indData",format("%04i",j),".csv");
 		j = j+1;
 		writeFile(fn,paste("x","y","z","W","pd","spp",sep=","),append=F); // pd = distance parasite moves to host
@@ -260,9 +270,12 @@ ticks all 2000: first(){
 //	}
 //}
 
-ticks all 6000 late() {
+ticks all 3000 late() {
 	//host.treeSeqOutput("~/gsccs-data/host.trees", metadata=params);
 	//para.treeSeqOutput("~/gsccs-data/para.trees", metadata=params);
+	mmn = paste0("~/gsccs-data/ind-data/minmax.csv");
+	writeFile(mmn,paste("min","max",sep=","),append=F);
+	writeFile(mmn,paste(minZ,maxZ,sep=","),append=T);
 	community.simulationFinished();
 	catn("Done.");
 }

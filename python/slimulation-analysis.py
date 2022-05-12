@@ -1,5 +1,9 @@
 import pandas as pd
 import numpy as np
+import os
+import glob
+
+csvCounter = len(glob.glob(os.path.expanduser("~/gsccs-data/ind-data/*.csv")))
 
 # selection parameters
 pfname = "~/gsccs-data/params.csv"
@@ -22,8 +26,8 @@ summary_time_series = pd.DataFrame(columns=[
 # build another data frame filled with ibd plots
 
 txt = "{time:d}"
-time_pts = np.arange(200,600)
-for t in time_pts:    
+time_pts = np.arange(0,csvCounter)
+for t in time_pts:
 
     fname = "~/gsccs-data/ind-data/indData"+txt.format(time = t).zfill(4)+".csv"
     inds = pd.read_csv(fname)
@@ -40,14 +44,14 @@ for t in time_pts:
     for h in hosts:
         paraon = (inds.spp==2) & (inds.x==inds.x[h]) & (inds.y==inds.y[h])    
         paraperhost.append(sum(paraon))
-        BH = 1
-        for p in inds.index[paraon]:
-            hostedparas[p] = 1
-            traitpairs.append([zₕ[h],zₚ[p]])
-            a = np.exp(-γ*abs(zₕ[h]-zₚ[p]))
-            Bₚ[p] = np.exp(sₚ)*a + (1-a)
-            BH *= np.exp(sₕ)*a + (1-a)
-        Bₕ[h] = BH
+        # BH = 1
+        # for p in inds.index[paraon]:
+        #     hostedparas[p] = 1
+        #     traitpairs.append([zₕ[h],zₚ[p]])
+        #     a = np.exp(-γ*abs(zₕ[h]-zₚ[p]))
+        #     Bₚ[p] = np.exp(sₚ)*a + (1-a)
+        #     BH *= np.exp(sₕ)*a + (1-a)
+        # Bₕ[h] = BH
 
     # cutting burnt edges of brownie
     # iota = 5 # the intxn radius
@@ -76,7 +80,9 @@ for t in time_pts:
     pprh_v = np.var(paraperhost,ddof=1)
 
     # correlation of interacting trait pairs
-    pntcorr = np.corrcoef(np.transpose(traitpairs))[0,1]
+    pntcorr = 0
+    if len(traitpairs)>0:
+        pntcorr = np.corrcoef(np.transpose(traitpairs))[0,1]
 
     # # discr sp by intxn dist and cutting off outer 3 units in ea direction
     # bins = iota*np.arange(size/iota)

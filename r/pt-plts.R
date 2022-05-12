@@ -1,9 +1,3 @@
-# ffmpeg -r 30 -i N%04d.png -vcodec libx264 -crf 25  -pix_fmt yuv420p N.mp4
-# ffmpeg -r 30 -i z%04d.png -vcodec libx264 -crf 25  -pix_fmt yuv420p z.mp4
-# ffmpeg -r 30 -i v%04d.png -vcodec libx264 -crf 25  -pix_fmt yuv420p v.mp4
-
-# check if kennel needs vax's
-
 require(ggplot2)
 require(gridExtra)
 require(viridis)
@@ -19,7 +13,7 @@ for(i in 0:599){
   pz <- ggplot(inddf) +
     geom_point(aes(color=z,x=x,y=y),alpha=0.5,stroke=0.75,size=0.5) +
     facet_grid(.~spp) +
-    scale_colour_viridis() +
+    scale_colour_viridis(limits=c(mmdf$min,mmdf$max)) +
     dark_theme_gray()
   pzf = paste("~/gsccs-data/ind-data/z",num,".png",sep="")
   ggsave(pzf,pz,width=16,height=8,bg="black")
