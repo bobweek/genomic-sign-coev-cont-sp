@@ -1,0 +1,11 @@
+name: time-series
+title:
+username:
+account: bobweek
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 6289300
+bundleId: 5899439
+url: https://bobweek.shinyapps.io/time-series/
+when: 1652368922.76767
+lastSyncTime: 1652368922.76769

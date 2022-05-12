@@ -23,7 +23,7 @@ summary_time_series = pd.DataFrame(columns=[
 # build another data frame filled with ibd plots
 
 txt = "{time:d}"
-time_pts = np.arange(600)
+time_pts = np.arange(200,600)
 for t in time_pts:    
 
     fname = "~/gsccs-data/ind-data/indData"+txt.format(time = t).zfill(4)+".csv"
@@ -55,14 +55,18 @@ for t in time_pts:
     size = 100 # width/height of geographic region
     gooey_middle = (inds.x>3*iota) & (inds.x<size-3*iota) & (inds.y>3*iota) & (inds.y<size-3*iota)
     pretained = sum(gooey_middle)/len(inds.x)
-    hosts = inds.index[(inds.spp==1) & gooey_middle]
+    # hosts = inds.index[(inds.spp==1) & gooey_middle]
+
+    hosts = inds.index[inds.spp==1]
 
     # global census sizes
     Nh = len(hosts)
-    Np = len(inds.index[(inds.spp==2) & gooey_middle])
+    # Np = len(inds.index[(inds.spp==2) & gooey_middle])
+    Np = len(inds.index[inds.spp==2])
 
     # proportion of unhosted parasites
-    pr_unhosted = (Np - sum(hostedparas[gooey_middle]))/Np
+    # pr_unhosted = (Np - sum(hostedparas[gooey_middle]))/Np
+    pr_unhosted = (Np - sum(hostedparas))/Np
 
     # proportion of unparasitized hosts
     unparasitized = np.where(np.asarray(paraperhost)==0)[0]
@@ -267,9 +271,3 @@ for t in time_pts:
     summary_time_series = summary_time_series.append(thg)
 
 summary_time_series.to_csv("~/gsccs-data/time-series.csv")
-
-print("DONE!")
-
-duration = 1  # seconds
-freq = 440  # Hz
-os.system('play -nq -t alsa synth {} sine {}'.format(duration, freq))

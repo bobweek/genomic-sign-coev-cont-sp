@@ -134,9 +134,3 @@ minmaxdata = {
 }
 minmaxdf = pd.DataFrame(minmaxdata)
 minmaxdf.to_csv("~/gsccs-data/rast-data/minmax.csv")
-
-print("DONE!")
-
-duration = 1  # seconds
-freq = 440  # Hz
-os.system('play -nq -t alsa synth {} sine {}'.format(duration, freq))

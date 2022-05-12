@@ -1,5 +1,16 @@
+---
+title: "time series"
+output:
+  rmdformats::downcute:
+    self_contained: true
+    highlight: tango
+    downcute_theme: "chaos"
+---
+
+```{r, echo=F, warning=F, message=F}
 require(ggplot2)
 require(gridExtra)
+require(ggdark)
 
 tsdf = read.csv("~/gsccs-data/time-series.csv")
 tsdf$X = seq(1,10*length(tsdf$X),by=10)
@@ -14,9 +25,11 @@ glb_abun_p = ggplot(tsdf) +
        y = "Global Census Size",        
        color = "Legend") +   
   scale_color_manual(values = colors) +
-  theme_minimal()
+  dark_theme_gray()
+glb_abun_p
 
 Ntcorr = cor(tsdf$Nh_m[4:length(tsdf$t)],tsdf$Np_m[4:length(tsdf$t)])
+
 lcl_abun_p = ggplot(tsdf) + 
   geom_line(aes(x=t,y=Nh_m,color="Host")) +
   geom_line(aes(x=t,y=Np_m,color="Parasite")) +
@@ -25,7 +38,8 @@ lcl_abun_p = ggplot(tsdf) +
        y = "Mean Local Census Size",        
        color = "Legend") +   
   scale_color_manual(values = colors) +
-  theme_minimal()
+  dark_theme_gray()
+lcl_abun_p
 
 Ncorr_p = ggplot(tsdf) + 
   geom_line(aes(x=t,y=Ncorr)) +
@@ -33,7 +47,8 @@ Ncorr_p = ggplot(tsdf) +
   labs(x = "Time",        y = "Spatial Avg Local Mean Trait",        color = "Legend") +   scale_color_manual(values = colors) +
   ylab("Interspecific Spatial Correlation of Abundance") +
   ylim(c(0,1)) +
-  theme_minimal()
+  dark_theme_gray()
+Ncorr_p
 
 lcl_m_trt_m_p = ggplot(tsdf) + 
   geom_line(aes(x=t,y=zh_m,color="Host")) +
@@ -42,7 +57,8 @@ lcl_m_trt_m_p = ggplot(tsdf) +
        y = "Spatial Avg Local Mean Trait",
        color = "Legend") +
   scale_color_manual(values = colors) +
-  theme_minimal()
+  dark_theme_gray()
+lcl_m_trt_m_p
 
 lcl_m_trt_stddv_p = ggplot(tsdf) + 
   geom_line(aes(x=t,y=zh_stdv,color="Host")) +
@@ -51,7 +67,8 @@ lcl_m_trt_stddv_p = ggplot(tsdf) +
        y = "Stdev of Local Mean Traits",        
        color = "Legend") +   
   scale_color_manual(values = colors) +
-  theme_minimal()
+  dark_theme_gray()
+lcl_m_trt_stddv_p
 
 zcorr_p = ggplot(tsdf) + 
   geom_line(aes(x=t,y=zcorr)) +
@@ -60,7 +77,8 @@ zcorr_p = ggplot(tsdf) +
        color = "Legend") +   
   scale_color_manual(values = colors) +
   ylim(c(-1,1)) +
-  theme_minimal()
+  dark_theme_gray()
+zcorr_p
 
 lcl_trt_stdv_m_p = ggplot(tsdf) + 
   geom_line(aes(x=t,y=sqrt(vh_m),color="Host")) +
@@ -69,7 +87,8 @@ lcl_trt_stdv_m_p = ggplot(tsdf) +
        y = "Spatial Avg Local Trait Stddev",        
        color = "Legend") +   
   scale_color_manual(values = colors) +
-  theme_minimal()
+  dark_theme_gray()
+lcl_trt_stdv_m_p
 
 lcl_m_trt_v_p = ggplot(tsdf) + 
   geom_line(aes(x=t,y=vh_stdv,color="Host")) +
@@ -78,7 +97,8 @@ lcl_m_trt_v_p = ggplot(tsdf) +
        y = "Stdev of Local Trait Variance",        
        color = "Legend") +   
   scale_color_manual(values = colors) +
-  theme_minimal()
+  dark_theme_gray()
+lcl_m_trt_v_p
 
 vcorr_p = ggplot(tsdf) + 
   geom_line(aes(x=t,y=vcorr)) +
@@ -87,7 +107,8 @@ vcorr_p = ggplot(tsdf) +
        color = "Legend") +   
   scale_color_manual(values = colors) +
   ylim(c(-1,1)) +
-  theme_minimal()
+  dark_theme_gray()
+vcorr_p
 
 rhrp_p = ggplot(tsdf) + 
   geom_line(aes(x=t,y=rh_rp)) +
@@ -96,7 +117,8 @@ rhrp_p = ggplot(tsdf) +
        color = "Legend") +   
   scale_color_manual(values = colors) +
   ylim(c(-1,1)) +
-  theme_minimal()
+  dark_theme_gray()
+rhrp_p
 
 DBzp_p = ggplot(tsdf) + 
   geom_line(aes(x=t,y=DBzh_m,color="Host")) +
@@ -105,7 +127,8 @@ DBzp_p = ggplot(tsdf) +
        y = "Phenotypic Response to Biotic Selection",        
        color = "Legend") +   
   scale_color_manual(values = colors) +
-  theme_minimal()
+  dark_theme_gray()
+DBzp_p
 
 un_p = ggplot(tsdf) + 
   geom_line(aes(x=t,y=pr_unparasitized,color="Host")) +
@@ -115,7 +138,8 @@ un_p = ggplot(tsdf) +
        color = "Legend") +   
   scale_color_manual(values = colors) +
   ylim(c(0,1)) +
-  theme_minimal()
+  dark_theme_gray()
+un_p
 
 NhDBzp_p = ggplot(tsdf) + 
   geom_line(aes(x=t,y=Nh_DBzp)) +
@@ -124,29 +148,7 @@ NhDBzp_p = ggplot(tsdf) +
        color = "Legend") +   
   scale_color_manual(values = colors) +
   ylim(c(-1,1)) +
-  theme_minimal()
+  dark_theme_gray()
+NhDBzp_p
+```
 
-mean(tsdf$Nh_DBzp)
-
-R = log(1.1)
-c = 0.001
-w = 7
-i = 5
-L = 1e8
-mu = 1e-11
-xi = 1
-
-Nhat = (w*R)/(2*pi*c) # supposed density
-
-Nhat*2*pi*i^2
-
-(w*R)/(7*2*pi*c) # magic number seven
-(i*R)/(5*2*pi*c) # magic number five
-
-vhat = 2*Nhat*L*mu*xi^2
-
-mean(tsdf$Nh_m)
-#
-#
-#
-colnames(tsdf)
