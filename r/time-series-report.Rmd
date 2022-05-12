@@ -7,6 +7,10 @@ output:
     downcute_theme: "chaos"
 ---
 
+<video width="640" height="480" controls>
+  <source src="pt-process.mp4" type="video/mp4">
+</video>
+
 ```{r, echo=F, warning=F, message=F}
 require(ggplot2)
 require(gridExtra)
@@ -151,4 +155,3 @@ NhDBzp_p = ggplot(tsdf) +
   dark_theme_gray()
 NhDBzp_p
 ```
-
