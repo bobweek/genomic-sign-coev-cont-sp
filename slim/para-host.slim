@@ -10,7 +10,7 @@ species all initialize(){
 		"σₚ",  1.0,  		// parasite dispersal distance
 		"ι",   3.0,			// spatial interspp interaction distance
 		"cₕ",  0.05, 		// strength of host competition
-		"cₚ",  0.05, 		// strength of para competition
+		"cₚ",  0.03, 		// strength of para competition
 		"ωₕ",  3.0,			// (spatial) host niche breadth 
 		"ωₚ",  3.0,			// (spatial) parasite niche breadth
 		"W₀ₕ", 1.03,		// host base fitness
@@ -132,13 +132,64 @@ ticks all 1 early() {
 	p1.setSpatialBounds(c(0, 0, 100, 100));
 	p0.individuals.setSpatialPosition(p0.pointUniform(N₀));
 	p1.individuals.setSpatialPosition(p1.pointUniform(N₀));
-	host.readFromPopulationFile("~/gsccs-data/hinit.trees",
-		subpopMap=Dictionary("p0", 0)); // consider if dfe looks different for msprime vs slim
-	para.readFromPopulationFile("~/gsccs-data/pinit.trees",
-		subpopMap=Dictionary("p1", 0)); // and also if later dynamics change depending
+//	host.readFromPopulationFile("~/gsccs-data/hinit.trees",
+//		subpopMap=Dictionary("p0", 0)); // consider if dfe looks different for msprime vs slim
+//	para.readFromPopulationFile("~/gsccs-data/pinit.trees",
+//		subpopMap=Dictionary("p1", 0)); // and also if later dynamics change depending
 }
 
-ticks all 2: first(){
+ticks all 2:9999 first(){
+	i1.evaluate(p0);
+	i2.evaluate(p1);
+	i3.evaluate(p0);
+	i4.evaluate(p1);
+	i5.evaluate(p0);
+	i5.evaluate(p1);
+	
+	// caculating the phenotype as sum of loci with mutation
+	zₕ = p0.individuals.sumOfMutationsOfType(m1);
+	zₚ = p1.individuals.sumOfMutationsOfType(m2);
+	
+	// save trait values (for coloring later)
+	p0.individuals.z = zₕ;
+	p1.individuals.z = zₚ;
+	
+	// containers for dist's parasites move to hosts
+	pd = rep(0.0,p1.individualCount);
+	
+	// compute fx of intraspp comp on host fecun
+	Nₕ = i1.localPopulationDensity(p0.individuals); // be sure to set the intxn kernel to a gaussian
+	p0.individuals.tagF = W₀ₕ*exp(-cₕ*Nₕ);
+
+	// compute fx of intraspp comp on para fecun
+	Nₚ = i2.localPopulationDensity(p1.individuals);
+	p1.individuals.tagF = W₀ₚ*exp(-cₚ*Nₚ);
+	
+	// forces non-overlapping generations	
+	p0.individuals.fitnessScaling = 0;
+	p1.individuals.fitnessScaling = 0;
+	
+	maxZ = max(c(zₕ,zₚ));
+	minZ = min(c(zₕ,zₚ));
+	mmn = paste0("~/gsccs-data/minmax.csv");
+	writeFile(mmn,paste(minZ,maxZ,sep=","),append=T);
+	
+	// logging position, trait value, fitness, parasite movement and species id for each individual
+	if(community.tick%50==0){
+		fn = paste0("~/gsccs-data/ind-data/indData",format("%04i",j),".csv");
+		j = j+1;
+		writeFile(fn,paste("x","y","z","W","pd","spp",sep=","),append=F); // pd = distance parasite moves to host
+		for(h in p0.individuals){
+			writeFile(fn,paste(h.x,h.y,zₕ[h.index],h.tagF,0,1,sep=","),append=T); // pd = 0 for hosts
+		}
+		for(p in p1.individuals){
+			writeFile(fn,paste(p.x,p.y,zₚ[p.index],p.tagF,pd[p.index],2,sep=","),append=T);
+		}
+	}
+
+}
+
+ticks all 10000:15000 first(){
 	i1.evaluate(p0);
 	i2.evaluate(p1);
 	i3.evaluate(p0);
