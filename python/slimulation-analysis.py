@@ -3,7 +3,7 @@ import numpy as np
 import os
 import glob
 
-csvCounter = len(glob.glob(os.path.expanduser("~/gsccs-data/ind-data/*.csv")))
+csvCounter = len(glob.glob(os.path.expanduser("~/gsccs-data/ind-data/*.csv")))-1
 
 # selection parameters
 pfname = "~/gsccs-data/params.csv"
@@ -45,9 +45,9 @@ for t in time_pts:
         paraon = (inds.spp==2) & (inds.x==inds.x[h]) & (inds.y==inds.y[h])    
         paraperhost.append(sum(paraon))
         # BH = 1
-        # for p in inds.index[paraon]:
-        #     hostedparas[p] = 1
-        #     traitpairs.append([zₕ[h],zₚ[p]])
+        for p in inds.index[paraon]:
+            hostedparas[p] = 1
+            traitpairs.append([zₕ[h],zₚ[p]])
         #     a = np.exp(-γ*abs(zₕ[h]-zₚ[p]))
         #     Bₚ[p] = np.exp(sₚ)*a + (1-a)
         #     BH *= np.exp(sₕ)*a + (1-a)

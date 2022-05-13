@@ -5,13 +5,15 @@ output:
     self_contained: true
     highlight: tango
     downcute_theme: "chaos"
+editor_options: 
+  chunk_output_type: console
 ---
 
 <!-- <video width="640" height="480" controls> -->
 <!--   <source src="pt-process.mp4" type="video/mp4"> -->
 <!-- </video> -->
 
-```{r, echo=F, warning=F, message=F}
+```{r echo=F, message=FALSE, warning=FALSE}
 require(ggplot2)
 require(gridExtra)
 require(ggdark)
@@ -22,7 +24,7 @@ colnames(tsdf)[1]="t"
 
 colors <- c("Parasite" = "purple", "Host" = "orange")
 
-glb_abun_p = ggplot(tsdf) + 
+ggplot(tsdf) + 
   geom_line(aes(x=t,y=Nh,color="Host")) +
   geom_line(aes(x=t,y=Np,color="Parasite")) +
   labs(x = "Time",        
@@ -30,111 +32,17 @@ glb_abun_p = ggplot(tsdf) +
        color = "Legend") +   
   scale_color_manual(values = colors) +
   dark_theme_gray()
-glb_abun_p
 
-Ntcorr = cor(tsdf$Nh_m[4:length(tsdf$t)],tsdf$Np_m[4:length(tsdf$t)])
-
-lcl_abun_p = ggplot(tsdf) + 
-  geom_line(aes(x=t,y=Nh_m,color="Host")) +
-  geom_line(aes(x=t,y=Np_m,color="Parasite")) +
-  # xlim(c(100,1000)) +
+ggplot(tsdf) + 
+  geom_line(aes(x=t,y=pntcorr)) +
   labs(x = "Time",        
-       y = "Mean Local Census Size",        
-       color = "Legend") +   
-  scale_color_manual(values = colors) +
-  dark_theme_gray()
-lcl_abun_p
-
-Ncorr_p = ggplot(tsdf) + 
-  geom_line(aes(x=t,y=Ncorr)) +
-  # xlim(c(100,1000)) +
-  labs(x = "Time",        y = "Spatial Avg Local Mean Trait",        color = "Legend") +   scale_color_manual(values = colors) +
-  ylab("Interspecific Spatial Correlation of Abundance") +
-  ylim(c(0,1)) +
-  dark_theme_gray()
-Ncorr_p
-
-lcl_m_trt_m_p = ggplot(tsdf) + 
-  geom_line(aes(x=t,y=zh_m,color="Host")) +
-  geom_line(aes(x=t,y=zp_m,color="Parasite")) +
-  labs(x = "Time",
-       y = "Spatial Avg Local Mean Trait",
-       color = "Legend") +
-  scale_color_manual(values = colors) +
-  dark_theme_gray()
-lcl_m_trt_m_p
-
-lcl_m_trt_stddv_p = ggplot(tsdf) + 
-  geom_line(aes(x=t,y=zh_stdv,color="Host")) +
-  geom_line(aes(x=t,y=zp_stdv,color="Parasite")) +
-  labs(x = "Time",        
-       y = "Stdev of Local Mean Traits",        
-       color = "Legend") +   
-  scale_color_manual(values = colors) +
-  dark_theme_gray()
-lcl_m_trt_stddv_p
-
-zcorr_p = ggplot(tsdf) + 
-  geom_line(aes(x=t,y=zcorr)) +
-  labs(x = "Time",        
-       y = "Spatial Correlation of Mean Traits",        
+       y = "Spatial Correlation of Traits",        
        color = "Legend") +   
   scale_color_manual(values = colors) +
   ylim(c(-1,1)) +
   dark_theme_gray()
-zcorr_p
 
-# lcl_trt_stdv_m_p = ggplot(tsdf) + 
-#   geom_line(aes(x=t,y=sqrt(vh_m),color="Host")) +
-#   geom_line(aes(x=t,y=sqrt(vp_m),color="Parasite")) +
-#   labs(x = "Time",        
-#        y = "Spatial Avg Local Trait Stddev",        
-#        color = "Legend") +   
-#   scale_color_manual(values = colors) +
-#   dark_theme_gray()
-# lcl_trt_stdv_m_p
-
-# lcl_m_trt_v_p = ggplot(tsdf) + 
-#   geom_line(aes(x=t,y=vh_stdv,color="Host")) +
-#   geom_line(aes(x=t,y=vp_stdv,color="Parasite")) +
-#   labs(x = "Time",        
-#        y = "Stdev of Local Trait Variance",        
-#        color = "Legend") +   
-#   scale_color_manual(values = colors) +
-#   dark_theme_gray()
-# lcl_m_trt_v_p
-
-# vcorr_p = ggplot(tsdf) + 
-#   geom_line(aes(x=t,y=vcorr)) +
-#   labs(x = "Time",        
-#        y = "Spatial Correlation of Trait Variances",        
-#        color = "Legend") +   
-#   scale_color_manual(values = colors) +
-#   ylim(c(-1,1)) +
-#   dark_theme_gray()
-# vcorr_p
-
-# rhrp_p = ggplot(tsdf) + 
-#   geom_line(aes(x=t,y=rh_rp)) +
-#   labs(x = "Time",        
-#        y = "Interspecific Spatial Correlation of Growth Rates",        
-#        color = "Legend") +   
-#   scale_color_manual(values = colors) +
-#   ylim(c(-1,1)) +
-#   dark_theme_gray()
-# rhrp_p
-
-# DBzp_p = ggplot(tsdf) + 
-#   geom_line(aes(x=t,y=DBzh_m,color="Host")) +
-#   geom_line(aes(x=t,y=DBzp_m,color="Parasite")) +
-#   labs(x = "Time",        
-#        y = "Phenotypic Response to Biotic Selection",        
-#        color = "Legend") +   
-#   scale_color_manual(values = colors) +
-#   dark_theme_gray()
-# DBzp_p
-
-un_p = ggplot(tsdf) + 
+ggplot(tsdf) + 
   geom_line(aes(x=t,y=pr_unparasitized,color="Host")) +
   geom_line(aes(x=t,y=pr_unhosted,color="Parasite")) +
   labs(x = "Time",        
@@ -143,15 +51,19 @@ un_p = ggplot(tsdf) +
   scale_color_manual(values = colors) +
   ylim(c(0,1)) +
   dark_theme_gray()
-un_p
 
-# NhDBzp_p = ggplot(tsdf) + 
-#   geom_line(aes(x=t,y=Nh_DBzp)) +
-#   labs(x = "Time",        
-#        y = "Correlation of Host Abund & Para Biotic Response",        
-#        color = "Legend") +   
-#   scale_color_manual(values = colors) +
-#   ylim(c(-1,1)) +
-#   dark_theme_gray()
-# NhDBzp_p
+ggplot(tsdf) + 
+  geom_line(aes(x=t,y=pprh_m)) +
+  labs(x = "Time",
+       y = "Average Parasites Per Host") +   
+  scale_color_manual(values = colors) +
+  ylim(c(0,1)) +
+  dark_theme_gray()
+
+ggplot(tsdf) + 
+  geom_line(aes(x=t,y=sqrt(pprh_v))) +
+  labs(x = "Time",
+       y = "Stddev Parasites Per Host") +   
+  scale_color_manual(values = colors) +
+  dark_theme_gray()
 ```
