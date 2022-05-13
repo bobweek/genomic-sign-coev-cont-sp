@@ -132,8 +132,10 @@ ticks all 1 early() {
 	p1.setSpatialBounds(c(0, 0, 100, 100));
 	p0.individuals.setSpatialPosition(p0.pointUniform(N₀));
 	p1.individuals.setSpatialPosition(p1.pointUniform(N₀));
-//	host.readFromPopulationFile("~/gsccs-data/hinit.trees"); // consider if dfe looks different for msprime vs slim
-//	para.readFromPopulationFile("~/gsccs-data/pinit.trees"); // and also if later dynamics change depending
+	host.readFromPopulationFile("~/gsccs-data/hinit.trees",
+		subpopMap=Dictionary("p0", 0)); // consider if dfe looks different for msprime vs slim
+	para.readFromPopulationFile("~/gsccs-data/pinit.trees",
+		subpopMap=Dictionary("p1", 0)); // and also if later dynamics change depending
 }
 
 ticks all 2: first(){

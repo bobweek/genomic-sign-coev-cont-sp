@@ -4,8 +4,8 @@ import pyslim
 import numpy as np
 import os
 
-N = 10000
-n = 1000
+N = 1000
+n = 100
 L = 1e8
 mu = 1e-13
 k = 1
@@ -117,14 +117,14 @@ ptables.metadata = ts_metadata
 
 pindividual_metadata = [ind.metadata for ind in ptables.individuals]
 for md in pindividual_metadata:
-   md["subpopulation"] = 1
+   md["subpopulation"] = 0
    ims = ptables.individuals.metadata_schema
    ptables.individuals.packset_metadata(
       [ims.validate_and_encode_row(md) for md in pindividual_metadata])
 
 pmut_metadata = [mut.metadata for mut in ptables.mutations]
 for md in pmut_metadata:
-   md["mutation_list"][0]["subpopulation"] = 1
+   md["mutation_list"][0]["subpopulation"] = 0
    ims = ptables.mutations.metadata_schema
    ptables.mutations.packset_metadata(
       [ims.validate_and_encode_row(md) for md in pmut_metadata])
@@ -133,7 +133,7 @@ ptables.populations.clear()
 ptables.populations.add_row()
 for p in pts.populations(): # make empty pop in pop[0]
     pm = p.metadata
-    pm['slim_id'] = 1
+    pm['slim_id'] = 0
     pm['bounds_x1'] = 100
     pm['bounds_y1'] = 100
     ptables.populations.add_row(metadata=pm)

@@ -34,6 +34,24 @@ ggplot(tsdf) +
   dark_theme_gray()
 
 ggplot(tsdf) + 
+  geom_line(aes(x=t,y=zh,color="Host")) +
+  geom_line(aes(x=t,y=zp,color="Parasite")) +
+  labs(x = "Time",        
+       y = "Global Trait Means",        
+       color = "Legend") +   
+  scale_color_manual(values = colors) +
+  dark_theme_gray()
+
+ggplot(tsdf) + 
+  geom_line(aes(x=t,y=vh,color="Host")) +
+  geom_line(aes(x=t,y=vp,color="Parasite")) +
+  labs(x = "Time",        
+       y = "Global Trait Stddevs",        
+       color = "Legend") +   
+  scale_color_manual(values = colors) +
+  dark_theme_gray()
+
+ggplot(tsdf) + 
   geom_line(aes(x=t,y=pntcorr)) +
   labs(x = "Time",        
        y = "Spatial Correlation of Traits",        
