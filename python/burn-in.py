@@ -7,8 +7,8 @@ import os
 N = 1000
 n = 100
 L = 1e8
-mu = 1e-13
-k = 1
+mu = 1e-11
+k = 1e-3
 rho = 1e-8
 
 # first simulate whole genome to get num segr sites
@@ -28,7 +28,7 @@ pts = pyslim.annotate_defaults(pts, model_type="nonWF", slim_generation=1)
 
 # slim mutations
 hmut = msprime.SLiMMutationModel(type=1) # type = 1 for m1 (spp 1)
-pmut = msprime.SLiMMutationModel(type=2) # type = 1 for m1 (spp 1)
+pmut = msprime.SLiMMutationModel(type=2) # type = 2 for m2 (spp 2)
 hts = msprime.sim_mutations(hts,rate=mu,model=hmut,keep=True)
 pts = msprime.sim_mutations(pts,rate=mu,model=pmut,keep=True)
 print(f"The host now has {hts.num_mutations} mutations, at "f"{hts.num_sites} distinct sites.")
@@ -102,7 +102,6 @@ for md in hmut_metadata:
 htables.populations.clear()
 for p in hts.populations():
     pm = p.metadata
-    pm['slim_id'] = 0
     pm['bounds_x1'] = 100
     pm['bounds_y1'] = 100
     htables.populations.add_row(metadata=pm)
@@ -130,10 +129,8 @@ for md in pmut_metadata:
       [ims.validate_and_encode_row(md) for md in pmut_metadata])
 
 ptables.populations.clear()
-ptables.populations.add_row()
 for p in pts.populations(): # make empty pop in pop[0]
     pm = p.metadata
-    pm['slim_id'] = 0
     pm['bounds_x1'] = 100
     pm['bounds_y1'] = 100
     ptables.populations.add_row(metadata=pm)
@@ -141,13 +138,13 @@ pts = ptables.tree_sequence()
 pts.dump(os.path.expanduser('~/gsccs-data/pinit.trees'))
 
 # trait values
-# Zh = np.zeros(n)
-# Zp = np.zeros(n)
-# hgm = hts.genotype_matrix()
-# pgm = pts.genotype_matrix()
-# for i in 2*np.arange(n):
-#     Zh[int(i/2)] = sum(hgm[:,i]*hfx)+sum(hgm[:,i+1]*hfx)
-#     Zp[int(i/2)] = sum(pgm[:,i]*pfx)+sum(pgm[:,i+1]*pfx)
+Zh = np.zeros(n)
+Zp = np.zeros(n)
+hgm = hts.genotype_matrix()
+pgm = pts.genotype_matrix()
+for i in 2*np.arange(n):
+    Zh[int(i/2)] = sum(hgm[:,i]*hfx)+sum(hgm[:,i+1]*hfx)
+    Zp[int(i/2)] = sum(pgm[:,i]*pfx)+sum(pgm[:,i+1]*pfx)
 
-# np.var(Zh,ddof=1)
-# np.var(Zp,ddof=1)
+np.var(Zh)
+np.var(Zp)

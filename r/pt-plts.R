@@ -4,9 +4,9 @@ require(ggdark)
 
 mmdf = read.csv("~/gsccs-data/minmax.csv")
 
-ndatpts = length(list.files(path = "~/gsccs-data/ind-data/", pattern = "csv"))-1
+ndatpts = length(list.files(path = "~/gsccs-data/ind-data/", pattern = "csv"))
 
-for(i in 0:ndatpts){
+for(i in 1:ndatpts){
   num = sprintf("%04d", i)
   datfile = paste("~/gsccs-data/ind-data/indData",num,".csv",sep="")
   inddf = read.csv(datfile)
