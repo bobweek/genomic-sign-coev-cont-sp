@@ -1,28 +1,27 @@
-// get avg muts per ind
-
 species all initialize(){
 	initializeSLiMModelType("nonWF");
 	// model parameters
 	defaults = Dictionary(	
-		"µₕ",  1e-11,  		// host mutation rate
-		"µₚ",  1e-11,  		// parasite mutation rate
-		"κₕ",  0.01,  	// host mutation effect size
-		"κₚ",  0.01,  	// parasite mutation effect size		
+		"µₕ",  1e-12,  	// host mutation rate
+		"µₚ",  1e-12,  	// parasite mutation rate
+		"κₕ",  1.0,  		// host mutation effect size
+		"κₚ",  1.0,  		// parasite mutation effect size		
 		"σₕ",  2.0,  		// host dispersal distance
 		"σₚ",  0.5,  		// parasite dispersal distance
-		"ι",   3.0,			// spatial interspp interaction distance
-		"cₕ",  0.05, 		// strength of host competition
-		"cₚ",  0.02, 		// strength of para competition
-		"ωₕ",  3.0,			// (spatial) host niche breadth 
-		"ωₚ",  3.0,			// (spatial) parasite niche breadth
-		"W₀ₕ", 1.03,		// host base fitness
-		"W₀ₚ", 1.02,		// para base fitness
-		"sₕ",  0.001, 		// cost on host fitness for each infection ('s' as in selection)
-		"sₚ",  0.01, 		// benefit on parasite fitness for successful infection
-		"γ",   0.5,			// sensitivity of inf pr to trait differences ('gamma' trad nuimser notation for this par)
-		"ρ₀",  0.5,			// initial population density ('rho' is trad for densities)
-		"ntlbrnn", 9999,	// number of cycles in neutral burnin period
-		"ixnbrnn", 20000	// number of cycles in interacting burnin period
+		"ι",   2.0,			// spatial interspp interaction distance
+		"cₕ",  1e-2, 		// strength of host competition
+		"cₚ",  2.5e-2, 	// strength of para competition
+		"ωₕ",  2.0,			// (spatial) host niche breadth
+		"ωₚ",  0.5,			// (spatial) parasite niche breadth
+		"W₀ₕ", 1.015,		// host base fitness
+		"W₀ₚ", 1.08,		// para base fitness
+		"sₕ",  1e-5, 		// cost on host fitness for each infection ('s' as in selection)
+		"sₚ",  1e-3, 		// benefit on parasite fitness for successful infection
+		"γ",   0.1,			// sensitivity of inf pr to trait differences ('gamma' trad nuimser notation for this par)
+		"ρ₀ₕ",  1.0,		// initial population density ('rho' is trad for densities)
+		"ρ₀ₚ",  2.0,		// initial population density ('rho' is trad for densities)
+		"ntlbrnn", 9999,	// number of cycles in neutral burnin period (not working yet!)
+		"ixnbrnn", 20000	// number of cycles in interacting burnin period (not working yet!)
 		);
 	for (k in defaults.allKeys) {
 		if (!exists(k)) {
@@ -40,19 +39,17 @@ species all initialize(){
 	// params.csv
 	pfn = "~/gsccs-data/params.csv";
 	writeFile(pfn,paste("µₕ","µₚ","κₕ","κₚ","σₕ","σₚ","ι","cₕ","cₚ","ωₕ","ωₚ",
-		"W₀ₕ","W₀ₚ","sₕ","sₚ","γ","ρ₀","tempres",sep=","),append=F);
-	writeFile(pfn,paste(µₕ,µₚ,κₕ,κₚ,σₕ,σₚ,ι,cₕ,cₚ,ωₕ,ωₚ,W₀ₕ,W₀ₚ,sₕ,sₚ,γ,ρ₀,tempres,sep=","),append=T);	
+		"W₀ₕ","W₀ₚ","sₕ","sₚ","γ","ρ₀ₕ","ρ₀ₚ","tempres",sep=","),append=F);
+	writeFile(pfn,paste(µₕ,µₚ,κₕ,κₚ,σₕ,σₚ,ι,cₕ,cₚ,ωₕ,ωₚ,W₀ₕ,W₀ₚ,sₕ,sₚ,γ,ρ₀ₕ,ρ₀ₚ,tempres,sep=","),append=T);	
 
 	// time-series.csv
 	tsfn = "~/gsccs-data/time-series.csv";
 	writeFile(tsfn,paste("t","Nh","Np","zh","zp","vh","vp","pr_unhosted","pr_unparasitized",
-		"pprh_m","pprh_v","pntcorr","muh","mup","pdv","pdm",sep=","),append=F);
+		"pprh_m","pprh_v","pntcorr","muh","mup","pdv","pdm","hselresp","pselresp",sep=","),append=F);
 
 	defineGlobal("j", 1);	
-	defineGlobal("maxZ", 0);	
-	defineGlobal("minZ", 0);			
-	defineConstant("Ψₕ", ι);	// host mate choice distance
-	defineConstant("Ψₚ", ι);  // parasite mate choice distance
+	defineConstant("Ψₕ", 2*ωₕ);	// host mate choice distance
+	defineConstant("Ψₚ", 2*ωₚ);  // parasite mate choice distance
 	
 	// host spatial competition
 	initializeInteractionType(1, "xy", reciprocal=T, maxDistance=3*ωₕ);
@@ -63,11 +60,11 @@ species all initialize(){
 	i2.setInteractionFunction("n", 1.0, ωₚ); // gaussian because it has nice edge effect properties?
 	
 	// host mate choice
-	initializeInteractionType(3, "xy", reciprocal=T, maxDistance=Ψₕ);
+	initializeInteractionType(3, "xy", reciprocal=T, maxDistance=3*ωₕ);
 	i3.setInteractionFunction("l", 1.0); // linear for speed
 	
 	// parasite mate choice
-	initializeInteractionType(4, "xy", reciprocal=T, maxDistance=Ψₚ);
+	initializeInteractionType(4, "xy", reciprocal=T, maxDistance=3*ωₚ);
 	i4.setInteractionFunction("l", 1.0);
 	
 	// parasitism
@@ -139,24 +136,25 @@ species para reproduction(p1) {
 ticks all 1 early() {
 	mmn = paste0("~/gsccs-data/minmax.csv"); // for plotting later
 	writeFile(mmn,paste("min","max",sep=","),append=F);
-	N₀ = asInteger(ρ₀ * 100 * 100); // Initial Population Size (ρ₀ ind's per unit area)
+	N₀ₕ = asInteger(ρ₀ₕ * 100 * 100); // Initial Population Size (ρ₀ ind's per unit area)
+	N₀ₚ = asInteger(ρ₀ₚ * 100 * 100); // Initial Population Size (ρ₀ ind's per unit area)
 //	host.readFromPopulationFile("~/gsccs-data/hinit.trees",
 //		subpopMap=Dictionary("p0", 0)); // consider if dfe looks different for msprime vs slim
 //	para.readFromPopulationFile("~/gsccs-data/pinit.trees",
 //		subpopMap=Dictionary("p1", 0)); // and also if later dynamics change depending
-	host.addSubpop("p0", N₀);
-	para.addSubpop("p1", N₀);
+	host.addSubpop("p0", N₀ₕ);
+	para.addSubpop("p1", N₀ₚ);
 	p0.setSpatialBounds(c(0, 0, 100, 100));
 	p1.setSpatialBounds(c(0, 0, 100, 100));
-	p0.individuals.setSpatialPosition(p0.pointUniform(N₀));
-	p1.individuals.setSpatialPosition(p1.pointUniform(N₀));
+	p0.individuals.setSpatialPosition(p0.pointUniform(N₀ₕ));
+	p1.individuals.setSpatialPosition(p1.pointUniform(N₀ₚ));
 	
 //	community.rescheduleScriptBlock(s1, start=2, end=ntlbrnn);
 //	community.rescheduleScriptBlock(s2, start=ntlbrnn+1, end=ixnbrnn);
 //	community.rescheduleScriptBlock(s3, start=ixnbrnn, end=ixnbrnn);
 }
 
-ticks all 2:9999 first(){
+ticks all 2:20000 first(){
 	i1.evaluate(p0);
 	i2.evaluate(p1);
 	i3.evaluate(p0);
@@ -168,89 +166,9 @@ ticks all 2:9999 first(){
 	zₕ = p0.individuals.sumOfMutationsOfType(m1);
 	zₚ = p1.individuals.sumOfMutationsOfType(m2);
 	
-	// save trait values (for coloring later)
-	p0.individuals.z = zₕ;
-	p1.individuals.z = zₚ;
-	
-	// containers for dist's parasites move to hosts
-	pd = rep(0.0,p1.individualCount);
-	
-	// compute fx of intraspp comp on host fecun
-	Nₕ = i1.localPopulationDensity(p0.individuals); // be sure to set the intxn kernel to a gaussian
-	p0.individuals.tagF = W₀ₕ*exp(-cₕ*Nₕ);
-
-	// compute fx of intraspp comp on para fecun
-	Nₚ = i2.localPopulationDensity(p1.individuals);
-	p1.individuals.tagF = W₀ₚ*exp(-cₚ*Nₚ);
-	
-	// forces non-overlapping generations	
-	p0.individuals.fitnessScaling = 0;
-	p1.individuals.fitnessScaling = 0;
-
-	// any unhosted parasite gets int tag 0
-	p0.individuals.tag = 0;	
-	
-	// any unparasitized hosts gets int tag 0
-	p1.individuals.tag = 0;		
-		
-	// logging position, trait value, fitness, parasite movement and species id for each individual
-	if(community.tick%tempres==2){ // mod->2 because 2 is the "first" cycle
-		
-		catn(j);
-		
-		// computing max and mins
-		maxZ = max(c(zₕ,zₚ));
-		minZ = min(c(zₕ,zₚ));
-		mmn = paste0("~/gsccs-data/minmax.csv");
-		writeFile(mmn,paste(minZ,maxZ,sep=","),append=T);
-		
-		// summary stats
-		zh = mean(p0.individuals.z);
-		zp = mean(p1.individuals.z);
-		vh = var(p0.individuals.z);
-		vp = var(p1.individuals.z);
-		pr_unhosted = sum(p0.individuals.tag)/p0.individualCount;
-		pr_unparasitized = sum(p1.individuals.tag>0)/p1.individualCount;
-		pprh_m = mean(p1.individuals.tag);
-		pprh_v = var(p1.individuals.tag);
-		muh = mean(p0.individuals.countOfMutationsOfType(m1));
-		mup = mean(p1.individuals.countOfMutationsOfType(m2));
-		tsfn = "~/gsccs-data/time-series.csv";
-		writeFile(tsfn,paste(community.tick,p0.individualCount,p1.individualCount,zh,zp,vh,vp,
-			pr_unhosted,pr_unparasitized,pprh_m,pprh_v,0,muh,mup,0,0,sep=","),append=T);
-	
-		// individual location and trait data
-		fn = paste0("~/gsccs-data/ind-data/indData",format("%04i",j),".csv");
-		j = j+1;
-		writeFile(fn,paste("x","y","z","spp",sep=","),append=F); // pd = distance parasite moves to host
-		for(h in p0.individuals){
-			writeFile(fn,paste(h.x,h.y,h.z,1,sep=","),append=T); // pd = 0 for hosts
-		}
-		for(p in p1.individuals){
-			writeFile(fn,paste(p.x,p.y,p.z,2,sep=","),append=T);
-		}
-	}
-
-}
-
-ticks all 10000:20000 first(){
-	i1.evaluate(p0);
-	i2.evaluate(p1);
-	i3.evaluate(p0);
-	i4.evaluate(p1);
-	i5.evaluate(p0);
-	i5.evaluate(p1);
-	
-	// caculating the phenotype as sum of loci with mutation
-	zₕ = p0.individuals.sumOfMutationsOfType(m1);
-	zₚ = p1.individuals.sumOfMutationsOfType(m2);
-	
-	// save trait values (for coloring later)
-	p0.individuals.z = zₕ;
-	p1.individuals.z = zₚ;
-	
-	// containers for dist's parasites move to hosts
-	pd = rep(0.0,p1.individualCount);
+	//
+	// intraspp competition
+	//	
 	
 	// compute fx of intraspp comp on host fecun
 	Nₕ = i1.localPopulationDensity(p0.individuals);
@@ -259,111 +177,97 @@ ticks all 10000:20000 first(){
 	// compute fx of intraspp comp on para fecun
 	Nₚ = i2.localPopulationDensity(p1.individuals);
 	p1.individuals.tagF = W₀ₚ*exp(-cₚ*Nₚ);
-	
-	// any unhosted parasite gets int tag 0
-	p0.individuals.tag = 0;	
-	
-	// any unparasitized hosts gets int tag 0
-	p1.individuals.tag = 0;
-	
-	// parasite traits included in computing trait correlation
-	ptc = c();
 
-	// host traits included in computing trait correlation
-	htc = c();
-			
-	// compute fx of intraspp comp on para fecun
-	// and incorporate fx of interspp intxns on host/para fecun
-	for(p in p1.individuals){		
-		
-		// save parasite location for later	
-		pp = c(p.x,p.y);
-		
-		h = i5.nearestInteractingNeighbors(p,1,p0); // consider drawByStrength
-		if(length(h)>0){
-		
-			// move parasite to that host
-			p.setSpatialPosition(c(h.x,h.y));
-		
-			// hosted parasites get int tag 1
-			p.tag = 1;
-		
-			// save distance parasite moved to host
-			pd[p.index] = sqrt(sum((c(p.x,p.y)-pp)^2));		
-		
-			// trait-matching-model
-			α = exp(-γ*abs(h.z-p.z));
-		
-			// deterministic fitness outcome is faster and easier to analyze
-			p.tagF = (exp(sₚ)*α + (1-α)) * p.tagF;
-			h.tagF = (exp(-sₕ)*α + (1-α)) * h.tagF;
-			
-			// increment host int tag to reflect num parasites
-			h.tag = h.tag + 1;
-			
-			// append trait pair for corr computation
-			ptc = c(ptc,p.z);
-			htc = c(htc,h.z);			
-		}
+	//
+	// host-parasite interactions
+	//
 
-		// note: each parasite infects at most one host, but each host can be infected by multiple parasites
-		//			hence, if a host is infected by three parasites it will incur the fitness cost of 3*sₕ
-	}
+	// grab indices of hosts selected by parasites (set -1 if no host selected)
+	hs = sapply(p1.individuals,"h = i5.nearestInteractingNeighbors(applyValue,1,p0); if (length(h)>0) h.index; else -1;");
 	
-	// forces non-overlapping generations	
+	//	grab indices of host indices present in selected vector
+	// note: if no parasites this returns an error
+	// but since we dont care what happens without parasites
+	// this terminates the simulation for us, so we keep it
+	u = hs>-1;
+	
+	// grab host indices in selected vector
+	// and indices of parasites that found a host
+	hs = hs[u];
+	ps = p1.individuals.index[u];
+	
+	// save parasite location for later
+	pp = cbind(p1.individuals[u].x,p1.individuals[u].y);
+
+	// move parasite to selected host
+	hpos = p0.individuals[hs].spatialPosition;
+	p1.individuals[u].setSpatialPosition(hpos);
+	ppp = cbind(p1.individuals[u].x,p1.individuals[u].y);
+	
+	// compute distance moved for each hosted parasite
+	pd = sqrt(apply((ppp-pp)^2,0,"sum(applyValue);"));
+		
+	// probability of infection (trait matching)
+	α = exp(-γ*abs(zₕ[hs]-zₚ[u]));
+	
+	// deterministic fitness outcome (expectation of coin toss)
+	p0.individuals[hs].tagF = (exp(-sₕ)*α + (1-α)) * p0.individuals[hs].tagF;
+	p1.individuals[u].tagF = (exp(sₚ)*α + (1-α)) * p1.individuals[u].tagF;	
+	
+	// force non-overlapping generations	
 	p0.individuals.fitnessScaling = 0;
 	p1.individuals.fitnessScaling = 0;
-	
-	maxZ = max(c(zₕ,zₚ));
-	minZ = min(c(zₕ,zₚ));
-	mmn = paste0("~/gsccs-data/minmax.csv");
-	writeFile(mmn,paste(minZ,maxZ,sep=","),append=T);
 	
 	// logging position, trait value, fitness, parasite movement and species id for each individual
 	if(community.tick%tempres==2){
 	
+		maxZ = max(c(zₕ,zₚ));
+		minZ = min(c(zₕ,zₚ));
+		mmn = paste0("~/gsccs-data/minmax.csv");
+		writeFile(mmn,paste(minZ,maxZ,sep=","),append=T);
+	
 		catn(j);
 		
 		// summary stats
-		zh = mean(p0.individuals.z);
-		zp = mean(p1.individuals.z);
-		vh = var(p0.individuals.z);
-		vp = var(p1.individuals.z);
-		pr_unhosted = sum(p0.individuals.tag)/p0.individualCount;
-		pr_unparasitized = sum(p1.individuals.tag>0)/p1.individualCount;
-		pprh_m = mean(p1.individuals.tag);
-		pprh_v = var(p1.individuals.tag);
-		traitcorr = corr(ptc,htc);
+		mh = mean(zₕ);
+		mp = mean(zₚ);
+		vh = var(zₕ);
+		vp = var(zₚ);
+		pr_unhosted = 1-sum(u)/p0.individualCount;
+		nparhsts = length(unique(hs));
+		pr_unparasitized = 1-nparhsts/p1.individualCount;
+//		nparsperhst = sapply(seqLen(nparhsts),"length(which(hs==unique(hs)[applyValue]));"); // too slow!
+//		pprh_m = mean(nparsperhst);
+//		pprh_v = var(nparsperhst);
+		pprh_m = 0;
+		pprh_v = 0;
+		traitcorr = cor(zₕ[hs],zₚ[u]);		
+		hselresp = cov(p0.individuals.tagF,zₕ);
+		pselresp = cov(p1.individuals.tagF,zₚ);
+		if(isNAN(traitcorr)) traitcorr = 0;
+		if(isNAN(hselresp)) hselresp = 0;
+		if(isNAN(pselresp)) pselresp = 0;
 		muh = mean(p0.individuals.countOfMutationsOfType(m1));
 		mup = mean(p1.individuals.countOfMutationsOfType(m2));
 		pdm = mean(pd);
 		pdv = var(pd);
 		tsfn = "~/gsccs-data/time-series.csv";
-		writeFile(tsfn,paste(community.tick,p0.individualCount,p1.individualCount,zh,zp,vh,vp,
-			pr_unhosted,pr_unparasitized,pprh_m,pprh_v,traitcorr,muh,mup,pdv,pdm,sep=","),append=T);
+		writeFile(tsfn,paste(community.tick,p0.individualCount,p1.individualCount,mh,mp,vh,vp,
+			pr_unhosted,pr_unparasitized,pprh_m,pprh_v,traitcorr,muh,mup,pdv,pdm,hselresp,pselresp,sep=","),append=T);
 	
 		// individual location and trait data
 		fn = paste0("~/gsccs-data/ind-data/indData",format("%04i",j),".csv");
 		j = j+1;
 		writeFile(fn,paste("x","y","z","spp",sep=","),append=F);
 		for(h in p0.individuals){
-			writeFile(fn,paste(h.x,h.y,h.z,1,sep=","),append=T);
+			writeFile(fn,paste(h.x,h.y,zₕ[h.index],1,sep=","),append=T);
 		}
 		for(p in p1.individuals){
-			writeFile(fn,paste(p.x,p.y,p.z,2,sep=","),append=T);
+			writeFile(fn,paste(p.x,p.y,zₚ[p.index],2,sep=","),append=T);
 		}
 	}
 
 }
-
-//ticks all 3: late(){
-//	for(subpop in c(p0,p1)){
-//		val = cbind(((0.5+subpop.individuals.z)%0.02)/0.02,
-//		rep(0.75,subpop.individualCount), 
-//		rep(0.75,subpop.individualCount));
-//		subpop.individuals.color = rgb2color(hsv2rgb(val));
-//	}
-//}
 
 ticks all 20000 late() {
 	//host.treeSeqOutput("~/gsccs-data/host.trees", metadata=params);

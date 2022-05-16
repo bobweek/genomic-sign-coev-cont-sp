@@ -68,6 +68,22 @@ ggplot(tsdf) +
   dark_theme_gray()
 
 ggplot(tsdf) + 
+  geom_line(aes(x=t,y=hselresp)) +
+  labs(x = "Time",        
+       y = "Host Response to Selection",        
+       color = "Legend") +   
+  scale_color_manual(values = colors) +
+  dark_theme_gray()
+
+ggplot(tsdf) + 
+  geom_line(aes(x=t,y=pselresp)) +
+  labs(x = "Time",        
+       y = "Parasite Response to Selection",
+       color = "Legend") +   
+  scale_color_manual(values = colors) +
+  dark_theme_gray()
+
+ggplot(tsdf) + 
   geom_line(aes(x=t,y=pr_unparasitized,color="Host")) +
   geom_line(aes(x=t,y=pr_unhosted,color="Parasite")) +
   labs(x = "Time",        
@@ -77,19 +93,19 @@ ggplot(tsdf) +
   ylim(c(0,1)) +
   dark_theme_gray()
 
-ggplot(tsdf) + 
-  geom_line(aes(x=t,y=pprh_m)) +
-  labs(x = "Time",
-       y = "Average Parasites Per Host") +   
-  scale_color_manual(values = colors) +
-  dark_theme_gray()
-
-ggplot(tsdf) + 
-  geom_line(aes(x=t,y=sqrt(pprh_v))) +
-  labs(x = "Time",
-       y = "Stddev Parasites Per Host") +   
-  scale_color_manual(values = colors) +
-  dark_theme_gray()
+# ggplot(tsdf) + 
+#   geom_line(aes(x=t,y=pprh_m)) +
+#   labs(x = "Time",
+#        y = "Average Parasites Per Host") +   
+#   scale_color_manual(values = colors) +
+#   dark_theme_gray()
+# 
+# ggplot(tsdf) + 
+#   geom_line(aes(x=t,y=sqrt(pprh_v))) +
+#   labs(x = "Time",
+#        y = "Stddev Parasites Per Host") +   
+#   scale_color_manual(values = colors) +
+#   dark_theme_gray()
 
 ggplot(tsdf) + 
   geom_line(aes(x=t,y=pdm)) +
@@ -105,5 +121,6 @@ ggplot(tsdf) +
   scale_color_manual(values = colors) +
   dark_theme_gray()
 
-# im finally starting to heal from thirty years of repressed queerness, self-loathing, severe depression, suicidal ideation, anxiety, mania, etc etc. sry for the rocky times we had. i was in great pain that seemed i would be stuck with forever. is not forever. i found the solution out here alone with lola, just in time for my westward voyage. i hope you are healing too. <3
+print("model parameters")
+params
 ```
