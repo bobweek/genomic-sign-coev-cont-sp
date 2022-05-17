@@ -14,7 +14,7 @@ species all initialize(){
 		"σₚ",  0.5,  		// parasite dispersal distance
 		"ι",   3.0,			// spatial interspp interaction distance
 		"cₕ",  8e-1, 		// strength of host competition
-		"cₚ",  3e-1, 		// strength of para competition
+		"cₚ",  4e-1, 		// strength of para competition
 		"ωₕ",  2.0,			// (spatial) host niche breadth
 		"ωₚ",  0.5,			// (spatial) parasite niche breadth
 		"W₀ₕ", 1.0,			// host base fitness
@@ -196,15 +196,15 @@ ticks all 2:20000 early(){
 	ps = p1.individuals.index[u];
 	
 	// save parasite location for later
-	pp = cbind(p1.individuals[u].x,p1.individuals[u].y);
+//	pp = cbind(p1.individuals[u].x,p1.individuals[u].y);
 
 	// move parasite to selected host
-	hpos = p0.individuals[hs].spatialPosition;
-	p1.individuals[u].setSpatialPosition(hpos);
-	ppp = cbind(p1.individuals[u].x,p1.individuals[u].y);
+//	hpos = p0.individuals[hs].spatialPosition;
+//	p1.individuals[u].setSpatialPosition(hpos);
+//	ppp = cbind(p1.individuals[u].x,p1.individuals[u].y);
 	
 	// compute distance moved for each hosted parasite
-	pd = sqrt(apply((ppp-pp)^2,0,"sum(applyValue);"));
+//	pd = sqrt(apply((ppp-pp)^2,0,"sum(applyValue);"));
 		
 	// probability of infection (trait matching)
 	α = exp(-γ*(zₕ[hs]-zₚ[u])^2/2);
@@ -254,8 +254,10 @@ ticks all 2:20000 early(){
 		if(isNAN(pselresp)) pselresp = 0;
 		muh = mean(p0.individuals.countOfMutationsOfType(m1));
 		mup = mean(p1.individuals.countOfMutationsOfType(m2));
-		pdm = mean(pd);
-		pdv = var(pd);
+//		pdm = mean(pd);
+//		pdv = var(pd);
+		pdm = 0;
+		pdv = 0;
 		tsfn = "~/gsccs-data/time-series.csv";
 		writeFile(tsfn,paste(community.tick,p0.individualCount,p1.individualCount,mh,mp,vh,vp,
 			pr_unhosted,pr_unparasitized,pprh_m,pprh_v,traitcorr,muh,mup,pdv,pdm,hselresp,pselresp,mean(α),var(α),sep=","),append=T);

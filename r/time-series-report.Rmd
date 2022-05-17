@@ -75,13 +75,13 @@ ggplot(tsdf) +
   scale_color_manual(values = colors) +
   dark_theme_gray()
 
-ggplot(tsdf) + 
-  geom_line(aes(x=t,y=vara)) +
-  labs(x = "Time",        
-       y = "Variance of Infection Probability",
-       color = "Legend") +   
-  scale_color_manual(values = colors) +
-  dark_theme_gray()
+# ggplot(tsdf) + 
+#   geom_line(aes(x=t,y=vara)) +
+#   labs(x = "Time",        
+#        y = "Variance of Infection Probability",
+#        color = "Legend") +   
+#   scale_color_manual(values = colors) +
+#   dark_theme_gray()
 
 ggplot(tsdf) + 
   geom_line(aes(x=t,y=hselresp)) +
