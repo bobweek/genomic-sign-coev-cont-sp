@@ -68,9 +68,25 @@ ggplot(tsdf) +
   dark_theme_gray()
 
 ggplot(tsdf) + 
+  geom_line(aes(x=t,y=abar)) +
+  labs(x = "Time",        
+       y = "Average Infection Probability",        
+       color = "Legend") +   
+  scale_color_manual(values = colors) +
+  dark_theme_gray()
+
+ggplot(tsdf) + 
+  geom_line(aes(x=t,y=vara)) +
+  labs(x = "Time",        
+       y = "Variance of Infection Probability",
+       color = "Legend") +   
+  scale_color_manual(values = colors) +
+  dark_theme_gray()
+
+ggplot(tsdf) + 
   geom_line(aes(x=t,y=hselresp)) +
   labs(x = "Time",        
-       y = "Host Response to Selection",        
+       y = "Host Response to Biotic Selection",        
        color = "Legend") +   
   scale_color_manual(values = colors) +
   dark_theme_gray()
@@ -78,7 +94,7 @@ ggplot(tsdf) +
 ggplot(tsdf) + 
   geom_line(aes(x=t,y=pselresp)) +
   labs(x = "Time",        
-       y = "Parasite Response to Selection",
+       y = "Parasite Response to Biotic Selection",
        color = "Legend") +   
   scale_color_manual(values = colors) +
   dark_theme_gray()

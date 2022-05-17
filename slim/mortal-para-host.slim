@@ -1,3 +1,5 @@
+// this version is mortality-based selection!!
+
 species all initialize(){
 	initializeSLiMModelType("nonWF");
 	// model parameters
@@ -11,14 +13,14 @@ species all initialize(){
 		"σₕ",  2.0,  		// host dispersal distance
 		"σₚ",  0.5,  		// parasite dispersal distance
 		"ι",   3.0,			// spatial interspp interaction distance
-		"cₕ",  1e-2, 		// strength of host competition
-		"cₚ",  3.5e-2, 	// strength of para competition
+		"cₕ",  2e-1, 		// strength of host competition
+		"cₚ",  3e-1, 	// strength of para competition
 		"ωₕ",  2.0,			// (spatial) host niche breadth
 		"ωₚ",  0.5,			// (spatial) parasite niche breadth
-		"W₀ₕ", 1.015,		// host base fitness
-		"W₀ₚ", 1.08,		// para base fitness
-		"sₕ",  1e-3, 		// cost on host fitness for each infection ('s' as in selection)
-		"sₚ",  1e-2, 		// benefit on parasite fitness for successful infection
+		"W₀ₕ", 1.0,			// host base fitness
+		"W₀ₚ", 1.0,			// para base fitness
+		"sₕ",  1e-1, 		// cost on host fitness for each infection ('s' as in selection)
+		"sₚ",  1e-1, 		// benefit on parasite fitness for successful infection
 		"γ",   1.0,			// sensitivity of inf pr to trait differences ('gamma' trad nuimser notation for this par)
 		"ρ₀ₕ",  1.0,		// initial population density ('rho' is trad for densities)
 		"ρ₀ₚ",  2.0,		// initial population density ('rho' is trad for densities)
@@ -107,13 +109,10 @@ species para fitness(m2) { return 1.0; }
 species host reproduction(p0) {
 	mate = i3.drawByStrength(individual, 1); // find a single partner to mate with
 	if(mate.size()) {
-		wₕ = rpois(1, individual.tagF);
-		if(wₕ>0){
-			offspring = sapply(seqLen(wₕ), "subpop.addCrossed(individual, mate);");
-			positions = rep(individual.spatialPosition,wₕ) + cbind(rnorm(wₕ, 0, σₕ), rnorm(wₕ, 0, σₕ));
-			positions = p1.pointReflected(positions);
-			offspring.setSpatialPosition(positions);
-		}
+		offspring = subpop.addCrossed(individual, mate);
+		pos = individual.spatialPosition + rnorm(2, 0, σₕ);
+		pos = p0.pointReflected(pos);
+		offspring.setSpatialPosition(pos);
 	}
 	return;
 }
@@ -122,13 +121,10 @@ species host reproduction(p0) {
 species para reproduction(p1) {
 	mate = i4.drawByStrength(individual, 1);
 	if(mate.size()) {
-		wₚ = rpois(1, individual.tagF);
-		if(wₚ>0){
-			offspring = sapply(seqLen(wₚ), "subpop.addCrossed(individual, mate);");
-			positions = rep(individual.spatialPosition,wₚ) + cbind(rnorm(wₚ, 0, σₚ), rnorm(wₚ, 0, σₚ));
-			positions = p1.pointReflected(positions);
-			offspring.setSpatialPosition(positions);
-		}
+		offspring = subpop.addCrossed(individual, mate);
+		pos = individual.spatialPosition + rnorm(2, 0, σₚ);
+		pos = p1.pointReflected(pos);
+		offspring.setSpatialPosition(pos);
 	}
 	return;
 }
@@ -155,10 +151,13 @@ ticks all 1 early() {
 }
 
 ticks all 2:20000 first(){
-	i1.evaluate(p0);
-	i2.evaluate(p1);
 	i3.evaluate(p0);
 	i4.evaluate(p1);
+}
+
+ticks all 2:20000 early(){
+	i1.evaluate(p0);
+	i2.evaluate(p1);
 	i5.evaluate(p0);
 	i5.evaluate(p1);
 	
@@ -172,11 +171,11 @@ ticks all 2:20000 first(){
 	
 	// compute fx of intraspp comp on host fecun
 	Nₕ = i1.localPopulationDensity(p0.individuals);
-	p0.individuals.tagF = W₀ₕ*exp(-cₕ*Nₕ);
+	Wₕ = W₀ₕ*exp(-cₕ*Nₕ);
 
 	// compute fx of intraspp comp on para fecun
 	Nₚ = i2.localPopulationDensity(p1.individuals);
-	p1.individuals.tagF = W₀ₚ*exp(-cₚ*Nₚ);
+	Wₚ = W₀ₚ*exp(-cₚ*Nₚ);
 
 	//
 	// host-parasite interactions
@@ -210,13 +209,19 @@ ticks all 2:20000 first(){
 	// probability of infection (trait matching)
 	α = exp(-γ*(zₕ[hs]-zₚ[u])^2/2);
 	
-	// deterministic fitness outcome (expectation of coin toss)
-	p0.individuals[hs].tagF = (exp(-sₕ)*α + (1-α)) * p0.individuals[hs].tagF;
-	p1.individuals[u].tagF = (exp(sₚ)*α + (1-α)) * p1.individuals[u].tagF;	
+	// biotic component of selection	
+	Bₕ = rep(1.0,p0.individualCount);
+	Bₚ = rep(1.0,p1.individualCount);
 	
-	// force non-overlapping generations	
-	p0.individuals.fitnessScaling = 0;
-	p1.individuals.fitnessScaling = 0;
+	// deterministic fitness outcome (expectation of coin toss)
+	Bₕ[hs] = (exp(-sₕ)*α + (1-α));
+	Bₚ[u] = (exp(sₚ)*α + (1-α));
+	Wₕ =  Bₕ*Wₕ;
+	Wₚ =  Bₚ*Wₚ;
+	
+	// mortality probability
+	p0.individuals.fitnessScaling = floor(2*Wₕ);
+	p1.individuals.fitnessScaling = floor(2*Wₚ);
 	
 	// logging position, trait value, fitness, parasite movement and species id for each individual
 	if(community.tick%tempres==2){
@@ -242,8 +247,8 @@ ticks all 2:20000 first(){
 		pprh_m = 0;
 		pprh_v = 0;
 		traitcorr = cor(zₕ[hs],zₚ[u]);		
-		hselresp = cov(p0.individuals.tagF,zₕ);
-		pselresp = cov(p1.individuals.tagF,zₚ);
+		hselresp = cov(Bₕ,zₕ);
+		pselresp = cov(Bₚ,zₚ);
 		if(isNAN(traitcorr)) traitcorr = 0;
 		if(isNAN(hselresp)) hselresp = 0;
 		if(isNAN(pselresp)) pselresp = 0;
