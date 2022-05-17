@@ -13,17 +13,17 @@ species all initialize(){
 		"σₕ",  2.0,  		// host dispersal distance
 		"σₚ",  0.5,  		// parasite dispersal distance
 		"ι",   3.0,			// spatial interspp interaction distance
-		"cₕ",  4e-1, 		// strength of host competition
-		"cₚ",  4e-1, 		// strength of para competition
+		"cₕ",  8e-1, 		// strength of host competition
+		"cₚ",  3e-1, 		// strength of para competition
 		"ωₕ",  2.0,			// (spatial) host niche breadth
 		"ωₚ",  0.5,			// (spatial) parasite niche breadth
 		"W₀ₕ", 1.0,			// host base fitness
 		"W₀ₚ", 1.0,			// para base fitness
 		"sₕ",  1e-1, 		// cost on host fitness for each infection ('s' as in selection)
-		"sₚ",  1e-1, 		// benefit on parasite fitness for successful infection
+		"sₚ",  3e-1, 		// benefit on parasite fitness for successful infection
 		"γ",   1.0,			// sensitivity of inf pr to trait differences ('gamma' trad nuimser notation for this par)
-		"ρ₀ₕ",  1.0,		// initial population density ('rho' is trad for densities)
-		"ρ₀ₚ",  2.0,		// initial population density ('rho' is trad for densities)
+		"ρ₀ₕ",  0.5,		// initial population density ('rho' is trad for densities)
+		"ρ₀ₚ",  0.5,		// initial population density ('rho' is trad for densities)
 		"ntlbrnn", 9999,	// number of cycles in neutral burnin period (not working yet!)
 		"ixnbrnn", 20000	// number of cycles in interacting burnin period (not working yet!)
 		);
@@ -162,8 +162,8 @@ ticks all 2:20000 early(){
 	i5.evaluate(p1);
 	
 	// caculating the phenotype as sum of loci with mutation
-	zₕ = p0.individuals.sumOfMutationsOfType(m1) + rnorm(p0.individualCount,0,εₕ);
-	zₚ = p1.individuals.sumOfMutationsOfType(m2) + rnorm(p1.individualCount,0,εₚ);
+	zₕ = p0.individuals.sumOfMutationsOfType(m1);// + rnorm(p0.individualCount,0,εₕ);
+	zₚ = p1.individuals.sumOfMutationsOfType(m2);// + rnorm(p1.individualCount,0,εₚ);
 	
 	//
 	// intraspp competition
