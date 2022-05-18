@@ -123,19 +123,19 @@ ggplot(tsdf) +
 #   scale_color_manual(values = colors) +
 #   dark_theme_gray()
 
-ggplot(tsdf) + 
-  geom_line(aes(x=t,y=pdm)) +
-  labs(x = "Time",
-       y = "Avg Parasite Dist2Host") +   
-  scale_color_manual(values = colors) +
-  dark_theme_gray()
-
-ggplot(tsdf) + 
-  geom_line(aes(x=t,y=sqrt(pdv))) +
-  labs(x = "Time",
-       y = "Stddev Parasite Dist2Host") +   
-  scale_color_manual(values = colors) +
-  dark_theme_gray()
+# ggplot(tsdf) + 
+#   geom_line(aes(x=t,y=pdm)) +
+#   labs(x = "Time",
+#        y = "Avg Parasite Dist2Host") +   
+#   scale_color_manual(values = colors) +
+#   dark_theme_gray()
+# 
+# ggplot(tsdf) + 
+#   geom_line(aes(x=t,y=sqrt(pdv))) +
+#   labs(x = "Time",
+#        y = "Stddev Parasite Dist2Host") +   
+#   scale_color_manual(values = colors) +
+#   dark_theme_gray()
 
 print("model parameters")
 params
