@@ -38,7 +38,7 @@ species all initialize(){
 	catn(params);
 	
 	// temporal resolution of time-series
-	defineConstant("tempres", 200);
+	defineConstant("tempres", 500);
 	
 	// params.csv
 	pfn = "~/gsccs-data/params.csv";
@@ -150,12 +150,12 @@ ticks all 1 early() {
 //	community.rescheduleScriptBlock(s3, start=ixnbrnn, end=ixnbrnn);
 }
 
-ticks all 2:50000 first(){
+ticks all 2:100000 first(){
 	i3.evaluate(p0);
 	i4.evaluate(p1);
 }
 
-ticks all 2:50000 early(){
+ticks all 2:100000 early(){
 	i1.evaluate(p0);
 	i2.evaluate(p1);
 	i5.evaluate(p0);
@@ -276,7 +276,7 @@ ticks all 2:50000 early(){
 
 }
 
-ticks all 50000 late() {
+ticks all 100000 late() {
 	//host.treeSeqOutput("~/gsccs-data/host.trees", metadata=params);
 	//para.treeSeqOutput("~/gsccs-data/para.trees", metadata=params);
 	community.simulationFinished();
