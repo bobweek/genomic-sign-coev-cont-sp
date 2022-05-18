@@ -54,7 +54,7 @@ ggplot(tsdf) +
   geom_line(aes(x=t,y=muh,color="Host")) +
   geom_line(aes(x=t,y=mup,color="Parasite")) +
   labs(x = "Time",
-       y = "Avg Num Muts Per Indiv") +   
+       y = "Avg Num Poly Loci Per Indiv") +   
   scale_color_manual(values = colors) +
   dark_theme_gray()
 
