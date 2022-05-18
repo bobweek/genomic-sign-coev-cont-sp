@@ -253,7 +253,7 @@ ticks all 2:50000 early(){
 		if(isNAN(hselresp)) hselresp = 0;
 		if(isNAN(pselresp)) pselresp = 0;
 		muh = p0.genomes.countOfMutationsOfType(m1)-sum(p0.genomes.mutationFrequenciesInGenomes()==1.0);
-		mup = p1.genomes.countOfMutationsOfType(m2))-sum(p1.genomes.mutationFrequenciesInGenomes()==1.0);
+		mup = p1.genomes.countOfMutationsOfType(m2)-sum(p1.genomes.mutationFrequenciesInGenomes()==1.0);
 //		pdm = mean(pd);
 //		pdv = var(pd);
 		pdm = 0;
