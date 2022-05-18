@@ -13,7 +13,7 @@ editor_options:
 <!--   <source src="pt-process.mp4" type="video/mp4"> -->
 <!-- </video> -->
 
-```{r echo=F, message=FALSE, warning=FALSE}
+```{r echo=F, message=FALSE, warning=FALSE,results='asis'}
 require(ggplot2)
 require(gridExtra)
 require(ggdark)
@@ -137,6 +137,14 @@ ggplot(tsdf) +
 #   scale_color_manual(values = colors) +
 #   dark_theme_gray()
 
-print("model parameters")
-params
+descrs = c("host mutation rate","parasite mutation rate","host mutation effect size","parasite mutation effect size",
+           "host dispersal distance","parasite dispersal distance","host-parasite interaction dist","host competition",
+           "parasite competition","host competition dist","parasite competition dist","host base fitness","parasite base fitness",
+           "host biotic selection","parasite biotic selection","infection probability sensitivity","host initial density",
+           "parasite initial density","temporal resolution of time-series")
+txtdat = cbind(colnames(params),descrs,formatC(as.numeric(params), digits = 1, format = "e", drop0trailing = FALSE))
+txtdf = data.frame(txtdat)
+colnames(txtdf) = c("Param","Description","Value")
+
+knitr::kable(txtdf)
 ```

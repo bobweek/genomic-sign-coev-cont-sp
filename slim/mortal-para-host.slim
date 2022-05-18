@@ -38,7 +38,7 @@ species all initialize(){
 	catn(params);
 	
 	// temporal resolution of time-series
-	defineConstant("tempres", 500);
+	defineConstant("tempres", 200);
 	
 	// params.csv
 	pfn = "~/gsccs-data/params.csv";
@@ -77,7 +77,7 @@ species all initialize(){
 species host initialize() {
 	initializeSLiMOptions(dimensionality="xy");
 	initializeSpecies(tickModulo=1, tickPhase=1, avatar="🦌");
-	//initializeTreeSeq();
+	initializeTreeSeq();
 	
 	// host genomics
 	initializeMutationRate(µₕ);
@@ -91,7 +91,7 @@ species host initialize() {
 species para initialize() {
 	initializeSLiMOptions(dimensionality="xy");
 	initializeSpecies(tickModulo=1, tickPhase=1, avatar="🪱");
-	//initializeTreeSeq();
+	initializeTreeSeq();
 	
 	// parasite genomics
 	initializeMutationRate(µₚ);
@@ -150,20 +150,20 @@ ticks all 1 early() {
 //	community.rescheduleScriptBlock(s3, start=ixnbrnn, end=ixnbrnn);
 }
 
-ticks all 2:100000 first(){
+ticks all 2:50000 first(){
 	i3.evaluate(p0);
 	i4.evaluate(p1);
 }
 
-ticks all 2:100000 early(){
+ticks all 2:50000 early(){
 	i1.evaluate(p0);
 	i2.evaluate(p1);
 	i5.evaluate(p0);
 	i5.evaluate(p1);
 	
 	// caculating the phenotype as sum of loci with mutation
-	zₕ = p0.individuals.sumOfMutationsOfType(m1); + rnorm(p0.individualCount,0,εₕ);
-	zₚ = p1.individuals.sumOfMutationsOfType(m2); + rnorm(p1.individualCount,0,εₚ);
+	zₕ = p0.individuals.sumOfMutationsOfType(m1);// + rnorm(p0.individualCount,0,εₕ);
+	zₚ = p1.individuals.sumOfMutationsOfType(m2);// + rnorm(p1.individualCount,0,εₚ);
 	
 	//
 	// intraspp competition
@@ -231,16 +231,21 @@ ticks all 2:100000 early(){
 		mmn = paste0("~/gsccs-data/minmax.csv");
 		writeFile(mmn,paste(minZ,maxZ,sep=","),append=T);
 	
-		catn(j);
-		
+		catn(paste("tick: ",community.tick));
+//		// vcfs
+//		if(community.tick>2){
+//		g = p1.genomes;
+//		gfn = paste0("~/gsccs-data/vcfs/host",format("%04i",j),".vcf");		
+//		g.outputVCF(filePath = gfn, simplifyNucleotides=T);
+//		}
 		// summary stats
 		mh = mean(zₕ);
 		mp = mean(zₚ);
 		vh = var(zₕ);
 		vp = var(zₚ);
-		pr_unhosted = 1-sum(u)/p0.individualCount;
+		pr_unhosted = 1-sum(u)/p1.individualCount;
 		nparhsts = length(unique(hs));
-		pr_unparasitized = 1-nparhsts/p1.individualCount;
+		pr_unparasitized = 1-nparhsts/p0.individualCount;
 //		nparsperhst = sapply(seqLen(nparhsts),"length(which(hs==unique(hs)[applyValue]));"); // too slow!
 //		pprh_m = mean(nparsperhst);
 //		pprh_v = var(nparsperhst);
@@ -276,9 +281,9 @@ ticks all 2:100000 early(){
 
 }
 
-ticks all 100000 late() {
-	//host.treeSeqOutput("~/gsccs-data/host.trees", metadata=params);
-	//para.treeSeqOutput("~/gsccs-data/para.trees", metadata=params);
+ticks all 50000 late() {
+	host.treeSeqOutput("~/gsccs-data/host.trees", metadata=params);
+	para.treeSeqOutput("~/gsccs-data/para.trees", metadata=params);
 	community.simulationFinished();
 	catn("Done.");
 }
