@@ -1,4 +1,5 @@
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
+import os
 import pyslim
 import tskit
 import msprime
@@ -6,13 +7,8 @@ import numpy as np
 import pandas
 import pprint
 
-# is it possible to run slim from python????
+host_ts = pyslim.load(os.path.expanduser('~/gsccs-data/host.trees'))
 
-L1 = 10  # num qtl for each spp
-L2 = 1e4 # num neutral loci
-
-slim_ts = pyslim.load(
-      "/home/bb/gits/genomic-sign-coev-cont-sp/slim/coev_sim.trees")
 print(f"The tree sequence has {slim_ts.num_trees} trees on a genome of length {slim_ts.sequence_length},"
       f" {slim_ts.num_individuals} individuals, {slim_ts.num_samples} 'sample' genomes,"
       f" and {slim_ts.num_mutations} mutations.")

@@ -1,0 +1,51 @@
+---
+title: The Genomic Signal of Host-Parasite Coevolution in Continuous Space
+author:
+  - name: Bob Week
+    affil: 1
+    orcid: '0000-0002-1099-3857'
+  - name: Gideon Bradburd
+    affil: 1
+affiliation:
+  - num: 1
+    address: Department of Integrative Biology, Michigan State University
+column_numbers: 2
+logoright_name: SLiM_1024.jpg
+logoleft_name: bradburd.jpg
+primary_colour: "#1E3659"
+author_textsize: "80px"
+affiliation_textsize: "70px"
+body_textsize: "60px"
+output: 
+  posterdown::posterdown_html:
+    self_contained: false
+bibliography: packages.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Introduction
+
+Coevolution between hosts and parasites can maintain spatial correlations of allele frequencies at causal loci, a form of interspecific linkage disequilibrium (iLD). However, host-parasite systems that are distributed continuously in space may yield spurious iLD as a consequence of isolation-by-distance within each species. Here we compare distributions of iLD for neutral and causal loci to understand when coevolution may be detected using iLD.
+
+# Methods
+
+- Individual-based simulations performed using multispecies SLiM (see poster [281W](https://abs.genetics-gsa.org/pages/peqg22/Reports/ViewProgram/281))
+- Causal loci accumulate following infinite-sites model
+- Additive quantitative traits
+- Gaussian distributed effect sizes
+- Host-parasite trait-matching model (see Figure X)
+- Intraspecific spatial competition
+- Gaussian dispersal in two-dimensional geography
+
+# Results
+
+```{r mytable, out.width='80%'}
+knitr::kable(iris[1:10, 1:4], caption = 'Table caption.',align = 'c',"html")
+```
+
+# Conclusion
+
+# References
