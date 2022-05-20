@@ -2,8 +2,6 @@ require(ggplot2)
 require(viridis)
 require(ggdark)
 
-mmdf = read.csv("~/gsccs-data/minmax.csv")
-
 ndatpts = length(list.files(path = "~/gsccs-data/ind-data/", pattern = "csv"))
 
 mmdf = read.csv("~/gsccs-data/minmax.csv")
@@ -19,7 +17,7 @@ species_labeller <- function(variable,value){
 }
 
 pars = read.csv("~/gsccs-data/params.csv")
-
+i=2
 for(i in 1:ndatpts){
   num = sprintf("%04d", i)
   datfile = paste("~/gsccs-data/ind-data/indData",num,".csv",sep="")
