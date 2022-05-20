@@ -13,15 +13,13 @@ species all initialize(){
 		"σₕ",  0.5,  		// host dispersal distance
 		"σₚ",  0.1,  		// parasite dispersal distance
 		"ι",   3.0,			// spatial interspp interaction distance
-//		"cₕ",  0.75, 		// strength of host competition
-//		"cₚ",  0.4, 		// strength of para competition
-		"cₕ",  0.2, 		// strength of host competition
+		"cₕ",  0.1, 		// strength of host competition
 		"cₚ",  0.02, 		// strength of para competition
 		"ωₕ",  0.5,			// (spatial) host niche breadth
 		"ωₚ",  0.1,			// (spatial) parasite niche breadth
 		"W₀ₕ", 1.0,			// host base fitness
 		"W₀ₚ", 1.0,			// para base fitness
-		"sₕ",  5e-2, 		// cost on host fitness for each infection ('s' as in selection)
+		"sₕ",  1e-1, 		// cost on host fitness for each infection ('s' as in selection)
 		"sₚ",  5e-2, 		// benefit on parasite fitness for successful infection
 		"γ",   1.0,			// sensitivity of inf pr to trait differences ('gamma' trad nuimser notation for this par)
 		"ρ₀ₕ",  1.0,		// initial population density ('rho' is trad for densities)
@@ -68,7 +66,7 @@ species all initialize(){
 	i3.setInteractionFunction("l", 1.0); // linear for speed
 	
 	// parasite mate choice
-	initializeInteractionType(4, "xy", reciprocal=T, maxDistance=8*ωₚ);
+	initializeInteractionType(4, "xy", reciprocal=T, maxDistance=20*ωₚ);
 	i4.setInteractionFunction("l", 1.0);
 	
 	// parasitism
@@ -79,7 +77,7 @@ species all initialize(){
 species host initialize() {
 	initializeSLiMOptions(dimensionality="xy");
 	initializeSpecies(tickModulo=1, tickPhase=1, avatar="🦌");
-	initializeTreeSeq();
+//	initializeTreeSeq();
 	
 	// host genomics
 	initializeMutationRate(µₕ);
@@ -93,7 +91,7 @@ species host initialize() {
 species para initialize() {
 	initializeSLiMOptions(dimensionality="xy");
 	initializeSpecies(tickModulo=1, tickPhase=1, avatar="🪱");
-	initializeTreeSeq();
+//	initializeTreeSeq();
 	
 	// parasite genomics
 	initializeMutationRate(µₚ);
@@ -284,8 +282,8 @@ ticks all 2:100000 early(){
 }
 
 ticks all 100000 late() {
-	host.treeSeqOutput("~/gsccs-data/host.trees", metadata=params);
-	para.treeSeqOutput("~/gsccs-data/para.trees", metadata=params);
+//	host.treeSeqOutput("~/gsccs-data/host.trees", metadata=params);
+//	para.treeSeqOutput("~/gsccs-data/para.trees", metadata=params);
 	community.simulationFinished();
 	catn("Done.");
 }
