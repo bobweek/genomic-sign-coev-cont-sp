@@ -1,0 +1,150 @@
+---
+title: "host-parasite coevolution time series"
+output:
+  rmdformats::downcute:
+    self_contained: true
+    highlight: tango
+    downcute_theme: "chaos"
+editor_options: 
+  chunk_output_type: console
+---
+
+<!-- <video width="640" height="480" controls> -->
+<!--   <source src="pt-process.mp4" type="video/mp4"> -->
+<!-- </video> -->
+
+```{r echo=F, message=FALSE, warning=FALSE,results='asis'}
+require(ggplot2)
+require(gridExtra)
+require(ggdark)
+
+params = read.csv("~/gsccs-data/params.csv")
+tsdf = read.csv("~/gsccs-data/time-series.csv")
+
+colors <- c("Parasite" = "purple", "Host" = "orange")
+
+abn = ggplot(tsdf) + 
+  geom_line(aes(x=t,y=Nh,color="Host")) +
+  geom_line(aes(x=t,y=Np,color="Parasite")) +
+  labs(x = "Years",        
+       y = "Global Census Size",        
+       color = "Legend") +   
+  scale_color_manual(values = colors) +
+  theme_minimal()
+
+trt = ggplot(tsdf) + 
+  geom_line(aes(x=t,y=zh,color="Host")) +
+  geom_line(aes(x=t,y=zp,color="Parasite")) +
+  labs(x = "Years",
+       y = "Global Trait Means",        
+       color = "Legend") +   
+  scale_color_manual(values = colors) +
+  theme_minimal()
+
+ggplot(tsdf) + 
+  geom_line(aes(x=t,y=vh,color="Host")) +
+  geom_line(aes(x=t,y=vp,color="Parasite")) +
+  labs(x = "Time",        
+       y = "Global Trait Stddevs",        
+       color = "Legend") +   
+  scale_color_manual(values = colors) +
+  dark_theme_gray()
+
+pol = ggplot(tsdf) + 
+  geom_line(aes(x=t,y=muh,color="Host")) +
+  geom_line(aes(x=t,y=mup,color="Parasite")) +
+  labs(x = "Time",
+       y = "Num Polymorphic Loci") +   
+  scale_color_manual(values = colors) +
+  dark_theme_gray()
+
+tcr = ggplot(tsdf) + 
+  geom_line(aes(x=t,y=pntcorr)) +
+  labs(x = "Time",        
+       y = "Spatial Correlation of Traits",        
+       color = "Legend") +   
+  scale_color_manual(values = colors) +
+  ylim(c(-1,1)) +
+  dark_theme_gray()
+
+ggplot(tsdf) + 
+  geom_line(aes(x=t,y=abar)) +
+  labs(x = "Time",
+       y = "Average Infection Probability",        
+       color = "Legend") +   
+  scale_color_manual(values = colors) +
+  dark_theme_gray()
+
+# ggplot(tsdf) + 
+#   geom_line(aes(x=t,y=vara)) +
+#   labs(x = "Time",        
+#        y = "Variance of Infection Probability",
+#        color = "Legend") +   
+#   scale_color_manual(values = colors) +
+#   dark_theme_gray()
+
+ggplot(tsdf) + 
+  geom_line(aes(x=t,y=hselresp)) +
+  labs(x = "Time",        
+       y = "Host Response to Biotic Selection",        
+       color = "Legend") +   
+  scale_color_manual(values = colors) +
+  dark_theme_gray()
+
+ggplot(tsdf) + 
+  geom_line(aes(x=t,y=pselresp)) +
+  labs(x = "Time",        
+       y = "Parasite Response to Biotic Selection",
+       color = "Legend") +   
+  scale_color_manual(values = colors) +
+  dark_theme_gray()
+
+ggplot(tsdf) + 
+  geom_line(aes(x=t,y=pr_unparasitized,color="Host")) +
+  geom_line(aes(x=t,y=pr_unhosted,color="Parasite")) +
+  labs(x = "Time",        
+       y = "Unparasitized/Unhosted",        
+       color = "Legend") +   
+  scale_color_manual(values = colors) +
+  ylim(c(0,1)) +
+  dark_theme_gray()
+
+# ggplot(tsdf) + 
+#   geom_line(aes(x=t,y=pprh_m)) +
+#   labs(x = "Time",
+#        y = "Average Parasites Per Host") +   
+#   scale_color_manual(values = colors) +
+#   dark_theme_gray()
+# 
+# ggplot(tsdf) + 
+#   geom_line(aes(x=t,y=sqrt(pprh_v))) +
+#   labs(x = "Time",
+#        y = "Stddev Parasites Per Host") +   
+#   scale_color_manual(values = colors) +
+#   dark_theme_gray()
+
+# ggplot(tsdf) + 
+#   geom_line(aes(x=t,y=pdm)) +
+#   labs(x = "Time",
+#        y = "Avg Parasite Dist2Host") +   
+#   scale_color_manual(values = colors) +
+#   dark_theme_gray()
+# 
+# ggplot(tsdf) + 
+#   geom_line(aes(x=t,y=sqrt(pdv))) +
+#   labs(x = "Time",
+#        y = "Stddev Parasite Dist2Host") +   
+#   scale_color_manual(values = colors) +
+#   dark_theme_gray()
+
+descrs = c("host mutation rate","parasite mutation rate","host mutation effect size","parasite mutation effect size",
+           "host dispersal distance","parasite dispersal distance","host-parasite interaction dist","host competition",
+           "parasite competition","host competition dist","parasite competition dist","host base fitness","parasite base fitness",
+           "host biotic selection","parasite biotic selection","infection probability sensitivity","host initial density",
+           "parasite initial density","temporal resolution of time-series")
+txtdat = cbind(colnames(params),descrs,formatC(as.numeric(params), digits = 1, format = "e", drop0trailing = FALSE))
+txtdf = data.frame(txtdat)
+colnames(txtdf) = c("Param","Description","Value")
+
+knitr::kable(txtdf)
+```
