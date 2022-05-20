@@ -8,24 +8,24 @@ species all initialize(){
 		"µₚ",  1e-12,  	// parasite mutation rate
 		"κₕ",  1.0,  		// host mutation effect size
 		"κₚ",  1.0,  		// parasite mutation effect size
-		"εₕ",  0.5,			// stddev of environmental noise
-		"εₚ",  0.5,			// stddev of environmental noise		
-		"σₕ",  1.0,  		// host dispersal distance
-		"σₚ",  0.5,  		// parasite dispersal distance
+		"εₕ",  0.5,			// stddev of environmental noise (not on rn)
+		"εₚ",  0.5,			// stddev of environmental noise (not on rn)		
+		"σₕ",  0.5,  		// host dispersal distance
+		"σₚ",  0.1,  		// parasite dispersal distance
 		"ι",   3.0,			// spatial interspp interaction distance
 //		"cₕ",  0.75, 		// strength of host competition
 //		"cₚ",  0.4, 		// strength of para competition
-		"cₕ",  0.3, 		// strength of host competition
-		"cₚ",  0.2, 		// strength of para competition
-		"ωₕ",  1.0,			// (spatial) host niche breadth
-		"ωₚ",  0.5,			// (spatial) parasite niche breadth
+		"cₕ",  0.2, 		// strength of host competition
+		"cₚ",  0.02, 		// strength of para competition
+		"ωₕ",  0.5,			// (spatial) host niche breadth
+		"ωₚ",  0.1,			// (spatial) parasite niche breadth
 		"W₀ₕ", 1.0,			// host base fitness
 		"W₀ₚ", 1.0,			// para base fitness
 		"sₕ",  5e-2, 		// cost on host fitness for each infection ('s' as in selection)
 		"sₚ",  1e-1, 		// benefit on parasite fitness for successful infection
 		"γ",   1.0,			// sensitivity of inf pr to trait differences ('gamma' trad nuimser notation for this par)
-		"ρ₀ₕ",  0.25,		// initial population density ('rho' is trad for densities)
-		"ρ₀ₚ",  0.25,		// initial population density ('rho' is trad for densities)
+		"ρ₀ₕ",  1.0,		// initial population density ('rho' is trad for densities)
+		"ρ₀ₚ",  0.5,		// initial population density ('rho' is trad for densities)
 		"ntlbrnn", 9999,	// number of cycles in neutral burnin period (not working yet!)
 		"ixnbrnn", 20000	// number of cycles in interacting burnin period (not working yet!)
 		);
@@ -64,11 +64,11 @@ species all initialize(){
 	i2.setInteractionFunction("n", 1.0, ωₚ); // gaussian because it has nice edge effect properties?
 	
 	// host mate choice
-	initializeInteractionType(3, "xy", reciprocal=T, maxDistance=3*ωₕ);
+	initializeInteractionType(3, "xy", reciprocal=T, maxDistance=4*ωₕ);
 	i3.setInteractionFunction("l", 1.0); // linear for speed
 	
 	// parasite mate choice
-	initializeInteractionType(4, "xy", reciprocal=T, maxDistance=4*ωₚ);
+	initializeInteractionType(4, "xy", reciprocal=T, maxDistance=8*ωₚ);
 	i4.setInteractionFunction("l", 1.0);
 	
 	// parasitism
