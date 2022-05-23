@@ -10,20 +10,20 @@ species all initialize(){
 		"κₚ",  1.0,  		// parasite mutation effect size
 		"εₕ",  0.5,			// stddev of environmental noise (not on rn)
 		"εₚ",  0.5,			// stddev of environmental noise (not on rn)		
-		"σₕ",  0.5,  		// host dispersal distance
-		"σₚ",  0.1,  		// parasite dispersal distance
+		"σₕ",  1.0,  		// host dispersal distance
+		"σₚ",  0.2,  		// parasite dispersal distance
 		"ι",   3.0,			// spatial interspp interaction distance
-		"cₕ",  0.15, 		// strength of host competition
-		"cₚ",  0.01, 		// strength of para competition
-		"ωₕ",  0.5,			// (spatial) host niche breadth
-		"ωₚ",  0.1,			// (spatial) parasite niche breadth
+		"cₕ",  0.5, 		// strength of host competition
+		"cₚ",  0.051, 		// strength of para competition
+		"ωₕ",  1.0,			// (spatial) host niche breadth
+		"ωₚ",  0.2,			// (spatial) parasite niche breadth
 		"W₀ₕ", 1.0,			// host base fitness
-		"W₀ₚ", 0.72,			// para base fitness
+		"W₀ₚ", 0.8,			// para base fitness
 		"sₕ",  1e-1, 		// cost on host fitness for each infection ('s' as in selection)
-		"sₚ",  5e-2, 		// benefit on parasite fitness for successful infection
+		"sₚ",  1e-2, 		// benefit on parasite fitness for successful infection
 		"γ",   1.0,			// sensitivity of inf pr to trait differences ('gamma' trad nuimser notation for this par)
-		"ρ₀ₕ",  1.0,		// initial population density ('rho' is trad for densities)
-		"ρ₀ₚ",  0.5,		// initial population density ('rho' is trad for densities)
+		"ρ₀ₕ",  0.1,		// initial population density ('rho' is trad for densities)
+		"ρ₀ₚ",  0.1,		// initial population density ('rho' is trad for densities)
 		"ntlbrnn", 9999,	// number of cycles in neutral burnin period (not working yet!)
 		"ixnbrnn", 20000	// number of cycles in interacting burnin period (not working yet!)
 		);
@@ -144,16 +144,16 @@ ticks all 1 early() {
 	writeFile(mmn,paste("min","max",sep=","),append=F);
 	N₀ₕ = asInteger(ρ₀ₕ * 100 * 100); // Initial Population Size (ρ₀ ind's per unit area)
 	N₀ₚ = asInteger(ρ₀ₚ * 100 * 100); // Initial Population Size (ρ₀ ind's per unit area)
-//	host.readFromPopulationFile("~/gsccs-data/hinit.trees",
-//		subpopMap=Dictionary("p0", 0)); // consider if dfe looks different for msprime vs slim
-//	para.readFromPopulationFile("~/gsccs-data/pinit.trees",
-//		subpopMap=Dictionary("p1", 0)); // and also if later dynamics change depending
-	host.addSubpop("p0", N₀ₕ);
-	para.addSubpop("p1", N₀ₚ);
+	host.readFromPopulationFile("~/gsccs-data/hinit.trees",
+		subpopMap=Dictionary("p0", 0)); // consider if dfe looks different for msprime vs slim
+	para.readFromPopulationFile("~/gsccs-data/pinit.trees",
+		subpopMap=Dictionary("p1", 0)); // and also if later dynamics change depending
+//	host.addSubpop("p0", N₀ₕ);
+//	para.addSubpop("p1", N₀ₚ);
 	p0.setSpatialBounds(c(0, 0, 100, 100));
 	p1.setSpatialBounds(c(0, 0, 100, 100));
-	p0.individuals.setSpatialPosition(p0.pointUniform(N₀ₕ));
-	p1.individuals.setSpatialPosition(p1.pointUniform(N₀ₚ));
+	p0.individuals.setSpatialPosition(p0.pointUniform(p0.individualCount));
+	p1.individuals.setSpatialPosition(p1.pointUniform(p1.individualCount));
 	
 //	community.rescheduleScriptBlock(s1, start=2, end=ntlbrnn);
 //	community.rescheduleScriptBlock(s2, start=ntlbrnn+1, end=ixnbrnn);

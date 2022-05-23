@@ -9,9 +9,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-<!-- <video width="640" height="480" controls> -->
-<!--   <source src="pt-process.mp4" type="video/mp4"> -->
-<!-- </video> -->
+<!-- <iframe src="https://player.vimeo.com/video/712261773?h=148675a6d9&loop=1&title=0&byline=0&portrait=0" width="320" height="160" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe> -->
 
 ```{r echo=F, message=FALSE, warning=FALSE,results='asis'}
 require(ggplot2)

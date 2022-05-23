@@ -7,7 +7,13 @@ import numpy as np
 import pandas
 import pprint
 
+host_ts = tskit.load(os.path.expanduser('~/gsccs-data/host.trees'))
+
 host_ts = pyslim.load(os.path.expanduser('~/gsccs-data/host.trees'))
+
+print(f"The host tree sequence has {host_ts.num_trees} trees on a genome of length {host_ts.sequence_length},"
+      f" {host_ts.num_individuals} individuals, {host_ts.num_samples} 'sample' genomes,"
+      f" and {host_ts.num_mutations} mutations.")
 
 print(f"The tree sequence has {slim_ts.num_trees} trees on a genome of length {slim_ts.sequence_length},"
       f" {slim_ts.num_individuals} individuals, {slim_ts.num_samples} 'sample' genomes,"

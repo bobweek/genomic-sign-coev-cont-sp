@@ -21,8 +21,10 @@ species para initialize() {
 }
 
 ticks all 1 early() {
-	host.readFromPopulationFile("~/gsccs-data/hinit.trees");
-	para.readFromPopulationFile("~/gsccs-data/pinit.trees");
+	host.readFromPopulationFile("~/gsccs-data/hinit.trees",
+		subpopMap=Dictionary("p0", 0));
+	para.readFromPopulationFile("~/gsccs-data/pinit.trees",
+		subpopMap=Dictionary("p1", 0));
 }
 
 ticks all late(){

@@ -1,11 +1,10 @@
 from statistics import mean
 import msprime
 import pyslim
-import numpy as np
 import os
 
-N = 1000
-n = 100
+N = 10000
+n = 1000
 L = 1e8
 mu = 1e-11
 k = 1e-3

@@ -4,21 +4,14 @@ import pyslim
 import numpy as np
 import os
 
-N = 1000
-n = 100
+N = 5000
+n = 500
 L = 1e8
-mu = 1e-11
-k = 1e-3
+mu = 1e-12
+k = 1.0
 rho = 1e-8
 
-# first simulate whole genome to get num segr sites
-# to get freely recomb loci, then run a sim per segr site
-
 # generate genealogy
-# demog_model = msprime.Demography() # this was producing two populations per species
-# demog_model.add_population(initial_size=N)
-# hts = msprime.sim_ancestry(samples=n,demography=demog_model,sequence_length=L,recombination_rate=rho)
-# pts = msprime.sim_ancestry(samples=n,demography=demog_model,sequence_length=L,recombination_rate=rho)
 hts = msprime.sim_ancestry(samples=n,population_size=N,sequence_length=L,recombination_rate=rho)
 pts = msprime.sim_ancestry(samples=n,population_size=N,sequence_length=L,recombination_rate=rho)
 
@@ -68,19 +61,13 @@ for m in pts.mutations():
           m.replace(metadata={"mutation_list": md_list})
   )
 
-# check we didn't mess anything up
 assert htables.mutations.num_rows == hts.num_mutations
+print(f"The host effects range from {min(hmut.values()):0.2e} to {max(hmut.values()):0.2e}.")
 assert ptables.mutations.num_rows == pts.num_mutations
-print(f"The host trait effects range from {min(hmut.values()):0.2e}"f" to {max(hmut.values()):0.2e}.")
-print(f"The para trait effects range from {min(pmut.values()):0.2e}"f" to {max(pmut.values()):0.2e}.")
-
-# what kind slim we runnin here??
-htables.metadata
-ptables.metadata
+print(f"The parasite effects range from {min(pmut.values()):0.2e} to {max(pmut.values()):0.2e}.")
 
 # gotta change a few things
 ts_metadata = htables.metadata
-ts_metadata["SLiM"]["spatial_dimensionality"] = "xy"
 ts_metadata['SLiM']['cycle'] = 1
 ts_metadata['SLiM']['tick'] = 1
 htables.metadata = ts_metadata
@@ -109,7 +96,6 @@ hts = htables.tree_sequence()
 hts.dump(os.path.expanduser('~/gsccs-data/hinit.trees'))
 
 ts_metadata = ptables.metadata
-ts_metadata["SLiM"]["spatial_dimensionality"] = "xy"
 ts_metadata['SLiM']['cycle'] = 1
 ts_metadata['SLiM']['tick'] = 1
 ptables.metadata = ts_metadata
@@ -129,7 +115,7 @@ for md in pmut_metadata:
       [ims.validate_and_encode_row(md) for md in pmut_metadata])
 
 ptables.populations.clear()
-for p in pts.populations(): # make empty pop in pop[0]
+for p in pts.populations():
     pm = p.metadata
     pm['bounds_x1'] = 100
     pm['bounds_y1'] = 100
