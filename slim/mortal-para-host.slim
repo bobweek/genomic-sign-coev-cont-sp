@@ -38,7 +38,7 @@ species all initialize(){
 	catn(params);
 	
 	// temporal resolution of time-series
-	defineConstant("tempres", 200);
+	defineConstant("tempres", 100);
 	
 	// params.csv
 	pfn = "~/gsccs-data/params.csv";
@@ -142,8 +142,6 @@ species para reproduction(p1) {
 ticks all 1 early() {
 	mmn = paste0("~/gsccs-data/minmax.csv"); // for plotting later
 	writeFile(mmn,paste("min","max",sep=","),append=F);
-	N₀ₕ = asInteger(ρ₀ₕ * 100 * 100); // Initial Population Size (ρ₀ ind's per unit area)
-	N₀ₚ = asInteger(ρ₀ₚ * 100 * 100); // Initial Population Size (ρ₀ ind's per unit area)
 	host.readFromPopulationFile("~/gsccs-data/hinit.trees",
 		subpopMap=Dictionary("p0", 0)); // consider if dfe looks different for msprime vs slim
 	para.readFromPopulationFile("~/gsccs-data/pinit.trees",
@@ -203,17 +201,6 @@ ticks all 2:10000 early(){
 	hs = hs[u];
 	ps = p1.individuals.index[u];
 	
-	// save parasite location for later
-//	pp = cbind(p1.individuals[u].x,p1.individuals[u].y);
-
-	// move parasite to selected host
-//	hpos = p0.individuals[hs].spatialPosition;
-//	p1.individuals[u].setSpatialPosition(hpos);
-//	ppp = cbind(p1.individuals[u].x,p1.individuals[u].y);
-	
-	// compute distance moved for each hosted parasite
-//	pd = sqrt(apply((ppp-pp)^2,0,"sum(applyValue);"));
-		
 	// probability of infection (trait matching)
 	α = exp(-γ*(zₕ[hs]-zₚ[u])^2/2);
 	
