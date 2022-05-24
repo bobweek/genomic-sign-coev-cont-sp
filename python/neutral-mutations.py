@@ -12,8 +12,8 @@ mu = 1e-11
 
 # load trees
 
-host_ts = tskit.load(os.path.expanduser('~/gsccs-data/host.trees'))
-para_ts = tskit.load(os.path.expanduser('~/gsccs-data/para.trees'))
+host_ts = tskit.load(os.path.expanduser('~/gsccs-data/host-slim.trees'))
+para_ts = tskit.load(os.path.expanduser('~/gsccs-data/para-slim.trees'))
 
 # export genotype matrices of causal mutations
 

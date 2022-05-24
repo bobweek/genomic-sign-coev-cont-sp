@@ -24,8 +24,6 @@ species all initialize(){
 		"γ",   1.0,			// sensitivity of inf pr to trait differences ('gamma' trad nuimser notation for this par)
 		"ρ₀ₕ",  0.1,		// initial population density ('rho' is trad for densities)
 		"ρ₀ₚ",  0.1,		// initial population density ('rho' is trad for densities)
-		"ntlbrnn", 9999,	// number of cycles in neutral burnin period (not working yet!)
-		"ixnbrnn", 20000	// number of cycles in interacting burnin period (not working yet!)
 		);
 	for (k in defaults.allKeys) {
 		if (!exists(k)) {
@@ -77,7 +75,7 @@ species all initialize(){
 species host initialize() {
 	initializeSLiMOptions(dimensionality="xy");
 	initializeSpecies(tickModulo=1, tickPhase=1, avatar="🦌");
-//	initializeTreeSeq();
+	initializeTreeSeq();
 	
 	// host genomics
 	initializeMutationRate(µₕ);
@@ -91,7 +89,7 @@ species host initialize() {
 species para initialize() {
 	initializeSLiMOptions(dimensionality="xy");
 	initializeSpecies(tickModulo=1, tickPhase=1, avatar="🪱");
-//	initializeTreeSeq();
+	initializeTreeSeq();
 	
 	// parasite genomics
 	initializeMutationRate(µₚ);
@@ -156,12 +154,12 @@ ticks all 1 early() {
 //	community.rescheduleScriptBlock(s3, start=ixnbrnn, end=ixnbrnn);
 }
 
-ticks all 2:10000 first(){
+ticks all 2:1000 first(){
 	i3.evaluate(p0);
 	i4.evaluate(p1);
 }
 
-ticks all 2:10000 early(){
+ticks all 2:1000 early(){
 	i1.evaluate(p0);
 	i2.evaluate(p1);
 	i5.evaluate(p0);
@@ -276,7 +274,7 @@ ticks all 2:10000 early(){
 
 }
 
-ticks all 10000 late() {
+ticks all 1000 late() {
 	host.treeSeqOutput("~/gsccs-data/host-slim.trees", metadata=params);
 	para.treeSeqOutput("~/gsccs-data/para-slim.trees", metadata=params);
 	community.simulationFinished();
