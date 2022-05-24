@@ -44,6 +44,7 @@ for m in hts.mutations():
   _ = htables.mutations.append(
           m.replace(metadata={"mutation_list": md_list})
   )
+  
 ptables = pts.tables
 ptables.mutations.clear()
 pmut = {}

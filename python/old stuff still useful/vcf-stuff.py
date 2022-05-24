@@ -1,4 +1,5 @@
 import allel
+import os
 import numpy as np
 import pandas as pd
 import statistics as st
@@ -25,14 +26,16 @@ p_samps = sum(metadat['species']==1)
 # para_neutrL = read in from file
 
 # read in vcf files
-h_callset = allel.read_vcf('/home/bb/gits/genomic-sign-coev-cont-sp/slim/host.vcf')
-p_callset = allel.read_vcf('/home/bb/gits/genomic-sign-coev-cont-sp/slim/parasite.vcf')
+h_callset = allel.read_vcf(os.path.expanduser('~/gsccs-data/host.vcf'))
 pre_h_gt = allel.GenotypeArray(h_callset['calldata/GT'])
+
+p_callset = allel.read_vcf('/home/bb/gits/genomic-sign-coev-cont-sp/slim/parasite.vcf')
 pre_p_gt = allel.GenotypeArray(p_callset['calldata/GT'])
 
 # "number of segregating sites"
 # needs number of causal loci subtracted off
 pre_h_S = pre_h_gt.n_variants
+
 pre_p_S = pre_p_gt.n_variants
 
 #
