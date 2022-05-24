@@ -5,7 +5,7 @@ import numpy as np
 import os
 
 N = 5000
-n = 500
+n = 5000
 L = 1e8
 mu = 1e-12
 k = 1.0
@@ -76,15 +76,15 @@ hindividual_metadata = [ind.metadata for ind in htables.individuals]
 for md in hindividual_metadata:
    md["subpopulation"] = 0
    ims = htables.individuals.metadata_schema
-   htables.individuals.packset_metadata(
-      [ims.validate_and_encode_row(md) for md in hindividual_metadata])
+htables.individuals.packset_metadata(
+   [ims.validate_and_encode_row(md) for md in hindividual_metadata])
 
 hmut_metadata = [mut.metadata for mut in htables.mutations]
 for md in hmut_metadata:
    md["mutation_list"][0]["subpopulation"] = 0
    ims = htables.mutations.metadata_schema
-   htables.mutations.packset_metadata(
-      [ims.validate_and_encode_row(md) for md in hmut_metadata])
+htables.mutations.packset_metadata(
+   [ims.validate_and_encode_row(md) for md in hmut_metadata])
 
 htables.populations.clear()
 for p in hts.populations():
@@ -104,15 +104,15 @@ pindividual_metadata = [ind.metadata for ind in ptables.individuals]
 for md in pindividual_metadata:
    md["subpopulation"] = 0
    ims = ptables.individuals.metadata_schema
-   ptables.individuals.packset_metadata(
-      [ims.validate_and_encode_row(md) for md in pindividual_metadata])
+ptables.individuals.packset_metadata(
+   [ims.validate_and_encode_row(md) for md in pindividual_metadata])
 
 pmut_metadata = [mut.metadata for mut in ptables.mutations]
 for md in pmut_metadata:
    md["mutation_list"][0]["subpopulation"] = 0
    ims = ptables.mutations.metadata_schema
-   ptables.mutations.packset_metadata(
-      [ims.validate_and_encode_row(md) for md in pmut_metadata])
+ptables.mutations.packset_metadata(
+   [ims.validate_and_encode_row(md) for md in pmut_metadata])
 
 ptables.populations.clear()
 for p in pts.populations():

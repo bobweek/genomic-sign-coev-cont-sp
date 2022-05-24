@@ -148,8 +148,6 @@ ticks all 1 early() {
 		subpopMap=Dictionary("p0", 0)); // consider if dfe looks different for msprime vs slim
 	para.readFromPopulationFile("~/gsccs-data/pinit.trees",
 		subpopMap=Dictionary("p1", 0)); // and also if later dynamics change depending
-//	host.addSubpop("p0", N₀ₕ);
-//	para.addSubpop("p1", N₀ₚ);
 	p0.setSpatialBounds(c(0, 0, 100, 100));
 	p1.setSpatialBounds(c(0, 0, 100, 100));
 	p0.individuals.setSpatialPosition(p0.pointUniform(p0.individualCount));
@@ -160,12 +158,12 @@ ticks all 1 early() {
 //	community.rescheduleScriptBlock(s3, start=ixnbrnn, end=ixnbrnn);
 }
 
-ticks all 2:100000 first(){
+ticks all 2:10000 first(){
 	i3.evaluate(p0);
 	i4.evaluate(p1);
 }
 
-ticks all 2:100000 early(){
+ticks all 2:10000 early(){
 	i1.evaluate(p0);
 	i2.evaluate(p1);
 	i5.evaluate(p0);
@@ -291,9 +289,9 @@ ticks all 2:100000 early(){
 
 }
 
-ticks all 100000 late() {
-//	host.treeSeqOutput("~/gsccs-data/host.trees", metadata=params);
-//	para.treeSeqOutput("~/gsccs-data/para.trees", metadata=params);
+ticks all 10000 late() {
+	host.treeSeqOutput("~/gsccs-data/host-slim.trees", metadata=params);
+	para.treeSeqOutput("~/gsccs-data/para-slim.trees", metadata=params);
 	community.simulationFinished();
 	catn("Done.");
 }
