@@ -1,5 +1,5 @@
 ---
-title: "host-parasite coevolution time series"
+title: "host-parasite coevolution summary"
 output:
   rmdformats::downcute:
     self_contained: true
@@ -134,10 +134,10 @@ ggplot(tsdf) +
   dark_theme_gray()
 
 ggplot(tsdf) + 
-  geom_line(aes(x=t,y=pr_unparasitized,color="Host")) +
-  geom_line(aes(x=t,y=pr_unhosted,color="Parasite")) +
+  geom_line(aes(x=t,y=(1-pr_unparasitized),color="Host")) +
+  geom_line(aes(x=t,y=(1-pr_unhosted),color="Parasite")) +
   labs(x = "Time",        
-       y = "Unparasitized/Unhosted",        
+       y = "Proportion Interaction Attempted",        
        color = "Legend") +   
   scale_color_manual(values = colors) +
   ylim(c(0,1)) +
