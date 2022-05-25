@@ -147,5 +147,7 @@ def iscaf(sstm,co):
                 h_freqs = h.frq[i,hs]
                 p_freqs = p.frq[j,ps]
                 iscaf[i,j] = np.corrcoef(h_freqs,p_freqs)[0,1]
+                if np.isnan(iscaf[i,j]):
+                    iscaf[i,j] = 0
 
     return iscaf

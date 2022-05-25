@@ -13,44 +13,57 @@ editor_options:
 
 ```{r echo=F, message=FALSE, warning=FALSE,results='asis'}
 require(ggplot2)
-require(gridExtra)
 require(ggdark)
 
-iscaf_cor = read.csv("~/gsccs-data/iscaf-cor.csv")
-iscaf_cov = read.csv("~/gsccs-data/iscaf-cov.csv")
-csl_iscaf_cor = read.csv("~/gsccs-data/csl-iscaf-cor.csv")
-csl_iscaf_cov = read.csv("~/gsccs-data/csl-iscaf-cov.csv")
+rnmclm = function(df){
+  colnames(df) = c("iscaf")
+  df
+}
 
-iscaf_cor_flat = data.frame(unname(as.vector(data.matrix(iscaf_cor))))
-iscaf_cov_flat = data.frame(unname(as.vector(data.matrix(iscaf_cov))))
-colnames(iscaf_cor_flat) <- c("iscaf")
-colnames(iscaf_cov_flat) <- c("iscaf")
+iscaf_cor = read.csv("~/gsccs-data/iscaf-cor-flat.csv")
+iscaf_cov = read.csv("~/gsccs-data/iscaf-cov-flat.csv")
+csl_iscaf_cor = read.csv("~/gsccs-data/csl-iscaf-cor-flat.csv")
+csl_iscaf_cov = read.csv("~/gsccs-data/csl-iscaf-cov-flat.csv")
 
-ncsl = dim(csl_iscaf_cov)[1]*dim(csl_iscaf_cov)[2]
-csl_iscaf_cor_flat = data.frame(unname(as.vector(data.matrix(csl_iscaf_cor))),rep(0,ncsl))
-csl_iscaf_cov_flat = data.frame(unname(as.vector(data.matrix(csl_iscaf_cov))),rep(0,ncsl))
-colnames(csl_iscaf_cor_flat) <- c("iscaf","y")
-colnames(csl_iscaf_cov_flat) <- c("iscaf","y")
+iscaf_cor = rnmclm(iscaf_cor)
+iscaf_cov = rnmclm(iscaf_cov)
+csl_iscaf_cor = rnmclm(csl_iscaf_cor)
+csl_iscaf_cov = rnmclm(csl_iscaf_cov)
 
-lim_cor = max(abs(csl_iscaf_cor_flat$iscaf[!is.nan(csl_iscaf_cor_flat$iscaf)]))
-lim_cov = max(abs(csl_iscaf_cov_flat$iscaf))
+allkeeprs_cor = which(iscaf_cor!=0)
+cslkeeprs_cor = which(csl_iscaf_cor!=0)
 
-ggplot(iscaf_cor_flat, aes(x=iscaf)) + 
-  geom_density() +
-  geom_point(data=csl_iscaf_cor_flat, aes(x=iscaf,y=y),color="red") +
+allkeeprs_cov = which(iscaf_cov!=0 & abs(iscaf_cov)>2e-5)
+cslkeeprs_cov = which(csl_iscaf_cov!=0 & abs(csl_iscaf_cov)>2e-5)
+
+lumpnms = c(rep("all",length(allkeeprs_cor)),rep("csl",length(cslkeeprs_cor)))
+lumpcrs = c(iscaf_cor$iscaf[allkeeprs_cor],csl_iscaf_cor$iscaf[cslkeeprs_cor])
+cor_df = data.frame(lumpcrs,lumpnms)
+colnames(cor_df) = c("iscaf","set")
+
+lumpnms = c(rep("all",length(allkeeprs_cov)),rep("csl",length(cslkeeprs_cov)))
+lumpcvs = c(iscaf_cov$iscaf[allkeeprs_cov],csl_iscaf_cov$iscaf[cslkeeprs_cov])
+cov_df = data.frame(lumpcvs,lumpnms)
+colnames(cov_df) = c("iscaf","set")
+
+lim_cor = max(abs(csl_iscaf_cor$iscaf))
+lim_cov = max(abs(csl_iscaf_cov$iscaf))
+
+ggplot(cor_df) + 
+  geom_histogram(aes(x=iscaf,y=..density..,fill=set),bins=50,alpha=0.25) +
+  # geom_point(data=csl_iscaf_cor_pt, aes(x=iscaf,y=y),color="red") +
   xlab("Interspecific Spatial Correlations") +
   ylab("Density") +
   xlim(c(-lim_cor,lim_cor)) +
   dark_theme_gray()
-
-ggplot(iscaf_cov_flat, aes(x=iscaf)) + 
-  geom_density() +
-  geom_point(data=csl_iscaf_cov_flat, aes(x=iscaf,y=y),color="red") +
+  
+ggplot(cov_df) + 
+  geom_histogram(aes(x=iscaf,y=..density..,fill=set),bins=50,alpha=0.25) +
+  # geom_point(data=csl_iscaf_cov, aes(x=iscaf,y=0),color="red") +
   xlab("Interspecific Spatial Covariances") +
   ylab("Density") +
   xlim(c(-lim_cov,lim_cov)) +
   dark_theme_gray()
-
 
 params = read.csv("~/gsccs-data/params.csv")
 tsdf = read.csv("~/gsccs-data/time-series.csv")
@@ -142,34 +155,6 @@ ggplot(tsdf) +
   scale_color_manual(values = colors) +
   ylim(c(0,1)) +
   dark_theme_gray()
-
-# ggplot(tsdf) + 
-#   geom_line(aes(x=t,y=pprh_m)) +
-#   labs(x = "Time",
-#        y = "Average Parasites Per Host") +   
-#   scale_color_manual(values = colors) +
-#   dark_theme_gray()
-# 
-# ggplot(tsdf) + 
-#   geom_line(aes(x=t,y=sqrt(pprh_v))) +
-#   labs(x = "Time",
-#        y = "Stddev Parasites Per Host") +   
-#   scale_color_manual(values = colors) +
-#   dark_theme_gray()
-
-# ggplot(tsdf) + 
-#   geom_line(aes(x=t,y=pdm)) +
-#   labs(x = "Time",
-#        y = "Avg Parasite Dist2Host") +   
-#   scale_color_manual(values = colors) +
-#   dark_theme_gray()
-# 
-# ggplot(tsdf) + 
-#   geom_line(aes(x=t,y=sqrt(pdv))) +
-#   labs(x = "Time",
-#        y = "Stddev Parasite Dist2Host") +   
-#   scale_color_manual(values = colors) +
-#   dark_theme_gray()
 
 descrs = c("host mutation rate","parasite mutation rate","host mutation effect size","parasite mutation effect size",
            "host dispersal distance","parasite dispersal distance","host-parasite interaction dist","host competition",

@@ -24,12 +24,12 @@ para_ts = tskit.load(os.path.expanduser('~/gsccs-data/para-slim.trees'))
 h_csl_snps = []
 for i in host_ts.sites():
       h_csl_snps.append(i.position)
-np.savetxt(os.path.expanduser('~/gsccs-data/h_csl_snps.csv'), h_csl_snps, delimiter=",")
+np.savetxt(os.path.expanduser('~/gsccs-data/h-csl-snps.csv'), h_csl_snps, delimiter=",")
 
 p_csl_snps = []
 for i in para_ts.sites():
       p_csl_snps.append(i.position)
-np.savetxt(os.path.expanduser('~/gsccs-data/p_csl_snps.csv'), p_csl_snps, delimiter=",")
+np.savetxt(os.path.expanduser('~/gsccs-data/p-csl-snps.csv'), p_csl_snps, delimiter=",")
 
 
 # export locations and trait values
@@ -120,12 +120,12 @@ print(f"Para tree sequence has {pts.num_mutations} neutral mutations.")
 h_ntl_snps = []
 for i in hts.sites():
       h_ntl_snps.append(i.position)
-np.savetxt(os.path.expanduser('~/gsccs-data/h_ntl_snps.csv'), h_ntl_snps, delimiter=",")
+np.savetxt(os.path.expanduser('~/gsccs-data/h-ntl-snps.csv'), h_ntl_snps, delimiter=",")
 
 p_ntl_snps = []
 for i in pts.sites():
       p_ntl_snps.append(i.position)
-np.savetxt(os.path.expanduser('~/gsccs-data/p_ntl_snps.csv'), p_ntl_snps, delimiter=",")
+np.savetxt(os.path.expanduser('~/gsccs-data/p-ntl-snps.csv'), p_ntl_snps, delimiter=",")
 
 # export individual allele freqs and genotype matrices of neutral mutations
 

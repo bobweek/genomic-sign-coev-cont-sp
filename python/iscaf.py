@@ -27,10 +27,10 @@ hga_csl = fname('hga-causal.npy')
 pga_csl = fname('pga-causal.npy')
 hga_ntl = fname('hga-neutrl.npy')
 pga_ntl = fname('pga-neutrl.npy')
-hcsl_snp = fname('h_csl_snps.csv')
-pcsl_snp = fname('p_csl_snps.csv')
-hntl_snp = fname('h_ntl_snps.csv')
-pntl_snp = fname('p_ntl_snps.csv')
+hcsl_snp = fname('h-csl-snps.csv')
+pcsl_snp = fname('p-csl-snps.csv')
+hntl_snp = fname('h-ntl-snps.csv')
+pntl_snp = fname('p-ntl-snps.csv')
 params = fname('params.csv')
 hcsl_frq = fname('hfrq-causal.npy')
 pcsl_frq = fname('pfrq-causal.npy')
@@ -47,6 +47,8 @@ iscaf_cor = cf.iscaf(sstm,"cor")
 iscaf_cov = cf.iscaf(sstm,"cov")
 np.savetxt(fname('iscaf-cor.csv'), iscaf_cor, delimiter=",")
 np.savetxt(fname('iscaf-cov.csv'), iscaf_cov, delimiter=",")
+np.savetxt(fname('iscaf-cor-flat.csv'), iscaf_cor.flatten(), delimiter=",")
+np.savetxt(fname('iscaf-cov-flat.csv'), iscaf_cov.flatten(), delimiter=",")
 
 # compute iscaf only at causal loci
 hncsl = len(sstm.h.csl_snp)
@@ -55,7 +57,8 @@ csl_iscaf_cor = iscaf_cor[0:hncsl,0:pncsl]
 csl_iscaf_cov = iscaf_cov[0:hncsl,0:pncsl]
 np.savetxt(fname('csl-iscaf-cor.csv'), csl_iscaf_cor, delimiter=",")
 np.savetxt(fname('csl-iscaf-cov.csv'), csl_iscaf_cov, delimiter=",")
-
+np.savetxt(fname('csl-iscaf-cor-flat.csv'), csl_iscaf_cor.flatten(), delimiter=",")
+np.savetxt(fname('csl-iscaf-cov-flat.csv'), csl_iscaf_cov.flatten(), delimiter=",")
 
 # import networkx as nx
 
