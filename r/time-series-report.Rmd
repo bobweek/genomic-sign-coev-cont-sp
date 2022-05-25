@@ -30,11 +30,14 @@ iscaf_cov = rnmclm(iscaf_cov)
 csl_iscaf_cor = rnmclm(csl_iscaf_cor)
 csl_iscaf_cov = rnmclm(csl_iscaf_cov)
 
-allkeeprs_cor = which(iscaf_cor!=0)
-cslkeeprs_cor = which(csl_iscaf_cor!=0)
+allkeeprs_cor = which(iscaf_cor!=0 & iscaf_cor< -0.02)
+cslkeeprs_cor = which(csl_iscaf_cor!=0 & csl_iscaf_cor< -0.02)
 
-allkeeprs_cov = which(iscaf_cov!=0 & abs(iscaf_cov)>2e-5)
-cslkeeprs_cov = which(csl_iscaf_cov!=0 & abs(csl_iscaf_cov)>2e-5)
+length(allkeeprs_cor)
+length(cslkeeprs_cor)
+
+allkeeprs_cov = which(iscaf_cov!=0 & iscaf_cov< -0.001)
+cslkeeprs_cov = which(csl_iscaf_cov!=0 & csl_iscaf_cov< -0.001)
 
 lumpnms = c(rep("all",length(allkeeprs_cor)),rep("csl",length(cslkeeprs_cor)))
 lumpcrs = c(iscaf_cor$iscaf[allkeeprs_cor],csl_iscaf_cor$iscaf[cslkeeprs_cor])
@@ -46,23 +49,33 @@ lumpcvs = c(iscaf_cov$iscaf[allkeeprs_cov],csl_iscaf_cov$iscaf[cslkeeprs_cov])
 cov_df = data.frame(lumpcvs,lumpnms)
 colnames(cov_df) = c("iscaf","set")
 
-lim_cor = max(abs(csl_iscaf_cor$iscaf))
-lim_cov = max(abs(csl_iscaf_cov$iscaf))
+lim_cor = max(abs(csl_iscaf_cor$iscaf[cslkeeprs_cor]))
+lim_cov = max(abs(csl_iscaf_cov$iscaf[cslkeeprs_cov]))
+
+max_cor = max(csl_iscaf_cor$iscaf[cslkeeprs_cor])
+max_cov = max(csl_iscaf_cov$iscaf[cslkeeprs_cov])
+
+min_cor = min(csl_iscaf_cor$iscaf[cslkeeprs_cor])
+min_cov = min(csl_iscaf_cov$iscaf[cslkeeprs_cov])
 
 ggplot(cor_df) + 
-  geom_histogram(aes(x=iscaf,y=..density..,fill=set),bins=50,alpha=0.25) +
+  geom_histogram(aes(x=iscaf,y=..density..,fill=set),
+                 bins=50,alpha=0.25,position = "identity") +
   # geom_point(data=csl_iscaf_cor_pt, aes(x=iscaf,y=y),color="red") +
   xlab("Interspecific Spatial Correlations") +
   ylab("Density") +
-  xlim(c(-lim_cor,lim_cor)) +
+  xlim(c(min_cor,-0.02)) +
+  ggtitle("Left Tail") +
   dark_theme_gray()
   
 ggplot(cov_df) + 
-  geom_histogram(aes(x=iscaf,y=..density..,fill=set),bins=50,alpha=0.25) +
+  geom_histogram(aes(x=iscaf,y=..density..,fill=set),
+                 bins=50,alpha=0.25,position = "identity") +
   # geom_point(data=csl_iscaf_cov, aes(x=iscaf,y=0),color="red") +
   xlab("Interspecific Spatial Covariances") +
   ylab("Density") +
-  xlim(c(-lim_cov,lim_cov)) +
+  xlim(c(min_cov,-0.001)) +
+  ggtitle("Left Tail") +
   dark_theme_gray()
 
 params = read.csv("~/gsccs-data/params.csv")
