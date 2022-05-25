@@ -32,7 +32,7 @@ csl_iscaf_cov_flat = data.frame(unname(as.vector(data.matrix(csl_iscaf_cov))),re
 colnames(csl_iscaf_cor_flat) <- c("iscaf","y")
 colnames(csl_iscaf_cov_flat) <- c("iscaf","y")
 
-lim_cor = max(abs(csl_iscaf_cor_flat$iscaf))
+lim_cor = max(abs(csl_iscaf_cor_flat$iscaf[!is.nan(csl_iscaf_cor_flat$iscaf)]))
 lim_cov = max(abs(csl_iscaf_cov_flat$iscaf))
 
 ggplot(iscaf_cor_flat, aes(x=iscaf)) + 

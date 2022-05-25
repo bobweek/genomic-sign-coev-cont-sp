@@ -154,20 +154,20 @@ ticks all 1 early() {
 //	community.rescheduleScriptBlock(s3, start=ixnbrnn, end=ixnbrnn);
 }
 
-ticks all 2:20000 first(){
+ticks all 2:50000 first(){
 	i3.evaluate(p0);
 	i4.evaluate(p1);
 }
 
-ticks all 2:20000 early(){
+ticks all 2:50000 early(){
 	i1.evaluate(p0);
 	i2.evaluate(p1);
 	i5.evaluate(p0);
 	i5.evaluate(p1);
 	
 	// caculating the phenotype as sum of loci with mutation
-	zₕ = p0.individuals.sumOfMutationsOfType(m1)+5;// + rnorm(p0.individualCount,0,εₕ);
-	zₚ = p1.individuals.sumOfMutationsOfType(m2)-5;// + rnorm(p1.individualCount,0,εₚ);
+	zₕ = p0.individuals.sumOfMutationsOfType(m1)+1;// + rnorm(p0.individualCount,0,εₕ);
+	zₚ = p1.individuals.sumOfMutationsOfType(m2)-1;// + rnorm(p1.individualCount,0,εₚ);
 	
 	//
 	// intraspp competition
@@ -274,7 +274,7 @@ ticks all 2:20000 early(){
 
 }
 
-ticks all 20000 late() {
+ticks all 50000 late() {
 	host.treeSeqOutput("~/gsccs-data/host-slim.trees", metadata=params);
 	para.treeSeqOutput("~/gsccs-data/para-slim.trees", metadata=params);
 	community.simulationFinished();
