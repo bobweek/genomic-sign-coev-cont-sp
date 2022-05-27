@@ -41,6 +41,9 @@ def makeILD(j,r):
     datapth = "~/gsccs-data/replicates/sxs/%i"%j+"/"        
     ild.ild(datapth,r)
 
+# the thing that manages parallel running of the things
+pool = mp.Pool()
+
 # iterate across combinations of host-para biotic selection
 j=1
 for sh in ss:
@@ -51,8 +54,7 @@ for sh in ss:
         sprs["sₚ"] = sp
         sprs.to_csv("slim-pars.csv", index=False)
 
-        proc = [mp.Process(target=makeILD, args=(j,r)) for r in np.arange(reps)]
-        [p.start() for p in proc]
+        [pool.apply_async(target=makeILD, args=(j,r)) for r in np.arange(reps)]
         
         # save par combo to specified subfolder
         sprs.to_csv("~/gsccs-data/replicates/sxs/%i"%j+"/pars.csv", index=False)
@@ -70,8 +72,7 @@ for mu in mus:
         bprs.to_csv("bparams.csv", index=False)
         sprs.to_csv("slim-pars.csv", index=False)
         
-        proc = [mp.Process(target=makeILD, args=(j,r)) for r in np.arange(reps)]
-        [p.start() for p in proc]
+        [pool.apply_async(target=makeILD, args=(j,r)) for r in np.arange(reps)]
 
         # save par combo to specified subfolder
         sprs.to_csv("~/gsccs-data/replicates/sxs/%i"%j+"/pars.csv", index=False)
