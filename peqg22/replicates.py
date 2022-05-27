@@ -101,6 +101,3 @@ for mu in mus:
         sprs.to_csv(superfolder+"/pars.csv", index=False)        
 
         j+=1
-
-pool.close()
-pool.join()
