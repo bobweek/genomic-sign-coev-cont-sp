@@ -78,3 +78,6 @@ for mu in mus:
 
         # save par combo to specified subfolder
         sprs.to_csv("~/gsccs-data/replicates/Lxs/%i"%j+"/pars.csv", index=False)        
+
+pool.close()
+pool.join()
