@@ -99,7 +99,7 @@ def loadUp(hmet,pmet,hga_csl,pga_csl,hga_ntl,pga_ntl,
     return sys
 
 # interspecific spatial covariance of allele frequencies
-def iscaf(sstm,co):
+def ild(sstm,co):
 
     # first build kd-tree for host locations
     # for every parasite, select a random host within radius iota
@@ -131,23 +131,23 @@ def iscaf(sstm,co):
     if co=="cov":
         
         # spatial cov allele freq
-        iscaf = np.zeros((h.S,p.S))    
+        ild = np.zeros((h.S,p.S))    
         for i in np.arange(h.S):
             for j in np.arange(p.S):
                 h_freqs = h.frq[i,hs]
                 p_freqs = p.frq[j,ps]
-                iscaf[i,j] = np.cov(h_freqs,p_freqs)[0,1]
+                ild[i,j] = np.cov(h_freqs,p_freqs)[0,1]
 
     else:
         
         # spatial cor allele freq
-        iscaf = np.zeros((h.S,p.S))    
+        ild = np.zeros((h.S,p.S))    
         for i in np.arange(h.S):
             for j in np.arange(p.S):
                 h_freqs = h.frq[i,hs]
                 p_freqs = p.frq[j,ps]
-                iscaf[i,j] = np.corrcoef(h_freqs,p_freqs)[0,1]
-                if np.isnan(iscaf[i,j]):
-                    iscaf[i,j] = 0
+                ild[i,j] = np.corrcoef(h_freqs,p_freqs)[0,1]
+                if np.isnan(ild[i,j]):
+                    ild[i,j] = 0
 
-    return iscaf
+    return ild

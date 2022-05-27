@@ -245,8 +245,8 @@ ticks all 2:50000 early(){
 		pprh_m = 0;
 		pprh_v = 0;
 		traitcorr = cor(zₕ[hs],zₚ[u]);		
-		hselresp = cov(Bₕ,zₕ);
-		pselresp = cov(Bₚ,zₚ);
+		hselresp = cov(log(Bₕ),zₕ);
+		pselresp = cov(log(Bₚ),zₚ);
 		if(isNAN(traitcorr)) traitcorr = 0;
 		if(isNAN(hselresp)) hselresp = 0;
 		if(isNAN(pselresp)) pselresp = 0;

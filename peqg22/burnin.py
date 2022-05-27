@@ -1,7 +1,6 @@
 import msprime
 import pyslim
 import numpy as np
-import os
 import pandas as pd
 from dataclasses import dataclass
 
@@ -17,15 +16,9 @@ class burninPars:
     def __iter__(self):
         return iter((self.N,self.n,self.L,self.mu,self.k,self.rho))
 
-# i thought this would be useful, but perhaps not
-def loadBPs(bparams):
-   bprs = pd.read_csv(bparams, delimiter = ",")
-   bpars = burninPars(bprs["N"],bprs["n"],bprs["L"],bprs["mu"],bprs["k"],bprs["rho"])
-   return bpars
-
-def burnin(bparams):
+def burnin(msprpth,datapth):
     
-    bprs = pd.read_csv(bparams, delimiter = ",")
+    bprs = pd.read_csv(msprpth+"bparams.csv", delimiter = ",")
 
     # unpack msprime model parameters
     N = int(bprs["N"])
@@ -48,8 +41,6 @@ def burnin(bparams):
     pmut = msprime.SLiMMutationModel(type=2) # type = 2 for m2 (spp 2)
     hts = msprime.sim_mutations(hts,rate=mu,model=hmut,keep=True)
     pts = msprime.sim_mutations(pts,rate=mu,model=pmut,keep=True)
-    print(f"The host now has {hts.num_mutations} mutations, at "f"{hts.num_sites} distinct sites.")
-    print(f"The para now has {pts.num_mutations} mutations, at "f"{pts.num_sites} distinct sites.")
 
     # adding selection coefficients (which are trait effects for me)
     htables = hts.tables
@@ -83,9 +74,7 @@ def burnin(bparams):
         _ = ptables.mutations.append(m.replace(metadata={"mutation_list": md_list}))
 
     assert htables.mutations.num_rows == hts.num_mutations
-    print(f"The host effects range from {min(hmut.values()):0.2e} to {max(hmut.values()):0.2e}.")
     assert ptables.mutations.num_rows == pts.num_mutations
-    print(f"The parasite effects range from {min(pmut.values()):0.2e} to {max(pmut.values()):0.2e}.")
 
     # gotta change a few things
     ts_metadata = htables.metadata
@@ -114,7 +103,7 @@ def burnin(bparams):
         pm['bounds_y1'] = 100
         htables.populations.add_row(metadata=pm)
     hts = htables.tree_sequence()
-    hts.dump(os.path.expanduser('~/gsccs-data/hinit.trees'))
+    hts.dump(datapth+'hinit.trees')
 
     ts_metadata = ptables.metadata
     ts_metadata['SLiM']['cycle'] = 1
@@ -142,4 +131,4 @@ def burnin(bparams):
         pm['bounds_y1'] = 100
         ptables.populations.add_row(metadata=pm)
     pts = ptables.tree_sequence()
-    pts.dump(os.path.expanduser('~/gsccs-data/pinit.trees'))
+    pts.dump(datapth+'pinit.trees')

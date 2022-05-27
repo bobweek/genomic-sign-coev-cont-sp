@@ -7,17 +7,16 @@
 # then exports genotype arrays of neutral mutations
 #
 
-import os
 import tskit
 import msprime
 import numpy as np
 
-def genotypeArrays():
+def genotypeArrays(datapth):
 
     # load trees
 
-    host_ts = tskit.load(os.path.expanduser('~/gsccs-data/host-slim.trees'))
-    para_ts = tskit.load(os.path.expanduser('~/gsccs-data/para-slim.trees'))
+    host_ts = tskit.load(datapth+'host-slim.trees')
+    para_ts = tskit.load(datapth+'para-slim.trees')
 
 
     # save causal snp locations
@@ -25,19 +24,19 @@ def genotypeArrays():
     h_csl_snps = []
     for i in host_ts.sites():
         h_csl_snps.append(i.position)
-    np.savetxt(os.path.expanduser('~/gsccs-data/h-csl-snps.csv'), h_csl_snps, delimiter=",")
+    np.savetxt(datapth+'h-csl-snps.csv', h_csl_snps, delimiter=",")
 
     p_csl_snps = []
     for i in para_ts.sites():
         p_csl_snps.append(i.position)
-    np.savetxt(os.path.expanduser('~/gsccs-data/p-csl-snps.csv'), p_csl_snps, delimiter=",")
+    np.savetxt(datapth+'p-csl-snps.csv', p_csl_snps, delimiter=",")
 
 
     # export locations and trait values
 
     indivlist = []
     indivnames = []
-    with open(os.path.expanduser('~/gsccs-data/host.txt'), "w") as indfile:
+    with open(datapth+'host.txt', "w") as indfile:
         indfile.writelines(",".join(["vcf_label"]
                                 + ["x", "y", "z"]) + "\n") # (x,y)=coords, z=trait
         for i in host_ts.individuals():
@@ -49,7 +48,7 @@ def genotypeArrays():
 
     indivlist = []
     indivnames = []
-    with open(os.path.expanduser('~/gsccs-data/para.txt'), "w") as indfile:
+    with open(datapth+'para.txt', "w") as indfile:
         indfile.writelines(",".join(["vcf_label"]
                                 + ["x", "y", "z"]) + "\n") # (x,y)=coords, z=trait
         for i in para_ts.individuals():
@@ -65,17 +64,17 @@ def genotypeArrays():
     hgm1 = hgm[:,0:host_ts.num_individuals]
     hgm2 = hgm[:,host_ts.num_individuals:host_ts.num_samples]
     hfrq = (hgm1+hgm2)/2
-    np.save(os.path.expanduser('~/gsccs-data/hfrq-causal'),hfrq)
+    np.save(datapth+'hfrq-causal',hfrq)
     hga = np.reshape(np.array([hgm1,hgm2]),(host_ts.num_sites,host_ts.num_individuals,2))
-    np.save(os.path.expanduser('~/gsccs-data/hga-causal'),hga)
+    np.save(datapth+'hga-causal',hga)
 
     pgm = para_ts.genotype_matrix()
     pgm1 = pgm[:,0:para_ts.num_individuals]
     pgm2 = pgm[:,para_ts.num_individuals:para_ts.num_samples]
     pfrq = (pgm1+pgm2)/2
-    np.save(os.path.expanduser('~/gsccs-data/pfrq-causal'),pfrq)
+    np.save(datapth+'pfrq-causal',pfrq)
     pga = np.reshape(np.array([pgm1,pgm2]),(para_ts.num_sites,para_ts.num_individuals,2))
-    np.save(os.path.expanduser('~/gsccs-data/pga-causal'),pga)
+    np.save(datapth+'pga-causal',pga)
 
     # sprinkle on neutral mutations
 
@@ -100,12 +99,12 @@ def genotypeArrays():
     h_ntl_snps = []
     for i in hts.sites():
         h_ntl_snps.append(i.position)
-    np.savetxt(os.path.expanduser('~/gsccs-data/h-ntl-snps.csv'), h_ntl_snps, delimiter=",")
+    np.savetxt(datapth+'h-ntl-snps.csv', h_ntl_snps, delimiter=",")
 
     p_ntl_snps = []
     for i in pts.sites():
         p_ntl_snps.append(i.position)
-    np.savetxt(os.path.expanduser('~/gsccs-data/p-ntl-snps.csv'), p_ntl_snps, delimiter=",")
+    np.savetxt(datapth+'p-ntl-snps.csv', p_ntl_snps, delimiter=",")
 
     # export individual allele freqs and genotype matrices of neutral mutations
 
@@ -113,14 +112,14 @@ def genotypeArrays():
     hgm1 = hgm[:,0:hts.num_individuals]
     hgm2 = hgm[:,hts.num_individuals:hts.num_samples]
     hfrq = (hgm1+hgm2)/2
-    np.save(os.path.expanduser('~/gsccs-data/hfrq-neutrl'),hfrq)
+    np.save(datapth+'hfrq-neutrl',hfrq)
     hga = np.reshape(np.array([hgm1,hgm2]),(hts.num_sites,hts.num_individuals,2))
-    np.save(os.path.expanduser('~/gsccs-data/hga-neutrl'),hga)
+    np.save(datapth+'hga-neutrl',hga)
 
     pgm = pts.genotype_matrix()
     pgm1 = pgm[:,0:pts.num_individuals]
     pgm2 = pgm[:,pts.num_individuals:pts.num_samples]
     pfrq = (pgm1+pgm2)/2
-    np.save(os.path.expanduser('~/gsccs-data/pfrq-neutrl'),pfrq)
+    np.save(datapth+'pfrq-neutrl',pfrq)
     pga = np.reshape(np.array([pgm1,pgm2]),(pts.num_sites,pts.num_individuals,2))
-    np.save(os.path.expanduser('~/gsccs-data/pga-neutrl'),pga)
+    np.save(datapth+'pga-neutrl',pga)
