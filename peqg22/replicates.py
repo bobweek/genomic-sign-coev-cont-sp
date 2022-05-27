@@ -6,10 +6,6 @@ import pandas as pd
 import subprocess
 import multiprocessing as mp
 
-# # in case you need to reload module
-import importlib
-importlib.reload(ild) # example use
-
 # number of replicates per parameter combo
 reps = 5
 
@@ -41,7 +37,7 @@ def makeILD(j,r,wch):
     # add neutral mutations and export genotype arrays
     ga.genotypeArrays()
 
-    # compute ild matrices and save to specified subfolder    
+    # compute ild matrices and save to specified subfolder  
     ild.ild(datapth,r)
 
 # the thing that manages parallel running of the things
@@ -82,7 +78,3 @@ for mu in mus:
 
         # save par combo to specified subfolder
         sprs.to_csv("~/gsccs-data/replicates/Lxs/%i"%j+"/pars.csv", index=False)        
-
-# restore default mutation rate
-bprs["mu"] = 5.0e-13
-bprs.to_csv("bparams.csv", index=False)
