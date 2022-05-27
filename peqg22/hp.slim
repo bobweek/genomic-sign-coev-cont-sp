@@ -2,17 +2,12 @@
 
 species all initialize(){
 	initializeSLiMModelType("nonWF");
-	// model parameters
-	setwd("~/gits/genomic-sign-coev-cont-sp/peqg22/");
-	prs = readCSV("slim-pars.csv");
-	for (k in prs.allKeys) {
-		if (!exists(k)) {
-			defineConstant(k, prs.getValue(k));
-		} else {
-			defaults.setValue(k, executeLambda(paste(c(k, ";"), sep='')));
-		}
-	}
+	// model parameters (parfname provided as an argument)
+//	if(!exists("parfname")) c
+//		defineConstant("parfname","~/gits/genomic-sign-coev-cont-sp/peqg22/slim-pars.csv");
+	prs = readCSV(parfname);
 	defineGlobal("params", prs);
+	for (k in prs.allKeys) defineConstant(k, prs.getValue(k));	
 	
 	// host spatial competition
 	initializeInteractionType(1, "xy", reciprocal=T, maxDistance=3*ωₕ);
@@ -101,8 +96,6 @@ species para reproduction(p1) {
 }
 
 ticks all 1 early() {
-	mmn = paste0("~/gsccs-data/minmax.csv"); // for plotting later
-	writeFile(mmn,paste("min","max",sep=","),append=F);
 	host.readFromPopulationFile("~/gsccs-data/hinit.trees",
 		subpopMap=Dictionary("p0", 0)); // consider if dfe looks different for msprime vs slim
 	para.readFromPopulationFile("~/gsccs-data/pinit.trees",

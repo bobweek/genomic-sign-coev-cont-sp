@@ -26,58 +26,62 @@ cprs = pd.read_csv("parcombos.csv", sep=",")
 ss = cprs["s"]
 mus = cprs["mu"]
 
-def makeILD(j,r):
+def makeILD(j,r,wch):
+
+    # subfolder for specified parameter combo (replicates w same pars get pooled together)
+    datapth = "~/gsccs-data/replicates/"+wch+"/%i"%j+"/"
 
     # do the burn-in
-    bp.burnin("bparams.csv")
+    bp.burnin(datapth+"bparams.csv")
 
-    # run the slimulation
-    subprocess.run(["slim", "hp.slim"])
+    # run the slimulation calling parameter file in specified subfolder
+    slmcmd = """slim -d "parfname='"""+datapth+"""slim-pars.csv'" hp.slim"""
+    subprocess.run(slmcmd, shell=True)
 
     # add neutral mutations and export genotype arrays
     ga.genotypeArrays()
 
-    # compute ild matrices and save to specified subfolder
-    datapth = "~/gsccs-data/replicates/sxs/%i"%j+"/"        
+    # compute ild matrices and save to specified subfolder    
     ild.ild(datapth,r)
 
 # the thing that manages parallel running of the things
 pool = mp.Pool()
 
 # iterate across combinations of host-para biotic selection
-j=1
+j=0
 for sh in ss:
     for sp in ss:
+
+        j+=1
         
         # swap out parameters
         sprs["sₕ"] = sh
         sprs["sₚ"] = sp
-        sprs.to_csv("slim-pars.csv", index=False)
+        bprs.to_csv("~/gsccs-data/replicates/sxs/%i"%j+"/bparams.csv", index=False)
+        sprs.to_csv("~/gsccs-data/replicates/sxs/%i"%j+"/slim-pars.csv", index=False)
 
-        [pool.apply_async(target=makeILD, args=(j,r)) for r in np.arange(reps)]
+        [pool.apply_async(makeILD, args=(j,r,"sxs")) for r in np.arange(reps)]
         
         # save par combo to specified subfolder
-        sprs.to_csv("~/gsccs-data/replicates/sxs/%i"%j+"/pars.csv", index=False)
-
-        j+=1
+        sprs.to_csv("~/gsccs-data/replicates/sxs/%i"%j+"/pars.csv", index=False)        
 
 # iterate across combinations of para biotic selection and mutation rate
-j=1
+j=0
 for mu in mus:
     for sp in ss:
+
+        j+=1
 
         # swap out parameters
         bprs["mu"] = mu
         sprs["sₚ"] = sp
-        bprs.to_csv("bparams.csv", index=False)
-        sprs.to_csv("slim-pars.csv", index=False)
+        bprs.to_csv("~/gsccs-data/replicates/Lxs/%i"%j+"/bparams.csv", index=False)
+        sprs.to_csv("~/gsccs-data/replicates/Lxs/%i"%j+"/slim-pars.csv", index=False)
         
-        [pool.apply_async(target=makeILD, args=(j,r)) for r in np.arange(reps)]
+        [pool.apply_async(makeILD, args=(j,r,"Lxs")) for r in np.arange(reps)]
 
         # save par combo to specified subfolder
-        sprs.to_csv("~/gsccs-data/replicates/sxs/%i"%j+"/pars.csv", index=False)
-
-        j+=1
+        sprs.to_csv("~/gsccs-data/replicates/Lxs/%i"%j+"/pars.csv", index=False)        
 
 # restore default mutation rate
 bprs["mu"] = 5.0e-13
