@@ -4,6 +4,7 @@ import ild
 import numpy as np
 import pandas as pd
 import subprocess
+import multiprocessing as mp
 
 # # in case you need to reload module
 import importlib
@@ -25,6 +26,21 @@ cprs = pd.read_csv("parcombos.csv", sep=",")
 ss = cprs["s"]
 mus = cprs["mu"]
 
+def makeILD(j,r):
+
+    # do the burn-in
+    bp.burnin("bparams.csv")
+
+    # run the slimulation
+    subprocess.run(["slim", "hp.slim"])
+
+    # add neutral mutations and export genotype arrays
+    ga.genotypeArrays()
+
+    # compute ild matrices and save to specified subfolder
+    datapth = "~/gsccs-data/replicates/sxs/%i"%j+"/"        
+    ild.ild(datapth,r)
+
 # iterate across combinations of host-para biotic selection
 j=1
 for sh in ss:
@@ -35,21 +51,9 @@ for sh in ss:
         sprs["sₚ"] = sp
         sprs.to_csv("slim-pars.csv", index=False)
 
-        for r in np.arange(reps):
-
-            # do the burn-in
-            bp.burnin("bparams.csv")
-
-            # run the slimulation
-            subprocess.run(["slim", "hp.slim"])
-
-            # add neutral mutations and export genotype arrays
-            ga.genotypeArrays()
-
-            # compute ild matrices and save to specified subfolder
-            datapth = "~/gsccs-data/replicates/sxs/%i"%j+"/"        
-            ild.ild(datapth,r)
-
+        proc = [mp.Process(target=makeILD, args=(j,r)) for r in np.arange(reps)]
+        [p.start() for p in proc]
+        
         # save par combo to specified subfolder
         sprs.to_csv("~/gsccs-data/replicates/sxs/%i"%j+"/pars.csv", index=False)
 
@@ -66,20 +70,8 @@ for mu in mus:
         bprs.to_csv("bparams.csv", index=False)
         sprs.to_csv("slim-pars.csv", index=False)
         
-        for r in np.arange(reps):
-
-            # do the burn-in
-            bp.burnin("bparams.csv")
-            
-            # run the slimulation
-            subprocess.run(["slim", "hp.slim"])
-
-            # add neutral mutations and export genotype arrays
-            ga.genotypeArrays()
-
-            # compute ild matrices and save to specified subfolder
-            datapth = "~/gsccs-data/replicates/sxs/%i"%j+"/"        
-            ild.ild(datapth,r)
+        proc = [mp.Process(target=makeILD, args=(j,r)) for r in np.arange(reps)]
+        [p.start() for p in proc]
 
         # save par combo to specified subfolder
         sprs.to_csv("~/gsccs-data/replicates/sxs/%i"%j+"/pars.csv", index=False)
