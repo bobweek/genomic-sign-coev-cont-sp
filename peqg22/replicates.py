@@ -41,10 +41,10 @@ mus = cprs["mu"]
 def makeILD(j,r,wch):
     
     # path to msprime and slim model parameters in superfolder
-    msprpth = os.path.expanduser("~/gsccs-data/replicates/"+wch+"/%i"%j)
+    msprpth = os.path.expanduser("~/gsccs-data/replicates/"+wch+"/%i"%j+"/")
 
     # replicate specific subfolder
-    datapth = msprpth+"/%i"%r+"/"
+    datapth = msprpth+"%i"%r+"/"
 
     # do the burn-in
     bp.burnin(msprpth,datapth)
@@ -77,9 +77,6 @@ for sh in ss:
 
         [pool.apply_async(makeILD, args=(j,r,"sxs")) for r in np.arange(reps)]
         
-        # save par combo to specified subfolder
-        sprs.to_csv(superfolder+"/pars.csv", index=False)        
-
         j+=1
 
 # iterate across combinations of para biotic selection and mutation rate
@@ -96,8 +93,5 @@ for mu in mus:
         sprs.to_csv(superfolder+"/slim-pars.csv", index=False)
         
         [pool.apply_async(makeILD, args=(j,r,"Lxs")) for r in np.arange(reps)]
-
-        # save par combo to specified subfolder
-        sprs.to_csv(superfolder+"/pars.csv", index=False)        
 
         j+=1
