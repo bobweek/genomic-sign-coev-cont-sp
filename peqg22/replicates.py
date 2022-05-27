@@ -95,3 +95,6 @@ for mu in mus:
         [pool.apply_async(makeILD, args=(j,r,"Lxs")) for r in np.arange(reps)]
 
         j+=1
+
+pool.close()
+pool.join()
