@@ -5,6 +5,8 @@ species all initialize(){
 	// model parameters (parfname provided as an argument)
 //	if(!exists("parfname")) c
 //		defineConstant("parfname","~/gits/genomic-sign-coev-cont-sp/peqg22/slim-pars.csv");
+//	if(!exists("treflder")) c
+//		defineGlobal("trefldr","~/gsccs-data/");
 	prs = readCSV(parfname);
 	defineGlobal("params", prs);
 	for (k in prs.allKeys) defineConstant(k, prs.getValue(k));	
@@ -175,8 +177,8 @@ ticks all 2:50000 early(){
 }
 
 ticks all 50000 late() {
-	host.treeSeqOutput("~/gsccs-data/host-slim.trees", metadata=params);
-	para.treeSeqOutput("~/gsccs-data/para-slim.trees", metadata=params);
+	host.treeSeqOutput(trefldr+"host-slim.trees", metadata=params);
+	para.treeSeqOutput(trefldr+"para-slim.trees", metadata=params);
 	community.simulationFinished();
 	catn("Done.");
 }

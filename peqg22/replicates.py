@@ -42,7 +42,7 @@ def makeILD(j,r,wch):
     
     # path to msprime and slim model parameters in superfolder
     msprpth = os.path.expanduser("~/gsccs-data/replicates/"+wch+"/%i"%j+"/")
-
+    
     # replicate specific subfolder
     datapth = msprpth+"%i"%r+"/"
 
@@ -50,7 +50,7 @@ def makeILD(j,r,wch):
     bp.burnin(msprpth,datapth)
 
     # run the slimulation calling parameter file in specified subfolder
-    slmcmd = """slim -d "parfname='"""+msprpth+"""slim-pars.csv'" hp.slim"""
+    slmcmd = """slim -d "parfname='"""+msprpth+"""slim-pars.csv'"  -d "trefldr='"""+datapth+"""'" hp.slim"""
     subprocess.run(slmcmd, shell=True)
 
     # add neutral mutations and export genotype arrays
