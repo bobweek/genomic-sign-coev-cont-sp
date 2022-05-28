@@ -82,14 +82,16 @@ def genotypeArrays(datapth):
 
     htables = host_ts.tables
     htables.mutations.clear()
+    htables.sites.clear()
     hts = htables.tree_sequence()
 
     ptables = para_ts.tables
     ptables.mutations.clear()
+    ptables.sites.clear()
     pts = ptables.tree_sequence()
 
     hmut = msprime.SLiMMutationModel(type=1)
-    hts = msprime.sim_mutations(host_ts,rate=mu,model=hmut,keep=True)
+    hts = msprime.sim_mutations(hts,rate=mu,model=hmut,keep=True)
 
     pmut = msprime.SLiMMutationModel(type=1)
     pts = msprime.sim_mutations(pts,rate=mu,model=pmut,keep=True)

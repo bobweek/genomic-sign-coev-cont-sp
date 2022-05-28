@@ -81,11 +81,11 @@ np.save(os.path.expanduser('~/gsccs-data/pga-causal'),pga)
 # inspect trees
 
 print(f"The host tree sequence has {host_ts.num_trees} trees on a genome of length {host_ts.sequence_length},"
-      f" {host_ts.num_individuals} individuals, {host_ts.num_samples} 'sample' genomes,"
+      f" {host_ts.num_individuals} individuals, {host_ts.num_samples} 'sample' genomes, {host_ts.num_sites} sites,"
       f" and {host_ts.num_mutations} causal mutations.")
 
 print(f"The tree sequence has {para_ts.num_trees} trees on a genome of length {para_ts.sequence_length},"
-      f" {para_ts.num_individuals} individuals, {para_ts.num_samples} 'sample' genomes,"
+      f" {para_ts.num_individuals} individuals, {para_ts.num_samples} 'sample' genomes, {para_ts.num_sites} sites,"
       f" and {para_ts.num_mutations} causal mutations.")
 
 
@@ -95,14 +95,16 @@ mu = 1e-11 # neutral mutations occur an order of magnitude faster than causal
 
 htables = host_ts.tables
 htables.mutations.clear()
+htables.sites.clear()
 hts = htables.tree_sequence()
 
 ptables = para_ts.tables
 ptables.mutations.clear()
+ptables.sites.clear()
 pts = ptables.tree_sequence()
 
 hmut = msprime.SLiMMutationModel(type=1)
-hts = msprime.sim_mutations(host_ts,rate=mu,model=hmut,keep=True)
+hts = msprime.sim_mutations(hts,rate=mu,model=hmut,keep=True)
 
 pmut = msprime.SLiMMutationModel(type=1)
 pts = msprime.sim_mutations(pts,rate=mu,model=pmut,keep=True)
@@ -110,9 +112,9 @@ pts = msprime.sim_mutations(pts,rate=mu,model=pmut,keep=True)
 
 # how many mutations now?
 
-print(f"Host tree sequence has {hts.num_mutations} neutral mutations.")
+print(f"Host tree sequence has {hts.num_mutations} neutral mutations at {hts.num_sites} sites.")
 
-print(f"Para tree sequence has {pts.num_mutations} neutral mutations.")
+print(f"Para tree sequence has {pts.num_mutations} neutral mutations at {pts.num_sites} sites.")
 
 
 # save neutral snp locations

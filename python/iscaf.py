@@ -10,7 +10,7 @@
 import os
 import numpy as np
 import pandas as pd
-os.chdir("python")
+# os.chdir("../python")
 import classes_fcts as cf
 
 # # in case you need to reload module
@@ -59,14 +59,3 @@ np.savetxt(fname('csl-iscaf-cor.csv'), csl_iscaf_cor, delimiter=",")
 np.savetxt(fname('csl-iscaf-cov.csv'), csl_iscaf_cov, delimiter=",")
 np.savetxt(fname('csl-iscaf-cor-flat.csv'), csl_iscaf_cor.flatten(), delimiter=",")
 np.savetxt(fname('csl-iscaf-cov-flat.csv'), csl_iscaf_cov.flatten(), delimiter=",")
-
-# import networkx as nx
-
-# import matplotlib.pyplot as plt
-
-# import sys
-# import warnings
-# warnings.filterwarnings('ignore')
-
-# print('Python Version : '+sys.version)
-# print('NetworkX version : '+nx.__version__)
