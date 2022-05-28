@@ -60,7 +60,7 @@ def makeILD(j,r,wch):
     ild.ild(datapth,msprpth)
 
 # the thing that manages parallel running of the things
-pool = mp.Pool()
+pool = mp.Pool(5)
 
 # iterate across combinations of host-para biotic selection
 j=0
@@ -87,8 +87,11 @@ for mu in mus:
         superfolder = os.path.expanduser("~/gsccs-data/replicates/Lxs/%i"%j)
 
         # swap out parameters
+        k = cprs["k"][cprs["mu"] == mu]
         bprs["mu"] = mu
         sprs["sₚ"] = sp
+        bprs["k"] = k
+        sprs["κₚ"] = k
         bprs.to_csv(superfolder+"/bparams.csv", index=False)
         sprs.to_csv(superfolder+"/slim-pars.csv", index=False)
         
