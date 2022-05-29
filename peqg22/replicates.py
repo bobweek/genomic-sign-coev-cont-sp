@@ -37,6 +37,7 @@ cprs = pd.read_csv("parcombos.csv", sep=",")
 # pull out combos
 ss = cprs["s"]
 mus = cprs["mu"]
+ks = cprs["k"]
 
 def makeILD(j,r,wch):
     
@@ -62,32 +63,54 @@ def makeILD(j,r,wch):
 # the thing that manages parallel running of the things
 pool = mp.Pool(5)
 
-# iterate across combinations of host-para biotic selection
-j=0
-for sh in ss:
-    for sp in ss:
+# # iterate across combinations of host-para biotic selection
+# j=0
+# for sh in ss:
+#     for sp in ss:
         
-        superfolder = os.path.expanduser("~/gsccs-data/replicates/sxs/%i"%j)
+#         superfolder = os.path.expanduser("~/gsccs-data/replicates/sxs/%i"%j)
         
-        # swap out parameters
-        sprs["sₕ"] = sh
-        sprs["sₚ"] = sp
-        bprs.to_csv(superfolder+"/bparams.csv", index=False)
-        sprs.to_csv(superfolder+"/slim-pars.csv", index=False)
+#         # swap out parameters
+#         sprs["sₕ"] = sh
+#         sprs["sₚ"] = sp
+#         bprs.to_csv(superfolder+"/bparams.csv", index=False)
+#         sprs.to_csv(superfolder+"/slim-pars.csv", index=False)
 
-        [pool.apply_async(makeILD, args=(j,r,"sxs")) for r in np.arange(reps)]
+#         [pool.apply_async(makeILD, args=(j,r,"sxs")) for r in np.arange(reps)]
         
-        j+=1
+#         j+=1
 
+# # iterate across combinations of para biotic selection and mutation rate
+# j=0
+# for mu in mus:
+#     for sp in ss:
+        
+#         superfolder = os.path.expanduser("~/gsccs-data/replicates/Lxs/%i"%j)
+
+#         # swap out parameters
+#         wchk = np.where(cprs["mu"] == mu)[0][0]
+#         k = ks[wchk]
+#         bprs["mu"] = mu
+#         sprs["sₚ"] = sp
+#         bprs["k"] = k
+#         sprs["κₚ"] = k
+#         bprs.to_csv(superfolder+"/bparams.csv", index=False)
+#         sprs.to_csv(superfolder+"/slim-pars.csv", index=False)
+        
+#         [pool.apply_async(makeILD, args=(j,r,"Lxs")) for r in np.arange(reps)]
+
+#         j+=1
+
+# run sub loop to get remaining Lxs'
 # iterate across combinations of para biotic selection and mutation rate
-j=0
+j=3
 for mu in mus:
     for sp in ss:
         
         superfolder = os.path.expanduser("~/gsccs-data/replicates/Lxs/%i"%j)
 
         # swap out parameters
-        k = cprs["k"][cprs["mu"] == mu]
+        k = np.float64(cprs["k"][cprs["mu"] == mu])
         bprs["mu"] = mu
         sprs["sₚ"] = sp
         bprs["k"] = k

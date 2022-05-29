@@ -1,0 +1,180 @@
+// this version does not produce time-series
+
+species all initialize(){
+	initializeSLiMModelType("nonWF");
+	// model parameters (parfname provided as an argument)
+//	if(!exists("parfname")) c
+//		defineConstant("parfname","~/gits/genomic-sign-coev-cont-sp/peqg22/slim-pars.csv");
+//	if(!exists("treflder")) c
+//		defineGlobal("trefldr","~/gsccs-data/");
+	prs = readCSV(parfname);
+	defineGlobal("params", prs);
+	for (k in prs.allKeys) defineConstant(k, prs.getValue(k));	
+	
+	// host spatial competition
+	initializeInteractionType(1, "xy", reciprocal=T, maxDistance=3*ωₕ);
+	i1.setInteractionFunction("n", 1.0, ωₕ);
+	
+	// parasite spatial competition
+	initializeInteractionType(2, "xy", reciprocal=T, maxDistance=3*ωₚ);
+	i2.setInteractionFunction("n", 1.0, ωₚ); // gaussian because it has nice edge effect properties?
+	
+	// host mate choice
+	initializeInteractionType(3, "xy", reciprocal=T, maxDistance=4*ωₕ);
+	i3.setInteractionFunction("l", 1.0); // linear for speed
+	
+	// parasite mate choice
+	initializeInteractionType(4, "xy", reciprocal=T, maxDistance=8*ωₚ);
+	i4.setInteractionFunction("l", 1.0);
+	
+	// parasitism
+	initializeInteractionType(5, "xy", reciprocal=T, maxDistance=ι);
+	i5.setInteractionFunction("l", 1.0);
+}
+
+species host initialize() {
+	initializeSLiMOptions(dimensionality="xy");
+	initializeSpecies(tickModulo=1, tickPhase=1, avatar="🦌");
+	initializeTreeSeq();
+	
+	// host genomics
+	initializeMutationRate(µₕ);
+	initializeMutationType("m1", 0.5, "n", 0.0, κₕ);
+	initializeGenomicElementType("g1", m1, 1.0);
+	initializeGenomicElement(g1, 0, 1e8-1);
+	initializeRecombinationRate(1e-8);
+
+}
+
+species para initialize() {
+	initializeSLiMOptions(dimensionality="xy");
+	initializeSpecies(tickModulo=1, tickPhase=1, avatar="🪱");
+	initializeTreeSeq();
+	
+	// parasite genomics
+	initializeMutationRate(µₚ);
+	initializeMutationType("m2", 0.5, "n", 0.0, κₚ);
+	initializeGenomicElementType("g2", m2, 1.0);
+	initializeGenomicElement(g2, 0, 1e8-1);
+	initializeRecombinationRate(1e-8);
+}
+
+// make causal mutions neutral :B
+species host fitness(m1) { return 1.0; }
+species para fitness(m2) { return 1.0; }
+
+// host mating
+species host reproduction(p0) {
+	mate = i3.drawByStrength(individual, 1); // find a single partner to mate with
+	if(mate.size()) {
+		offspring = subpop.addCrossed(individual, mate);
+		pos = p0.pointUniform(1);
+		offspring.setSpatialPosition(pos);
+	} else{
+		offspring = subpop.addCrossed(individual, individual);
+		pos = p0.pointUniform(1);
+		offspring.setSpatialPosition(pos);	
+	}
+	return;
+}
+
+// parasite mating
+species para reproduction(p1) {
+	mate = i4.drawByStrength(individual, 1);
+	if(mate.size()) {
+		offspring = subpop.addCrossed(individual, mate);
+		pos = p1.pointUniform(1);
+		offspring.setSpatialPosition(pos);
+	} else{
+		offspring = subpop.addCrossed(individual, individual);
+		pos = p1.pointUniform(1);
+		offspring.setSpatialPosition(pos);	
+	}
+	return;
+}
+
+ticks all 1 early() {
+	host.readFromPopulationFile("~/gsccs-data/hinit.trees",
+		subpopMap=Dictionary("p0", 0)); // consider if dfe looks different for msprime vs slim
+	para.readFromPopulationFile("~/gsccs-data/pinit.trees",
+		subpopMap=Dictionary("p1", 0)); // and also if later dynamics change depending
+	p0.setSpatialBounds(c(0, 0, 100, 100));
+	p1.setSpatialBounds(c(0, 0, 100, 100));
+	p0.individuals.setSpatialPosition(p0.pointUniform(p0.individualCount));
+	p1.individuals.setSpatialPosition(p1.pointUniform(p1.individualCount));
+	
+//	community.rescheduleScriptBlock(s1, start=2, end=ntlbrnn);
+//	community.rescheduleScriptBlock(s2, start=ntlbrnn+1, end=ixnbrnn);
+//	community.rescheduleScriptBlock(s3, start=ixnbrnn, end=ixnbrnn);
+}
+
+ticks all 2:50000 first(){
+	i3.evaluate(p0);
+	i4.evaluate(p1);
+}
+
+ticks all 2:50000 early(){
+	i1.evaluate(p0);
+	i2.evaluate(p1);
+	i5.evaluate(p0);
+	i5.evaluate(p1);
+	
+	// caculating the phenotype as sum of loci with mutation
+	zₕ = p0.individuals.sumOfMutationsOfType(m1)+1;// + rnorm(p0.individualCount,0,εₕ);
+	zₚ = p1.individuals.sumOfMutationsOfType(m2)-1;// + rnorm(p1.individualCount,0,εₚ);
+	
+	//
+	// intraspp competition
+	//	
+	
+	// compute fx of intraspp comp on host fecun
+	Nₕ = i1.localPopulationDensity(p0.individuals);
+	Wₕ = W₀ₕ*exp(-cₕ*Nₕ);
+
+	// compute fx of intraspp comp on para fecun
+	Nₚ = i2.localPopulationDensity(p1.individuals);
+	Wₚ = W₀ₚ*exp(-cₚ*Nₚ);
+
+	//
+	// host-parasite interactions
+	//
+
+	// grab indices of hosts selected by parasites (set -1 if no host selected)
+	hs = sapply(p1.individuals,"h = i5.nearestInteractingNeighbors(applyValue,1,p0); if (length(h)>0) h.index; else -1;");
+	
+	//	grab indices of host indices present in selected vector
+	// note: if no parasites this returns an error
+	// but since we dont care what happens without parasites
+	// this terminates the simulation for us, so we keep it
+	u = hs>-1;
+	
+	// grab host indices in selected vector
+	// and indices of parasites that found a host
+	hs = hs[u];
+	ps = p1.individuals.index[u];
+	
+	// probability of infection (trait matching)
+	α = exp(-γ*(zₕ[hs]-zₚ[u])^2/2);
+	
+	// biotic component of selection	
+	Bₕ = rep(1.0,p0.individualCount);
+	Bₚ = rep(1.0,p1.individualCount);
+	
+	// deterministic fitness outcome (expectation of coin toss)
+	Bₕ[hs] = (exp(-sₕ)*α + (1-α));
+	Bₚ[u] = (exp(sₚ)*α + (1-α));
+	Wₕ =  Bₕ*Wₕ;
+	Wₚ =  Bₚ*Wₚ;
+	
+	// mortality probability
+	p0.individuals.fitnessScaling = floor(2*Wₕ);
+	p1.individuals.fitnessScaling = floor(2*Wₚ);
+	
+}
+
+ticks all 50000 late() {
+	host.treeSeqOutput(trefldr+"host-slim.trees", metadata=params);
+	para.treeSeqOutput(trefldr+"para-slim.trees", metadata=params);
+	community.simulationFinished();
+	catn("Done.");
+}

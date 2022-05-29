@@ -19,8 +19,8 @@ def perCsl(j,r,wch,thrsh):
 
     dpth = os.path.expanduser("~/gsccs-data/replicates/"+wch+"/%i"%j+"/%i"%r+"/")
 
-    ild = pd.read_csv(dpth+"iscaf-cov.csv", header=None).to_numpy()
-    csl_ild = pd.read_csv(dpth+"csl-iscaf-cov.csv", header=None).to_numpy()
+    ild = pd.read_csv(dpth+"ild.csv", header=None).to_numpy()
+    csl_ild = pd.read_csv(dpth+"csl-ild.csv", header=None).to_numpy()
 
     # remove host neutral loci within 5kbp of host causal loci
 
