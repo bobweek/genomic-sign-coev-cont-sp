@@ -36,7 +36,7 @@ cprs = pd.read_csv("parcombos.csv", sep=",")
 
 # pull out combos
 ss = cprs["s"]
-mus = cprs["mu"]
+mus = cprs["mu"][1:3]
 ks = cprs["k"]
 
 def makeILD(j,r,wch):
