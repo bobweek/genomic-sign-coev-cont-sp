@@ -25,17 +25,17 @@ def ild(dpth,ppth):
 
     # compute ild across whole genome (only for cov-based ild)
     ild = cf.ild(sstm,"cov")
-    np.save(dpth+'ild.csv', ild)
+    np.save(dpth+'ild', ild)
     np.savetxt(dpth+'ild-flat.csv', ild.flatten(), delimiter=",")
 
     # compute ild only at causal loci
     hncsl = len(sstm.h.csl_snp)
     pncsl = len(sstm.p.csl_snp)
     csl_ild = ild[0:hncsl,0:pncsl]
-    np.save(dpth+'csl-ild.csv', csl_ild)
+    np.save(dpth+'csl-ild', csl_ild)
     np.savetxt(dpth+'csl-ild-flat.csv', csl_ild.flatten(), delimiter=",")
 
     # compute ild only at neutral loci
     ntl_ild = ild[hncsl:sstm.h.S,pncsl:sstm.p.S]
-    np.save(dpth+'ntl-ild.csv', ntl_ild)
+    np.save(dpth+'ntl-ild', ntl_ild)
     np.savetxt(dpth+'ntl-ild-flat.csv', ntl_ild.flatten(), delimiter=",")

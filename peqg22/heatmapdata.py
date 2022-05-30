@@ -19,8 +19,10 @@ def perCsl(j,r,wch,thrsh):
 
     dpth = os.path.expanduser("~/gsccs-data/replicates/"+wch+"/%i"%j+"/%i"%r+"/")
 
-    ild = pd.read_csv(dpth+"ild.csv", header=None).to_numpy()
-    csl_ild = pd.read_csv(dpth+"csl-ild.csv", header=None).to_numpy()
+    # ild = pd.read_csv(dpth+"ild.csv", header=None).to_numpy()
+    # csl_ild = pd.read_csv(dpth+"csl-ild.csv", header=None).to_numpy()
+    ild = np.load(dpth+"ild.csv.npy")
+    csl_ild = np.load(dpth+"csl-ild.npy")
 
     # remove host neutral loci within 5kbp of host causal loci
 
@@ -80,13 +82,13 @@ for k in np.arange(3):
         
         sfrs = [perCsl(j,r,"sxs",threshold) for r in np.arange(reps)]
         sfrac[k,l] = np.mean(sfrs)
-        sss[0,k,l] = ss[k]
-        sss[1,k,l] = ss[l]
+        sss[0,k,:] = ss[k] # sh
+        sss[1,:,l] = ss[l] # sp
         
-        mufrs = [perCsl(j,r,"Lxs",threshold) for r in np.arange(reps)]
-        mufrac[k,l] = np.mean(mufrs)
-        Ls[0,k,l] = ss[k]
-        Ls[1+np.arange(reps),k,l] = [getL(j,r,"Lxs","p") for r in np.arange(reps)]        
+        # mufrs = [perCsl(j,r,"Lxs",threshold) for r in np.arange(reps)]
+        # mufrac[k,l] = np.mean(mufrs)
+        # Ls[0,k,l] = ss[k]
+        # Ls[1+np.arange(reps),k,l] = [getL(j,r,"Lxs","p") for r in np.arange(reps)]        
 
         j += 1
 

@@ -112,12 +112,12 @@ ticks all 1 early() {
 //	community.rescheduleScriptBlock(s3, start=ixnbrnn, end=ixnbrnn);
 }
 
-ticks all 2:50000 first(){
+ticks all 2:25000 first(){
 	i3.evaluate(p0);
 	i4.evaluate(p1);
 }
 
-ticks all 2:50000 early(){
+ticks all 2:25000 early(){
 	i1.evaluate(p0);
 	i2.evaluate(p1);
 	i5.evaluate(p0);
@@ -176,7 +176,7 @@ ticks all 2:50000 early(){
 	
 }
 
-ticks all 50000 late() {
+ticks all 25000 late() {
 	host.treeSeqOutput(trefldr+"host-slim.trees", metadata=params);
 	para.treeSeqOutput(trefldr+"para-slim.trees", metadata=params);
 	community.simulationFinished();

@@ -6,7 +6,7 @@ import os
 N = 5000
 n = 5000
 L = 1e8
-mu = 5e-12
+mu = 5e-13
 k = 1.0
 rho = 1e-8
 
