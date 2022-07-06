@@ -6,8 +6,8 @@ import os
 N = 5000
 n = 5000
 L = 1e8
-mu = 5e-13
-k = 1.0
+mu = 1e-13
+k = 0.1
 rho = 1e-8
 
 # generate genealogy
@@ -37,7 +37,8 @@ for m in hts.mutations():
   assert len(slim_ids) == len(md_list)
   for sid, md in zip(slim_ids, md_list):
      if sid not in hmut:
-        hfx[int(sid)] = np.random.normal(loc=0,scale=k) # gaussian mutations
+      #   hfx[int(sid)] = np.random.normal(loc=0,scale=k) # gaussian mutations
+        hfx[int(sid)] = np.random.uniform(low=-k,high=k) # uniform mutations
         hmut[sid] = hfx[int(sid)]
      md["selection_coeff"] = hmut[sid]
   _ = htables.mutations.append(
@@ -54,8 +55,9 @@ for m in pts.mutations():
   assert len(slim_ids) == len(md_list)
   for sid, md in zip(slim_ids, md_list):
      if sid not in pmut:
-        pfx[int(sid)] = np.random.normal(loc=0,scale=k) # gaussian mutations
-        pmut[sid] = pfx[int(sid)]
+      #   pfx[int(sid)] = np.random.normal(loc=0,scale=k) # gaussian mutations
+         pfx[int(sid)] = np.random.uniform(low=-k,high=k) # uniform mutations
+         pmut[sid] = pfx[int(sid)]
      md["selection_coeff"] = pmut[sid]
   _ = ptables.mutations.append(
           m.replace(metadata={"mutation_list": md_list})

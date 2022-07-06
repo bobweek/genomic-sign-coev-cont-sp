@@ -17,13 +17,11 @@ ylb = TeX("Infection Probability ($\\alpha$)")
 
 phint = ggplot(inf.pr) + 
   geom_line(aes(x=dz,y=pr),color="black") +
-  annotate("text", x=-3, y=0.8, label= TeX("$\\alpha(\\Delta z)=\\exp\\left(-\\frac{\\gamma}{2}\\Delta z^2\\right)$"),color="black") + 
+  annotate("text", x=-3, y=0.8, 
+           label= TeX("$\\alpha(\\Delta z)=\\exp\\left(-\\frac{\\gamma}{2}\\Delta z^2\\right)$"),
+           color="black") + 
   xlab(xlb) +
   ylab(ylb) +
-  ggtitle("Phenotypic Interface = Trait Matching") +
+  # ggtitle("Phenotypic Interface = Trait Matching") +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5))
-
-ggplot() +
-  annotate()
-

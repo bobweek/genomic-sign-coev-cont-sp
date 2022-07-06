@@ -4,18 +4,18 @@ species all initialize(){
 	initializeSLiMModelType("nonWF");
 	// model parameters
 	defaults = Dictionary(	
-		"µₕ",  5e-13,  	// host mutation rate
-		"µₚ",  5e-13,  	// parasite mutation rate
-		"κₕ",  1.0,  		// host mutation effect size
-		"κₚ",  1.0,  		// parasite mutation effect size
+		"µₕ",  1e-13,  	// host mutation rate
+		"µₚ",  1e-13,  	// parasite mutation rate
+		"κₕ",  0.1,  		// host mutation effect size
+		"κₚ",  0.1,  		// parasite mutation effect size
 		"εₕ",  0.5,			// stddev of environmental noise (not on rn)
 		"εₚ",  0.5,			// stddev of environmental noise (not on rn)		
-		"σₕ",  1.0,  		// host dispersal distance
+		"σₕ",  0.2,  		// host dispersal distance
 		"σₚ",  0.2,  		// parasite dispersal distance
 		"ι",   3.0,			// spatial interspp interaction distance
-		"cₕ",  0.5, 		// strength of host competition
-		"cₚ",  0.06, 		// strength of para competition
-		"ωₕ",  1.0,			// (spatial) host niche breadth
+		"cₕ",  0.075, 		// strength of host competition
+		"cₚ",  0.075, 		// strength of para competition
+		"ωₕ",  0.2,			// (spatial) host niche breadth
 		"ωₚ",  0.2,			// (spatial) parasite niche breadth
 		"W₀ₕ", 1.0,			// host base fitness
 		"W₀ₚ", 1.0,			// para base fitness
@@ -79,7 +79,8 @@ species host initialize() {
 	
 	// host genomics
 	initializeMutationRate(µₕ);
-	initializeMutationType("m1", 0.5, "n", 0.0, κₕ);
+//	initializeMutationType("m1", 0.5, "n", 0.0, κₕ); // normal dfe
+	initializeMutationType("m1", 0.5, "s", "return runif(1,-κₕ,κₕ);"); // unif dfe
 	initializeGenomicElementType("g1", m1, 1.0);
 	initializeGenomicElement(g1, 0, 1e8-1);
 	initializeRecombinationRate(1e-8);
@@ -93,7 +94,8 @@ species para initialize() {
 	
 	// parasite genomics
 	initializeMutationRate(µₚ);
-	initializeMutationType("m2", 0.5, "n", 0.0, κₚ);
+//	initializeMutationType("m2", 0.5, "n", 0.0, κₚ); // normal dfe
+	initializeMutationType("m2", 0.5, "s", "return runif(1,-κₚ,κₚ);"); // unif dfe
 	initializeGenomicElementType("g2", m2, 1.0);
 	initializeGenomicElement(g2, 0, 1e8-1);
 	initializeRecombinationRate(1e-8);

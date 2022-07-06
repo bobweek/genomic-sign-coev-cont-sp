@@ -1,55 +1,15 @@
-// this version is psuedo-nonspatial
+// this version is pseudo-nonspatial
 
 species all initialize(){
 	initializeSLiMModelType("nonWF");
-	// model parameters
-	defaults = Dictionary(	
-		"µₕ",  5e-13,  	// host mutation rate
-		"µₚ",  5e-13,  	// parasite mutation rate
-		"κₕ",  1.0,  		// host mutation effect size
-		"κₚ",  1.0,  		// parasite mutation effect size
-		"εₕ",  0.5,			// stddev of environmental noise (not on rn)
-		"εₚ",  0.5,			// stddev of environmental noise (not on rn)
-		"σₕ",  1.0,  		// host dispersal distance
-		"σₚ",  0.2,  		// parasite dispersal distance
-		"ι",   3.0,			// spatial interspp interaction distance
-		"cₕ",  0.5, 		// strength of host competition
-		"cₚ",  0.1, 		// strength of para competition
-		"ωₕ",  1.0,			// (spatial) host niche breadth
-		"ωₚ",  0.2,			// (spatial) parasite niche breadth
-		"W₀ₕ", 1.0,			// host base fitness
-		"W₀ₚ", 0.8,			// para base fitness
-		"sₕ",  1e-4, 		// cost on host fitness for each infection ('s' as in selection)
-		"sₚ",  1e-2, 		// benefit on parasite fitness for successful infection
-		"γ",   1.0,			// sensitivity of inf pr to trait differences ('gamma' trad nuimser notation for this par)
-		"ρ₀ₕ",  0.1,		// initial population density ('rho' is trad for densities)
-		"ρ₀ₚ",  0.1			// initial population density ('rho' is trad for densities)
-		);
-	for (k in defaults.allKeys) {
-		if (!exists(k)) {
-			defineConstant(k, defaults.getValue(k));
-		} else {
-			defaults.setValue(k, executeLambda(paste(c(k, ";"), sep='')));
-		}
-	}
-	defineGlobal("params", defaults);
-	catn(params);
-	
-	// temporal resolution of time-series
-	defineConstant("tempres", 100);
-	
-	// params.csv
-	pfn = "~/gsccs-data/params.csv";
-	writeFile(pfn,paste("µₕ","µₚ","κₕ","κₚ","σₕ","σₚ","ι","cₕ","cₚ","ωₕ","ωₚ",
-		"W₀ₕ","W₀ₚ","sₕ","sₚ","γ","ρ₀ₕ","ρ₀ₚ","tempres",sep=","),append=F);
-	writeFile(pfn,paste(µₕ,µₚ,κₕ,κₚ,σₕ,σₚ,ι,cₕ,cₚ,ωₕ,ωₚ,W₀ₕ,W₀ₚ,sₕ,sₚ,γ,ρ₀ₕ,ρ₀ₚ,tempres,sep=","),append=T);	
-
-	// time-series.csv
-	tsfn = "~/gsccs-data/time-series.csv";
-	writeFile(tsfn,paste("t","Nh","Np","zh","zp","vh","vp","pr_unhosted","pr_unparasitized",
-		"pprh_m","pprh_v","pntcorr","muh","mup","pdv","pdm","hselresp","pselresp","abar","vara",sep=","),append=F);
-
-	defineGlobal("j", 1);	
+	// model parameters (parfname provided as an argument)
+//	if(!exists("parfname")) c
+//		defineConstant("parfname","~/gits/genomic-sign-coev-cont-sp/peqg22/slim-pars.csv");
+//	if(!exists("treflder")) c
+//		defineGlobal("trefldr","~/gsccs-data/");
+	prs = readCSV(parfname);
+	defineGlobal("params", prs);
+	for (k in prs.allKeys) defineConstant(k, prs.getValue(k));	
 	
 	// host spatial competition
 	initializeInteractionType(1, "xy", reciprocal=T, maxDistance=3*ωₕ);
@@ -138,8 +98,6 @@ species para reproduction(p1) {
 }
 
 ticks all 1 early() {
-	mmn = paste0("~/gsccs-data/minmax.csv"); // for plotting later
-	writeFile(mmn,paste("min","max",sep=","),append=F);
 	host.readFromPopulationFile("~/gsccs-data/hinit.trees",
 		subpopMap=Dictionary("p0", 0)); // consider if dfe looks different for msprime vs slim
 	para.readFromPopulationFile("~/gsccs-data/pinit.trees",
@@ -186,7 +144,7 @@ ticks all 2:50000 early(){
 	//
 
 	// grab indices of hosts selected by parasites (set -1 if no host selected)
-	hs = sapply(p1.individuals,"h = i5.nearestInteractingNeighbors(applyValue,1,p0); if (length(h)>0) h.index; else -1;");
+	hs = sapply(p1.individuals,"h = p0.sampleIndividuals(1); if (length(h)>0) h.index; else -1;");
 	
 	//	grab indices of host indices present in selected vector
 	// note: if no parasites this returns an error
@@ -216,67 +174,11 @@ ticks all 2:50000 early(){
 	p0.individuals.fitnessScaling = floor(2*Wₕ);
 	p1.individuals.fitnessScaling = floor(2*Wₚ);
 	
-	// logging position, trait value, fitness, parasite movement and species id for each individual
-	if(community.tick%tempres==2){
-	
-		maxZ = max(c(zₕ,zₚ));
-		minZ = min(c(zₕ,zₚ));
-		mmn = paste0("~/gsccs-data/minmax.csv");
-		writeFile(mmn,paste(minZ,maxZ,sep=","),append=T);
-	
-		catn(paste("tick: ",community.tick));
-//		// vcfs
-//		if(community.tick>2){
-//		g = p1.genomes;
-//		gfn = paste0("~/gsccs-data/vcfs/host",format("%04i",j),".vcf");		
-//		g.outputVCF(filePath = gfn, simplifyNucleotides=T);
-//		}
-		// summary stats
-		mh = mean(zₕ);
-		mp = mean(zₚ);
-		vh = var(zₕ);
-		vp = var(zₚ);
-		pr_unhosted = 1-sum(u)/p1.individualCount;
-		nparhsts = length(unique(hs));
-		pr_unparasitized = 1-nparhsts/p0.individualCount;
-//		nparsperhst = sapply(seqLen(nparhsts),"length(which(hs==unique(hs)[applyValue]));"); // too slow!
-//		pprh_m = mean(nparsperhst);
-//		pprh_v = var(nparsperhst);
-		pprh_m = 0;
-		pprh_v = 0;
-		traitcorr = cor(zₕ[hs],zₚ[u]);		
-		hselresp = cov(log(Bₕ),zₕ);
-		pselresp = cov(log(Bₚ),zₚ);
-		if(isNAN(traitcorr)) traitcorr = 0;
-		if(isNAN(hselresp)) hselresp = 0;
-		if(isNAN(pselresp)) pselresp = 0;
-		muh = sum(host.mutationFrequencies(p0)>0.1)-sum(host.mutationFrequencies(p0)>0.9);
-		mup = sum(para.mutationFrequencies(p1)>0.1)-sum(para.mutationFrequencies(p1)>0.9);
-//		pdm = mean(pd);
-//		pdv = var(pd);
-		pdm = 0;
-		pdv = 0;
-		tsfn = "~/gsccs-data/time-series.csv";
-		writeFile(tsfn,paste(community.tick,p0.individualCount,p1.individualCount,mh,mp,vh,vp,
-			pr_unhosted,pr_unparasitized,pprh_m,pprh_v,traitcorr,muh,mup,pdv,pdm,hselresp,pselresp,mean(α),var(α),sep=","),append=T);
-	
-		// individual location and trait data
-		fn = paste0("~/gsccs-data/ind-data/indData",format("%04i",j),".csv");
-		j = j+1;
-		writeFile(fn,paste("x","y","z","spp",sep=","),append=F);
-		for(h in p0.individuals){
-			writeFile(fn,paste(h.x,h.y,zₕ[h.index],1,sep=","),append=T);
-		}
-		for(p in p1.individuals){
-			writeFile(fn,paste(p.x,p.y,zₚ[p.index],2,sep=","),append=T);
-		}
-	}
-
 }
 
 ticks all 50000 late() {
-	host.treeSeqOutput("~/gsccs-data/host-slim.trees", metadata=params);
-	para.treeSeqOutput("~/gsccs-data/para-slim.trees", metadata=params);
+	host.treeSeqOutput(trefldr+"host-slim.trees", metadata=params);
+	para.treeSeqOutput(trefldr+"para-slim.trees", metadata=params);
 	community.simulationFinished();
 	catn("Done.");
 }
