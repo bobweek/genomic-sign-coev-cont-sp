@@ -7,7 +7,7 @@ N = 5000
 n = 5000
 L = 1e8
 mu = 1e-13
-k = 0.1
+k = 1.0
 rho = 1e-8
 
 # generate genealogy
@@ -126,13 +126,13 @@ pts = ptables.tree_sequence()
 pts.dump(os.path.expanduser('~/gsccs-data/pinit.trees'))
 
 # # trait values
-# Zh = np.zeros(n)
-# Zp = np.zeros(n)
-# hgm = hts.genotype_matrix()
-# pgm = pts.genotype_matrix()
-# for i in 2*np.arange(n):
-#     Zh[int(i/2)] = sum(hgm[:,i]*hfx)+sum(hgm[:,i+1]*hfx)
-#     Zp[int(i/2)] = sum(pgm[:,i]*pfx)+sum(pgm[:,i+1]*pfx)
+Zh = np.zeros(n)
+Zp = np.zeros(n)
+hgm = hts.genotype_matrix()
+pgm = pts.genotype_matrix()
+for i in 2*np.arange(n):
+    Zh[int(i/2)] = sum(hgm[:,i]*hfx)+sum(hgm[:,i+1]*hfx)
+    Zp[int(i/2)] = sum(pgm[:,i]*pfx)+sum(pgm[:,i+1]*pfx)
 
-# np.var(Zh)
-# np.var(Zp)
+np.var(Zh)
+np.var(Zp)
