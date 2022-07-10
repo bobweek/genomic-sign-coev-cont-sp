@@ -1,13 +1,13 @@
 
 # Number of polymorphic sites in a population with freely recombining loci
 
-Since each gene tree is identically distributed, they have the same expected time to most recent common ancestor; $\mathbb ET_{MRCA}\approx 4N_e$. With a per-lineage mutation rate of $\mu$ (so that the expected number of mutations in the population per generation is $2N_e\mu$), the expected total number of mutations since the most recent common ancestor (not only the ones that make it into a sample or land on an extant lineage), is then $(4N_e\times2N_e)\mu=8N_e^2\mu$. This provides the upper bound for the expected number of polymorphic sites in a sample. The expected time interval between the arrival of each mutation is $1/2N_e\mu$. Labelling the mutations by the order they appear going backwards in time, the expected time for the $\ell$th mutation is $\ell/2N_e\mu$. The probability that the $\ell$th mutation corresponds to a polymorphic sites is equal to the probability that it lands on an extant lineage. The number of extant lineages, $j$, $t$ units of time ago is the maximum $j$ that satisfies
+Assume a diploid population of $N_e$ individuals evolving according to a Moran model in which branching events occur at rate $N_e$ choose $2$. Assuming freely recombining loci, each mutation corresponds to an independently sampled gene tree. Since each gene tree is identically distributed, they have the same expected time to most recent common ancestor; $\mathbb ET_{MRCA}=2(1-1/2N_e)$. With a per-lineage mutation rate of $\mu$ (so that the expected number of mutations in the population per unit time is $2N_e\mu=\theta/2$), the expected total number of mutations since the most recent common ancestor (not only the ones that make it into a sample or land on an extant lineage), is then $(4N_e\times2N_e)\mu=8N_e^2\mu=2N_e\theta$. This provides the upper bound for the expected number of polymorphic sites in a sample. The expected time interval between the arrival of each mutation is $1/2N_e\mu$. Labelling the mutations by the order they appear going backwards in time, the expected time for the $\ell$th mutation is $\ell/2N_e\mu$. The probability that the $\ell$th mutation corresponds to a polymorphic sites is equal to the probability that it lands on an extant lineage. The number of extant lineages, $j$, $t$ units of time ago is the maximum $j$ that satisfies
 
 $$2N_e\sum_{i=j+1}^{2N_e}2/i(i-1)<t.$$
 
 Write this maximal $j$ as $j(t)$. Hence, the probability that the $\ell$th mutation corresponds to a polymorphic site is $1/j(\ell/2N_e\mu)$. Note that
 
-$$2N_e\sum_{i=j+1}^{2N_e}2/i(i-1)=4N_e\left(\frac{2N_e-1}{2N_e}-\frac{j-1}{j}\right)\approx \frac{4N_e}{j}.$$
+$$2N_e\sum_{i=j+1}^{2N_e}2/i(i-1)=4N_e\left(\frac{1}{j}-\frac{1}{2N_e}\right)\approx \frac{4N_e}{j}.$$
 
 So $j(\ell/2N_e\mu)$ approximately satisfies
 

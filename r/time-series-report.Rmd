@@ -131,8 +131,27 @@ for(m in 1:pmtot){
 }
 
 fq.df = data.frame(freq=frqs,id=mids,t=times,spp=spp)
-
 hfq.df = subset(fq.df,spp==1)
+pfq.df = subset(fq.df,spp==2)
+
+subset(fq.df, times %in% 1:200)
+
+# minimum freq a mutation must reach to get plotted
+thresh = 0.1
+
+hms = c()
+for(i in 1:hmtot){
+  spm = subset(hfq.df,id==i)
+  if(max(spm$freq)>thresh) hms = c(hms,i)
+}
+hfq.df = subset(hfq.df,id %in% hms)
+pms = c()
+for(i in 1:pmtot){
+  spm = subset(pfq.df,id==i)
+  if(max(spm$freq)>thresh) pms = c(pms,i)
+}
+pfq.df = subset(pfq.df,id %in% pms)
+
 ggplot(hfq.df,aes(x=t,y=freq)) + 
   geom_line(aes(color=as.character(id))) + 
   xlab("Time") +
@@ -140,7 +159,6 @@ ggplot(hfq.df,aes(x=t,y=freq)) +
   dark_theme_gray() +
   theme(legend.position="none")
 
-pfq.df = subset(fq.df,spp==2)
 ggplot(pfq.df,aes(x=t,y=freq)) + 
   geom_line(aes(color=as.character(id))) + 
   xlab("Time") +
