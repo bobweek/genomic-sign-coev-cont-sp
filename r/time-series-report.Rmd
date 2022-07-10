@@ -134,8 +134,6 @@ fq.df = data.frame(freq=frqs,id=mids,t=times,spp=spp)
 hfq.df = subset(fq.df,spp==1)
 pfq.df = subset(fq.df,spp==2)
 
-subset(fq.df, times %in% 1:200)
-
 # minimum freq a mutation must reach to get plotted
 thresh = 0.1
 
