@@ -172,12 +172,12 @@ ticks all 1 early() {
 //	community.rescheduleScriptBlock(s3, start=ixnbrnn, end=ixnbrnn);
 }
 
-ticks all 2:50000 first(){
+ticks all 2:100000 first(){
 	i3.evaluate(p0);
 	i4.evaluate(p1);
 }
 
-ticks all 2:50000 early(){
+ticks all 2:100000 early(){
 	i1.evaluate(p0);
 	i2.evaluate(p1);
 	i5.evaluate(p0);
@@ -268,8 +268,8 @@ ticks all 2:50000 early(){
 		if(isNAN(traitcorr)) traitcorr = 0;
 		if(isNAN(hselresp)) hselresp = 0;
 		if(isNAN(pselresp)) pselresp = 0;
-		muh = sum((host.mutationFrequencies(p0)>0.01) & (host.mutationFrequencies(p0)<0.99));
-		mup = sum((host.mutationFrequencies(p0)>0.01) & (host.mutationFrequencies(p0)<0.99));
+		muh = sum((host.mutationFrequencies(p0)>0.1) & (host.mutationFrequencies(p0)<0.9));
+		mup = sum((host.mutationFrequencies(p1)>0.1) & (host.mutationFrequencies(p1)<0.9));
 //		pdm = mean(pd);
 //		pdv = var(pd);
 		pdm = 0;
@@ -307,7 +307,7 @@ ticks all 2:50000 early(){
 
 }
 
-ticks all 50000 late() {
+ticks all 100000 late() {
 	host.treeSeqOutput("~/gsccs-data/host-slim.trees", metadata=params);
 	para.treeSeqOutput("~/gsccs-data/para-slim.trees", metadata=params);
 	community.simulationFinished();

@@ -118,6 +118,9 @@ ggplot(tsdf) +
   scale_color_manual(values = colors) +
   dark_theme_gray()
 
+tsdf$muh
+tsdf$mup
+
 ggplot(tsdf) + 
   geom_line(aes(x=t,y=pntcorr)) +
   labs(x = "Time",        
