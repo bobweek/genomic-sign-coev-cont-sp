@@ -269,7 +269,7 @@ ticks all 2:100000 early(){
 		if(isNAN(hselresp)) hselresp = 0;
 		if(isNAN(pselresp)) pselresp = 0;
 		muh = sum((host.mutationFrequencies(p0)>0.1) & (host.mutationFrequencies(p0)<0.9));
-		mup = sum((host.mutationFrequencies(p1)>0.1) & (host.mutationFrequencies(p1)<0.9));
+		mup = sum((para.mutationFrequencies(p1)>0.1) & (para.mutationFrequencies(p1)<0.9));
 //		pdm = mean(pd);
 //		pdv = var(pd);
 		pdm = 0;
