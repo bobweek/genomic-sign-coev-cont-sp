@@ -90,74 +90,19 @@ ggplot(tsdf) +
   scale_color_manual(values = colors) +
   dark_theme_gray()
 
-hfs = read.csv("~/gsccs-data/hfs.csv", header = F)
-hfsid = read.csv("~/gsccs-data/hfs-id.csv", header = F)+1
-pfs = read.csv("~/gsccs-data/pfs.csv", header = F)
-pfsid = read.csv("~/gsccs-data/pfs-id.csv", header = F)+1
+frqs = read.csv("~/gsccs-data/mut-freqs.csv")
 
-hmtot = max(hfsid, na.rm = TRUE)
-pmtot = max(pfsid, na.rm = TRUE)
+hfq.df = subset(frqs,spp==1)
+pfq.df = subset(frqs,spp==2)
 
-times = c(rep(tsdf$t,hmtot),rep(tsdf$t,pmtot))
-
-hmids = c()
-for(i in 1:hmtot){
-  hmids = c(hmids,rep(i,length(tsdf$t)))
-}
-pmids = c()
-for(i in 1:pmtot){
-  pmids = c(pmids,rep(i,length(tsdf$t)))
-}
-mids = c(hmids,pmids)
-
-spp = c(rep(1,length(hmids)),rep(2,length(pmids)))
-
-frqs = c()
-for(m in 1:hmtot){
-  for(t in 1:nrow(hfs)){
-    thg = which(m==hfsid[t,])
-    if(length(thg)>0){
-      frqs = c(frqs,hfs[t,thg])
-    } else frqs = c(frqs,0)
-  }
-}
-for(m in 1:pmtot){
-  for(t in 1:nrow(pfs)){
-    thg = which(m==pfsid[t,])
-    if(length(thg)>0){
-      frqs = c(frqs,pfs[t,thg])
-    } else frqs = c(frqs,0)
-  }
-}
-
-fq.df = data.frame(freq=frqs,id=mids,t=times,spp=spp)
-hfq.df = subset(fq.df,spp==1)
-pfq.df = subset(fq.df,spp==2)
-
-# minimum freq a mutation must reach to get plotted
-thresh = 0.1
-
-hms = c()
-for(i in 1:hmtot){
-  spm = subset(hfq.df,id==i)
-  if(max(spm$freq)>thresh) hms = c(hms,i)
-}
-hfq.df = subset(hfq.df,id %in% hms)
-pms = c()
-for(i in 1:pmtot){
-  spm = subset(pfq.df,id==i)
-  if(max(spm$freq)>thresh) pms = c(pms,i)
-}
-pfq.df = subset(pfq.df,id %in% pms)
-
-ggplot(hfq.df,aes(x=t,y=freq)) + 
+ggplot(hfq.df,aes(x=t,y=frq)) + 
   geom_line(aes(color=as.character(id))) + 
   xlab("Time") +
   ylab("Host Mutation Freqs") +
   dark_theme_gray() +
   theme(legend.position="none")
 
-ggplot(pfq.df,aes(x=t,y=freq)) + 
+ggplot(pfq.df,aes(x=t,y=frq)) + 
   geom_line(aes(color=as.character(id))) + 
   xlab("Time") +
   ylab("Para Mutation Freqs") +
