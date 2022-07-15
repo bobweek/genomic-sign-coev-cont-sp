@@ -3,6 +3,11 @@ import os
 import pandas as pd
 import numpy as np
 
+# in slim different mutations are tracked each generation
+# so the outputted csv with mutations on columns and time on rows
+# will have different number of cols for each row
+# so we have to deal that uneveness when reading those csv files in
+
 datloc = os.path.expanduser("~/gsccs-data/")
 
 data_file_delimiter = ','
@@ -41,6 +46,15 @@ column_names = [i for i in range(0, largest_column_count)]
 pfs = np.array(pd.read_csv(datloc+"pfs.csv", delimiter=data_file_delimiter, names=column_names))
 pfs_id = np.array(pd.read_csv(datloc+"pfs-id.csv", delimiter=data_file_delimiter, names=column_names))
 
+# now that we have read the csv files of mutation freqs and ids
+# we organize these data into a dataframe that can be read into r
+# the dataframe consists of four columns: time, frequency, id, and spp
+
+# in slim each mutation is given a unique id
+# so we search for the max id in each spp
+# and then iterate through each id starting with one up to the max
+# find where that id occurs
+
 tempres = pd.read_csv(datloc+"params.csv")["tempres"][0]
 
 times = []
@@ -55,7 +69,7 @@ for m in (np.arange(maxid)+1):
     if np.size(metaloc)>0:
         nfreqs = np.zeros(hfs.shape[0])
         for i in np.arange(np.shape(metaloc)[1]):
-            nfreqs[i] = hfs[metaloc[0][i],metaloc[1][i]]        
+            nfreqs[metaloc[0][i]] = hfs[metaloc[0][i],metaloc[1][i]]        
         freqs.append(nfreqs)
         ids.append(np.repeat(m,hfs.shape[0]))
         spp.append(np.repeat(1,hfs.shape[0]))
@@ -68,7 +82,7 @@ for m in (np.arange(maxid)+1):
     if np.size(metaloc)>0:
         nfreqs = np.zeros(pfs.shape[0])
         for i in np.arange(np.shape(metaloc)[1]):
-            nfreqs[i] = pfs[metaloc[0][i],metaloc[1][i]]        
+            nfreqs[metaloc[0][i]] = pfs[metaloc[0][i],metaloc[1][i]]        
         freqs.append(nfreqs)
         ids.append(np.repeat(m,pfs.shape[0]))
         spp.append(np.repeat(2,pfs.shape[0]))
