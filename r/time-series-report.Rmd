@@ -92,8 +92,13 @@ ggplot(tsdf) +
 
 frqs = read.csv("~/gsccs-data/mut-freqs.csv")
 
+frqs$frq[frqs$frq==0] = NA
+
 hfq.df = subset(frqs,spp==1)
 pfq.df = subset(frqs,spp==2)
+
+require(ggplot2)
+require(ggdark)
 
 ggplot(hfq.df,aes(x=t,y=frq)) + 
   geom_line(aes(color=as.character(id))) + 

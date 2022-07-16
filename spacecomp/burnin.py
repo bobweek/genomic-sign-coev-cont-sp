@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 from dataclasses import dataclass
 
+# i dont think this dataclass is being used
 # msprime model parameters dataclass
 @dataclass
 class burninPars:
@@ -20,13 +21,13 @@ def burnin(msprpth,datapth):
     
     bprs = pd.read_csv(msprpth+"bparams.csv", delimiter = ",")
 
-    # unpack msprime model parameters
-    N = int(bprs["N"])
+    # unpack msprime model parameters    
     n = int(bprs["n"])
+    N = 2*n # double N to ensure plenty standing var
     L = int(bprs["L"])
-    mu = float(bprs["mu"])
+    mu = 2*float(bprs["mu"]) # double mu to ensure plenty standing var
     k = float(bprs["k"])
-    rho = float(bprs["rho"])
+    rho = 1/L
 
     # generate genealogy
     hts = msprime.sim_ancestry(samples=n,population_size=N,sequence_length=L,recombination_rate=rho)

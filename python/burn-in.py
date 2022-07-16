@@ -3,10 +3,10 @@ import pyslim
 import numpy as np
 import os
 
-N = 5000
-n = 5000
+N = 10000 # assume large parental populations
+n = 5000  # and focal pops are samples of the parental pops
 L = 1e8
-mu = 1e-12
+mu = 2e-12 # also use twice the mutation rate just to ensure plenty of standing var
 k = 1.0
 rho = 1e-8
 
@@ -126,13 +126,13 @@ pts = ptables.tree_sequence()
 pts.dump(os.path.expanduser('~/gsccs-data/pinit.trees'))
 
 # # trait values
-Zh = np.zeros(n)
-Zp = np.zeros(n)
-hgm = hts.genotype_matrix()
-pgm = pts.genotype_matrix()
-for i in 2*np.arange(n):
-    Zh[int(i/2)] = sum(hgm[:,i]*hfx)+sum(hgm[:,i+1]*hfx)
-    Zp[int(i/2)] = sum(pgm[:,i]*pfx)+sum(pgm[:,i+1]*pfx)
+# Zh = np.zeros(n)
+# Zp = np.zeros(n)
+# hgm = hts.genotype_matrix()
+# pgm = pts.genotype_matrix()
+# for i in 2*np.arange(n):
+#     Zh[int(i/2)] = sum(hgm[:,i]*hfx)+sum(hgm[:,i+1]*hfx)
+#     Zp[int(i/2)] = sum(pgm[:,i]*pfx)+sum(pgm[:,i+1]*pfx)
 
-np.var(Zh)
-np.var(Zp)
+# np.var(Zh)
+# np.var(Zp)

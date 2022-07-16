@@ -70,10 +70,10 @@ for m in (np.arange(maxid)+1):
         nfreqs = np.zeros(hfs.shape[0])
         for i in np.arange(np.shape(metaloc)[1]):
             nfreqs[metaloc[0][i]] = hfs[metaloc[0][i],metaloc[1][i]]        
-        freqs.append(nfreqs)
-        ids.append(np.repeat(m,hfs.shape[0]))
-        spp.append(np.repeat(1,hfs.shape[0]))
-        times.append(np.arange(hfs.shape[0])*tempres+2)
+        freqs += list(nfreqs)
+        ids += list(np.repeat(m,hfs.shape[0]))
+        spp += list(np.repeat(1,hfs.shape[0]))
+        times += list(np.arange(hfs.shape[0])*tempres+2)
 
 # organize para freqs
 maxid = int(max(pfs_id.flatten()[~np.isnan(pfs_id.flatten())]))
@@ -83,15 +83,10 @@ for m in (np.arange(maxid)+1):
         nfreqs = np.zeros(pfs.shape[0])
         for i in np.arange(np.shape(metaloc)[1]):
             nfreqs[metaloc[0][i]] = pfs[metaloc[0][i],metaloc[1][i]]        
-        freqs.append(nfreqs)
-        ids.append(np.repeat(m,pfs.shape[0]))
-        spp.append(np.repeat(2,pfs.shape[0]))
-        times.append(np.arange(pfs.shape[0])*tempres+2)
-
-times = np.array(times).flatten()
-spp = np.array(spp).flatten()
-ids = np.array(ids).flatten()
-freqs = np.array(freqs).flatten()
+        freqs += list(nfreqs)
+        ids += list(np.repeat(m,pfs.shape[0]))
+        spp += list(np.repeat(2,pfs.shape[0]))
+        times += list(np.arange(pfs.shape[0])*tempres+2)
 
 data = {'t': times,
         'spp': spp,
