@@ -283,7 +283,7 @@ ticks all 2:100000 early(){
 		hfsidfn = "~/gsccs-data/hfs-id.csv"; // csv full of host mutation ids		
 		hmid = host.mutations.id;
 		hmfs = host.mutationFrequencies(p0);
-
+		catn(hmfs);
 		writeFile(hfsfn,paste(hmfs ,sep=","),append=T);
 		writeFile(hfsidfn,paste(hmid,sep=","),append=T);
 		

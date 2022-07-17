@@ -3,6 +3,8 @@ import pyslim
 import numpy as np
 import os
 
+print("running neutral burn-in")
+
 N = 10000 # assume large parental populations
 n = 5000  # and focal pops are samples of the parental pops
 L = 1e8
