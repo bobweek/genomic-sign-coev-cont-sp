@@ -236,26 +236,25 @@ ticks all 2:100000 early(){
 	if(community.tick%tempres==2){
 	
 		catn(paste("tick: ",community.tick));
-
-		hmfs = host.mutationFrequencies(p0);
-		catn(hmfs);
-
-		muh = sum((host.mutationFrequencies(p0)>0.1) & (host.mutationFrequencies(p0)<0.9));
-		mup = sum((para.mutationFrequencies(p1)>0.1) & (para.mutationFrequencies(p1)<0.9));
-		catn(muh);
-
+		
 		hfsfn = "~/gsccs-data/hfs.csv"; // csv full of host mutation freqs
 		hfsidfn = "~/gsccs-data/hfs-id.csv"; // csv full of host mutation ids		
 		hmid = host.mutations.id;
+		hmfs = host.mutationFrequencies(p0);
 		writeFile(hfsfn,paste(hmfs ,sep=","),append=T);
 		writeFile(hfsidfn,paste(hmid,sep=","),append=T);
-		
+		catn(hmfs);
+
 		pfsfn = "~/gsccs-data/pfs.csv";
 		pfsidfn = "~/gsccs-data/pfs-id.csv";
 		pmid = para.mutations.id;
 		pmfs = para.mutationFrequencies(p1);
 		writeFile(pfsfn,paste(pmfs ,sep=","),append=T);
 		writeFile(pfsidfn,paste(pmid,sep=","),append=T);
+		
+		muh = sum((hmfs>0.1) & (hmfs<0.9));
+		mup = sum((pmfs>0.1) & (pmfs<0.9));
+		catn(muh);
 						
 	}
 
