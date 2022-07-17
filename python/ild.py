@@ -2,7 +2,7 @@
 # computes matrix of interspecific spatial covariance of allele frequencies
 #
 
-# note: some rows or columns of cov-iscaf may be zero as there may be some polymorphic loci
+# note: some rows or columns of cov-ild may be zero as there may be some polymorphic loci
 #   with derived type at such low freq's it doesn't appear in the "sample"
 #   but this just means the "true" cov for that pair of loci is close to zero, so zero is a good approximation
 #   hence, i will keep those zeros so they are reflected in the ild distribution
@@ -42,20 +42,20 @@ prs = pd.read_csv(params, delimiter = ",")
 sstm = cf.loadUp(hmet,pmet,hga_csl,pga_csl,hga_ntl,pga_ntl,
     hcsl_snp,pcsl_snp,hntl_snp,pntl_snp,params,hcsl_frq,pcsl_frq,hntl_frq,pntl_frq)
 
-# compute iscaf across whole genome
-iscaf_cor = cf.iscaf(sstm,"cor")
-iscaf_cov = cf.iscaf(sstm,"cov")
-np.savetxt(fname('iscaf-cor.csv'), iscaf_cor, delimiter=",")
-np.savetxt(fname('iscaf-cov.csv'), iscaf_cov, delimiter=",")
-np.savetxt(fname('iscaf-cor-flat.csv'), iscaf_cor.flatten(), delimiter=",")
-np.savetxt(fname('iscaf-cov-flat.csv'), iscaf_cov.flatten(), delimiter=",")
+# compute ild across whole genome
+ild_cor = cf.ild(sstm,"cor")
+ild_cov = cf.ild(sstm,"cov")
+np.savetxt(fname('ild-cor.csv'), ild_cor, delimiter=",")
+np.savetxt(fname('ild-cov.csv'), ild_cov, delimiter=",")
+np.savetxt(fname('ild-cor-flat.csv'), ild_cor.flatten(), delimiter=",")
+np.savetxt(fname('ild-cov-flat.csv'), ild_cov.flatten(), delimiter=",")
 
-# compute iscaf only at causal loci
+# compute ild only at causal loci
 hncsl = len(sstm.h.csl_snp)
 pncsl = len(sstm.p.csl_snp)
-csl_iscaf_cor = iscaf_cor[0:hncsl,0:pncsl]
-csl_iscaf_cov = iscaf_cov[0:hncsl,0:pncsl]
-np.savetxt(fname('csl-iscaf-cor.csv'), csl_iscaf_cor, delimiter=",")
-np.savetxt(fname('csl-iscaf-cov.csv'), csl_iscaf_cov, delimiter=",")
-np.savetxt(fname('csl-iscaf-cor-flat.csv'), csl_iscaf_cor.flatten(), delimiter=",")
-np.savetxt(fname('csl-iscaf-cov-flat.csv'), csl_iscaf_cov.flatten(), delimiter=",")
+csl_ild_cor = ild_cor[0:hncsl,0:pncsl]
+csl_ild_cov = ild_cov[0:hncsl,0:pncsl]
+np.savetxt(fname('csl-ild-cor.csv'), csl_ild_cor, delimiter=",")
+np.savetxt(fname('csl-ild-cov.csv'), csl_ild_cov, delimiter=",")
+np.savetxt(fname('csl-ild-cor-flat.csv'), csl_ild_cor.flatten(), delimiter=",")
+np.savetxt(fname('csl-ild-cov-flat.csv'), csl_ild_cov.flatten(), delimiter=",")

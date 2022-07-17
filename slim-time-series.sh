@@ -2,6 +2,6 @@
 
 ./data-wipe.sh
 ./slim.sh
-#./iscaf.sh
+#./ild.sh
 ./time-series.sh
 # ./pt-process.sh

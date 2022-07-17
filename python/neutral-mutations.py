@@ -58,7 +58,6 @@ with open(os.path.expanduser('~/gsccs-data/para.txt'), "w") as indfile:
         data = [vcf_label, str(i.location[0]), str(i.location[1]), str(i.location[2])]
         indfile.writelines(",".join(data) + "\n")
 
-
 # export individual allele freqs and genotype matrices of causal mutations
 
 hgm = host_ts.genotype_matrix()
@@ -84,14 +83,14 @@ print(f"The host tree sequence has {host_ts.num_trees} trees on a genome of leng
       f" {host_ts.num_individuals} individuals, {host_ts.num_samples} 'sample' genomes, {host_ts.num_sites} sites,"
       f" and {host_ts.num_mutations} causal mutations.")
 
-print(f"The tree sequence has {para_ts.num_trees} trees on a genome of length {para_ts.sequence_length},"
+print(f"The para tree sequence has {para_ts.num_trees} trees on a genome of length {para_ts.sequence_length},"
       f" {para_ts.num_individuals} individuals, {para_ts.num_samples} 'sample' genomes, {para_ts.num_sites} sites,"
       f" and {para_ts.num_mutations} causal mutations.")
 
 
 # sprinkle on neutral mutations
 
-mu = 1e-11 # neutral mutations occur an order of magnitude faster than causal
+mu = 1e-12
 
 htables = host_ts.tables
 htables.mutations.clear()

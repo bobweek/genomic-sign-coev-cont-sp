@@ -1,3 +1,4 @@
+from concurrent.futures import thread
 import numpy as np
 import allel
 import pandas as pd
@@ -98,8 +99,29 @@ def loadUp(hmet,pmet,hga_csl,pga_csl,hga_ntl,pga_ntl,
 
     return sys
 
+def findPoly(sstm,thshld):
+
+    h, p, pars = sstm
+
+    # compute global allele freqs for each spp
+
+    hpopfrq = np.zeros(h.S)
+    for i in np.arange(h.S):
+        hpopfrq[i] = np.mean(h.frq[i,:])
+
+    ppopfrq = np.zeros(p.S)
+    for i in np.arange(p.S):
+        ppopfrq[i] = np.mean(p.frq[i,:])      
+
+    # find the loci corresponding to freqs within the acceptance range  
+
+    hpoly = np.where((thshld<hpopfrq) & (thshld<(1-hpopfrq)))
+    ppoly = np.where((thshld<ppopfrq) & (thshld<(1-ppopfrq)))
+
+    return [hpoly, ppoly]
+
 # interspecific spatial covariance of allele frequencies
-def iscaf(sstm,co):
+def ild(sstm,co):
 
     # first build kd-tree for host locations
     # for every parasite, select a random host within radius iota
@@ -131,23 +153,23 @@ def iscaf(sstm,co):
     if co=="cov":
         
         # spatial cov allele freq
-        iscaf = np.zeros((h.S,p.S))    
+        ild = np.zeros((h.S,p.S))    
         for i in np.arange(h.S):
             for j in np.arange(p.S):
                 h_freqs = h.frq[i,hs]
                 p_freqs = p.frq[j,ps]
-                iscaf[i,j] = np.cov(h_freqs,p_freqs)[0,1]
+                ild[i,j] = np.cov(h_freqs,p_freqs)[0,1]
 
     else:
         
         # spatial cor allele freq
-        iscaf = np.zeros((h.S,p.S))    
+        ild = np.zeros((h.S,p.S))    
         for i in np.arange(h.S):
             for j in np.arange(p.S):
                 h_freqs = h.frq[i,hs]
                 p_freqs = p.frq[j,ps]
-                iscaf[i,j] = np.corrcoef(h_freqs,p_freqs)[0,1]
-                if np.isnan(iscaf[i,j]):
-                    iscaf[i,j] = 0
+                ild[i,j] = np.corrcoef(h_freqs,p_freqs)[0,1]
+                if np.isnan(ild[i,j]):
+                    ild[i,j] = 0
 
-    return iscaf
+    return ild

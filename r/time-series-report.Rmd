@@ -15,48 +15,48 @@ editor_options:
 require(ggplot2)
 require(ggdark)
 
-# iscaf_cor = read.csv("~/gsccs-data/iscaf-cor-flat.csv", header = F)
-# iscaf_cov = read.csv("~/gsccs-data/iscaf-cov-flat.csv", header = F)
-# csl_iscaf_cor = read.csv("~/gsccs-data/csl-iscaf-cor-flat.csv", header = F)
-# csl_iscaf_cov = read.csv("~/gsccs-data/csl-iscaf-cov-flat.csv", header = F)
-# 
-# kprs = list(allcor=1,allcov=2,cslcor=3,cslcov=4)
-# dfs = list(allcor=iscaf_cor,allcov=iscaf_cov,cslcor=csl_iscaf_cor,cslcov=csl_iscaf_cov)
-# 
-# for(i in 1:2){
-#   dfs[[i]]$V1 = abs(dfs[[i]]$V1)
-#   qtl = quantile(dfs[[i]]$V1,0.99)
-#   kprs[[i]] = which(dfs[[i]]$V1>qtl)
-# }
-# for(i in 3:4){
-#   dfs[[i]]$V1 = abs(dfs[[i]]$V1)
-#   qtl = quantile(dfs[[i-2]]$V1,0.99)
-#   kprs[[i]] = which(dfs[[i]]$V1>qtl)
-# }
-# 
-# lumpnms = c(rep("all",length(kprs$allcor)),rep("csl",length(kprs$cslcor)))
-# lumpcrs = c(dfs$allcor$V1[kprs$allcor],dfs$cslcor$V1[kprs$cslcor])
-# cor_df = data.frame(lumpcrs,lumpnms)
-# colnames(cor_df) = c("iscaf","set")
-# 
-# lumpnms = c(rep("all",length(kprs$allcov)),rep("csl",length(kprs$cslcov)))
-# lumpcvs = c(dfs$allcov$V1[kprs$allcov],dfs$cslcov$V1[kprs$cslcov])
-# cov_df = data.frame(lumpcvs,lumpnms)
-# colnames(cov_df) = c("iscaf","set")
-# 
-# ggplot(cor_df) + 
-#   geom_histogram(aes(x=iscaf,y=..density..,fill=set),
-#                  bins=50,alpha=0.25,position = "identity") +
-#   xlab("99th Perc Spatial Correlations") +
-#   ylab("Density") +
-#   dark_theme_gray()
-#   
-# ggplot(cov_df) + 
-#   geom_histogram(aes(x=iscaf,y=..density..,fill=set),
-#                  bins=50,alpha=0.25,position = "identity") +
-#   xlab("99th Perc Spatial Covariances") +
-#   ylab("Density") +
-#   dark_theme_gray()
+iscaf_cor = read.csv("~/gsccs-data/iscaf-cor-flat.csv", header = F)
+iscaf_cov = read.csv("~/gsccs-data/iscaf-cov-flat.csv", header = F)
+csl_iscaf_cor = read.csv("~/gsccs-data/csl-iscaf-cor-flat.csv", header = F)
+csl_iscaf_cov = read.csv("~/gsccs-data/csl-iscaf-cov-flat.csv", header = F)
+
+kprs = list(allcor=1,allcov=2,cslcor=3,cslcov=4)
+dfs = list(allcor=iscaf_cor,allcov=iscaf_cov,cslcor=csl_iscaf_cor,cslcov=csl_iscaf_cov)
+
+for(i in 1:2){
+  dfs[[i]]$V1 = abs(dfs[[i]]$V1)
+  qtl = quantile(dfs[[i]]$V1,0.99)
+  kprs[[i]] = which(dfs[[i]]$V1>qtl)
+}
+for(i in 3:4){
+  dfs[[i]]$V1 = abs(dfs[[i]]$V1)
+  qtl = quantile(dfs[[i-2]]$V1,0.99)
+  kprs[[i]] = which(dfs[[i]]$V1>qtl)
+}
+
+lumpnms = c(rep("all",length(kprs$allcor)),rep("csl",length(kprs$cslcor)))
+lumpcrs = c(dfs$allcor$V1[kprs$allcor],dfs$cslcor$V1[kprs$cslcor])
+cor_df = data.frame(lumpcrs,lumpnms)
+colnames(cor_df) = c("iscaf","set")
+
+lumpnms = c(rep("all",length(kprs$allcov)),rep("csl",length(kprs$cslcov)))
+lumpcvs = c(dfs$allcov$V1[kprs$allcov],dfs$cslcov$V1[kprs$cslcov])
+cov_df = data.frame(lumpcvs,lumpnms)
+colnames(cov_df) = c("iscaf","set")
+
+ggplot(cor_df) +
+  geom_histogram(aes(x=iscaf,y=..density..,fill=set),
+                 bins=50,alpha=0.25,position = "identity") +
+  xlab("99th Perc Spatial Correlations") +
+  ylab("Density") +
+  dark_theme_gray()
+
+ggplot(cov_df) +
+  geom_histogram(aes(x=iscaf,y=..density..,fill=set),
+                 bins=50,alpha=0.25,position = "identity") +
+  xlab("99th Perc Spatial Covariances") +
+  ylab("Density") +
+  dark_theme_gray()
 
 params = read.csv("~/gsccs-data/params.csv")
 tsdf = read.csv("~/gsccs-data/time-series.csv")
