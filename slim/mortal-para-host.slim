@@ -250,7 +250,7 @@ ticks all 2:100000 early(){
 		hmfs = host.mutationFrequencies(p0);
 		writeFile(hfsfn,paste(hmfs ,sep=","),append=T);
 		writeFile(hfsidfn,paste(hmid,sep=","),append=T);
-		catn(hmfs);
+//		catn(hmfs);
 
 		pfsfn = "~/gsccs-data/pfs.csv";
 		pfsidfn = "~/gsccs-data/pfs-id.csv";
@@ -261,7 +261,7 @@ ticks all 2:100000 early(){
 		
 		muh = sum((hmfs>0.1) & (hmfs<0.9));
 		mup = sum((pmfs>0.1) & (pmfs<0.9));
-		catn(muh);
+//		catn(muh);
 		
 //		// vcfs
 //		if(community.tick>2){
