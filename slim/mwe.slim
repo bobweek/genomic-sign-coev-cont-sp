@@ -156,8 +156,6 @@ species para reproduction(p1) {
 }
 
 ticks all 1 early() {
-	mmn = paste0("~/gsccs-data/minmax.csv"); // for plotting later
-	writeFile(mmn,paste("min","max",sep=","),append=F);
 	host.readFromPopulationFile("~/gsccs-data/hinit.trees",
 		subpopMap=Dictionary("p0", 0)); // consider if dfe looks different for msprime vs slim
 	para.readFromPopulationFile("~/gsccs-data/pinit.trees",
@@ -239,6 +237,9 @@ ticks all 2:100000 early(){
 	
 		catn(paste("tick: ",community.tick));
 
+		hmfs = host.mutationFrequencies(p0);
+		catn(hmfs);
+
 		muh = sum((host.mutationFrequencies(p0)>0.1) & (host.mutationFrequencies(p0)<0.9));
 		mup = sum((para.mutationFrequencies(p1)>0.1) & (para.mutationFrequencies(p1)<0.9));
 		catn(muh);
@@ -246,8 +247,6 @@ ticks all 2:100000 early(){
 		hfsfn = "~/gsccs-data/hfs.csv"; // csv full of host mutation freqs
 		hfsidfn = "~/gsccs-data/hfs-id.csv"; // csv full of host mutation ids		
 		hmid = host.mutations.id;
-		hmfs = host.mutationFrequencies(p0);
-		catn(hmfs);
 		writeFile(hfsfn,paste(hmfs ,sep=","),append=T);
 		writeFile(hfsidfn,paste(hmid,sep=","),append=T);
 		
