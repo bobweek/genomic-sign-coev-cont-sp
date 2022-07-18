@@ -2,6 +2,11 @@ require(ggplot2)
 require(viridis)
 require(ggdark)
 
+# make python script that computes cdf of nearest-neighbor dists for each time point
+# simulate uniform placement X times and compute cdf of nearest-neighb dists for each rep
+# then check if data cdf deviates from sim cdf
+# but its probably faster to compute eqn 3 from zimmerman 1993
+
 ndatpts = length(list.files(path = "~/gsccs-data/ind-data/", pattern = "csv"))
 
 mmdf = read.csv("~/gsccs-data/minmax.csv")

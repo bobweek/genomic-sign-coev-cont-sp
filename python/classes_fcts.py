@@ -173,3 +173,65 @@ def ild(sstm,co):
                     ild[i,j] = 0
 
     return ild
+
+# interspecific spatial covariance of allele frequencies
+def ld(sstm,co,spp):
+
+    # first build kd-tree for host locations
+    # for every parasite, select a random host within radius iota
+    # this forms an "interacting pair"
+    # compute the spatial covariance of allele freqs across pairs
+    # repeating this process will redraw interacting pairs, thus allowing precision assessment
+    # will be v slow tho
+
+    h, p, pars = sstm
+    
+    if spp=="p":
+
+        if co=="cov":
+            
+            # spatial cov allele freq
+            ld = np.zeros((p.S,p.S))    
+            for i in np.arange(p.S):
+                for j in np.arange(p.S):
+                    p1_freqs = p.frq[i,:]
+                    p2_freqs = p.frq[j,:]
+                    ld[i,j] = np.cov(p1_freqs,p2_freqs)[0,1]
+
+        else:
+            
+            # spatial cor allele freq
+            ld = np.zeros((p.S,p.S))    
+            for i in np.arange(p.S):
+                for j in np.arange(p.S):
+                    p1_freqs = p.frq[i,:]
+                    p2_freqs = p.frq[j,:]
+                    ld[i,j] = np.corrcoef(p1_freqs,p2_freqs)[0,1]
+                    if np.isnan(ld[i,j]):
+                        ld[i,j] = 0
+
+    else:
+
+        if co=="cov":
+            
+            # spatial cov allele freq
+            ld = np.zeros((h.S,h.S))    
+            for i in np.arange(h.S):
+                for j in np.arange(h.S):
+                    h1_freqs = h.frq[i,:]
+                    h2_freqs = h.frq[j,:]
+                    ld[i,j] = np.cov(h1_freqs,h2_freqs)[0,1]
+
+        else:
+            
+            # spatial cor allele freq
+            ld = np.zeros((h.S,h.S))    
+            for i in np.arange(h.S):
+                for j in np.arange(h.S):
+                    h1_freqs = h.frq[i,:]
+                    h2_freqs = h.frq[j,:]
+                    ld[i,j] = np.corrcoef(h1_freqs,h2_freqs)[0,1]
+                    if np.isnan(ld[i,j]):
+                        ld[i,j] = 0
+
+    return ld

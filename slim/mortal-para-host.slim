@@ -21,7 +21,7 @@ species all initialize(){
 		"W₀ₚ", 1.0,			// para base fitness
 		"sₕ",  1e-4, 		// cost on host fitness for each infection ('s' as in selection)
 		"sₚ",  1e-2, 		// benefit on parasite fitness for successful infection
-		"γ",   1.0,			// sensitivity of inf pr to trait differences ('gamma' trad nuimser notation for this par)
+		"γ",   1.0,			// sensitivity of inf pr to trait differences
 		"ρ₀ₕ",  0.1,		// initial population density ('rho' is trad for densities)
 		"ρ₀ₚ",  0.1			// initial population density ('rho' is trad for densities)
 		);
@@ -42,12 +42,15 @@ species all initialize(){
 	pfn = "~/gsccs-data/params.csv";
 	writeFile(pfn,paste("µₕ","µₚ","κₕ","κₚ","σₕ","σₚ","ι","cₕ","cₚ","ωₕ","ωₚ",
 		"W₀ₕ","W₀ₚ","sₕ","sₚ","γ","ρ₀ₕ","ρ₀ₚ","tempres",sep=","),append=F);
-	writeFile(pfn,paste(µₕ,µₚ,κₕ,κₚ,σₕ,σₚ,ι,cₕ,cₚ,ωₕ,ωₚ,W₀ₕ,W₀ₚ,sₕ,sₚ,γ,ρ₀ₕ,ρ₀ₚ,tempres,sep=","),append=T);
+
+	writeFile(pfn,paste(µₕ,µₚ,κₕ,κₚ,σₕ,σₚ,ι,cₕ,cₚ,
+		ωₕ,ωₚ,W₀ₕ,W₀ₚ,sₕ,sₚ,γ,ρ₀ₕ,ρ₀ₚ,tempres,sep=","),append=T);
 
 	// time-series.csv
 	tsfn = "~/gsccs-data/time-series.csv";
 	writeFile(tsfn,paste("t","Nh","Np","zh","zp","vh","vp","pr_unhosted","pr_unparasitized",
-		"pprh_m","pprh_v","pntcorr","muh","mup","pdv","pdm","hselresp","pselresp","abar","vara",sep=","),append=F);
+		"pprh_m","pprh_v","pntcorr","muh","mup","pdv","pdm","hselresp",
+		"pselresp","abar","vara",sep=","),append=F);
 
 	// host mutation frequencies csv
 	hfsfn = "~/gsccs-data/hfs.csv";
@@ -244,6 +247,7 @@ ticks all 2:100000 early(){
 	
 		catn(paste("tick: ",community.tick));
 		
+		
 		hfsfn = "~/gsccs-data/hfs.csv"; // csv full of host mutation freqs
 		hfsidfn = "~/gsccs-data/hfs-id.csv"; // csv full of host mutation ids		
 		hmid = host.mutations.id;
@@ -312,6 +316,7 @@ ticks all 2:100000 early(){
 }
 
 ticks all 100000 late() {
+//	figure out a way to record the effect sizes of each mutation to see how they correlate with ild
 	host.treeSeqOutput("~/gsccs-data/host-slim.trees", metadata=params);
 	para.treeSeqOutput("~/gsccs-data/para-slim.trees", metadata=params);
 	community.simulationFinished();
