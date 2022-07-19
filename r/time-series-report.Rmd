@@ -10,7 +10,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-### performance measures
+## a few stats
 
 ```{r echo=F, message=FALSE, warning=FALSE,results='asis'}
 require(ggplot2)
@@ -59,24 +59,37 @@ psglfrac = length(psgcpt)/length(psnps)
 # just the causal pairs
 # just the causal "singletons" (ie, one causal one neutral)
 
-# make table of performance measures
 descrs = c("Number ild pairs occuring in top 99th percentile",
            "Number host causal loci",
-           "Number para causal loci",
-           "Fraction of top 99th perc corresponding to causal pairs",
+           "Number para causal loci")
+vals = c(topttl,length(hsnps),length(psnps))
+statdt = cbind(descrs,formatC(as.numeric(vals))) #, digits = 1, format = "e", drop0trailing = FALSE))
+statdf = data.frame(statdt)
+colnames(statdf) = c("Description","Value")
+knitr::kable(statdf)
+
+```
+
+## performance measures
+
+```{r echo=F, message=FALSE, warning=FALSE,results='asis'}
+# make table of performance measures
+descrs = c("Fraction of top 99th perc corresponding to causal pairs",
            "Fraction of top 99th perc corresponding to one causal locus",
            "Combined fraction corresponding to one or two causal loci",
            "Fraction host loci corresponding to causal pair in 99th per",
            "Fraction para loci corresponding to causal pair in 99th per",
            "Fraction host loci corresponding appearing in 99th per",
            "Fraction para loci corresponding appearing in 99th per")
-vals = c(topttl,length(hsnps),length(psnps),prfrac,sgfrac,cbfrac,hcslfrac,pcslfrac,hsglfrac,psglfrac)
+vals = c(prfrac,sgfrac,cbfrac,hcslfrac,pcslfrac,hsglfrac,psglfrac)
 pfmsrdt = cbind(descrs,formatC(as.numeric(vals))) #, digits = 1, format = "e", drop0trailing = FALSE))
 pfmsr = data.frame(pfmsrdt)
 colnames(pfmsr) = c("Description","Value")
 knitr::kable(pfmsr)
 ```
-### mutation effect size vs ild
+
+## ild score vs trait variance score
+
 ```{r echo=F, message=FALSE, warning=FALSE,results='asis'}
 colors <- c("Parasite" = "purple", "Host" = "orange")
 
@@ -84,8 +97,21 @@ colors <- c("Parasite" = "purple", "Host" = "orange")
 # where each effect size is associated with all ild at that locus
 # check if effect size correlates with max(ild)
 
+# might want to multiply effect size by genetic variance
+
+# for a trait Z=a*I, I~Bern(p) and a in R, Var(Z)=a^2*p(1-p)
+# so, for L unlinked loci, Var(Z)=sum_i(a[i]^2*p[i]*(1-p[i]))
+# and the prop of var explained by locus l is
+# a[l]^2*p[l]*(1-p[l])/Var(Z)
+# ignored not only ld, but also homozygosity
+
 hes = as.matrix(read.csv("~/gsccs-data/h-effect-sizes.csv", header=F))
 pes = as.matrix(read.csv("~/gsccs-data/p-effect-sizes.csv", header=F))
+hfq = as.matrix(read.csv("~/gsccs-data/hfrq-csl-gbl.csv", header = F))
+pfq = as.matrix(read.csv("~/gsccs-data/pfrq-csl-gbl.csv", header = F))
+
+hvrsk = hes^2*hfq*(1-hfq)
+pvrsk = pes^2*pfq*(1-pfq)
 
 hmaxild = rep(0,length(hes))
 for(i in 1:length(hes)){
@@ -96,13 +122,13 @@ for(i in 1:length(pes)){
   pmaxild[i] = max(abs(ild[i,]))
 }
 
-efild = data.frame(ef=abs(c(hes,pes)), 
+skild = data.frame(sk=abs(c(hvrsk,pvrsk)), 
            ild=c(hmaxild,pmaxild), 
            spp=c(rep("Host",length(hes)),rep("Parasite",length(pes))))
 
-ggplot(efild) + 
-  geom_point(aes(x=ef,y=ild, color=spp)) +
-  labs(x = "Mutation Effect Size",        
+ggplot(skild) + 
+  geom_point(aes(x=sk,y=ild, color=spp)) +
+  labs(x = "(Sqr Effect Size)*(Genetic Var)",        
        y = "max(ILD)",        
        color = "Legend") +
   scale_color_manual(values = colors) +
@@ -152,7 +178,7 @@ ggplot(efild) +
 #   theme_minimal()
 ```
 
-### time-series
+## time-series
 
 ```{r echo=F, message=FALSE, warning=FALSE,results='asis'}
 params = read.csv("~/gsccs-data/params.csv")
@@ -267,7 +293,8 @@ ggplot(tsdf) +
   theme_minimal()
 ```
 
-### parameter values
+## parameter values
+
 ```{r echo=F, message=FALSE, warning=FALSE,results='asis'}
 descrs = c("host mutation rate","parasite mutation rate","host mutation effect size","parasite mutation effect size",
            "host dispersal distance","parasite dispersal distance","host-parasite interaction dist","host competition",

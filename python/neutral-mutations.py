@@ -79,6 +79,8 @@ hfrq = (hgm1+hgm2)/2
 np.save(os.path.expanduser('~/gsccs-data/hfrq-causal'),hfrq)
 hga = np.reshape(np.array([hgm1,hgm2]),(host_ts.num_sites,host_ts.num_individuals,2))
 np.save(os.path.expanduser('~/gsccs-data/hga-causal'),hga)
+hgblfrq = np.mean(hfrq,axis=1)
+np.savetxt(os.path.expanduser('~/gsccs-data/hfrq-csl-gbl.csv'), hgblfrq, delimiter=",")
 
 pgm = para_ts.genotype_matrix()
 pgm1 = pgm[:,0:para_ts.num_individuals]
@@ -87,7 +89,8 @@ pfrq = (pgm1+pgm2)/2
 np.save(os.path.expanduser('~/gsccs-data/pfrq-causal'),pfrq)
 pga = np.reshape(np.array([pgm1,pgm2]),(para_ts.num_sites,para_ts.num_individuals,2))
 np.save(os.path.expanduser('~/gsccs-data/pga-causal'),pga)
-
+pgblfrq = np.mean(pfrq,axis=1)
+np.savetxt(os.path.expanduser('~/gsccs-data/pfrq-csl-gbl.csv'), pgblfrq, delimiter=",")
 
 # inspect trees
 
