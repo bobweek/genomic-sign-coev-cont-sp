@@ -38,6 +38,18 @@ prfrac = sum(cslprs)/topttl
 sgfrac = sum(cslsgl)/topttl
 cbfrac = prfrac+sgfrac
 
+hprcpt = unique(topinds[cslprs,1])
+pprcpt = unique(topinds[cslprs,2])
+
+hcslfrac = length(hprcpt)/length(hsnps)
+pcslfrac = length(pprcpt)/length(psnps)
+
+hsgcpt = unique(topinds[cslprs|cslsgl,1])
+psgcpt = unique(topinds[cslprs|cslsgl,2])
+
+hsglfrac = length(hsgcpt)/length(hsnps)
+psglfrac = length(psgcpt)/length(psnps)
+
 # \/ perhaps do this in python using genotype arrays \/
 # for each spp, identify set of causal loci that explain
 # 95% of phenotypic variation in the population
@@ -49,10 +61,16 @@ cbfrac = prfrac+sgfrac
 
 # make table of performance measures
 descrs = c("Total ild pairs occuring in top 99th percentile",
+           "Number host causal loci",
+           "Number para causal loci",
            "Fraction of top 99th perc corresponding to causal pairs",
            "Fraction of top 99th perc corresponding to one causal locus",
-           "Combined fraction corresponding to one or two causal loci")
-vals = c(topttl,prfrac,sgfrac,cbfrac)
+           "Combined fraction corresponding to one or two causal loci",
+           "Fraction host loci corresponding to causal pair in 99th per",
+           "Fraction para loci corresponding to causal pair in 99th per",
+           "Fraction host loci corresponding appearing in 99th per",
+           "Fraction para loci corresponding appearing in 99th per")
+vals = c(topttl,length(hsnps),length(psnps),prfrac,sgfrac,cbfrac,hcslfrac,pcslfrac,hsglfrac,psglfrac)
 pfmsrdt = cbind(descrs,formatC(as.numeric(vals))) #, digits = 1, format = "e", drop0trailing = FALSE))
 pfmsr = data.frame(pfmsrdt)
 colnames(pfmsr) = c("Description","Value")
