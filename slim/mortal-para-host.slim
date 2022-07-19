@@ -175,12 +175,12 @@ ticks all 1 early() {
 //	community.rescheduleScriptBlock(s3, start=ixnbrnn, end=ixnbrnn);
 }
 
-ticks all 2:1000 first(){
+ticks all 2:100000 first(){
 	i3.evaluate(p0);
 	i4.evaluate(p1);
 }
 
-ticks all 2:1000 early(){
+ticks all 2:100000 early(){
 	i1.evaluate(p0);
 	i2.evaluate(p1);
 	i5.evaluate(p0);
@@ -313,7 +313,7 @@ ticks all 2:1000 early(){
 
 }
 
-ticks all 1000 late() {
+ticks all 100000 late() {
 	//	record the effect size of each causal mutation
 	hsc = host.mutations.selectionCoeff;
 	hid = asFloat(host.mutations.id);
