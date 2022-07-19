@@ -60,7 +60,7 @@ psglfrac = length(psgcpt)/length(psnps)
 # just the causal "singletons" (ie, one causal one neutral)
 
 # make table of performance measures
-descrs = c("Total ild pairs occuring in top 99th percentile",
+descrs = c("Number ild pairs occuring in top 99th percentile",
            "Number host causal loci",
            "Number para causal loci",
            "Fraction of top 99th perc corresponding to causal pairs",
@@ -192,18 +192,15 @@ frqs$frq[frqs$frq==0] = NA
 hfq.df = subset(frqs,spp==1)
 pfq.df = subset(frqs,spp==2)
 
-require(ggplot2)
-# require(ggdark)
-
 ggplot(hfq.df,aes(x=t,y=frq)) + 
-  geom_line(aes(color=as.character(id))) + 
+  geom_line(aes(color=as.character(id)),alpha=0.5,lwd=.2) + 
   xlab("Time") +
   ylab("Host Mutation Freqs") +
   theme_minimal() +
   theme(legend.position="none")
 
 ggplot(pfq.df,aes(x=t,y=frq)) + 
-  geom_line(aes(color=as.character(id))) + 
+  geom_line(aes(color=as.character(id)),alpha=0.5,lwd=0.2) + 
   xlab("Time") +
   ylab("Para Mutation Freqs") +
   theme_minimal() +
