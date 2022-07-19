@@ -99,7 +99,7 @@ species host initialize() {
 	// host genomics
 	initializeMutationRate(µₕ);
 //	initializeMutationType("m1", 0.5, "n", 0.0, κₕ); // normal dfe
-	initializeMutationType("m1", 0.5, "s", "return runif(1,-κₕ,κₕ);"); // unif dfe
+	initializeMutationType("m1", 0.5, "s", "return runif(1,-κₕ,κₕ);"); // unif dfe (to try prevent sweep)
 	initializeGenomicElementType("g1", m1, 1.0);
 	initializeGenomicElement(g1, 0, 1e8-1);
 	initializeRecombinationRate(1e-8);
@@ -114,7 +114,7 @@ species para initialize() {
 	// parasite genomics
 	initializeMutationRate(µₚ);
 //	initializeMutationType("m2", 0.5, "n", 0.0, κₚ); // normal dfe
-	initializeMutationType("m2", 0.5, "s", "return runif(1,-κₚ,κₚ);"); // unif dfe
+	initializeMutationType("m2", 0.5, "s", "return runif(1,-κₚ,κₚ);"); // unif dfe (to try prevent sweep)
 	initializeGenomicElementType("g2", m2, 1.0);
 	initializeGenomicElement(g2, 0, 1e8-1);
 	initializeRecombinationRate(1e-8);
@@ -175,12 +175,12 @@ ticks all 1 early() {
 //	community.rescheduleScriptBlock(s3, start=ixnbrnn, end=ixnbrnn);
 }
 
-ticks all 2:100000 first(){
+ticks all 2:1000 first(){
 	i3.evaluate(p0);
 	i4.evaluate(p1);
 }
 
-ticks all 2:100000 early(){
+ticks all 2:1000 early(){
 	i1.evaluate(p0);
 	i2.evaluate(p1);
 	i5.evaluate(p0);
@@ -254,7 +254,6 @@ ticks all 2:100000 early(){
 		hmfs = host.mutationFrequencies(p0);
 		writeFile(hfsfn,paste(hmfs ,sep=","),append=T);
 		writeFile(hfsidfn,paste(hmid,sep=","),append=T);
-//		catn(hmfs);
 
 		pfsfn = "~/gsccs-data/pfs.csv";
 		pfsidfn = "~/gsccs-data/pfs-id.csv";
@@ -265,7 +264,6 @@ ticks all 2:100000 early(){
 		
 		muh = sum((hmfs>0.1) & (hmfs<0.9));
 		mup = sum((pmfs>0.1) & (pmfs<0.9));
-//		catn(muh);
 		
 //		// vcfs
 //		if(community.tick>2){
@@ -315,8 +313,26 @@ ticks all 2:100000 early(){
 
 }
 
-ticks all 100000 late() {
-//	figure out a way to record the effect sizes of each mutation to see how they correlate with ild
+ticks all 1000 late() {
+	//	record the effect size of each causal mutation
+	hsc = host.mutations.selectionCoeff;
+	hid = asFloat(host.mutations.id);
+	hpos = asFloat(host.mutations.position);
+	spp = asFloat(rep(1,length(hid)));
+	hblk = cbind(hsc,hid,hpos,spp);
+	psc = para.mutations.selectionCoeff;
+	pid = asFloat(para.mutations.id);
+	ppos = asFloat(para.mutations.position);
+	spp = asFloat(rep(2,length(pid)));
+	pblk = cbind(psc,pid,ppos,spp);
+	esdf = rbind(hblk,pblk);
+	esfn = "~/gsccs-data/effect-sizes.csv";
+	writeFile(esfn,paste("effectSize","id","pos","spp",sep=","),append=F);
+	for(i in 0:(length(esdf[,0])-1)){
+		writeFile(esfn,paste(esdf[i,],sep=","),append=T);
+	}
+	// write out individual trait values
+	// write out tree seqs
 	host.treeSeqOutput("~/gsccs-data/host-slim.trees", metadata=params);
 	para.treeSeqOutput("~/gsccs-data/para-slim.trees", metadata=params);
 	community.simulationFinished();

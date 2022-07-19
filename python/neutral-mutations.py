@@ -18,6 +18,19 @@ import numpy as np
 host_ts = tskit.load(os.path.expanduser('~/gsccs-data/host-slim.trees'))
 para_ts = tskit.load(os.path.expanduser('~/gsccs-data/para-slim.trees'))
 
+# save effect sizes
+
+h_efs = []
+for m in host_ts.mutations():
+      ef = m.metadata['mutation_list'][0]['selection_coeff']
+      h_efs.append(ef)
+np.savetxt(os.path.expanduser('~/gsccs-data/h-effect-sizes.csv'), h_efs, delimiter=",")
+
+p_efs = []
+for m in para_ts.mutations():
+      ef = m.metadata['mutation_list'][0]['selection_coeff']
+      p_efs.append(ef)
+np.savetxt(os.path.expanduser('~/gsccs-data/p-effect-sizes.csv'), p_efs, delimiter=",")
 
 # save causal snp locations
 
@@ -30,7 +43,6 @@ p_csl_snps = []
 for i in para_ts.sites():
       p_csl_snps.append(i.position)
 np.savetxt(os.path.expanduser('~/gsccs-data/p-csl-snps.csv'), p_csl_snps, delimiter=",")
-
 
 # export locations and trait values
 

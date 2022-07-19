@@ -50,9 +50,17 @@ np.savetxt(fname('ild-cov.csv'), ild_cov, delimiter=",")
 np.savetxt(fname('ild-cor-flat.csv'), ild_cor.flatten(), delimiter=",")
 np.savetxt(fname('ild-cov-flat.csv'), ild_cov.flatten(), delimiter=",")
 
-# compute ild only at causal loci
+# compute ild only at neutrl loci
 hncsl = len(sstm.h.csl_snp)
 pncsl = len(sstm.p.csl_snp)
+ntl_ild_cor = ild_cor[hncsl:sstm.h.S,pncsl:sstm.p.S]
+ntl_ild_cov = ild_cov[hncsl:sstm.h.S,pncsl:sstm.p.S]
+np.savetxt(fname('ntl-ild-cor.csv'), ntl_ild_cor, delimiter=",")
+np.savetxt(fname('ntl-ild-cov.csv'), ntl_ild_cov, delimiter=",")
+np.savetxt(fname('ntl-ild-cor-flat.csv'), ntl_ild_cor.flatten(), delimiter=",")
+np.savetxt(fname('ntl-ild-cov-flat.csv'), ntl_ild_cov.flatten(), delimiter=",")
+
+# compute ild only at causal loci
 csl_ild_cor = ild_cor[0:hncsl,0:pncsl]
 csl_ild_cov = ild_cov[0:hncsl,0:pncsl]
 np.savetxt(fname('csl-ild-cor.csv'), csl_ild_cor, delimiter=",")

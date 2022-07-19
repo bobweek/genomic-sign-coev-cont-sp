@@ -174,7 +174,7 @@ def ild(sstm,co):
 
     return ild
 
-# interspecific spatial covariance of allele frequencies
+# intraspecific spatial covariance of allele frequencies (using diploidy)
 def ld(sstm,co,spp):
 
     # first build kd-tree for host locations

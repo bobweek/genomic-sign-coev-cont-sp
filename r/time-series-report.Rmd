@@ -5,63 +5,140 @@ output:
     self_contained: true
     highlight: tango
     downcute_theme: "chaos"
+    default_style: "light"
 editor_options: 
   chunk_output_type: console
 ---
 
-<!-- <iframe src="https://player.vimeo.com/video/712261773?h=148675a6d9&loop=1&title=0&byline=0&portrait=0" width="320" height="160" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe> -->
+### performance measures
 
 ```{r echo=F, message=FALSE, warning=FALSE,results='asis'}
 require(ggplot2)
-require(ggdark)
+# require(ggdark)
 
-iscaf_cor = read.csv("~/gsccs-data/iscaf-cor-flat.csv", header = F)
-iscaf_cov = read.csv("~/gsccs-data/iscaf-cov-flat.csv", header = F)
-csl_iscaf_cor = read.csv("~/gsccs-data/csl-iscaf-cor-flat.csv", header = F)
-csl_iscaf_cov = read.csv("~/gsccs-data/csl-iscaf-cov-flat.csv", header = F)
+# pool all ild scores together in matrix
+# grab indices for top 99th percentile
+# compute the fraction of ild scores in top 99th percentile
+# that correspond to causal pairs
+# that correspond to one causal locus and one neutral locus
 
-kprs = list(allcor=1,allcov=2,cslcor=3,cslcov=4)
-dfs = list(allcor=iscaf_cor,allcov=iscaf_cov,cslcor=csl_iscaf_cor,cslcov=csl_iscaf_cov)
+hsnps = as.matrix(read.csv("~/gsccs-data/h-csl-snps.csv",header=F)+1)
+psnps = as.matrix(read.csv("~/gsccs-data/p-csl-snps.csv",header=F)+1)
 
-for(i in 1:2){
-  dfs[[i]]$V1 = abs(dfs[[i]]$V1)
-  qtl = quantile(dfs[[i]]$V1,0.99)
-  kprs[[i]] = which(dfs[[i]]$V1>qtl)
+ild = as.matrix(read.csv("~/gsccs-data/ild-cov.csv", header=F))
+qtl = quantile(ild,0.99)
+topinds = which(ild>qtl, arr.ind = T)
+
+cslprs = topinds[,1] <= length(hsnps) & topinds[,2] <= length(psnps)
+cslsgl = (topinds[,1] <= length(hsnps) & !(topinds[,2] <= length(psnps))) | 
+  (!(topinds[,1] <= length(hsnps)) & topinds[,2] <= length(psnps))
+
+topttl = length(topinds[,1])
+prfrac = sum(cslprs)/topttl
+sgfrac = sum(cslsgl)/topttl
+cbfrac = prfrac+sgfrac
+
+# \/ perhaps do this in python using genotype arrays \/
+# for each spp, identify set of causal loci that explain
+# 95% of phenotypic variation in the population
+# refer to these as "truly causal loci"
+# then, compute fraction of these causal loci that occur in
+# the 99th percentile of ild scores for
+# just the causal pairs
+# just the causal "singletons" (ie, one causal one neutral)
+
+# make table of performance measures
+descrs = c("Total ild pairs occuring in top 99th percentile",
+           "Fraction of top 99th perc corresponding to causal pairs",
+           "Fraction of top 99th perc corresponding to one causal locus",
+           "Combined fraction corresponding to one or two causal loci")
+vals = c(topttl,prfrac,sgfrac,cbfrac)
+pfmsrdt = cbind(descrs,formatC(as.numeric(vals))) #, digits = 1, format = "e", drop0trailing = FALSE))
+pfmsr = data.frame(pfmsrdt)
+colnames(pfmsr) = c("Description","Value")
+knitr::kable(pfmsr)
+```
+### mutation effect size vs ild
+```{r echo=F, message=FALSE, warning=FALSE,results='asis'}
+colors <- c("Parasite" = "purple", "Host" = "orange")
+
+# insert plots of ild x effect size for both spp
+# where each effect size is associated with all ild at that locus
+# check if effect size correlates with max(ild)
+
+hes = as.matrix(read.csv("~/gsccs-data/h-effect-sizes.csv", header=F))
+pes = as.matrix(read.csv("~/gsccs-data/p-effect-sizes.csv", header=F))
+
+hmaxild = rep(0,length(hes))
+for(i in 1:length(hes)){
+  hmaxild[i] = max(abs(ild[i,]))
 }
-for(i in 3:4){
-  dfs[[i]]$V1 = abs(dfs[[i]]$V1)
-  qtl = quantile(dfs[[i-2]]$V1,0.99)
-  kprs[[i]] = which(dfs[[i]]$V1>qtl)
+pmaxild = rep(0,length(pes))
+for(i in 1:length(pes)){
+  pmaxild[i] = max(abs(ild[i,]))
 }
 
-lumpnms = c(rep("all",length(kprs$allcor)),rep("csl",length(kprs$cslcor)))
-lumpcrs = c(dfs$allcor$V1[kprs$allcor],dfs$cslcor$V1[kprs$cslcor])
-cor_df = data.frame(lumpcrs,lumpnms)
-colnames(cor_df) = c("iscaf","set")
+efild = data.frame(ef=abs(c(hes,pes)), 
+           ild=c(hmaxild,pmaxild), 
+           spp=c(rep("Host",length(hes)),rep("Parasite",length(pes))))
 
-lumpnms = c(rep("all",length(kprs$allcov)),rep("csl",length(kprs$cslcov)))
-lumpcvs = c(dfs$allcov$V1[kprs$allcov],dfs$cslcov$V1[kprs$cslcov])
-cov_df = data.frame(lumpcvs,lumpnms)
-colnames(cov_df) = c("iscaf","set")
+ggplot(efild) + 
+  geom_point(aes(x=ef,y=ild, color=spp)) +
+  labs(x = "Mutation Effect Size",        
+       y = "max(ILD)",        
+       color = "Legend") +
+  scale_color_manual(values = colors) +
+  theme_minimal()
 
-ggplot(cor_df) +
-  geom_histogram(aes(x=iscaf,y=..density..,fill=set),
-                 bins=50,alpha=0.25,position = "identity") +
-  xlab("99th Perc Spatial Correlations") +
-  ylab("Density") +
-  dark_theme_gray()
+# ntl_ild_cor = read.csv("~/gsccs-data/ntl-ild-cor-flat.csv", header = F)
+# ntl_ild_cov = read.csv("~/gsccs-data/ntl-ild-cov-flat.csv", header = F)
+# csl_ild_cor = read.csv("~/gsccs-data/csl-ild-cor-flat.csv", header = F)
+# csl_ild_cov = read.csv("~/gsccs-data/csl-ild-cov-flat.csv", header = F)
+# 
+# kprs = list(ntlcor=1,ntlcov=2,cslcor=3,cslcov=4)
+# dfs = list(ntlcor=ntl_ild_cor,ntlcov=ntl_ild_cov,cslcor=csl_ild_cor,cslcov=csl_ild_cov)
+# 
+# for(i in 1:2){
+#   dfs[[i]]$V1 = abs(dfs[[i]]$V1)
+#   qtl = quantile(dfs[[i]]$V1,0.99)
+#   kprs[[i]] = which(dfs[[i]]$V1>qtl)
+# }
+# for(i in 3:4){
+#   dfs[[i]]$V1 = abs(dfs[[i]]$V1)
+#   qtl = quantile(dfs[[i-2]]$V1,0.99)
+#   kprs[[i]] = which(dfs[[i]]$V1>qtl)
+# }
+# 
+# lumpnms = c(rep("ntl",length(kprs$ntlcor)),rep("csl",length(kprs$cslcor)))
+# lumpcrs = c(dfs$ntlcor$V1[kprs$ntlcor],dfs$cslcor$V1[kprs$cslcor])
+# cor_df = data.frame(lumpcrs,lumpnms)
+# colnames(cor_df) = c("ild","set")
+# 
+# lumpnms = c(rep("ntl",length(kprs$ntlcov)),rep("csl",length(kprs$cslcov)))
+# lumpcvs = c(dfs$ntlcov$V1[kprs$ntlcov],dfs$cslcov$V1[kprs$cslcov])
+# cov_df = data.frame(lumpcvs,lumpnms)
+# colnames(cov_df) = c("ild","set")
+# 
+# ggplot(cor_df) +
+#   geom_histogram(aes(x=ild,y=..density..,fill=set),
+#                  bins=50,alpha=0.25,position = "identity") +
+#   xlab("99th Perc Spatial Correlations") +
+#   ylab("Density") +
+#   theme_minimal()
+# 
+# ggplot(cov_df) +
+#   geom_histogram(aes(x=ild,y=..density..,fill=set),
+#                  bins=50,alpha=0.25,position = "identity") +
+#   xlab("99th Perc Spatial Covariances") +
+#   ylab("Density") +
+#   theme_minimal()
+```
 
-ggplot(cov_df) +
-  geom_histogram(aes(x=iscaf,y=..density..,fill=set),
-                 bins=50,alpha=0.25,position = "identity") +
-  xlab("99th Perc Spatial Covariances") +
-  ylab("Density") +
-  dark_theme_gray()
+### time-series
 
+```{r echo=F, message=FALSE, warning=FALSE,results='asis'}
 params = read.csv("~/gsccs-data/params.csv")
 tsdf = read.csv("~/gsccs-data/time-series.csv")
-
-colors <- c("Parasite" = "purple", "Host" = "orange")
 
 ggplot(tsdf) + 
   geom_line(aes(x=t,y=Nh,color="Host")) +
@@ -70,7 +147,7 @@ ggplot(tsdf) +
        y = "Global Census Size",        
        color = "Legend") +   
   scale_color_manual(values = colors) +
-  dark_theme_gray()
+  theme_minimal()
 
 ggplot(tsdf) + 
   geom_line(aes(x=t,y=zh,color="Host")) +
@@ -79,7 +156,7 @@ ggplot(tsdf) +
        y = "Global Trait Means",        
        color = "Legend") +   
   scale_color_manual(values = colors) +
-  dark_theme_gray()
+  theme_minimal()
 
 ggplot(tsdf) + 
   geom_line(aes(x=t,y=vh,color="Host")) +
@@ -88,7 +165,7 @@ ggplot(tsdf) +
        y = "Global Trait Stddevs",        
        color = "Legend") +   
   scale_color_manual(values = colors) +
-  dark_theme_gray()
+  theme_minimal()
 
 frqs = read.csv("~/gsccs-data/mut-freqs.csv")
 
@@ -98,20 +175,20 @@ hfq.df = subset(frqs,spp==1)
 pfq.df = subset(frqs,spp==2)
 
 require(ggplot2)
-require(ggdark)
+# require(ggdark)
 
 ggplot(hfq.df,aes(x=t,y=frq)) + 
   geom_line(aes(color=as.character(id))) + 
   xlab("Time") +
   ylab("Host Mutation Freqs") +
-  dark_theme_gray() +
+  theme_minimal() +
   theme(legend.position="none")
 
 ggplot(pfq.df,aes(x=t,y=frq)) + 
   geom_line(aes(color=as.character(id))) + 
   xlab("Time") +
   ylab("Para Mutation Freqs") +
-  dark_theme_gray() +
+  theme_minimal() +
   theme(legend.position="none")
 
 ggplot(tsdf) + 
@@ -121,7 +198,7 @@ ggplot(tsdf) +
        y = "Num Polymorphic Loci",
        color = "Legend") +   
   scale_color_manual(values = colors) +
-  dark_theme_gray()
+  theme_minimal()
 
 ggplot(tsdf) + 
   geom_line(aes(x=t,y=pntcorr)) +
@@ -130,7 +207,7 @@ ggplot(tsdf) +
        color = "Legend") +   
   scale_color_manual(values = colors) +
   ylim(c(-1,1)) +
-  dark_theme_gray()
+  theme_minimal()
 
 ggplot(tsdf) + 
   geom_line(aes(x=t,y=abar)) +
@@ -138,7 +215,7 @@ ggplot(tsdf) +
        y = "Average Infection Probability",        
        color = "Legend") +   
   scale_color_manual(values = colors) +
-  dark_theme_gray()
+  theme_minimal()
 
 # ggplot(tsdf) + 
 #   geom_line(aes(x=t,y=vara)) +
@@ -146,7 +223,7 @@ ggplot(tsdf) +
 #        y = "Variance of Infection Probability",
 #        color = "Legend") +   
 #   scale_color_manual(values = colors) +
-#   dark_theme_gray()
+#   theme_minimal()
 
 ggplot(tsdf) + 
   geom_line(aes(x=t,y=hselresp)) +
@@ -154,7 +231,7 @@ ggplot(tsdf) +
        y = "Host Response to Biotic Selection",        
        color = "Legend") +   
   scale_color_manual(values = colors) +
-  dark_theme_gray()
+  theme_minimal()
 
 ggplot(tsdf) + 
   geom_line(aes(x=t,y=pselresp)) +
@@ -162,7 +239,7 @@ ggplot(tsdf) +
        y = "Parasite Response to Biotic Selection",
        color = "Legend") +   
   scale_color_manual(values = colors) +
-  dark_theme_gray()
+  theme_minimal()
 
 ggplot(tsdf) + 
   geom_line(aes(x=t,y=(1-pr_unparasitized),color="Host")) +
@@ -172,8 +249,11 @@ ggplot(tsdf) +
        color = "Legend") +   
   scale_color_manual(values = colors) +
   ylim(c(0,1)) +
-  dark_theme_gray()
+  theme_minimal()
+```
 
+### parameter values
+```{r echo=F, message=FALSE, warning=FALSE,results='asis'}
 descrs = c("host mutation rate","parasite mutation rate","host mutation effect size","parasite mutation effect size",
            "host dispersal distance","parasite dispersal distance","host-parasite interaction dist","host competition",
            "parasite competition","host competition dist","parasite competition dist","host base fitness","parasite base fitness",
