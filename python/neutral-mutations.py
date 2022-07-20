@@ -102,7 +102,6 @@ print(f"The para tree sequence has {para_ts.num_trees} trees on a genome of leng
       f" {para_ts.num_individuals} individuals, {para_ts.num_samples} 'sample' genomes, {para_ts.num_sites} sites,"
       f" and {para_ts.num_mutations} causal mutations.")
 
-
 # sprinkle on neutral mutations
 
 mu = 1e-12

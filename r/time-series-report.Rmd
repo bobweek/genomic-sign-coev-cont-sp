@@ -29,26 +29,86 @@ ild = as.matrix(read.csv("~/gsccs-data/ild-cov.csv", header=F))
 qtl = quantile(ild,0.99)
 topinds = which(ild>qtl, arr.ind = T)
 
-cslprs = topinds[,1] <= length(hsnps) & topinds[,2] <= length(psnps)
-cslsgl = (topinds[,1] <= length(hsnps) & !(topinds[,2] <= length(psnps))) | 
-  (!(topinds[,1] <= length(hsnps)) & topinds[,2] <= length(psnps))
+hcslinds = topinds[,1] <= length(hsnps)
+pcslinds = topinds[,2] <= length(psnps)
+
+cslprs = hcslinds & pcslinds
+cslsgl = (hcslinds & !pcslinds) | (!hcslinds & pcslinds)
 
 topttl = length(topinds[,1])
 prfrac = sum(cslprs)/topttl
 sgfrac = sum(cslsgl)/topttl
 cbfrac = prfrac+sgfrac
 
-hprcpt = unique(topinds[cslprs,1])
-pprcpt = unique(topinds[cslprs,2])
+hprrep = topinds[cslprs,1]
+pprrep = topinds[cslprs,2]
+
+hprcpt = unique(hprrep)
+pprcpt = unique(pprrep)
 
 hcslfrac = length(hprcpt)/length(hsnps)
 pcslfrac = length(pprcpt)/length(psnps)
 
-hsgcpt = unique(topinds[cslprs|cslsgl,1])
-psgcpt = unique(topinds[cslprs|cslsgl,2])
+hsgrep = topinds[hcslinds,1]
+psgrep = topinds[pcslinds,2]
+
+hsgcpt = unique(hsgrep)
+psgcpt = unique(psgrep)
 
 hsglfrac = length(hsgcpt)/length(hsnps)
 psglfrac = length(psgcpt)/length(psnps)
+
+hild99cslspec = c()
+for(i in hsgcpt){
+  hild99cslspec = c(hild99cslspec, sum(hsgrep==i))
+}
+pild99cslspec = c()
+for(i in psgcpt){
+  pild99cslspec = c(pild99cslspec, sum(psgrep==i))
+}
+
+hcsl99fd = c()
+for(i in 1:max(hild99cslspec)){
+  hcsl99fd = c(hcsl99fd, sum(hild99cslspec==i))
+}
+pcsl99fd = c()
+for(i in 1:max(pild99cslspec)){
+  pcsl99fd = c(pcsl99fd, sum(pild99cslspec==i))
+}
+
+hntlrep = topinds[!hcslinds,1]
+pntlrep = topinds[!pcslinds,2]
+
+hntlcpt = unique(hntlrep)
+pntlcpt = unique(pntlrep)
+
+hild99ntlspec = c()
+for(i in hntlcpt){
+  hild99ntlspec = c(hild99ntlspec, sum(hntlrep==i))
+}
+pild99ntlspec = c()
+for(i in pntlcpt){
+  pild99ntlspec = c(pild99ntlspec, sum(pntlrep==i))
+}
+
+hntl99fd = rep(0,max(hild99cslspec))
+for(i in 1:max(hild99cslspec)){
+  hntl99fd[i] = sum(hild99ntlspec==i)
+}
+pntl99fd = rep(0,max(pild99cslspec))
+for(i in 1:max(pild99cslspec)){
+  pntl99fd[i] = sum(pild99ntlspec==i)
+}
+
+spps = rep(c(rep("Host",max(hild99cslspec)),rep("Parasite",max(pild99cslspec))),2)
+hcsls = rep("csl",length(hcsl99fd))
+hntls = rep("ntl",length(hntl99fd))
+pcsls = rep("csl",length(pcsl99fd))
+pntls = rep("ntl",length(pntl99fd))
+fddf = data.frame(f=c(1:max(hild99cslspec),1:max(pild99cslspec)),
+                  c=c(hcsl99fd,pcsl99fd,hntl99fd,pntl99fd),
+                  type=c(hcsls,pcsls,hntls,pntls),
+                  spp=spps)
 
 # \/ perhaps do this in python using genotype arrays \/
 # for each spp, identify set of causal loci that explain
@@ -72,15 +132,17 @@ knitr::kable(statdf)
 
 ## performance measures
 
+"Fraction of top 99th perc corresponding to _X_" is a fraction of interspecific pairs of loci that appear in the 99th percentile of ild scores corresponding to property _X_.
+
 ```{r echo=F, message=FALSE, warning=FALSE,results='asis'}
 # make table of performance measures
-descrs = c("Fraction of top 99th perc corresponding to causal pairs",
-           "Fraction of top 99th perc corresponding to one causal locus",
-           "Combined fraction corresponding to one or two causal loci",
-           "Fraction host loci corresponding to causal pair in 99th per",
-           "Fraction para loci corresponding to causal pair in 99th per",
-           "Fraction host loci corresponding appearing in 99th per",
-           "Fraction para loci corresponding appearing in 99th per")
+descrs = c("Fraction of top 99th perc corresponding to a causal pair",
+           "Fraction of top 99th perc corresponding to exactly one causal locus",
+           "Fraction of top 99th perc corresponding to at least one causal locus",
+           "Fraction host loci appearing in causal pair in the 99th perc",
+           "Fraction para loci appearing in causal pair in the 99th perc",
+           "Fraction host loci appearing in 99th perc",
+           "Fraction para loci appearing in 99th perc")
 vals = c(prfrac,sgfrac,cbfrac,hcslfrac,pcslfrac,hsglfrac,psglfrac)
 pfmsrdt = cbind(descrs,formatC(as.numeric(vals))) #, digits = 1, format = "e", drop0trailing = FALSE))
 pfmsr = data.frame(pfmsrdt)
@@ -88,7 +150,22 @@ colnames(pfmsr) = c("Description","Value")
 knitr::kable(pfmsr)
 ```
 
-## ild score vs trait variance score
+Frequencies that causal and neutral loci appear in 99th perc of ild scores. Sort of like sfs, but number of loci that occur a given number of times in 99th perc instead of number loci that occur at a given freq in a population.
+
+```{r echo=F, message=FALSE, warning=FALSE,results='asis'}
+ggplot(subset(fddf,spp=="Host"),aes(x=f,y=c,fill=type)) +
+  geom_bar(stat="identity", position=position_dodge()) +
+  ylab("Count")+xlab("99th perc occurance")+
+  ggtitle("host")+
+  theme_minimal()
+ggplot(subset(fddf,spp=="Parasite"),aes(x=f,y=c,fill=type)) +
+  geom_bar(stat="identity", position=position_dodge()) +
+  ylab("Count")+xlab("99th perc occurance")+
+  ggtitle("parasite")+
+  theme_minimal()
+```
+
+## ild score vs effect size and/or genetic variance
 
 ```{r echo=F, message=FALSE, warning=FALSE,results='asis'}
 colors <- c("Parasite" = "purple", "Host" = "orange")
@@ -119,17 +196,35 @@ for(i in 1:length(hes)){
 }
 pmaxild = rep(0,length(pes))
 for(i in 1:length(pes)){
-  pmaxild[i] = max(abs(ild[i,]))
+  pmaxild[i] = max(abs(ild[,i]))
 }
 
 skild = data.frame(sk=abs(c(hvrsk,pvrsk)), 
-           ild=c(hmaxild,pmaxild), 
+           ild=c(hmaxild,pmaxild),
+           es2=c(hes^2,pes^2),
+           gv=c(hfq*(1-hfq),pfq*(1-pfq)), 
            spp=c(rep("Host",length(hes)),rep("Parasite",length(pes))))
 
 ggplot(skild) + 
   geom_point(aes(x=sk,y=ild, color=spp)) +
-  labs(x = "(Sqr Effect Size)*(Genetic Var)",        
-       y = "max(ILD)",        
+  labs(x = "pᵢ(1-pᵢ)(Effect Size)ᵢ²",        
+       y = "max(ILD)ᵢ",        
+       color = "Legend") +
+  scale_color_manual(values = colors) +
+  theme_minimal()
+
+ggplot(skild) + 
+  geom_point(aes(x=gv,y=ild, color=spp)) +
+  labs(x = "pᵢ(1-pᵢ)",        
+       y = "max(ILD)ᵢ",        
+       color = "Legend") +
+  scale_color_manual(values = colors) +
+  theme_minimal()
+
+ggplot(skild) + 
+  geom_point(aes(x=es2,y=ild, color=spp)) +
+  labs(x = "(Effect Size)ᵢ²",        
+       y = "max(ILD)ᵢ",        
        color = "Legend") +
   scale_color_manual(values = colors) +
   theme_minimal()
@@ -203,6 +298,15 @@ ggplot(tsdf) +
   theme_minimal()
 
 ggplot(tsdf) + 
+  geom_line(aes(x=t,y=pntcorr)) +
+  labs(x = "Time",        
+       y = "Spatial Correlation of Traits",        
+       color = "Legend") +   
+  scale_color_manual(values = colors) +
+  ylim(c(-1,1)) +
+  theme_minimal()
+
+ggplot(tsdf) + 
   geom_line(aes(x=t,y=vh,color="Host")) +
   geom_line(aes(x=t,y=vp,color="Parasite")) +
   labs(x = "Time",        
@@ -242,19 +346,11 @@ ggplot(tsdf) +
   theme_minimal()
 
 ggplot(tsdf) + 
-  geom_line(aes(x=t,y=pntcorr)) +
-  labs(x = "Time",        
-       y = "Spatial Correlation of Traits",        
-       color = "Legend") +   
-  scale_color_manual(values = colors) +
-  ylim(c(-1,1)) +
-  theme_minimal()
-
-ggplot(tsdf) + 
   geom_line(aes(x=t,y=abar)) +
   labs(x = "Time",
        y = "Average Infection Probability",        
        color = "Legend") +   
+  ylim(c(0,1))+
   scale_color_manual(values = colors) +
   theme_minimal()
 
