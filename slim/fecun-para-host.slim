@@ -3,29 +3,29 @@
 species all initialize(){
 	initializeSLiMModelType("nonWF");
 	// model parameters
-	defaults = Dictionary(	
+	defaults = Dictionary(
 		"µₕ",  1e-12,  	// host mutation rate
 		"µₚ",  1e-12,  	// parasite mutation rate
 		"κₕ",  1.0,  		// host mutation effect size
 		"κₚ",  1.0,  		// parasite mutation effect size
-		"εₕ",  0.5,			// stddev of environmental noise
-		"εₚ",  0.5,			// stddev of environmental noise		
-		"σₕ",  2.0,  		// host dispersal distance
-		"σₚ",  0.5,  		// parasite dispersal distance
+//		"εₕ",  0.5,			// stddev of environmental noise
+//		"εₚ",  0.5,			// stddev of environmental noise		
+		"σₕ",  3.0,  		// host dispersal distance
+		"σₚ",  1.0,  		// parasite dispersal distance
 		"ι",   3.0,			// spatial interspp interaction distance
-		"cₕ",  1e-2, 		// strength of host competition
-		"cₚ",  3.5e-2, 	// strength of para competition
-		"ωₕ",  2.0,			// (spatial) host niche breadth
-		"ωₚ",  0.5,			// (spatial) parasite niche breadth
+		"cₕ",  1.5e-2, 		// strength of host competition
+		"cₚ",  5e-2, 	// strength of para competition
+		"ωₕ",  3.0,			// (spatial) host niche breadth
+		"ωₚ",  1.0,			// (spatial) parasite niche breadth
 		"W₀ₕ", 1.015,		// host base fitness
 		"W₀ₚ", 1.08,		// para base fitness
-		"sₕ",  1e-3, 		// cost on host fitness for each infection ('s' as in selection)
-		"sₚ",  1e-2, 		// benefit on parasite fitness for successful infection
+		"sₕ",  1.5e-3, 		// cost on host fitness for each infection ('s' as in selection)
+		"sₚ",  1.5e-2, 		// benefit on parasite fitness for successful infection
 		"γ",   1.0,			// sensitivity of inf pr to trait differences ('gamma' trad nuimser notation for this par)
-		"ρ₀ₕ",  1.0,		// initial population density ('rho' is trad for densities)
-		"ρ₀ₚ",  2.0,		// initial population density ('rho' is trad for densities)
-		"ntlbrnn", 9999,	// number of cycles in neutral burnin period (not working yet!)
-		"ixnbrnn", 20000	// number of cycles in interacting burnin period (not working yet!)
+		"ρ₀ₕ",  0.5,		// initial population density ('rho' is trad for densities)
+		"ρ₀ₚ",  1.0		// initial population density ('rho' is trad for densities)
+//		"ntlbrnn", 9999,	// number of cycles in neutral burnin period (not working yet!)
+//		"ixnbrnn", 20000	// number of cycles in interacting burnin period (not working yet!)
 		);
 	for (k in defaults.allKeys) {
 		if (!exists(k)) {
@@ -165,8 +165,8 @@ ticks all 2:20000 first(){
 	i5.evaluate(p1);
 	
 	// caculating the phenotype as sum of loci with mutation
-	zₕ = p0.individuals.sumOfMutationsOfType(m1) + rnorm(p0.individualCount,0,εₕ);
-	zₚ = p1.individuals.sumOfMutationsOfType(m2) + rnorm(p1.individualCount,0,εₚ);
+	zₕ = p0.individuals.sumOfMutationsOfType(m1);// + rnorm(p0.individualCount,0,εₕ);
+	zₚ = p1.individuals.sumOfMutationsOfType(m2);// + rnorm(p1.individualCount,0,εₚ);
 	
 	//
 	// intraspp competition

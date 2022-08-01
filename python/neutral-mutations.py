@@ -11,7 +11,7 @@ import os
 import tskit
 import msprime
 import numpy as np
-
+import pandas as pd
 
 # load trees
 
@@ -104,7 +104,9 @@ print(f"The para tree sequence has {para_ts.num_trees} trees on a genome of leng
 
 # sprinkle on neutral mutations
 
-mu = 1e-12
+params = os.path.expanduser('~/gsccs-data/params.csv')
+muh = pd.read_csv(params)["µₕ"][0]
+mup = pd.read_csv(params)["µₚ"][0]
 
 htables = host_ts.tables
 htables.mutations.clear()
@@ -117,10 +119,10 @@ ptables.sites.clear()
 pts = ptables.tree_sequence()
 
 hmut = msprime.SLiMMutationModel(type=1)
-hts = msprime.sim_mutations(hts,rate=mu,model=hmut,keep=True)
+hts = msprime.sim_mutations(hts,rate=muh,model=hmut,keep=True)
 
 pmut = msprime.SLiMMutationModel(type=1)
-pts = msprime.sim_mutations(pts,rate=mu,model=pmut,keep=True)
+pts = msprime.sim_mutations(pts,rate=mup,model=pmut,keep=True)
 
 
 # how many mutations now?

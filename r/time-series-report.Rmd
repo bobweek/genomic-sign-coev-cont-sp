@@ -25,7 +25,7 @@ require(ggplot2)
 hsnps = as.matrix(read.csv("~/gsccs-data/h-csl-snps.csv",header=F)+1)
 psnps = as.matrix(read.csv("~/gsccs-data/p-csl-snps.csv",header=F)+1)
 
-ild = as.matrix(read.csv("~/gsccs-data/ild-cov.csv", header=F))
+ild = as.matrix(read.csv("~/gsccs-data/ild-cor.csv", header=F))
 qtl = quantile(ild,0.99)
 topinds = which(ild>qtl, arr.ind = T)
 
@@ -166,6 +166,8 @@ ggplot(subset(fddf,spp=="Parasite"),aes(x=f,y=c,fill=type)) +
 ```
 
 ## ild score vs effect size and/or genetic variance
+
+<!-- the reason why p(1-p) correlates so strongly is cause its var. try rescaling... -->
 
 ```{r echo=F, message=FALSE, warning=FALSE,results='asis'}
 colors <- c("Parasite" = "purple", "Host" = "orange")

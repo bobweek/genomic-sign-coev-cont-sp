@@ -49,8 +49,7 @@ species all initialize(){
 	// time-series.csv
 	tsfn = "~/gsccs-data/time-series.csv";
 	writeFile(tsfn,paste("t","Nh","Np","zh","zp","vh","vp","pr_unhosted","pr_unparasitized",
-		"pprh_m","pprh_v","pntcorr","muh","mup","pdv","pdm","hselresp",
-		"pselresp","abar","vara",sep=","),append=F);
+		"pntcorr","muh","mup","hselresp","pselresp","abar","vara",sep=","),append=F);
 
 	// host mutation frequencies csv
 	hfsfn = "~/gsccs-data/hfs.csv";
@@ -237,7 +236,7 @@ ticks all 2:100000 early(){
 	p0.individuals.fitnessScaling = floor(2*Wₕ);
 	p1.individuals.fitnessScaling = floor(2*Wₚ);
 	
-	// logging position, trait value, fitness, parasite movement and species id for each individual
+	// logging various quantities to include in time-series
 	if(community.tick%tempres==2){
 	
 		maxZ = max(c(zₕ,zₚ));
@@ -265,12 +264,6 @@ ticks all 2:100000 early(){
 		muh = sum((hmfs>0.1) & (hmfs<0.9));
 		mup = sum((pmfs>0.1) & (pmfs<0.9));
 		
-//		// vcfs
-//		if(community.tick>2){
-//		g = p1.genomes;
-//		gfn = paste0("~/gsccs-data/vcfs/host",format("%04i",j),".vcf");		
-//		g.outputVCF(filePath = gfn, simplifyNucleotides=T);
-//		}
 		// summary stats
 		mh = mean(zₕ);
 		mp = mean(zₚ);
@@ -279,25 +272,16 @@ ticks all 2:100000 early(){
 		pr_unhosted = 1-sum(u)/p1.individualCount;
 		nparhsts = length(unique(hs));
 		pr_unparasitized = 1-nparhsts/p0.individualCount;
-//		nparsperhst = sapply(seqLen(nparhsts),"length(which(hs==unique(hs)[applyValue]));"); // too slow!
-//		pprh_m = mean(nparsperhst);
-//		pprh_v = var(nparsperhst);
-		pprh_m = 0;
-		pprh_v = 0;
 		traitcorr = cor(zₕ[hs],zₚ[u]);		
 		hselresp = cov(log(Bₕ),zₕ);
 		pselresp = cov(log(Bₚ),zₚ);
 		if(isNAN(traitcorr)) traitcorr = 0;
 		if(isNAN(hselresp)) hselresp = 0;
 		if(isNAN(pselresp)) pselresp = 0;
-//		pdm = mean(pd);
-//		pdv = var(pd);
-		pdm = 0;
-		pdv = 0;
 		
 		tsfn = "~/gsccs-data/time-series.csv";
 		writeFile(tsfn,paste(community.tick,p0.individualCount,p1.individualCount,mh,mp,vh,vp,
-			pr_unhosted,pr_unparasitized,pprh_m,pprh_v,traitcorr,muh,mup,pdv,pdm,hselresp,pselresp,mean(α),var(α),sep=","),append=T);
+			pr_unhosted,pr_unparasitized,traitcorr,muh,mup,hselresp,pselresp,mean(α),var(α),sep=","),append=T);
 
 		// individual location and trait data
 		fn = paste0("~/gsccs-data/ind-data/indData",format("%04i",j),".csv");
