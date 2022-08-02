@@ -4,4 +4,4 @@
 ./slim.sh
 ./ild.sh
 ./time-series.sh
-# ./pt-process.sh
+./pt-process.sh

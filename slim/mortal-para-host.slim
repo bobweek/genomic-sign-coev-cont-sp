@@ -8,20 +8,20 @@ species all initialize(){
 		"µₚ",  1e-12,  	// parasite mutation rate
 		"κₕ",  1.0,  		// host mutation effect size
 		"κₚ",  1.0,  		// parasite mutation effect size
-		"εₕ",  0.5,			// stddev of environmental noise (not on rn)
-		"εₚ",  0.5,			// stddev of environmental noise (not on rn)		
+//		"εₕ",  0.5,			// stddev of environmental noise (not on rn)
+//		"εₚ",  0.5,			// stddev of environmental noise (not on rn)		
 		"σₕ",  0.2,  		// host dispersal distance
 		"σₚ",  0.2,  		// parasite dispersal distance
 		"ι",   2.0,			// spatial interspp interaction distance
-		"cₕ",  0.075, 		// strength of host competition
-		"cₚ",  0.075, 		// strength of para competition
-		"ωₕ",  0.2,			// (spatial) host niche breadth
-		"ωₚ",  0.2,			// (spatial) parasite niche breadth
+		"cₕ",  0.22, 		// strength of host competition
+		"cₚ",  0.22, 		// strength of para competition
+		"ωₕ",  0.5,			// (spatial) host niche breadth
+		"ωₚ",  0.5,			// (spatial) parasite niche breadth
 		"W₀ₕ", 1.0,			// host base fitness
-		"W₀ₚ", 1.0,			// para base fitness
+		"W₀ₚ", 0.96,			// para base fitness
 		"sₕ",  1e-4, 		// cost on host fitness for each infection ('s' as in selection)
-		"sₚ",  1e-2, 		// benefit on parasite fitness for successful infection
-		"γ",   1.0,			// sensitivity of inf pr to trait differences
+		"sₚ",  1e-1, 		// benefit on parasite fitness for successful infection
+		"γ",   0.5,			// sensitivity of inf pr to trait differences
 		"ρ₀ₕ",  0.1,		// initial population density ('rho' is trad for densities)
 		"ρ₀ₚ",  0.1			// initial population density ('rho' is trad for densities)
 		);
@@ -82,7 +82,7 @@ species all initialize(){
 	i3.setInteractionFunction("l", 1.0); // linear for speed
 	
 	// parasite mate choice
-	initializeInteractionType(4, "xy", reciprocal=T, maxDistance=8*ωₚ);
+	initializeInteractionType(4, "xy", reciprocal=T, maxDistance=4*ωₚ);
 	i4.setInteractionFunction("l", 1.0);
 	
 	// parasitism
@@ -179,6 +179,12 @@ ticks all 2:100000 first(){
 	i4.evaluate(p1);
 }
 
+// a sanity check for global population sizes
+//ticks all 2:100000 late(){
+//	catn(p0.individualCount,"/n");
+//	catn(p1.individualCount,"/n");
+//}
+
 ticks all 2:100000 early(){
 	i1.evaluate(p0);
 	i2.evaluate(p1);
@@ -186,8 +192,16 @@ ticks all 2:100000 early(){
 	i5.evaluate(p1);
 	
 	// caculating the phenotype as sum of loci with mutation
-	zₕ = p0.individuals.sumOfMutationsOfType(m1)+1;// + rnorm(p0.individualCount,0,εₕ);
-	zₚ = p1.individuals.sumOfMutationsOfType(m2)-1;// + rnorm(p1.individualCount,0,εₚ);
+	zₕ = p0.individuals.sumOfMutationsOfType(m1);// + rnorm(p0.individualCount,0,εₕ);
+	zₚ = p1.individuals.sumOfMutationsOfType(m2);// + rnorm(p1.individualCount,0,εₚ);
+	
+	// color individuals be phenotype
+	hue = ((zₕ+25)%50)/50;
+	ones = rep(1.0, p0.individualCount);
+	p0.individuals.color = rgb2color(hsv2rgb(cbind(hue, ones, ones)));
+	hue = ((zₚ+25)%50)/50;
+	ones = rep(1.0, p1.individualCount);
+	p1.individuals.color = rgb2color(hsv2rgb(cbind(hue, ones, ones)));
 	
 	//
 	// intraspp competition
@@ -209,7 +223,7 @@ ticks all 2:100000 early(){
 	hs = sapply(p1.individuals,"h = i5.nearestInteractingNeighbors(applyValue,1,p0); if (length(h)>0) h.index; else -1;");
 	
 	//	grab indices of host indices present in selected vector
-	// note: if no parasites this returns an error
+	// note: if parasites go extinct this returns an error
 	// but since we dont care what happens without parasites
 	// this terminates the simulation for us, so we keep it
 	u = hs>-1;
@@ -219,22 +233,28 @@ ticks all 2:100000 early(){
 	hs = hs[u];
 	ps = p1.individuals.index[u];
 	
-	// probability of infection (trait matching)
-	α = exp(-γ*(zₕ[hs]-zₚ[u])^2/2);
+	// probability of infection (laplacian trait matching(as opposed to gaussian))
+	α = exp(-γ*abs(zₕ[hs]-zₚ[u]));
 	
-	// biotic component of selection	
+	// biotic component of selection (to be modified below)
 	Bₕ = rep(1.0,p0.individualCount);
 	Bₚ = rep(1.0,p1.individualCount);
+	
+	// thinking about having hosts experience more cost
+	// when there's more parasites infecting them...
+//	hu = unique(hs);
 	
 	// deterministic fitness outcome (expectation of coin toss)
 	Bₕ[hs] = (exp(-sₕ)*α + (1-α));
 	Bₚ[u] = (exp(sₚ)*α + (1-α));
+
+	// compute net fitness
 	Wₕ =  Bₕ*Wₕ;
 	Wₚ =  Bₚ*Wₚ;
 	
 	// mortality probability
-	p0.individuals.fitnessScaling = floor(2*Wₕ);
-	p1.individuals.fitnessScaling = floor(2*Wₚ);
+	p0.individuals.fitnessScaling = Wₕ;
+	p1.individuals.fitnessScaling = Wₚ;
 	
 	// logging various quantities to include in time-series
 	if(community.tick%tempres==2){
@@ -272,7 +292,7 @@ ticks all 2:100000 early(){
 		pr_unhosted = 1-sum(u)/p1.individualCount;
 		nparhsts = length(unique(hs));
 		pr_unparasitized = 1-nparhsts/p0.individualCount;
-		traitcorr = cor(zₕ[hs],zₚ[u]);		
+		traitcorr = cor(zₕ[hs],zₚ[u]);
 		hselresp = cov(log(Bₕ),zₕ);
 		pselresp = cov(log(Bₚ),zₚ);
 		if(isNAN(traitcorr)) traitcorr = 0;
@@ -280,7 +300,10 @@ ticks all 2:100000 early(){
 		if(isNAN(pselresp)) pselresp = 0;
 		
 		tsfn = "~/gsccs-data/time-series.csv";
-		writeFile(tsfn,paste(community.tick,p0.individualCount,p1.individualCount,mh,mp,vh,vp,
+		
+		// note: divide individualCount by two becuase we're
+		// currently in formation of offspring stage
+		writeFile(tsfn,paste(community.tick,p0.individualCount/2,p1.individualCount/2,mh,mp,vh,vp,
 			pr_unhosted,pr_unparasitized,traitcorr,muh,mup,hselresp,pselresp,mean(α),var(α),sep=","),append=T);
 
 		// individual location and trait data
