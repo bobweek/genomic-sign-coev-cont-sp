@@ -174,18 +174,18 @@ ticks all 1 early() {
 //	community.rescheduleScriptBlock(s3, start=ixnbrnn, end=ixnbrnn);
 }
 
-ticks all 2:100000 first(){
+ticks all 2:20000 first(){
 	i3.evaluate(p0);
 	i4.evaluate(p1);
 }
 
 // a sanity check for global population sizes
-//ticks all 2:100000 late(){
+//ticks all 2:20000 late(){
 //	catn(p0.individualCount,"/n");
 //	catn(p1.individualCount,"/n");
 //}
 
-ticks all 2:100000 early(){
+ticks all 2:20000 early(){
 	i1.evaluate(p0);
 	i2.evaluate(p1);
 	i5.evaluate(p0);
@@ -320,7 +320,7 @@ ticks all 2:100000 early(){
 
 }
 
-ticks all 100000 late() {
+ticks all 20000 late() {
 	//	record the effect size of each causal mutation
 	hsc = host.mutations.selectionCoeff;
 	hid = asFloat(host.mutations.id);
