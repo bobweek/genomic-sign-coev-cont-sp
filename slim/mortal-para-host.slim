@@ -4,8 +4,8 @@ species all initialize(){
 	initializeSLiMModelType("nonWF");
 	// model parameters
 	defaults = Dictionary(
-		"µₕ",  5e-11,  	// host mutation rate
-		"µₚ",  5e-11,  	// parasite mutation rate
+		"µₕ",  5e-13,  	// host mutation rate
+		"µₚ",  5e-13,  	// parasite mutation rate
 		"κₕ",  1.0,  		// host mutation effect size
 		"κₚ",  1.0,  		// parasite mutation effect size
 //		"εₕ",  0.5,			// stddev of environmental noise (not on rn)
@@ -19,7 +19,7 @@ species all initialize(){
 		"ωₚ",  0.5,			// (spatial) parasite niche breadth
 		"W₀ₕ", 1.0,			// host base fitness
 		"W₀ₚ", 0.96,		// para base fitness
-		"sₕ",  1e-4, 		// cost on host fitness for each infection ('s' as in selection)
+		"sₕ",  2e-4, 		// cost on host fitness for each infection ('s' as in selection)
 		"sₚ",  1e-1, 		// benefit on parasite fitness for successful infection
 		"γ",   0.5,			// sensitivity of inf pr to trait differences
 		"ρ₀ₕ",  0.1,		// initial population density ('rho' is trad for densities)
