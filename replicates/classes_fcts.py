@@ -98,6 +98,27 @@ def loadUp(hmet,pmet,hga_csl,pga_csl,hga_ntl,pga_ntl,
 
     return sys
 
+def findPoly(sstm,thshld):
+
+    h, p, pars = sstm
+
+    # compute global allele freqs for each spp
+
+    hpopfrq = np.zeros(h.S)
+    for i in np.arange(h.S):
+        hpopfrq[i] = np.mean(h.frq[i,:])
+
+    ppopfrq = np.zeros(p.S)
+    for i in np.arange(p.S):
+        ppopfrq[i] = np.mean(p.frq[i,:])      
+
+    # find the loci corresponding to freqs within the acceptance range  
+
+    hpoly = np.where((thshld<hpopfrq) & (thshld<(1-hpopfrq)))
+    ppoly = np.where((thshld<ppopfrq) & (thshld<(1-ppopfrq)))
+
+    return [hpoly, ppoly]
+
 # interspecific spatial covariance of allele frequencies
 def ild(sstm,co):
 

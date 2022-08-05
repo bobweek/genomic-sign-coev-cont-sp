@@ -64,6 +64,7 @@ def makeILD(j,r,wch):
 pool = mp.Pool(5)
 
 # iterate across combinations of host-para biotic selection
+# perhaps just across parasite. most interesting things occur when sh~0 and sp>>0
 j=0
 for sh in ss:
     for sp in ss:

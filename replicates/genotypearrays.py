@@ -10,6 +10,7 @@
 import tskit
 import msprime
 import numpy as np
+import pandas as pd
 
 def genotypeArrays(datapth):
 
@@ -18,6 +19,19 @@ def genotypeArrays(datapth):
     host_ts = tskit.load(datapth+'host-slim.trees')
     para_ts = tskit.load(datapth+'para-slim.trees')
 
+    # save effect sizes
+    
+    h_efs = []
+    for m in host_ts.mutations():
+        ef = m.metadata['mutation_list'][0]['selection_coeff']
+        h_efs.append(ef)
+    np.savetxt(datapth+'h-effect-sizes.csv', h_efs, delimiter=",")
+
+    p_efs = []
+    for m in para_ts.mutations():
+        ef = m.metadata['mutation_list'][0]['selection_coeff']
+        p_efs.append(ef)
+    np.savetxt(datapth+'p-effect-sizes.csv', p_efs, delimiter=",")
 
     # save causal snp locations
 
@@ -67,6 +81,8 @@ def genotypeArrays(datapth):
     np.save(datapth+'hfrq-causal',hfrq)
     hga = np.reshape(np.array([hgm1,hgm2]),(host_ts.num_sites,host_ts.num_individuals,2))
     np.save(datapth+'hga-causal',hga)
+    hgblfrq = np.mean(hfrq,axis=1)
+    np.savetxt(datapth+'hfrq-csl-gbl.csv', hgblfrq, delimiter=",")
 
     pgm = para_ts.genotype_matrix()
     pgm1 = pgm[:,0:para_ts.num_individuals]
@@ -75,10 +91,16 @@ def genotypeArrays(datapth):
     np.save(datapth+'pfrq-causal',pfrq)
     pga = np.reshape(np.array([pgm1,pgm2]),(para_ts.num_sites,para_ts.num_individuals,2))
     np.save(datapth+'pga-causal',pga)
+    pgblfrq = np.mean(pfrq,axis=1)
+    np.savetxt(datapth+'pfrq-csl-gbl.csv', pgblfrq, delimiter=",")
 
     # sprinkle on neutral mutations
 
-    mu = 1e-11 # neutral mutations occur an order of magnitude faster than causal
+    # where do i pull the mutation rate from???
+    bprs = pd.read_csv(msprpth+"bparams.csv", delimiter = ",")
+    params = datapth+'params.csv'
+    muh = pd.read_csv(params)["µₕ"][0]
+    mup = pd.read_csv(params)["µₚ"][0]
 
     htables = host_ts.tables
     htables.mutations.clear()
@@ -91,10 +113,10 @@ def genotypeArrays(datapth):
     pts = ptables.tree_sequence()
 
     hmut = msprime.SLiMMutationModel(type=1)
-    hts = msprime.sim_mutations(hts,rate=mu,model=hmut,keep=True)
+    hts = msprime.sim_mutations(hts,rate=muh,model=hmut,keep=True)
 
     pmut = msprime.SLiMMutationModel(type=1)
-    pts = msprime.sim_mutations(pts,rate=mu,model=pmut,keep=True)
+    pts = msprime.sim_mutations(pts,rate=mup,model=pmut,keep=True)
 
     # save neutral snp locations
 

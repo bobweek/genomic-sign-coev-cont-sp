@@ -194,6 +194,7 @@ ggplot(fddf,aes(x=f,y=c,fill=type)) +
   geom_bar(stat="identity", position=position_dodge()) +
   facet_grid(spp~base) +
   ylab("Count")+xlab("99th perc occurance")+
+  scale_fill_manual("legend", values = c("csl" = "magenta", "ntl" = "turquoise1")) +
   theme_minimal()
 ```
 
@@ -320,6 +321,21 @@ ggplot(skild) +
 #   ylab("Density") +
 #   theme_minimal()
 ```
+
+## ild cor-vs-cov
+
+```{r echo=F, message=FALSE, warning=FALSE,results='asis'}
+# scatter plot of cov vs cor ild values
+
+crvscv = data.frame(cor=as.vector(ild.cor),cov=as.vector(ild.cov))
+ggplot(crvscv,aes(x=cor,y=cov)) + 
+  geom_point(color='black',alpha=0.25) +
+  xlab("Correlation-based ILD") +
+  ylab("Covariance-based ILD") +
+  theme_minimal()
+
+```
+
 
 ## time-series
 
