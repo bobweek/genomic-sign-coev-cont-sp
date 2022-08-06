@@ -105,8 +105,10 @@ print(f"The para tree sequence has {para_ts.num_trees} trees on a genome of leng
 # sprinkle on neutral mutations
 
 params = os.path.expanduser('~/gsccs-data/params.csv')
-muh = pd.read_csv(params)["µₕ"][0]
-mup = pd.read_csv(params)["µₚ"][0]
+
+# make neutral mutation rate ten times faster than causal
+muh = 10*pd.read_csv(params)["µₕ"][0]
+mup = 10*pd.read_csv(params)["µₚ"][0]
 
 htables = host_ts.tables
 htables.mutations.clear()

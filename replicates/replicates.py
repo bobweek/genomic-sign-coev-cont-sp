@@ -23,7 +23,7 @@ import os
 # for i in {0..8}; do mkdir $i; cd $i; for j in {0..4}; do mkdir $j; done; cd ../; done
 
 # number of replicates per parameter combo
-reps = 5
+reps = 10
 
 # burn-in parameters
 bprs = pd.read_csv("bparams.csv", sep=",")
@@ -66,20 +66,18 @@ pool = mp.Pool(5)
 # iterate across combinations of host-para biotic selection
 # perhaps just across parasite. most interesting things occur when sh~0 and sp>>0
 j=0
-for sh in ss:
-    for sp in ss:
-        
-        superfolder = os.path.expanduser("~/gsccs-data/replicates/sxs/%i"%j)
-        
-        # swap out parameters
-        sprs["sₕ"] = sh
-        sprs["sₚ"] = sp
-        bprs.to_csv(superfolder+"/bparams.csv", index=False)
-        sprs.to_csv(superfolder+"/slim-pars.csv", index=False)
+for sp in ss:
 
-        [pool.apply_async(makeILD, args=(j,r,"sxs")) for r in np.arange(reps)]
-        
-        j+=1
+    superfolder = os.path.expanduser("~/gsccs-data/replicates/sxs/%i"%j)
+    
+    # swap out parameters
+    sprs["sₚ"] = sp
+    bprs.to_csv(superfolder+"/bparams.csv", index=False)
+    sprs.to_csv(superfolder+"/slim-pars.csv", index=False)
+
+    [pool.apply_async(makeILD, args=(j,r,"sxs")) for r in np.arange(reps)]
+    
+    j+=1
 
 # iterate across combinations of para biotic selection and mutation rate
 j=0

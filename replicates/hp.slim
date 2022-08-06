@@ -4,7 +4,7 @@ species all initialize(){
 	initializeSLiMModelType("nonWF");
 	// model parameters (parfname provided as an argument)
 //	if(!exists("parfname")) c
-//		defineConstant("parfname","~/gits/genomic-sign-coev-cont-sp/peqg22/slim-pars.csv");
+//		defineConstant("parfname","~/gits/genomic-sign-coev-cont-sp/replicates/slim-pars.csv");
 //	if(!exists("treflder")) c
 //		defineGlobal("trefldr","~/gsccs-data/");
 	prs = readCSV(parfname);
@@ -24,7 +24,7 @@ species all initialize(){
 	i3.setInteractionFunction("l", 1.0); // linear for speed
 	
 	// parasite mate choice
-	initializeInteractionType(4, "xy", reciprocal=T, maxDistance=8*ωₚ);
+	initializeInteractionType(4, "xy", reciprocal=T, maxDistance=4*ωₚ);
 	i4.setInteractionFunction("l", 1.0);
 	
 	// parasitism
@@ -39,7 +39,8 @@ species host initialize() {
 	
 	// host genomics
 	initializeMutationRate(µₕ);
-	initializeMutationType("m1", 0.5, "n", 0.0, κₕ);
+//	initializeMutationType("m1", 0.5, "n", 0.0, κₕ);  // normal dfe
+	initializeMutationType("m1", 0.5, "s", "return runif(1,-κₕ,κₕ);"); // unif dfe
 	initializeGenomicElementType("g1", m1, 1.0);
 	initializeGenomicElement(g1, 0, 1e8-1);
 	initializeRecombinationRate(1e-8);
@@ -53,7 +54,8 @@ species para initialize() {
 	
 	// parasite genomics
 	initializeMutationRate(µₚ);
-	initializeMutationType("m2", 0.5, "n", 0.0, κₚ);
+//	initializeMutationType("m2", 0.5, "n", 0.0, κₚ); // normal dfe
+	initializeMutationType("m2", 0.5, "s", "return runif(1,-κₚ,κₚ);"); // unif dfe
 	initializeGenomicElementType("g2", m2, 1.0);
 	initializeGenomicElement(g2, 0, 1e8-1);
 	initializeRecombinationRate(1e-8);
@@ -124,8 +126,8 @@ ticks all 2:25000 early(){
 	i5.evaluate(p1);
 	
 	// caculating the phenotype as sum of loci with mutation
-	zₕ = p0.individuals.sumOfMutationsOfType(m1)+1;// + rnorm(p0.individualCount,0,εₕ);
-	zₚ = p1.individuals.sumOfMutationsOfType(m2)-1;// + rnorm(p1.individualCount,0,εₚ);
+	zₕ = p0.individuals.sumOfMutationsOfType(m1);// + rnorm(p0.individualCount,0,εₕ);
+	zₚ = p1.individuals.sumOfMutationsOfType(m2);// + rnorm(p1.individualCount,0,εₚ);
 	
 	//
 	// intraspp competition
@@ -157,8 +159,8 @@ ticks all 2:25000 early(){
 	hs = hs[u];
 	ps = p1.individuals.index[u];
 	
-	// probability of infection (trait matching)
-	α = exp(-γ*(zₕ[hs]-zₚ[u])^2/2);
+	// probability of infection (laplacian trait matching(as opposed to gaussian))
+	α = exp(-γ*abs(zₕ[hs]-zₚ[u]));
 	
 	// biotic component of selection	
 	Bₕ = rep(1.0,p0.individualCount);
@@ -167,12 +169,14 @@ ticks all 2:25000 early(){
 	// deterministic fitness outcome (expectation of coin toss)
 	Bₕ[hs] = (exp(-sₕ)*α + (1-α));
 	Bₚ[u] = (exp(sₚ)*α + (1-α));
+
+	// compute net fitness	
 	Wₕ =  Bₕ*Wₕ;
 	Wₚ =  Bₚ*Wₚ;
 	
 	// mortality probability
-	p0.individuals.fitnessScaling = floor(2*Wₕ);
-	p1.individuals.fitnessScaling = floor(2*Wₚ);
+	p0.individuals.fitnessScaling = Wₕ;
+	p1.individuals.fitnessScaling = Wₚ;
 	
 }
 
